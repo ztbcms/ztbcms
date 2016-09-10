@@ -1,0 +1,2 @@
+sphinx http://www.coreseek.cn
+csft_mysql.conf 

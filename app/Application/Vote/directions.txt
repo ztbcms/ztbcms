@@ -1,0 +1,7 @@
+如何在添加内容的时候添加或者选择一个投票表单
+步骤如下：
+1、打开模型的字段管理，新增一个字段为“voteid”的万能字段，字段类型选择整数类型。
+2、把下面代码复制到万能字段“表单”里面：
+<input type='text' name='info[voteid]' id='voteid' value='{FIELD_VALUE}' size='3'> 
+<input type='button' value="选择已有投票" onclick="omnipotent('selectid','?g=Vote&m=Vote&a=public_get_votelist','选择已有投票')" class="button">
+<input type='button' value="新增投票" onclick="omnipotent('addvote','?g=Vote&m=Vote&a=add','添加投票',0)" class="button">

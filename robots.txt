@@ -1,0 +1,10 @@
+#
+# robots.txt for ZtbCMS
+#
+
+User-agent: *
+
+Disallow: /app/
+Disallow: /api/
+Disallow: /api.php
+Disallow: /admin.php

@@ -1,0 +1,9 @@
+# 开发ZtbCMS用到的.gitignore
+.vscode
+.idea
+d/
+runtime/
+api/
+statics/
+app/Cron
+app/Common/Conf/dataconfig.php
