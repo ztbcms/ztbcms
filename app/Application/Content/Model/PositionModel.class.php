@@ -227,13 +227,13 @@ class PositionModel extends Model {
 						$info['expiration'] = $expiration;
 
 						//判断推荐位数据是否存在，不存在新增
-						$r = $pos_data->where(array('id' => $d['id'], 'posid' => $pid))->find();
+						$r = $pos_data->where(array('catid' => $catid,'id' => $d['id'], 'posid' => $pid))->find();
 						if ($r) {
 							//是否同步编辑
 							if ($r['synedit'] == '0') {
 								//同步时，不从新设置排序值
 								unset($info['listorder']);
-								$pos_data->where(array('id' => $d['id'], 'posid' => $pid))->data($info)->save();
+								$pos_data->where(array('catid' => $catid,'id' => $d['id'], 'posid' => $pid))->data($info)->save();
 							}
 						} else {
 							$status = $pos_data->data($info)->add();
