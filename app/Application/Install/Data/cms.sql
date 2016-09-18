@@ -581,8 +581,8 @@ DROP TABLE IF EXISTS `cms_model_field`;
 CREATE TABLE `cms_model_field` (
   `fieldid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `modelid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
-  `field` varchar(20) NOT NULL DEFAULT '' COMMENT '字段名',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '别名',
+  `field` varchar(64) NOT NULL DEFAULT '' COMMENT '字段名',
+  `name` varchar(128) NOT NULL DEFAULT '' COMMENT '别名',
   `tips` text COMMENT '字段提示',
   `css` varchar(30) NOT NULL DEFAULT '' COMMENT '表单样式',
   `minlength` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最小值',
