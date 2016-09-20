@@ -208,7 +208,7 @@ class PositionModel extends Model {
 			if (is_array($arr['posid']) && !empty($arr['posid']) && is_array($param) && !empty($param)) {
 				foreach ($arr['posid'] as $pid) {
 					foreach ($param as $d) {
-						$info['id'] = $info['listorder'] = $d['id'];
+						$info['id']  = $d['id'];
 						$info['catid'] = $catid;
 						$info['posid'] = $pid;
 						$info['module'] = $model;

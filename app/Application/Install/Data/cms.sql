@@ -709,7 +709,7 @@ CREATE TABLE `cms_position_data` (
   `modelid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
   `thumb` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有缩略图',
   `data` mediumtext COMMENT '数据信息',
-  `listorder` mediumint(8) NOT NULL DEFAULT '0' COMMENT '排序',
+  `listorder` int(11) NOT NULL AUTO_INCREMENT COMMENT '排序',
   `expiration` int(10) NOT NULL,
   `extention` char(30) NOT NULL DEFAULT '',
   `synedit` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否同步编辑',
