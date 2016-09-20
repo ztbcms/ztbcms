@@ -12,5 +12,6 @@ CREATE TABLE `cms_trade` (
   `status` int(11) NOT NULL DEFAULT '1' COMMENT '1为有效0无效',
   `create_time` int(10) DEFAULT NULL COMMENT '创建时间',
   `update_time` int(10) DEFAULT NULL COMMENT '更新时间',
+  `remark` varchar(255) DEFAULT '' COMMENT '备注信息',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
