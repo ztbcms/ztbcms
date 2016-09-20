@@ -74,7 +74,7 @@ class TradeModel extends Model {
         $condition['userid'] = $userid;
         $condition['status'] = self::STATUS_VALID;
         //找出最后一条有效的交易记录
-        $last_trade = $this->where($condition)->order('create_time desc')->find();
+        $last_trade = $this->where($condition)->order('id desc')->find();
         $data = array(
             'userid' => $userid,
             'parent_id' => $last_trade ? $last_trade['id'] : 0,
