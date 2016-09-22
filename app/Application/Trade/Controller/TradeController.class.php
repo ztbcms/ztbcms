@@ -49,7 +49,7 @@ class TradeController extends AdminBase {
 		$count = M("Trade")->where($where)->count();
 	 	$page = $this->page($count, 20);
 		$trade_type=M('Trade')->field('type')->distinct('type')->select();
-        $trade=M('Trade')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order('create_time desc')->select();
+        $trade=M('Trade')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order('id desc')->select();
         $this->assign('trades',$trade);
         $this->assign('trade_type',$trade_type)->assign('Page', $page->show());
         $this->display('index');
