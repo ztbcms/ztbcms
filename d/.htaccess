@@ -1,0 +1,15 @@
+# 将 RewriteEngine 模式打开
+RewriteEngine On
+RewriteBase /
+
+#禁止显示目录列表
+Options -Indexes
+
+# Rewrite 系统规则请勿修改
+RewriteCond %{QUERY_STRING} ^(.*)$
+
+# 禁止PHP文件运行
+<FilesMatch (.*)\.php$>
+order allow,deny
+deny from all
+</FilesMatch>

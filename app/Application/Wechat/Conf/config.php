@@ -2,7 +2,9 @@
 return array(
     'wx'=>array(
         'appid'=>'wx783f316670f7c86d',
-        'secret'=>'5ec3ae09a4079d06686e456e02dcda90'
+        'secret'=>'5ec3ae09a4079d06686e456e02dcda90',
+        'merchant_id'=>'1234558',
+        'key'=>'xxx'
     ),
     'open'=>array(
         'appid'=>'wx783f316670f7c86d',
