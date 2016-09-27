@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace Wechat\Behavior;
 class OpenBehavior {
+    private $domain='http://open.zhutibang.cn';
      /**
      * 通过img_id 获取人脸识别信息
      * @param img_id string 图片id face++唯一图片id
@@ -16,7 +17,7 @@ class OpenBehavior {
         $time = time(); //当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
         $sign = $this->sign_encode(C('open.appid') . $time . C('open.secret_key'));
-        $api_url = "http://open.zhutibang.cn/api/face_api/get_detect_info/app_id/" . C('open.appid') . ".html?time={$time}&sign={$sign}";
+        $api_url = $this->domain."/api/face_api/get_detect_info/app_id/" . C('open.appid') . ".html?time={$time}&sign={$sign}";
         $send_data = array(
             'img_id' => $img_id,
         );
@@ -32,7 +33,7 @@ class OpenBehavior {
         $time = time(); //当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
         $sign = $this->sign_encode(C('open.appid') . $time . C('open.secret_key'));
-        $api_url = "http://open.zhutibang.cn/api/face_api/detect/app_id/" . C('open.appid') . ".html?time={$time}&sign={$sign}";
+        $api_url = $this->domain."/api/face_api/detect/app_id/" . C('open.appid') . ".html?time={$time}&sign={$sign}";
         $send_data = array(
             'img_url' => $img_url,
         );
@@ -51,7 +52,7 @@ class OpenBehavior {
         $time=time();//当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
         $sign=$this->sign_encode(C('open.appid').$time.C('open.secret_key'));
-        $api_url="http://open.zhutibang.cn/api/template_api/send_template/app_id/".C('open.appid').".html?time={$time}&sign={$sign}";
+        $api_url=$this->domain."/api/template_api/send_template/app_id/".C('open.appid').".html?time={$time}&sign={$sign}";
         $send_data=array(
             'touser'=>$openid,
             'template_id'=>$template_id,
