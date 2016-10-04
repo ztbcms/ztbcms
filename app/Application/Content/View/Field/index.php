@@ -3,6 +3,13 @@
 <body class="J_scroll_fixed">
 <div class="wrap J_check_wrap">
   <Admintemplate file="Common/Nav"/>
+
+  <div class="h_a">模型信息</div>
+  <div class="prompt_text">
+      <p>名称: {$modelinfo['name']}</p>
+      <p>表名: {$modelinfo['tablename']}</p>
+  </div>
+
   <form class="J_ajaxForm" action="{:U("Field/listorder")}" method="post">
   <div class="table_list">
   <table width="100%" cellspacing="0" >
