@@ -192,8 +192,8 @@ class IndexController extends AdminBase{
         
         $Model = new \Think\Model();        
         $fullFields = $Model->query("show full fields from $tablename");
-        
-        $fieldsValue = M('sms'. $tablename)->select()[0];
+
+        $fieldsValue = $Model->query("select * from $tablename")[0];
 
         foreach($fullFields as $k => $v){
             $fieldname = $v['field'];

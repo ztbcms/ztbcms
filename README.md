@@ -78,3 +78,13 @@ CMS没有预装任何模块，一般需要到用户系统的应该先安装会�
 CMS采用了http://www.iconfont.cn/上提供的iconfont,可以现在该网站生成iconfont字体后替换
 `/statics/css/default_iconfont.css`内容
 
+
+## 版本描述
+
+版本含有4部分, 如`1.2.3.4`, 采用`MAJOR.MINOR.FEATURE.PATCH`来描述版本
+
+- MAJOR 大版本号,代码被大量重写,有大部分不兼容的更新
+- MINOR 有重要的核心结构改变,可能会导致部分第三方不兼容
+- FEATURE  有新特性/扩展加入或更新
+- PATCH bug修复
+
