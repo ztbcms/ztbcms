@@ -39,7 +39,7 @@ class IndexController extends AdminBase {
                             //已经清除过的目录
                             $dirList = explode(',', I('get.dir', ''));
                             //删除缓存目录下的文件
-                            $Dir->del(RUNTIME_PATH);
+                            $Dir->del(RUNTIME_PATH, ['.gitkeep']);
                             //获取子目录
                             $subdir = glob(RUNTIME_PATH . '*', GLOB_ONLYDIR | GLOB_NOSORT);
                             if (is_array($subdir)) {
@@ -88,7 +88,7 @@ class IndexController extends AdminBase {
                     break;
                 case "template":
                     //删除缓存目录下的文件
-                    $Dir->del(RUNTIME_PATH);
+                    $Dir->del(RUNTIME_PATH, ['.gitkeep']);
                     $Dir->delDir(RUNTIME_PATH . "Cache/");
                     $Dir->delDir(RUNTIME_PATH . "Temp/");
                     //更新开启其他方式的缓存
