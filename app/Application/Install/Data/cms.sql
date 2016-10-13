@@ -6,9 +6,9 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `cms_access`;
 CREATE TABLE `cms_access` (
   `role_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '角色id',
-  `app` varchar(20) NOT NULL DEFAULT '' COMMENT '模块',
-  `controller` varchar(20) NOT NULL DEFAULT '' COMMENT '控制器',
-  `action` varchar(20) NOT NULL DEFAULT '' COMMENT '方法',
+  `app` varchar(255) NOT NULL DEFAULT '' COMMENT '模块',
+  `controller` varchar(255) NOT NULL DEFAULT '' COMMENT '控制器',
+  `action` varchar(255) NOT NULL DEFAULT '' COMMENT '方法',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否有效',
   KEY `role_id` (`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='角色权限表';
@@ -420,10 +420,10 @@ CREATE TABLE `cms_menu` (
   `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '' COMMENT '菜单名称',
   `parentid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '上级菜单',
-  `app` char(20) NOT NULL DEFAULT '' COMMENT '应用标识',
-  `controller` char(20) NOT NULL DEFAULT '' COMMENT '控制键',
-  `action` char(20) NOT NULL DEFAULT '' COMMENT '方法',
-  `parameter` char(255) NOT NULL DEFAULT '' COMMENT '附加参数',
+  `app` varchar(255) NOT NULL DEFAULT '' COMMENT '应用标识',
+  `controller` varchar(255) NOT NULL DEFAULT '' COMMENT '控制键',
+  `action` varchar(255) NOT NULL DEFAULT '' COMMENT '方法',
+  `parameter` varchar(255) NOT NULL DEFAULT '' COMMENT '附加参数',
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否禁用',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
