@@ -46577,12 +46577,10 @@ CREATE TABLE `cms_area_school` (
   `province_id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   PRIMARY KEY (`school_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)  ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-LOCK TABLES `zp_area_school` WRITE;
-/*!40000 ALTER TABLE `zp_area_school` DISABLE KEYS */;
 
-INSERT INTO `zp_area_school` (`school_id`, `school_name`, `province_id`, `type_id`)
+INSERT INTO `cms_area_school` (`school_id`, `school_name`, `province_id`, `type_id`)
 VALUES
 	(1,'中国人民大学',110000,1),
 	(2,'清华大学',110000,1),
@@ -49069,9 +49067,6 @@ VALUES
 	(2733,'兰州航空工业职工大学',620000,4),
 	(2734,'新疆教育学院',650000,4);
 
-/*!40000 ALTER TABLE `zp_area_school` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table zp_area_schooltype
 # ------------------------------------------------------------
@@ -49084,10 +49079,8 @@ CREATE TABLE `cms_area_schooltype` (
   PRIMARY KEY (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `zp_area_schooltype` WRITE;
-/*!40000 ALTER TABLE `zp_area_schooltype` DISABLE KEYS */;
 
-INSERT INTO `zp_area_schooltype` (`type_id`, `type_name`)
+INSERT INTO `cms_area_schooltype` (`type_id`, `type_name`)
 VALUES
 	(1,'本科高校'),
 	(2,'高职院校'),
