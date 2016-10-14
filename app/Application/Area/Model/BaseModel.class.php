@@ -43,7 +43,7 @@ class BaseModel extends Model {
             $condition['level'] = $level;
         }
 
-        $result = $this->where($condition)->order('sort ASC')->select();
+        $result = $this->where($condition)->select();
 //        echo $this->getLastSql();
         if (empty($result)) {
             $result = array();
