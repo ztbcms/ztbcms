@@ -42,7 +42,7 @@ class BaseModel extends Model {
         if (!empty($level)) {
             $condition['level'] = $level;
         }
-
+        //按默认的行政地位排序
         $result = $this->where($condition)->select();
 //        echo $this->getLastSql();
         if (empty($result)) {

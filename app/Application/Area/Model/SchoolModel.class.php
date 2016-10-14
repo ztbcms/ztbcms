@@ -15,6 +15,6 @@ namespace Area\Model;
  */
 class SchoolModel extends BaseModel{
 
-    protected $tableName = 'area_School';
+    protected $tableName = 'area_school';
 
 }
