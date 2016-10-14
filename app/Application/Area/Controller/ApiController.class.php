@@ -8,13 +8,12 @@
 
 namespace Area\Controller;
 
-
 use Area\Model\CityModel;
 use Area\Model\DistrictModel;
 use Area\Model\ProviceModel;
+use Area\Model\SchoolModel;
 use Area\Model\StreetModel;
 use Common\Controller\Base;
-
 
 /**
  * 区域模块对外API
@@ -23,10 +22,38 @@ use Common\Controller\Base;
  */
 class ApiController extends Base {
 
-
     protected function _initialize() {
         parent::_initialize();
 
+    }
+    /**
+     * 获取学校列表
+     */
+
+    public function getSchoolList($keyword = '', $page = 1, $limit = 10) {
+        $schoolModel = new SchoolModel();
+        if ($keyword) {
+            $where['school_name'] = array('like', "%" . $keyword . "%");
+        }
+        $schools = $schoolModel->where($where)->page($page, $limit)->select();
+        $this->ajaxReturn(array(
+            'status' => 'success',
+            'data' => $schools ? $schools : array(),
+        ));
+    }
+
+    /**
+     * 通过省份id获取学校列表
+     */
+
+    public function getSchoolListByProvinceId($p_id = 0, $page = 1, $limit = 20) {
+        $schoolModel = new SchoolModel();
+        $p_id ? $where['province_id'] = $p_id : null;
+        $schools = $schoolModel->where($where)->page($page, $limit)->select();
+        $this->ajaxReturn(array(
+            'status' => 'success',
+            'data' => $schools ? $schools : array(),
+        ));
     }
 
     /**
