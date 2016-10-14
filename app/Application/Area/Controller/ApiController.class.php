@@ -82,6 +82,23 @@ class ApiController extends Base {
         ));
     }
 
+     /**
+     * 根据省份名称模糊搜索城市列表
+     * @param $provice_name
+     */
+    public function getCitiesByProvince($provice_name='') {
+        $ProvinceModel = new ProviceModel();
+        $where['areaname']=array('like',$provice_name."%");
+        $provice=$ProvinceModel->where($where)->find();
+
+        $id=$provice['id'];
+        $CityModel = new CityModel();
+        $this->ajaxReturn(array(
+            'status' => 'success',
+            'data' => $CityModel->getCitiesByProvinceId($id)
+        ));
+    }
+
     /**
      * 区、县
      *
@@ -96,6 +113,26 @@ class ApiController extends Base {
         ));
 
     }
+
+     /**
+     * 根据城市名称迷糊搜索区/县
+     *
+     * @param $city_name
+     */
+    public function getDistrictsByCity($city_name) {
+        $CityModel = new CityModel();
+        $where['areaname']=array('like',$city_name."%");
+        $city=$CityModel->where($where)->find();
+        $id=$city['id'];
+        $DistrictModel = new DistrictModel();
+
+        $this->ajaxReturn(array(
+            'status' => 'success',
+            'data' => $DistrictModel->getDistrictsByCityId($id)
+        ));
+
+    }
+
 
     /**
      * 街道
