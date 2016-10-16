@@ -449,22 +449,19 @@ class Dir {//类定义开始
     }
 
     /**
-      +----------------------------------------------------------
      * 删除目录下面的所有文件，但不删除目录
-      +----------------------------------------------------------
-     * @access static
-      +----------------------------------------------------------
-     * @return void
-      +----------------------------------------------------------
+     * @param  string   $directory  目录
+     * @param array $except  除了指定文件
+     * @return bool
      */
-    function del($directory) {
+    function del($directory, $except = []) {
         if (is_dir($directory) == false) {
             $this->error = "该目录是不存在！";
             return false;
         }
         $handle = opendir($directory);
         while (($file = readdir($handle)) !== false) {
-            if ($file != "." && $file != ".." && is_file("$directory/$file")) {
+            if ($file != "." && $file != ".." && is_file("$directory/$file") && !in_array($file, $except)) {
                 unlink("$directory/$file");
             }
         }
