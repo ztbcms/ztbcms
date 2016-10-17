@@ -192,7 +192,7 @@ class IndexController extends AdminBase{
         
         $Model = new \Think\Model();        
         $fullFields = $Model->query("show full fields from $tablename");
-
+        
         $fieldsValue = $Model->query("select * from $tablename")[0];
 
         foreach($fullFields as $k => $v){
@@ -201,9 +201,11 @@ class IndexController extends AdminBase{
                 $fields[$v['field']]['comment'] = $v['comment'];
             }
             if (!empty($fieldsValue)){
-                $fields['value'] = $fieldsValue[$v['field']];
+                $fields[$fieldname]['value'] = $fieldsValue[$v['field']];
             }
         }
+
+        unset($fields['id']);
 
         return $fields;
     }
