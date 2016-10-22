@@ -27,7 +27,7 @@
             <select name="district" id=""></select>
 
             <template id="tpl_option">
-                <option value="{id}">{areaname}</option>
+                <option value="{id}">{name}</option>
             </template>
         </div>
 
@@ -49,8 +49,8 @@
                             console.log(res.data);
 
                             var html = '';
-                            res.data.forEach(function(city){
-                                html += tpl_option.replace('{id}', city.id).replace('{areaname}', city.areaname);
+                            res.data.forEach(function(item){
+                                html += tpl_option.replace('{id}', item.id).replace('{name}', item.areaname);
                             });
                             $city.html(html);
                             $city.trigger('change');
@@ -68,8 +68,8 @@
                             console.log(res.data);
 
                             var html = '';
-                            res.data.forEach(function(district){
-                                html += tpl_option.replace('{id}', district.id).replace('{areaname}', district.areaname);
+                            res.data.forEach(function(item){
+                                html += tpl_option.replace('{id}', item.id).replace('{name}', item.areaname);
                             });
                             $district.html(html);
                         }
