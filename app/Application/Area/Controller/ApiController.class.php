@@ -26,14 +26,21 @@ class ApiController extends Base {
         parent::_initialize();
 
     }
+
     /**
      * 获取学校列表
+     * @param string $keyword
+     * @param int $page
+     * @param int $limit
      */
-
     public function getSchoolList($keyword = '', $page = 1, $limit = 10) {
         $schoolModel = new SchoolModel();
+        $where = [];
         if ($keyword) {
-            $where['school_name'] = array('like', "%" . $keyword . "%");
+            $where['school_name'] = array(
+                'like',
+                "%" . $keyword . "%"
+            );
         }
         $schools = $schoolModel->where($where)->page($page, $limit)->select();
         $this->ajaxReturn(array(
@@ -44,11 +51,14 @@ class ApiController extends Base {
 
     /**
      * 通过省份id获取学校列表
+     * @param int $province_id
+     * @param int $page
+     * @param int $limit
      */
-
-    public function getSchoolListByProvinceId($p_id = 0, $page = 1, $limit = 20) {
+    public function getSchoolListByProvinceId($province_id = 0, $page = 1, $limit = 20) {
         $schoolModel = new SchoolModel();
-        $p_id ? $where['province_id'] = $p_id : null;
+        $where = [];
+        $province_id ? $where['province_id'] = $province_id : null;
         $schools = $schoolModel->where($where)->page($page, $limit)->select();
         $this->ajaxReturn(array(
             'status' => 'success',
@@ -71,7 +81,7 @@ class ApiController extends Base {
     /**
      * 市
      *
-     * @param $id
+     * @param $id 省份ID
      */
     public function getCitiesByProvinceId($id) {
         $CityModel = new CityModel();
@@ -82,16 +92,19 @@ class ApiController extends Base {
         ));
     }
 
-     /**
+    /**
      * 根据省份名称模糊搜索城市列表
-     * @param $provice_name
+     * @param string $provice_name 省名
      */
-    public function getCitiesByProvince($provice_name='') {
+    public function getCitiesByProvince($provice_name = '') {
         $ProvinceModel = new ProviceModel();
-        $where['areaname']=array('like',$provice_name."%");
-        $provice=$ProvinceModel->where($where)->find();
+        $where['areaname'] = array(
+            'like',
+            $provice_name . "%"
+        );
+        $provice = $ProvinceModel->where($where)->find();
 
-        $id=$provice['id'];
+        $id = $provice['id'];
         $CityModel = new CityModel();
         $this->ajaxReturn(array(
             'status' => 'success',
@@ -102,7 +115,7 @@ class ApiController extends Base {
     /**
      * 区、县
      *
-     * @param $id
+     * @param int $id 城市ID
      */
     public function getDistrictsByCityId($id) {
         $DistrictModel = new DistrictModel();
@@ -114,16 +127,19 @@ class ApiController extends Base {
 
     }
 
-     /**
+    /**
      * 根据城市名称迷糊搜索区/县
      *
-     * @param $city_name
+     * @param string $city_name 城市名
      */
-    public function getDistrictsByCity($city_name) {
+    public function getDistrictsByCity($city_name = '') {
         $CityModel = new CityModel();
-        $where['areaname']=array('like',$city_name."%");
-        $city=$CityModel->where($where)->find();
-        $id=$city['id'];
+        $where['areaname'] = array(
+            'like',
+            $city_name . "%"
+        );
+        $city = $CityModel->where($where)->find();
+        $id = $city['id'];
         $DistrictModel = new DistrictModel();
 
         $this->ajaxReturn(array(
@@ -137,7 +153,7 @@ class ApiController extends Base {
     /**
      * 街道
      *
-     * @param $id
+     * @param int $id 区县ID
      */
     public function getStreetsByDistrictId($id) {
         $StreetModel = new StreetModel();
