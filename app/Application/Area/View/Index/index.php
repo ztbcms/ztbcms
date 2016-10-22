@@ -10,10 +10,10 @@
             <li>使用操作,参考 Area/Controller/ApiController </li>
         </ol>
     </div>
-    <section >
+
+    <section>
         <h3>样例1： 省市区联动 <small>请参考 Application/Area/View/Index/index.php</small></h3>
         <div>
-
             <select name="province" id="">
                 <get sql="SELECT * FROM cms_area_province " page="$page" num="100">
                     <volist name="data" id="vo">
@@ -72,6 +72,56 @@
                                 html += tpl_option.replace('{id}', district.id).replace('{areaname}', district.areaname);
                             });
                             $district.html(html);
+                        }
+                    });
+                });
+
+                //触发初始化
+                $province.trigger('change');
+
+            })(jQuery);
+        </script>
+    </section>
+
+    <section>
+        <h3>样例2： 根据省份获取学校 <small>请参考 Application/Area/View/Index/index.php</small></h3>
+        <div>
+            <select name="province2" id="">
+                <get sql="SELECT * FROM cms_area_province " page="$page" num="100">
+                    <volist name="data" id="vo">
+                        <option value="{$vo.id}">{$vo.areaname}</option>
+                    </volist>
+                </get>
+            </select>
+
+            <select name="school" id=""></select>
+
+
+            <template id="tpl_option_school">
+                <option value="{id}">{name}</option>
+            </template>
+        </div>
+
+        <script>
+            (function($){
+                var $province = $('select[name=province2]');
+                var $school = $('select[name=school]');
+                var tpl_option = $('#tpl_option_school').html();
+
+                //省份切换
+                $province.on('change', function(){
+                    console.log($province.val())
+                    $.ajax({
+                        'url': "{:U('Area/Api/getSchoolListByProvinceId')}" + '&province_id=' + $province.val(),
+                        'type': 'GET',
+                        'dataType': 'json',
+                        'success': function(res){
+                            console.log(res.data);
+                            var html = '';
+                            res.data.forEach(function(item){
+                                html += tpl_option.replace('{id}', item.id).replace('{name}', item.school_name);
+                            });
+                            $school.html(html);
                         }
                     });
                 });

@@ -33,7 +33,7 @@ class ApiController extends Base {
      * @param int $page
      * @param int $limit
      */
-    public function getSchoolList($keyword = '', $page = 1, $limit = 10) {
+    public function getSchoolList($keyword = '', $page = 1, $limit = 100000) {
         $schoolModel = new SchoolModel();
         $where = [];
         if ($keyword) {
@@ -55,7 +55,7 @@ class ApiController extends Base {
      * @param int $page
      * @param int $limit
      */
-    public function getSchoolListByProvinceId($province_id = 0, $page = 1, $limit = 20) {
+    public function getSchoolListByProvinceId($province_id = 0, $page = 1, $limit = 1000) {
         $schoolModel = new SchoolModel();
         $where = [];
         $province_id ? $where['province_id'] = $province_id : null;
