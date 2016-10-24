@@ -24,7 +24,7 @@
 					<option value="1" selected>控制器</option>
                     <option value="2" >视图</option>
                     </select>
-                    <span class="gray">控制器表示是在程序逻辑中的，视图，表示是在模板渲染过程中的！</span></td>
+                    <span class="gray">控制器表示是在程序逻辑中的，视图表示是在模板渲染过程中的</span></td>
           </tr>
           <tr>
             <th>行为描述</th>

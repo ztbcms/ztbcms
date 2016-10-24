@@ -27,8 +27,8 @@
       <table width="100%" cellspacing="0">
         <thead>
           <tr>
-            <td align="center" width="30">ID</td>
-            <td align="center" width="50" >行为ID</td>
+            <td align="center" width="100">ID</td>
+            <td align="center" width="100" >行为ID</td>
             <td align="center">标识</td>
             <td align="center" width="150">时间</td>
           </tr>
