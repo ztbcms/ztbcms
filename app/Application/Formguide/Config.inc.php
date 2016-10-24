@@ -10,7 +10,7 @@ return array(
 	//图标
 	'icon' => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
 	//模块简介
-	'introduce' => '自定义信息表单，用于收集个例信息！',
+	'introduce' => '自定义信息表单，用于收集个例信息',
 	//模块介绍地址
 	'address' => 'http://ztbcms.com',
 	//模块作者

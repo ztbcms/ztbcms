@@ -10,7 +10,7 @@ return array(
 	//图标
 	'icon' => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
 	//模块简介
-	'introduce' => '计划任务是一项使系统在规定时间自动执行某些特定任务的功能！',
+	'introduce' => '计划任务是一项使系统在规定时间自动执行某些特定任务的功能',
 	//模块介绍地址
 	'address' => 'http://www.ztbcms.com',
 	//模块作者
