@@ -19,7 +19,7 @@ return array(
 	//版本号，请不要带除数字外的其他字符
 	'version' => '1.0.0',
 	//适配最低ZtbCMS版本，
-	'adaptation' => '2.0.0',
+	'adaptation' => '3.0.0.0',
 	//签名
 	'sign' => 'b4986c69efbd24886ca3bcb6c3b3dab8',
 	//依赖模块

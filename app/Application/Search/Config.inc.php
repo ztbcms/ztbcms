@@ -22,7 +22,7 @@ return array(
 	//版本号，请不要带除数字外的其他字符
 	'version' => '1.0.2',
 	//适配最低版本，
-	'adaptation' => '2.0.0',
+	'adaptation' => '3.0.0.0',
 	//签名
 	'sign' => '2e01dfe1d6be7e454aea66c442639b7e',
 	//依赖模块

@@ -21,7 +21,7 @@ return array(
     //版本号，请不要带除数字外的其他字符
     'version' => '1.1.3',
     //适配最低版本，
-    'adaptation' => '2.0.0',
+    'adaptation' => '3.0.0.0',
     //签名
     'sign' => '912b7e22bd9d86dddb1d460ca90581eb',
     //依赖模块
