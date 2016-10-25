@@ -24,7 +24,13 @@
       <tr>
         <td>{$r.subject}</td>
         <td>{$r.type}</td>
-        <td><if condition=" $r['isopen'] ">开启 <else />关闭</if></td>
+        <td>
+          <if condition=" $r['isopen'] ">
+              <span style="color: green;">开启</span>
+            <else />
+              <span style="color: red;">关闭</span>
+          </if>
+        </td>
         <td>{$modified}</td>
         <td>{$next}</td>
         <td>
