@@ -150,4 +150,13 @@ class CronController extends AdminBase {
 		}
 	}
 
+    //立即执行计划任务
+    public function runAction(){
+        $IndexController = new \Cron\Controller\IndexController();
+        $cron_id = I('get.cron_id');
+        $cron_file = I('get.cron_file');
+
+        $res = $IndexController->runAction($cron_file, $cron_id);
+    }
+
 }
