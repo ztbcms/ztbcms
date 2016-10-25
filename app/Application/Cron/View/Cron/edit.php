@@ -2,15 +2,7 @@
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
 <div class="wrap">
-  <!--添加计划任务-->
-  <div class="h_a">功能说明</div>
-  <div class="prompt_text">
-    <ol>
-      <li>计划任务是一项使系统在规定时间自动执行某些特定任务的功能。</li>
-      <li>计划任务与系统核心紧密关联，上传不当的文件可能造成站点无法正常运行。</li>
-      <li>关于计划任务的添加，您需要上传相应执行文件到 app/Cron/目录下,文件名必须为CMSxx.php形式</li>
-    </ol>
-  </div>
+
   <Admintemplate file="Common/Nav"/>
   <div class="h_a">添加计划任务</div>
   <form class="J_ajaxForm"  action="{:U('Cron/edit')}" method="post">
