@@ -260,8 +260,8 @@ CREATE TABLE `cms_category_priv` (
 DROP TABLE IF EXISTS `cms_config`;
 CREATE TABLE `cms_config` (
   `id` smallint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `varname` varchar(20) NOT NULL DEFAULT '',
-  `info` varchar(100) NOT NULL DEFAULT '',
+  `varname` varchar(128) NOT NULL DEFAULT '',
+  `info` varchar(255) NOT NULL DEFAULT '',
   `groupid` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `value` text,
   PRIMARY KEY (`id`),
