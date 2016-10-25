@@ -1,12 +1,10 @@
 
 <p align="center"><a href="http://ztbcms.com" target="_blank"><img width="100" src="favicon.ico"></a></p>
  
-# 文档
-
 [在线文档](http://ztbcms.com)
 
-----
-# 环境要求
+## 环境要求
+
 * PHP版本需要5.4+ 推荐5.6(未支持PHP 7)
     * php5-curl 
     * php5-gd
@@ -14,7 +12,7 @@
     * mysql-client
 * Apache 2.2(推荐2.4) 
 
-# 下载安装
+## 下载安装
 
 下载最新**稳定版**
 ```shell
