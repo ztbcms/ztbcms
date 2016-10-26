@@ -34,8 +34,10 @@
         <td>{$modified}</td>
         <td>{$next}</td>
         <td>
-        <a href="{:U('Cron/edit',array('cron_id'=>$r['cron_id']))}" class="mr5">[编辑]</a> 
-        <a class="J_ajax_del" href="{:U('Cron/delete',array('cron_id'=>$r['cron_id']))}">[删除]</a>
+           <a href="{:U('Cron/edit',array('cron_id'=>$r['cron_id']))}" class="mr5"> 编辑 </a>
+          |  <a class="J_ajax_del" href="{:U('Cron/delete',array('cron_id'=>$r['cron_id']))}"> 删除 </a>
+          |  <a target="_blank" href="{:U('Cron/runAction',array('cron_id'=>$r['cron_id'], 'cron_file' => $r['cron_file']))}"> 立即执行 </a>
+        </td>
       </tr>
       </volist>
     </table>

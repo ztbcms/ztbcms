@@ -87,4 +87,15 @@ class IndexController extends CMS {
 		return true;
 	}
 
+    //立即运行计划任务,只允许管理员调用
+    public function runAction($filename = '', $cronId = 0){
+        if(defined("IN_ADMIN") && IN_ADMIN){
+            return $this->_runAction($filename, $cronId);
+        }else{
+            echo '无权限访问';
+            exit();
+        }
+
+    }
+
 }
