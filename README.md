@@ -16,12 +16,12 @@
 
 下载最新**稳定版**
 ```shell
-$ git clone --branch master https://github.com/Zhutibang/ZtbCMS.git
+$ git clone --branch master https://github.com/ztbcms/ztbcms.git
 ```
 
 下载最新**开发版**(慎用)
 ```shell
-$ git clone https://github.com/Zhutibang/ZtbCMS.git
+$ git clone https://github.com/ztbcms/ztbcms.git
 ```
 
 初始化环境,详情请看[Makefile](Makefile)
