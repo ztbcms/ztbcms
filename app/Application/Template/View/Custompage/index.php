@@ -8,11 +8,11 @@
       <table width="100%" cellspacing="0">
         <thead>
           <tr>
-            <td align="center" width="50"><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x">全选</td>
-            <td align="center" width="40">ID</td>
+            <td align="center" width="80"><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x">全选</td>
+            <td align="center" width="80">ID</td>
             <td width="200">名称</td>
             <td>生成路径</td>
-            <td align="center" width="120">操作</td>
+            <td align="center" width="210">操作</td>
           </tr>
         </thead>
         <tbody>
