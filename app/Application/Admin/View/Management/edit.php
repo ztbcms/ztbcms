@@ -30,7 +30,7 @@
               <span class="gray">请输入E-mail</span></td>
           </tr>
           <tr>
-            <th>真实姓名</th>
+            <th>昵称</th>
             <td><input type="text" name="nickname" value="{$data.nickname}" class="input" id="realname"></td>
           </tr>
           <tr>
