@@ -108,6 +108,7 @@ class IndexController extends MemberbaseController {
 		service("Passport")->logoutLocal();
 		session("connect_openid", NULL);
 		session("connect_app", NULL);
+		session(NULL);
 		//注销在线状态
 		D('Member/Online')->onlineDel();
 		//tag 行为点
