@@ -43,8 +43,8 @@
           <tr>
           <th>状态</td>
           <td><select name="status">
-                <option value="1">开启</option>
-                <option value="0" selected>禁止</option>
+                <option value="1" selected>开启</option>
+                <option value="0">禁止</option>
           </select></td>
         </tr>
         </tbody>
