@@ -12,7 +12,7 @@
           <td>角色名称</td>
           <td width="200">角色描述</td>
           <td width="50"   align='center'>状态</td>
-          <td width="250" align='center'>管理操作</td>
+          <td width="350" align='center'>管理操作</td>
         </tr>
       </thead>
       <tbody>

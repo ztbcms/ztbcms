@@ -29,7 +29,7 @@
               <span class="gray">请输入E-mail</span></td>
           </tr>
           <tr>
-            <th>真实姓名</th>
+            <th>昵称</th>
             <td><input type="text" name="nickname" value="" class="input" id="realname"></td>
           </tr>
           <tr>
@@ -43,8 +43,8 @@
           <tr>
           <th>状态</td>
           <td><select name="status">
-                <option value="1">开启</option>
-                <option value="0" selected>禁止</option>
+                <option value="1" selected>开启</option>
+                <option value="0">禁止</option>
           </select></td>
         </tr>
         </tbody>
