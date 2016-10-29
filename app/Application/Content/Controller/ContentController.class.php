@@ -156,7 +156,7 @@ class ContentController extends AdminBase {
 
             $filter = I('get._filter');
             $operater = I('get._operater');
-            $value = I('get._value',[],'');
+            $value = I('get._value');
 
             if (is_array($filter)) {
                 foreach ($filter as $index => $k){
