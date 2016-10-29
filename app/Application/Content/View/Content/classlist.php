@@ -27,21 +27,33 @@
   <input type="hidden" value="1" name="search">
     <div class="search_type cc mb10">
       <div class="mb10"> 
-        <span class="mr20">时间：
-        <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">-<input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
-        <select class="select_2" name="posids"style="width:70px;">
-          <option value='' <if condition=" $posids == '' "> selected</if>>全部</option>
-          <option value="1" <if condition=" $posids == 1 "> selected</if>>推荐</option>
-          <option value="2" <if condition=" $posids == 2 "> selected</if>>不推荐</option>
-        </select>
-        <select class="select_2" name="searchtype" style="width:70px;">
-          <option value='0' <if condition=" $searchtype == '0' "> selected</if>>标题</option>
-          <option value='1' <if condition=" $searchtype == '1' "> selected</if>>简介</option>
-          <option value='2' <if condition=" $searchtype == '2' "> selected</if>>用户名</option>
-          <option value='3' <if condition=" $searchtype == '3' "> selected</if>>ID</option>
-        </select>
-        关键字：
-        <input type="text" class="input length_2" name="keyword" style="width:200px;" value="{$_GET.keyword}" placeholder="请输入关键字...">
+        <section style="display: inline;">
+            <span class="mr20">时间：
+            <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">-<input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
+
+        </section>
+
+        <section style="display: inline;">
+          <select name="_filter[0]" class="select_2">
+            <option value="username" <if condition=" $_filter[0] == 'username' "> selected</if>>发布人用户名</option>
+            <option value="id" <if condition=" $_filter[0] == 'id' "> selected</if>>用户id</option>
+            <option value="title" <if condition=" $_filter[0] == 'title' "> selected</if>>标题</option>
+          </select>
+
+          <select name="_operater[0]" class="select_2">
+            <option value="EQ" <if condition=" $_operater[0] == 'EQ' "> selected</if>>等于</option>
+            <option value="NEQ" <if condition=" $_operater[0] == 'NEQ' "> selected</if>>不等于</option>
+            <option value="GT" <if condition=" $_operater[0] == 'GT' "> selected</if>>大于</option>
+            <option value="EGT" <if condition=" $_operater[0] == 'EGT' "> selected</if>>大于等于</option>
+            <option value="LT" <if condition=" $_operater[0] == 'LT' "> selected</if>>小于</option>
+            <option value="ELT" <if condition=" $_operater[0] == 'ELT' "> selected</if>>小于等于</option>
+            <option value="LIKE" <if condition=" $_operater[0] == 'LIKE' "> selected</if>>模糊查询</option>
+          </select>
+
+          <input class="input length_2" type="text" name="_value[0]" value="{$_value[0]}">
+        </section>
+
+        <input type="hidden" name="status" value="{:I('get.status', 99)}">
         <button class="btn">搜索</button>
         </span>
       </div>
