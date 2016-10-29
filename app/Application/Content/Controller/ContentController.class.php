@@ -149,36 +149,34 @@ class ContentController extends AdminBase {
 			if ($end_time > 0 && $start_time > 0) {
 				$where['inputtime'] = array(array('EGT', $start_time), array('ELT', $end_time));
 			}
-			//推荐
-			$posids = I('get.posids', 0, 'intval');
-			if (!empty($posids)) {
-                if($posids == 1){
-                    $where["posid"] = array("EQ", 1);
-                }else if($posids == 2){
-                    $where["posid"] = array("EQ", 0);
-                }
-				$this->assign("posids", $posids);
-			}
-			//搜索字段
-			$searchtype = I('get.searchtype', null, 'intval');
-			//搜索关键字
-			$keyword = \Input::getVar(I('get.keyword'));
-			if (!empty($keyword)) {
-				$this->assign("searchtype", $searchtype);
-				$this->assign("keyword", $keyword);
-				$type_array = array('title', 'description', 'username');
-				if ($searchtype < 3) {
-					$searchtype = $type_array[$searchtype];
-					$where[$searchtype] = array("LIKE", "%{$keyword}%");
-				} elseif ($searchtype == 3) {
-					$where["id"] = array("EQ", (int) $keyword);
-				}
-			}
-			//状态
-			$status = I('get.status', 0, 'intval');
-            $where['status'] = array("EQ", $status);
-		}
 
+			//状态
+			$status = I('get.status', 99, 'intval');
+            $where['status'] = array("EQ", $status);
+
+            $filter = I('get._filter');
+            $operater = I('get._operater');
+            $value = I('get._value',[],'');
+
+            if (is_array($filter)) {
+                foreach ($filter as $index => $k){
+                    if( $value[$index] != '' ){
+                        $filter[$index] = trim($filter[$index]);
+                        $operater[$index] = trim($operater[$index]);
+                        $value[$index] = trim($value[$index]);
+
+                        if(strtolower($operater[$index]) == 'like'){
+                            $where[$filter[$index]] = array($operater[$index], '%' . $value[$index] . '%');
+                        }else{
+                            $where[$filter[$index]] = array($operater[$index], $value[$index]);
+                        }
+                    }
+                }
+                $this->assign('_filter', $filter);
+                $this->assign('_operater', $operater);
+                $this->assign('_value', $value);
+            }
+		}
 		//信息总数
 		if (empty($search)) {
 			$count = $sum;
