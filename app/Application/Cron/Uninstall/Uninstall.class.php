@@ -13,7 +13,7 @@ class Uninstall extends UninstallBase {
 	//End
 	public function end() {
 		//移除Cron目录
-		CMS()->Dir->delDir(PROJECT_PATH . 'Cron/');
+//		CMS()->Dir->delDir(PROJECT_PATH . 'Cron/');
 		return true;
 	}
 

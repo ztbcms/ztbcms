@@ -298,16 +298,12 @@ class CronModel extends Model {
 
 	//可用计划任务执行文件
 	public function _getCronFileList() {
-		$dir = PROJECT_PATH . "Cron/";
+		$dir = APP_PATH . "Cron/CronScript";
 		$Dirs = new \Dir($dir);
 		$fileList = $Dirs->toArray();
 		$CronFileList = array();
 		foreach ((array) $fileList AS $k => $file) {
-			if (strpos($file['filename'], "CMS") !== 0) {
-				unset($fileList[$k]);
-			} else {
-				$CronFileList[] = $file['filename'];
-			}
+            $CronFileList[] = $file['filename'];
 		}
 		return $CronFileList;
 	}
