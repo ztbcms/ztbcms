@@ -172,7 +172,7 @@
         <tr>
           <th>开启计划</th>
           <td><ul class="switch_list cc">
-              <li>
+              <li style="width: 60px;">
                 <label>
                   <input type="radio" name="isopen" value="1" checked>
                   <span>开启</span></label>
@@ -189,11 +189,14 @@
           <th>任务类型</th>
           <td><select id="J_type_select" name="type" class="mr10">
               <option value="0">普通计划任务</option>
-              <option value="1">系统栏目刷新任务</option>
-              <option value="2">系统自定义页面刷新任务</option>
-              <option value="3">系统网站首页</option>
-            </select></td>
-          <td><div class="fun_tips">刷新栏目：CMSRefresh_category.php，属性自定义页面：CMSRefresh_custompage.php</div></td>
+<!--              <option value="1">系统栏目刷新任务</option>-->
+<!--              <option value="2">系统自定义页面刷新任务</option>-->
+<!--              <option value="3">系统网站首页</option>-->
+            </select>
+          </td>
+          <td>
+<!--            <div class="fun_tips">刷新栏目：CMSRefresh_category.php，属性自定义页面：CMSRefresh_custompage.php</div>-->
+          </td>
         </tr>
         <tr id="type1" class="J_type_item" style="display:none;">
           <th>栏目</th>
@@ -214,10 +217,12 @@
           <th>执行文件</th>
           <td><select class="select_4 mr5" name="cron_file">
               <volist name="fileList" id="vo">
-              <option value="{$vo|basename=###,'.class.php'}">{$vo|basename=###,'.class.php'}</option>
+              <option value="{$vo|basename=###,'.class.php'}">{$vo}</option>
               </volist>
             </select></td>
-          <td><div class="fun_tips">请选择任务php文件名称</div></td>
+          <td>
+<!--            <div class="fun_tips">请选择任务php文件名称</div>-->
+          </td>
         </tr>
       </table>
     </div>
