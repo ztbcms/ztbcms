@@ -67,10 +67,6 @@ class IndexController extends CMS {
 
 	//运行计划
 	private function _runAction($filename = '', $cronId = 0) {
-		$dir = APP_PATH . 'Cron/CronScript/';
-		if (!$filename || strpos($filename, "CMS") != 0) {
-			return false;
-		}
 		//载入文件
         $class = "Cron\\CronScript\\{$filename}";
         try {

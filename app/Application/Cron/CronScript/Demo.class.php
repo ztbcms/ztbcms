@@ -6,11 +6,13 @@
 
 namespace Cron\CronScript;
 
-class CMSDemo {
+use Cron\Base\Cron;
+
+class Demo extends Cron {
 
 	//任务主体
 	public function run($cronId) {
-		\Think\Log::record("我执行了计划任务事例 CMSDemo.class.php！");
+		\Think\Log::record("我执行了计划任务事例 Demo.class.php！");
 	}
 
 }

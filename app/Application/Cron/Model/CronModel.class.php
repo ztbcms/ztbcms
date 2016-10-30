@@ -303,11 +303,7 @@ class CronModel extends Model {
 		$fileList = $Dirs->toArray();
 		$CronFileList = array();
 		foreach ((array) $fileList AS $k => $file) {
-			if (strpos($file['filename'], "CMS") !== 0) {
-				unset($fileList[$k]);
-			} else {
-				$CronFileList[] = $file['filename'];
-			}
+            $CronFileList[] = $file['filename'];
 		}
 		return $CronFileList;
 	}
