@@ -214,7 +214,7 @@
           <th>执行文件</th>
           <td><select class="select_4 mr5" name="cron_file">
               <volist name="fileList" id="vo">
-              <option value="{$vo|basename=###,'.php'}">{$vo}</option>
+              <option value="{$vo|basename=###,'.class.php'}">{$vo|basename=###,'.class.php'}</option>
               </volist>
             </select></td>
           <td><div class="fun_tips">请选择任务php文件名称</div></td>

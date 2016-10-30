@@ -67,23 +67,14 @@ class IndexController extends CMS {
 
 	//运行计划
 	private function _runAction($filename = '', $cronId = 0) {
-		$dir = PROJECT_PATH . 'Cron/';
-		if (!$filename || strpos($filename, "CMS") != 0) {
-			return false;
-		}
 		//载入文件
-		$require = require_cache("{$dir}{$filename}.php");
-		if ($require) {
-			$class = "\\CronScript\\{$filename}";
-			try {
-				$cron = new $class();
-				$cron->run($cronId);
-			} catch (\Exception $exc) {
-				\Think\Log::record("计划任务:$filename，执行出错！");
-			}
-		} else {
-			\Think\Log::record("计划任务:$filename，文件载入出错！");
-		}
+        $class = "Cron\\CronScript\\{$filename}";
+        try {
+            $cron = new $class();
+            $cron->run($cronId);
+        } catch (\Exception $exc) {
+            \Think\Log::record("计划任务:$filename，执行出错！");
+        }
 		return true;
 	}
 

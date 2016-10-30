@@ -29,7 +29,7 @@
       <div class="mb10"> 
         <section style="display: inline;">
             <span class="mr20">时间：
-            <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">-<input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
+            <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}">-<input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" >
 
         </section>
 

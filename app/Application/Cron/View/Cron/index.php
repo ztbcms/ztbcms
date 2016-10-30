@@ -4,11 +4,16 @@
 <div class="wrap">
   
   <Admintemplate file="Common/Nav"/>
+
+  <div style="margin: 8px;">
+    <a class="btn btn-primary" href="{:U('Cron/Index/index')}" target="_blank">触发定时任务</a>
+  </div>
   <div class="table_list">
     <table width="100%">
       <thead>
         <tr>
           <td>计划标题</td>
+          <td>执行文件</td>
           <td>任务周期</td>
           <td>任务状态</td>
           <td>上次执行时间</td>
@@ -16,6 +21,7 @@
           <td>操作</td>
         </tr>
       </thead>
+
       <volist name="data" id="r">
       <?php
 	  $modified = $r['modified_time'] ? date("Y-m-d H:i",$r['modified_time']) : '-';
@@ -23,6 +29,7 @@
 	  ?>
       <tr>
         <td>{$r.subject}</td>
+        <td>{$r.cron_file}.class.php</td>
         <td>{$r.type}</td>
         <td>
           <if condition=" $r['isopen'] ">
