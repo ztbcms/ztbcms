@@ -298,7 +298,7 @@ class CronModel extends Model {
 
 	//可用计划任务执行文件
 	public function _getCronFileList() {
-		$dir = PROJECT_PATH . "Cron/";
+		$dir = APP_PATH . "Cron/CronScript";
 		$Dirs = new \Dir($dir);
 		$fileList = $Dirs->toArray();
 		$CronFileList = array();
