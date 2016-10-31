@@ -35,8 +35,8 @@
 
         <section style="display: inline;">
           <select name="_filter[0]" class="select_2">
-            <option value="username" <if condition=" $_filter[0] == 'username' "> selected</if>>发布人用户名</option>
-            <option value="id" <if condition=" $_filter[0] == 'id' "> selected</if>>用户id</option>
+            <option value="username" <if condition=" $_filter[0] == 'username' "> selected</if>>发布人</option>
+            <option value="id" <if condition=" $_filter[0] == 'id' "> selected</if>>用户ID</option>
             <option value="title" <if condition=" $_filter[0] == 'title' "> selected</if>>标题</option>
           </select>
 
