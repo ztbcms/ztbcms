@@ -70,7 +70,7 @@
             <td>标题</td>
             <td align="center">点击量</td>
             <td align="center">发布人</td>
-            <td align="center"><span>发帖时间</span></td>
+            <td align="center"><span>发布时间</span></td>
             <td align="center">管理操作</td>
           </tr>
         </thead>
