@@ -95,7 +95,7 @@
             <td align="center"><if condition=" $vo['sysadd'] ">{$vo.username}
                 <else />
                 <font color="#FF0000">{$vo.username}</font><img src="{$config_siteurl}statics/images/icon/contribute.png" title="会员投稿"></if></td>
-            <td align="center">{$vo.updatetime|date="Y-m-d H:i:s",###}</td>
+            <td align="center">{$vo.inputtime|date="Y-m-d H:i:s",###}</td>
             <td align="center">
             <?php
 			$op = array();
