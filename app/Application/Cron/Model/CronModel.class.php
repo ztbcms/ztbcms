@@ -84,10 +84,11 @@ class CronModel extends Model {
 		return $data;
 	}
 
-	/**
-	 * 添加计划任务
-	 * @param type $data
-	 */
+    /**
+     * 添加计划任务
+     * @param array $data
+     * @return bool|mixed
+     */
 	public function CronAdd($data) {
 		if (!$data || !is_array($data)) {
 			$this->error = "数据有误！";
@@ -141,10 +142,11 @@ class CronModel extends Model {
 		return false;
 	}
 
-	/**
-	 * 添加计划任务
-	 * @param type $data
-	 */
+    /**
+     * 添加计划任务
+     * @param $data
+     * @return bool
+     */
 	public function CronEdit($data) {
 		if (!$data || !is_array($data)) {
 			$this->error = "数据有误！";
@@ -206,6 +208,7 @@ class CronModel extends Model {
 	 * @param int $day 几号， 如果是99表示当月最后一天
 	 * @param int $hour 几点
 	 * @param int $minute 每小时的几分
+     * * @return false|int|string
 	 */
 	public function getNextTime($loopType, $day = 0, $hour = 0, $minute = 0) {
 		$time = time();
@@ -265,8 +268,8 @@ class CronModel extends Model {
 
 	/**
 	 * 获取该月天数
-	 * @param type $month 月份
-	 * @param type $isLeapYear 是否为闰年
+	 * @param string $month 月份
+	 * @param boolean $isLeapYear 是否为闰年
 	 * @return int
 	 */
 	public function _getMouthDays($month, $isLeapYear) {

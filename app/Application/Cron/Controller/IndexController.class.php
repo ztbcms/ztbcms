@@ -40,7 +40,6 @@ class IndexController extends CMS {
 
 	/**
 	 * 递归执行计划任务
-	 * Enter description here ...
 	 */
 	private function runCron() {
 		$_time = time();
