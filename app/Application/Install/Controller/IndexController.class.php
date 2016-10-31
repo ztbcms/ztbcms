@@ -273,7 +273,7 @@ class IndexController extends Controller {
 		$time = time();
 		$ip = get_client_ip();
 		$password = md5($password . md5($verify));
-		$query = "INSERT INTO `{$dbPrefix}user` VALUES ('1', '{$username}', '未知', '{$password}', '', '{$time}', '0.0.0.0', '{$verify}', 'admin@ztbcms.com', '备注信息', '{$time}', '{$time}', '1', '1', '');";
+		$query = "INSERT INTO `{$dbPrefix}user` VALUES ('1', '{$username}', '超级管理员', '{$password}', '', '{$time}', '0.0.0.0', '{$verify}', 'admin@ztbcms.com', '备注信息', '{$time}', '{$time}', '1', '1', '');";
 		mysql_query($query);
 
 		$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
