@@ -22,7 +22,7 @@ class Content extends Components {
 	 * 连接内容处理服务
 	 * @access public
 	 * @param array $options 配置数组
-	 * @return void
+	 * @return array|mixed
 	 */
 	static public function getInstance($options = array()) {
 		static $systemHandier;
