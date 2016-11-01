@@ -50,7 +50,7 @@ if (window.top !== window.self) {
           <ul id="J_B_main_block">
           </ul>
         </div>
-        <div class="login_info"><span class="mr10">{$role_name}： {$userInfo.username}</span><a href="{:U('Public/logout')}" class="mr10">[注销]</a>{:tag("view_admin_top_menu")}<a href="{$Config.siteurl}" class="home" target="_blank">前台首页</a><?php if(\Libs\System\RBAC::authenticate('Admin/Index/cache')){ ?><a href="javascript:;;" id="deletecache" class="home"  style="color:#FFF">缓存更新</a><?php } ?></div></td>
+        <div class="login_info"><span class="mr10">{$role_name}： {$userInfo.nickname}({$userInfo.username})</span><a href="{:U('Public/logout')}" class="mr10">[注销]</a>{:tag("view_admin_top_menu")}<a href="{$Config.siteurl}" class="home" target="_blank">前台首页</a><?php if(\Libs\System\RBAC::authenticate('Admin/Index/cache')){ ?><a href="javascript:;;" id="deletecache" class="home"  style="color:#FFF">缓存更新</a><?php } ?></div></td>
     </tr>
     <tr class="tab">
       <th> <div class="search">
