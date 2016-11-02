@@ -52,8 +52,8 @@ class CmsTag extends TagLib {
 	/**
 	 * 模板包含标签
 	 * 格式：<admintemplate file="模块/控制器/模板名"/>
-	 * @param  $attr 属性字符串
-	 * @param  $content 标签内容
+	 * @param  array $attr 属性字符串
+	 * @param  string $content 标签内容
 	 * @return string 标签解析后的内容
 	 */
 	public function _admintemplate($attr, $content) {
@@ -83,9 +83,9 @@ class CmsTag extends TagLib {
 	 * 加载前台模板
 	 * 格式：<template file="Content/footer.php" theme="主题"/>
 	 * @staticvar array $_templateParseCache
-	 * @param  $attr file，theme
+	 * @param  array $attr file，theme
 	 * @param  $content
-	 * @return string|array 返回模板解析后的内容
+	 * @return array 返回模板解析后的内容
 	 */
 	public function _template($attr, $content) {
 		$config = cache('Config');
@@ -144,10 +144,10 @@ class CmsTag extends TagLib {
 	 * 使用方法：
 	 *      用法示例：<pre catid="1" id="1" target="1" msg="已经没有了" />
 	 * 参数说明：
-	 *          @catid		栏目id，可以传入数字,在内容页可以不传
-	 *          @id		信息id，可以传入数字,在内容页可以不传
-	 *          @target		是否新窗口打开，1 是 0否
-	 *          @msg		当没有上一篇时的提示语
+	 *          catid		栏目id，可以传入数字,在内容页可以不传
+	 *          id		信息id，可以传入数字,在内容页可以不传
+	 *          target		是否新窗口打开，1 是 0否
+	 *          msg		当没有上一篇时的提示语
 	 * @param  $tag
 	 * @param  $content
 	 * @return string
@@ -182,10 +182,10 @@ class CmsTag extends TagLib {
 	 * 使用方法：
 	 *      用法示例：<next catid="1" id="1" target="1" msg="已经没有了" />
 	 * 参数说明：
-	 *          @catid		栏目id，可以传入数字,在内容页可以不传
-	 *          @id		信息id，可以传入数字,在内容页可以不传
-	 *          @target		是否新窗口打开，1 是 0否
-	 *          @msg		当没有上一篇时的提示语
+	 *          catid		栏目id，可以传入数字,在内容页可以不传
+	 *          id		信息id，可以传入数字,在内容页可以不传
+	 *          target		是否新窗口打开，1 是 0否
+	 *          msg		当没有上一篇时的提示语
 	 * @param  $tag
 	 * @param  $content
 	 * @return string
@@ -220,13 +220,13 @@ class CmsTag extends TagLib {
 	 * 使用方法：
 	 *      用法示例：<navigate catid="$catid" space=" &gt; " />
 	 * 参数说明：
-	 *          @catid		栏目id，可以传入数字，也可以传递变量 $catid
-	 *          @space		分隔符，支持html代码
-	 *          @blank		是否新窗口打开
-	 *          @cache                              缓存时间
+	 *          catid		栏目id，可以传入数字，也可以传递变量 $catid
+	 *          space		分隔符，支持html代码
+	 *          blank		是否新窗口打开
+	 *          cache                              缓存时间
 	 * @staticvar array $_navigateCache
-	 * @param  $tag 标签属性
-	 * @param  $content 表情内容
+	 * @param  string $tag 标签属性
+	 * @param  string $content 表情内容
 	 * @return array|string
 	 */
 	public function _navigate($tag, $content) {
@@ -277,8 +277,8 @@ class CmsTag extends TagLib {
 	 * 作用：生成各种表单元素
 	 * 用法示例：<form function="date" parameter="name,$valeu"/>
 	 * 参数说明：
-	 *          @function		表示所使用的方法名称，方法来源于Form.class.php这个类。
-	 *          @parameter		所需要传入的参数，支持变量！
+	 *          function		表示所使用的方法名称，方法来源于Form.class.php这个类。
+	 *          parameter		所需要传入的参数，支持变量！
 	 *
 	 * @param  $tag
 	 * @param $content
@@ -312,40 +312,40 @@ class CmsTag extends TagLib {
 	 * 用法示例：<content action="lists" catid="$catid"  order="id DESC" num="4" page="$page"> .. HTML ..</content>
 	 * 参数说明：
 	 * 	基本参数
-	 * 		@action		调用方法（必填）
-	 * 		@page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
-	 * 		@num		每次返回数据量
-	 * 		@catid		栏目id（必填），列表页，内容页可以使用 $catid 获取当前栏目。
+	 * 		action		调用方法（必填）
+	 * 		page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
+	 * 		num		每次返回数据量
+	 * 		catid		栏目id（必填），列表页，内容页可以使用 $catid 获取当前栏目。
 	 * 	公用参数：
-	 * 		@cache		数据缓存时间，单位秒
-	 * 		@pagefun                      分页函数，默认page
-	 * 		@pagetp		分页模板，必须是变量传递
-	 * 		@return		返回值变量名称，默认data
+	 * 		cache		数据缓存时间，单位秒
+	 * 		pagefun                      分页函数，默认page
+	 * 		pagetp		分页模板，必须是变量传递
+	 * 		return		返回值变量名称，默认data
 	 * 	#当action为lists时，调用栏目信息列表标签
 	 * 	#用法示例：<content action="lists" catid="$catid"  order="id DESC" num="4" page="$page"> .. HTML ..</content>
 	 * 	独有参数：
-	 * 		@order		排序，例如“id DESC”
-	 * 		@where		sql语句的where部分 例如：`thumb`!='' AND `status`=99
-	 * 		@thumb		是否仅必须缩略图，1为调用带缩略图的
-	 * 		@moreinfo                    是否调用副表数据 1为是
+	 * 		order		排序，例如“id DESC”
+	 * 		where		sql语句的where部分 例如：`thumb`!='' AND `status`=99
+	 * 		thumb		是否仅必须缩略图，1为调用带缩略图的
+	 * 		moreinfo                    是否调用副表数据 1为是
 	 * 	#当action为hits时，调用排行榜
 	 * 	#用法示例：<content action="hits" catid="$catid"  order="weekviews DESC" num="10"> .. HTML ..</content>
 	 * 	独有参数：
-	 * 		@order		排序，例如“weekviews DESC”
-	 * 		@day		调用多少天内的排行
-	 * 		@where		sql语句的where部分
+	 * 		order		排序，例如“weekviews DESC”
+	 * 		day		调用多少天内的排行
+	 * 		where		sql语句的where部分
 	 * 	#当action为relation时，调用相关文章
 	 * 	#用法示例：<content action="relation" relation="$relation" catid="$catid"  order="id DESC" num="5" keywords="$keywords"> .. HTML ..</content>
 	 * 	独有参数：
-	 * 		@nid		排除id 一般是 $id，排除当前文章
-	 * 		@keywords	内容页面取值：$keywords，也就是关键字
-	 * 		@relation		内容页取值$relation，当有$relation时keywords参数失效
-	 * 		@where		sql语句的where部分
+	 * 		nid		排除id 一般是 $id，排除当前文章
+	 * 		keywords	内容页面取值：$keywords，也就是关键字
+	 * 		relation		内容页取值$relation，当有$relation时keywords参数失效
+	 * 		where		sql语句的where部分
 	 * 	#当action为category时，调用栏目列表
 	 * 	#用法示例：<content action="category" catid="$catid"  order="listorder ASC" > .. HTML ..</content>
 	 * 	独有参数：
-	 * 		@order		排序，例如“id DESC”
-	 * 		@where                          sql语句的where部分 例如：`child` = 0
+	 * 		order		排序，例如“id DESC”
+	 * 		where                          sql语句的where部分 例如：`child` = 0
 	 *
 	 *
 	 * @param string $tag 标签属性
@@ -407,22 +407,22 @@ class CmsTag extends TagLib {
 	 * 用法示例：<comment action="get_comment" catid="$catid" id="$id"> .. HTML ..</comment>
 	 * 参数说明：
 	 * 	基本参数
-	 * 		@action		调用方法（必填）
-	 * 		@catid		栏目id（必填），列表页，内容页可以使用 $catid 获取当前栏目。
+	 * 		action		调用方法（必填）
+	 * 		catid		栏目id（必填），列表页，内容页可以使用 $catid 获取当前栏目。
 	 * 	公用参数：
-	 * 		@cache		数据缓存时间，单位秒
-	 * 		@return		返回值变量名称，默认data
+	 * 		cache		数据缓存时间，单位秒
+	 * 		return		返回值变量名称，默认data
 	 * 	#当action为get_comment时，获取评论总数
 	 * 	#用法示例：<comment action="get_comment" catid="$catid" id="$id"> .. HTML ..</comment>
 	 * 	独有参数：
-	 * 		@id				信息ID
+	 * 		id				信息ID
 	 * 	#当action为lists时，获取评论数据列表
 	 * 	#用法示例：<comment action="lists" catid="$catid" id="$id"> .. HTML ..</comment>
 	 * 	独有参数：
-	 * 		@id		信息ID
-	 * 		@hot		排序方式｛0：最新｝
-	 * 		@date		时间格式 Y-m-d H:i:s A
-	 * 		@where                          sql语句的where部分
+	 * 		id		信息ID
+	 * 		hot		排序方式｛0：最新｝
+	 * 		date		时间格式 Y-m-d H:i:s A
+	 * 		where                          sql语句的where部分
 	 *    #当action为bang时，获取评论排行榜
 	 * 	#用法示例：<comment action="bang" num="10"> .. HTML ..</comment>
 	 * 	独有参数：
@@ -458,22 +458,22 @@ class CmsTag extends TagLib {
 	 * 用法示例：<tags action="lists" tag="$tag" num="4" page="$page" order="updatetime DESC"> .. HTML ..</tags>
 	 * 参数说明：
 	 * 	基本参数
-	 * 		@action		调用方法（必填）
-	 * 		@page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
-	 * 		@num		每次返回数据量
+	 * 		action		调用方法（必填）
+	 * 		page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
+	 * 		num		每次返回数据量
 	 * 	公用参数：
 	 * 		@cache		数据缓存时间，单位秒
-	 * 		@return		返回值变量名称，默认data
-	 * 		@pagefun                      分页函数，默认page()
-	 * 		@pagetp		分页模板
-	 * 		@where                        sql语句的where部分 例如：`child` = 0
+	 * 		return		返回值变量名称，默认data
+	 * 		pagefun                      分页函数，默认page()
+	 * 		pagetp		分页模板
+	 * 		where                        sql语句的where部分 例如：`child` = 0
 	 * 	#当action为lists时，获取tag标签列表
 	 * 	#用法示例：<tags action="lists" tag="$tag" num="4" page="$page" order="updatetime DESC"> .. HTML ..</tags>
 	 * 	独有参数：
-	 * 		@tag                               标签名，例如：厦门 支持多个，多个用空格或者英文逗号
-	 * 		@tagid                            标签id 多个使用英文逗号隔开
-	 * 		@order                            排序
-	 * 		@num                             每次返回数据量
+	 * 		tag                               标签名，例如：厦门 支持多个，多个用空格或者英文逗号
+	 * 		tagid                            标签id 多个使用英文逗号隔开
+	 * 		order                            排序
+	 * 		num                             每次返回数据量
 	 * 	#当action为top时，获取tag点击排行榜
 	 * 	#用法示例：<tags action="top"  num="4"  order="tagid DESC"> .. HTML ..</tags>
 	 * 	独有参数：
@@ -537,16 +537,16 @@ class CmsTag extends TagLib {
 	 * 用法示例：<position action="position" posid="1"> .. HTML ..</position>
 	 * 参数说明：
 	 * 	公用参数：
-	 * 		@cache		数据缓存时间，单位秒
-	 * 		@return		返回值变量名称，默认data
-	 * 		@where                          sql语句的where部分
+	 * 		cache		数据缓存时间，单位秒
+	 * 		return		返回值变量名称，默认data
+	 * 		where                          sql语句的where部分
 	 * 	#当action为position时，获取推荐位
 	 * 	独有参数：
-	 * 		@posid		推荐位ID(必填)
-	 * 		@catid		调用栏目ID
-	 * 		@thumb		是否仅必须缩略图
-	 * 		@order		排序例如
-	 * 		@num		每次返回数据量
+	 * 		posid		推荐位ID(必填)
+	 * 		catid		调用栏目ID
+	 * 		thumb		是否仅必须缩略图
+	 * 		order		排序例如
+	 * 		num		每次返回数据量
 	 *
 	+----------------------------------------------------------
 	 * @param array $tag 标签属性
@@ -577,15 +577,14 @@ class CmsTag extends TagLib {
 	 * 作用：特殊标签，SQL查询标签
 	 * 用法示例：<get sql="SELECT * FROM cms_article  WHERE status=99 ORDER BY inputtime DESC" page="$page" num="5"> .. HTML ..</get>
 	 * 参数说明：
-	 * 	@sql		SQL语句，强烈建议只用于select类型语句，其他SQL有严重安全威胁，同时不建议直接在SQL语句中使用外部变量，如:$_GET,$_POST等。
-	 * 	@page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
-	 * 	@num		每次返回数据量
-	 * 	@cache		数据缓存时间，单位秒
-	 * 	@return		返回值变量名称，默认data
-	 * 	@pagefun	                    分页函数，默认page()
-	 * 	@pagetp		分页模板
+	 * 	sql		SQL语句，强烈建议只用于select类型语句，其他SQL有严重安全威胁，同时不建议直接在SQL语句中使用外部变量，如:$_GET,$_POST等。
+	 * 	page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
+	 * 	num		每次返回数据量
+	 * 	cache		数据缓存时间，单位秒
+	 * 	return		返回值变量名称，默认data
+	 * 	pagefun	                    分页函数，默认page()
+	 * 	pagetp		分页模板
 	 *
-	 * +----------------------------------------------------------
 	 * @param  $tag
 	 * @param  $content
      * @return string|boolean
@@ -764,15 +763,15 @@ class CmsTag extends TagLib {
 	 * 用法示例：<spf module="Like"> .. HTML ..</spf>
 	 * 参数说明：
 	 * 	基本参数
-	 * 		@module                     对应模块（必填）
-	 * 		@action		调用方法（必填）
-	 * 		@page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
-	 * 		@num		每次返回数据量
+	 * 		module                     对应模块（必填）
+	 * 		action		调用方法（必填）
+	 * 		page		当前分页号，默认$page，当传入该参数表示启用分页，一个页面只允许有一个page，多个标签使用多个page会造成不可预知的问题。
+	 * 		num		每次返回数据量
 	 * 	公用参数：
-	 * 		@cache		数据缓存时间，单位秒
-	 * 		@pagefun                      分页函数，默认page
-	 * 		@pagetp		分页模板，必须是变量传递
-	 * 		@return		返回值变量名称，默认data
+	 * 		cache		数据缓存时间，单位秒
+	 * 		pagefun                      分页函数，默认page
+	 * 		pagetp		分页模板，必须是变量传递
+	 * 		return		返回值变量名称，默认data
 	 * @staticvar array $sp_iterateParseCache
 	 * @param  $tag
 	 * @param  $content
@@ -862,7 +861,7 @@ class CmsTag extends TagLib {
 
 	/**
 	 * 返回经addslashes处理过的字符串或数组
-	 * @param $string 需要处理的字符串或数组
+	 * @param string|array $string 需要处理的字符串或数组
 	 * @return mixed
 	 */
 	protected static function newAddslashes($string) {
