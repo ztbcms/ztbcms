@@ -177,6 +177,13 @@ class PublicController extends MemberbaseController {
 					$info['groupid'] = $this->memberDb->get_usergroup_bypoint($info['point']);
 				}
 				if (false !== $this->memberDb->where(array('userid' => $memberinfo['userid']))->save($info)) {
+
+					//插入附表数据
+					$table = M('model')->where("modelid='%d'",$info['modelid'])->find()['tablename'];
+					$tabledata = I('post.info');
+					$tabledata['userid'] = $memberinfo['userid'];
+					M($table)->data($tabledata)->add();
+
 					if ($this->memberConfig['enablemailcheck']) {
 						//发送邮件
 						$URL_MODEL = C('URL_MODEL');
