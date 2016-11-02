@@ -1,19 +1,17 @@
 <?php
 
-namespace Wechat\Behavior;
-use EasyWeChat\Foundation\Application;//该类依赖于easyWechat
+namespace Wechat\Service;
+use EasyWeChat\Foundation\Application;
 
-class AppBehavior {
+//该类依赖于easyWechat
+
+class AppService {
     public function create_app() {
+        $config=cache('Config');
         $options = array(
-            'app_id' => C('wx.appid'), // AppID ，注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
-             'secret' => C('wx.secret'), // AppSecret
-             'payment' => [
-                'merchant_id' => C('wx.merchant_id'),
-                'key' => C('wx.key'),
-                'cert_path'=>APP_PATH.'cert/apiclient_cert.pem',
-                'key_path'=>APP_PATH.'cert/apiclient_key.pem',
-            ],
+            'app_id' => $config['wx_appid'], // AppID ，注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
+             'secret' => $config['wx_secret'], // AppSecret
+             'payment' => [],
         );
         return $app = new Application($options);
     }

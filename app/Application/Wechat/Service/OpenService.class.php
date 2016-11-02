@@ -4,11 +4,17 @@
 // | Copyright (c) Zhutibang.Inc 2016 http://zhutibang.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: zhlhuang <zhlhuang888@foxmail.com>
-// | 纷享呗操作
+// | ztbOpen操作
 // +----------------------------------------------------------------------
-namespace Wechat\Behavior;
-class OpenBehavior {
+namespace Wechat\Service;
+class OpenService {
     private $domain='http://open.zhutibang.cn';
+    private $config=null;
+
+    function __construct(){
+        $this->config=cache('Config');
+    }
+
      /**
      * 通过img_id 获取人脸识别信息
      * @param img_id string 图片id face++唯一图片id
@@ -16,8 +22,8 @@ class OpenBehavior {
     public function get_face_detect_info($img_id) {
         $time = time(); //当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
-        $sign = $this->sign_encode(C('open.appid') . $time . C('open.secret_key'));
-        $api_url = $this->domain."/api/face_api/get_detect_info/app_id/" . C('open.appid') . ".html?time={$time}&sign={$sign}";
+        $sign = $this->sign_encode($this->config['open_app_id'] . $time . $this->config['open_secret_key']);
+        $api_url = $this->domain."/api/face_api/get_detect_info/app_id/" . $this->config['open_app_id'] . ".html?time={$time}&sign={$sign}";
         $send_data = array(
             'img_id' => $img_id,
         );
@@ -32,8 +38,8 @@ class OpenBehavior {
     public function get_face_detect($img_url) {
         $time = time(); //当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
-        $sign = $this->sign_encode(C('open.appid') . $time . C('open.secret_key'));
-        $api_url = $this->domain."/api/face_api/detect/app_id/" . C('open.appid') . ".html?time={$time}&sign={$sign}";
+        $sign = $this->sign_encode($this->config['open_app_id'] . $time . $this->config['open_secret_key']);
+        $api_url = $this->domain."/api/face_api/detect/app_id/" . $this->config['open_app_id'] . ".html?time={$time}&sign={$sign}";
         $send_data = array(
             'img_url' => $img_url,
         );
@@ -51,8 +57,8 @@ class OpenBehavior {
     public function send_template($openid,$template_id,$data,$url=null,$topcolor='#f7f7f7'){
         $time=time();//当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
-        $sign=$this->sign_encode(C('open.appid').$time.C('open.secret_key'));
-        $api_url=$this->domain."/api/template_api/send_template/app_id/".C('open.appid').".html?time={$time}&sign={$sign}";
+        $sign=$this->sign_encode($this->config['open_app_id'].$time.$this->config['open_secret_key']);
+        $api_url=$this->domain."/api/template_api/send_template/app_id/".$this->config['open_app_id'].".html?time={$time}&sign={$sign}";
         $send_data=array(
             'touser'=>$openid,
             'template_id'=>$template_id,
