@@ -1,7 +1,5 @@
-<?php if (!defined('SHUIPF_VERSION')) exit(); ?>
 <Admintemplate file="Common/Head" />
-
-<body class="J_scroll_fixed">
+<body class="J_scroll_fixed" style="padding:10px;">
     <div class="h_a">搜索</div>
     <form method="post" action="{:U('index')}">
         <input type="hidden" value="{$catid}" name="catid">

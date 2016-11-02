@@ -3,7 +3,7 @@
 return array(
     array(
         //父菜单ID，NULL或者不写系统默认，0为顶级菜单
-        "parentid" => NULL,
+        "parentid" => 0,
         //地址，[模块/]控制器/方法
         "route" => "Wechat/Wechat/index",
         //类型，1：权限认证+菜单，0：只作为菜单
@@ -16,12 +16,17 @@ return array(
         "remark" => "微信相关操作",
         //子菜单列表
         "child" => array(
-            // array(
-            //     "route" => "Wechat/Wechat/index",
-            //     "type" => 1,
-            //     "status" => 1,
-            //     "name" => "test",
-            // ),
+            array(
+                "route" => "Wechat/Wechat/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "微信用户",
+            ), array(
+                "route" => "Wechat/Wechat/setting",
+                "type" => 1,
+                "status" => 1,
+                "name" => "微信设置",
+            ),
         ),
     ),
 );
