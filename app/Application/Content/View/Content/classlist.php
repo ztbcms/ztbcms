@@ -35,8 +35,8 @@
 
         <section style="display: inline;">
           <select name="_filter[0]" class="select_2">
-            <option value="username" <if condition=" $_filter[0] == 'username' "> selected</if>>发布人用户名</option>
-            <option value="id" <if condition=" $_filter[0] == 'id' "> selected</if>>用户id</option>
+            <option value="username" <if condition=" $_filter[0] == 'username' "> selected</if>>发布人</option>
+            <option value="id" <if condition=" $_filter[0] == 'id' "> selected</if>>用户ID</option>
             <option value="title" <if condition=" $_filter[0] == 'title' "> selected</if>>标题</option>
           </select>
 
@@ -70,7 +70,7 @@
             <td>标题</td>
             <td align="center">点击量</td>
             <td align="center">发布人</td>
-            <td align="center"><span>发帖时间</span></td>
+            <td align="center"><span>发布时间</span></td>
             <td align="center">管理操作</td>
           </tr>
         </thead>
@@ -95,7 +95,7 @@
             <td align="center"><if condition=" $vo['sysadd'] ">{$vo.username}
                 <else />
                 <font color="#FF0000">{$vo.username}</font><img src="{$config_siteurl}statics/images/icon/contribute.png" title="会员投稿"></if></td>
-            <td align="center">{$vo.updatetime|date="Y-m-d H:i:s",###}</td>
+            <td align="center">{$vo.inputtime|date="Y-m-d H:i:s",###}</td>
             <td align="center">
             <?php
 			$op = array();

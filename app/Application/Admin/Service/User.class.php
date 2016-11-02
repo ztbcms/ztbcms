@@ -19,7 +19,7 @@ class User {
     /**
      * 连接后台用户服务
      * @staticvar \Admin\Service\Cache $systemHandier
-     * @return \Admin\Service\Cache
+     * @return \Admin\Service\User
      */
     static public function getInstance() {
         static $handier = NULL;
@@ -31,7 +31,7 @@ class User {
 
     /**
      * 魔术方法
-     * @param type $name
+     * @param string $name
      * @return null
      */
     public function __get($name) {
@@ -60,7 +60,7 @@ class User {
 
     /**
      * 检验用户是否已经登录
-     * @return boolean 失败返回false，成功返回当前登录用户基本信息
+     * @return boolean|int 失败返回false，成功返回当前登录用户基本信息
      */
     public function isLogin() {
         $userId = \Libs\Util\Encrypt::authcode(session(self::userUidKey), 'DECODE');
@@ -112,9 +112,9 @@ class User {
 
     /**
      * 记录登录日志
-     * @param type $identifier 登录方式，uid,username
-     * @param type $password 密码
-     * @param type $status
+     * @param string $identifier 登录方式，uid,username
+     * @param string $password 密码
+     * @param int $status
      */
     private function record($identifier, $password, $status = 0) {
         //登录日志
@@ -141,7 +141,7 @@ class User {
 
     /**
      * 获取用户信息
-     * @param type $identifier 用户名或者用户ID
+     * @param string $identifier 用户名或者用户ID
      * @return boolean|array
      */
     private function getUserInfo($identifier, $password = NULL) {
