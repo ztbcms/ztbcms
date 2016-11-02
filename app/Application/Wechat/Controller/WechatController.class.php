@@ -32,4 +32,29 @@ class WechatController extends AdminBase {
         $this->assign('wx_users',$wx_users)->assign('Page', $page->show());
         $this->display('index');
     }
+
+    /**
+    * 配置设置页面
+    */
+    public function setting(){
+        if(IS_POST){
+            $post=I('post.');
+            foreach($post as $key=>$value){
+                $is_exsit=D('Config')->where("varname='%s'",$key)->find();
+                if($is_exsit){
+                    $data=array('varname'=>$key,'value'=>$value);
+                    D('Config')->where("id='%d'",$is_exsit['id'])->save($data);
+                }else{
+                    $data=array('varname'=>$key,'value'=>$value);
+                    D('Config')->add($data);
+                }
+            }
+            $this->success('设置成功');
+        }else{
+            $memeber_models=D('Model')->where('type=2')->select();
+            $this->assign('config',cache('Config'));
+            $this->assign('memeber_models',$memeber_models);
+            $this->display('setting');
+        }
+    }
 }
