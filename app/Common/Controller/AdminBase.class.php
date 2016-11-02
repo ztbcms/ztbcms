@@ -59,7 +59,7 @@ class AdminBase extends CMS {
 			$this->error('您的帐号已经被锁定！', U('Public/login'));
 			return false;
 		}
-		return $userInfo;
+		return true;
 	}
 
 	/**
@@ -90,11 +90,11 @@ class AdminBase extends CMS {
 
 	/**
 	 * 分页输出
-	 * @param type $total 信息总数
-	 * @param type $size 每页数量
-	 * @param type $number 当前分页号（页码）
-	 * @param type $config 配置，会覆盖默认设置
-	 * @return type
+	 * @param int $total 信息总数
+	 * @param int $size 每页数量
+	 * @param int $number 当前分页号（页码）
+	 * @param array $config 配置，会覆盖默认设置
+	 * @return array|mixed
 	 */
 	protected function page($total, $size = 20, $number = 0, $config = array()) {
 		$Page = parent::page($total, $size, $number, $config);
