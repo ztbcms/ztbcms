@@ -9,7 +9,7 @@ class AppService {
     public function create_app() {
         $config=cache('Config');
         $options = array(
-            'app_id' => $config['wx_appid'], // AppID ，注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
+            'app_id' => $config['wx_app_id'], // AppID ，注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
              'secret' => $config['wx_secret'], // AppSecret
              'payment' => [],
         );

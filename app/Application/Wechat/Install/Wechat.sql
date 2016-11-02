@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `cms_wechat`;
 CREATE TABLE `cms_wechat` (
-  `userid` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(11) NOT NULL DEFAULT '0',
   `subscribe` tinyint(1) NOT NULL COMMENT '是否关注',
   `sex` int(11) DEFAULT NULL COMMENT '性别',
   `openid` varchar(64) NOT NULL DEFAULT '' COMMENT 'openid',
@@ -13,5 +13,5 @@ CREATE TABLE `cms_wechat` (
   `subscribe_time` int(11) DEFAULT NULL COMMENT '关注事件',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `privilege` varchar(255) DEFAULT NULL COMMENT '特权信息',
-  PRIMARY KEY (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
