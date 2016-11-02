@@ -8,15 +8,15 @@
     <div class="table_full"> 
     <table width="100%">
         <tr>
-          <th width="50" align="center"><label>全选<input type="checkbox" onclick="select_all(0, this)"></label></th>
+          <th width="100" align="center"><label>全选<input type="checkbox" onclick="select_all(0, this)"></label></th>
           <th align="left">栏目名称</th>
-          <th width="35" align="center">查看</th>
-          <th width="35" align="center">添加</th>
-          <th width="35" align="center">修改</th>
-          <th width="35" align="center">删除</th>
-          <th width="35" align="center">排序</th>
-          <th width="35" align="center">推送</th>
-          <th width="35" align="center">移动</th>
+          <th width="50" align="center">查看</th>
+          <th width="50" align="center">添加</th>
+          <th width="50" align="center">修改</th>
+          <th width="50" align="center">删除</th>
+          <th width="50" align="center">排序</th>
+          <th width="50" align="center">推送</th>
+          <th width="50" align="center">移动</th>
         </tr>
       {$categorys}
     </table>
