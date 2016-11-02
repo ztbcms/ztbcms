@@ -7,8 +7,9 @@
 // +----------------------------------------------------------------------
 
 namespace Wechat\Controller;
+use Wechat\Service\OpenService;
 
-class IndexController extends BaseController{
+class IndexController extends WxBaseController{
     public function index(){
         echo '';
     }
