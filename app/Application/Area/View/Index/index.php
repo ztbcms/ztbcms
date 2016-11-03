@@ -5,8 +5,8 @@
     <div class="h_a">说明</div>
     <div class="prompt_text">
         <ol>
-            <li>主要包含了中国省份、县区,乡镇，学校信息,常用于填写用户的所属的省市,如物流等</li>
-            <li>详细文档: <a href="http://ztbcms.com/module/area.html"> http://ztbcms.com/module/area.html</a></li>
+            <li>主要包含了中国省份、县区,乡镇，高校信息,常用于填写用户的所属的省市,如物流等</li>
+            <li>详细文档: <a href="http://ztbcms.com/module/area/"> http://ztbcms.com/module/area/</a></li>
             <li>使用操作,参考 Area/Controller/ApiController </li>
         </ol>
     </div>
@@ -84,7 +84,7 @@
     </section>
 
     <section>
-        <h3>样例2： 根据省份获取学校 <small>请参考 Application/Area/View/Index/index.php</small></h3>
+        <h3>样例2： 根据省份获取高校 <small>请参考 Application/Area/View/Index/index.php</small></h3>
         <div>
             <select name="province2" id="">
                 <get sql="SELECT * FROM cms_area_province " page="$page" num="100">
