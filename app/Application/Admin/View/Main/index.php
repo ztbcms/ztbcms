@@ -11,6 +11,10 @@
       </volist>
     </ul>
   </div>
+
+  <if condition="file_exists(APP_PATH . 'Install')">
+    <h5 style="color:red;">* 您还没有删除 Install 模块，出于安全的考虑，我们建议您删除 Install 模块(/app/Application/Install) </h5>
+  </if>
   
 </div>
 <script src="{$config_siteurl}statics/js/common.js"></script> 

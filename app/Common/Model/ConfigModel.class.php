@@ -10,7 +10,7 @@ class ConfigModel extends Model {
 
 	/**
 	 * 增加扩展配置项
-	 * @param type $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function extendAdd($data) {
@@ -79,7 +79,7 @@ class ConfigModel extends Model {
 
 	/**
 	 * 删除扩展配置项
-	 * @param type $fid 配置项ID
+	 * @param string $fid 配置项ID
 	 * @return boolean
 	 */
 	public function extendDel($fid) {
@@ -106,7 +106,7 @@ class ConfigModel extends Model {
 
 	/**
 	 * 更新扩展配置项
-	 * @param type $data 数据
+	 * @param array $data 数据
 	 * @return boolean
 	 */
 	public function saveExtendConfig($data) {
@@ -168,7 +168,7 @@ class ConfigModel extends Model {
 
 	/**
 	 * 保存高级配置
-	 * @param type $data 配置信息
+	 * @param array $data 配置信息
 	 * @return boolean
 	 */
 	public function addition($data) {
@@ -244,7 +244,7 @@ class ConfigModel extends Model {
 
 	/**
 	 * 更新缓存
-	 * @return type
+	 * @return array
 	 */
 	public function config_cache() {
 		$data = M("Config")->getField("varname,value");
