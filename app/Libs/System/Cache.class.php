@@ -13,7 +13,7 @@ class Cache {
 	 * @access public
 	 * @param string $type 缓存类型
 	 * @param array $options  配置数组
-	 * @return void
+	 * @return \Libs\System\Cache
 	 */
 	static public function getInstance($type = 'S', $options = array()) {
 		static $systemHandier;
@@ -25,8 +25,8 @@ class Cache {
 
 	/**
 	 * 获取缓存
-	 * @param type $name 缓存名称
-	 * @return null
+	 * @param string $name 缓存名称
+	 * @return string
 	 */
 	public function get($name) {
 		$cache = S($name);
@@ -36,14 +36,13 @@ class Cache {
 			//尝试生成缓存
 			return $this->runUpdate($name);
 		}
-		return null;
 	}
 
 	/**
 	 * 写入缓存
 	 * @param string $name 缓存变量名
-	 * @param type $value 存储数据
-	 * @param type $expire 有效时间（秒）
+	 * @param string $value 存储数据
+	 * @param int $expire 有效时间（秒）
 	 * @return boolean
 	 */
 	public function set($name, $value, $expire = null) {
@@ -61,7 +60,7 @@ class Cache {
 
 	/**
 	 * 更新缓存
-	 * @param type $name 缓存key
+	 * @param string $name 缓存key
 	 * @return boolean
 	 */
 	public function runUpdate($name) {

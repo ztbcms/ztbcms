@@ -60,7 +60,7 @@ class Components {
 	 * 连接
 	 * @access public
 	 * @param array $_components  配置数组
-	 * @return void
+	 * @return \Libs\System\Components
 	 */
 	static public function getInstance($_components = array()) {
 		static $systemHandier;
@@ -72,7 +72,7 @@ class Components {
 
 	/**
 	 * 设置$_components
-	 * @param type $_components
+	 * @param array $_components
 	 */
 	public function setComponents($_components = array()) {
 		self::$_components = array_merge(self::$_components, $_components);

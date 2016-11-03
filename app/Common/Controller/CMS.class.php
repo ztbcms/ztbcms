@@ -7,8 +7,9 @@
 namespace Common\Controller;
 
 use Libs\System\Components;
+use \Think\Controller;
 
-class CMS extends \Think\Controller {
+class CMS extends Controller {
 
 	//缓存
 	public static $Cache = array();
@@ -37,7 +38,7 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 获取CMS 对象
-	 * @return type
+	 * @return \Common\Controller\CMS
 	 */
 	public static function app() {
 		return self::$_app;
@@ -100,11 +101,11 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 分页输出
-	 * @param type $total 信息总数
-	 * @param type $size 每页数量
-	 * @param type $number 当前分页号（页码）
-	 * @param type $config 配置，会覆盖默认设置
-	 * @return type
+	 * @param int $total 信息总数
+	 * @param int $size 每页数量
+	 * @param int $number 当前分页号（页码）
+	 * @param array $config 配置，会覆盖默认设置
+	 * @return string
 	 */
 	protected function page($total, $size = 0, $number = 0, $config = array()) {
 		return page($total, $size, $number, $config);
@@ -112,8 +113,8 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 返回模型对象
-	 * @param type $model
-	 * @return type
+	 * @param string|object $model
+	 * @return object
 	 */
 	protected function getModelObject($model) {
 		if (is_string($model) && strpos($model, '/') == false) {
@@ -130,10 +131,10 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 基本信息分页列表方法
-	 * @param type $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
-	 * @param type $where 条件表达式
-	 * @param type $order 排序
-	 * @param type $limit 每次显示多少
+	 * @param string|object $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
+	 * @param string $where 条件表达式
+	 * @param string $order 排序
+	 * @param int $limit 每次显示多少
 	 */
 	protected function basePage($model, $where = '', $order = '', $limit = 20) {
 		$model = $this->getModelObject($model);
@@ -148,9 +149,9 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 基本信息添加
-	 * @param type $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
-	 * @param type $u 添加成功后的跳转地址
-	 * @param type $data 需要添加的数据
+	 * @param string|object $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
+	 * @param string $u 添加成功后的跳转地址
+	 * @param string $data 需要添加的数据
 	 */
 	protected function baseAdd($model, $u = 'index', $data = '') {
 		$model = $this->getModelObject($model);
@@ -171,9 +172,9 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 基础修改信息方法
-	 * @param type $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
-	 * @param type $u 修改成功后的跳转地址
-	 * @param type $data 需要修改的数据
+	 * @param string|object $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
+	 * @param string $u 修改成功后的跳转地址
+	 * @param string $data 需要修改的数据
 	 */
 	protected function baseEdit($model, $u = 'index', $data = '') {
 		$model = $this->getModelObject($model);
@@ -205,8 +206,8 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 基础信息单条记录删除，根据主键
-	 * @param type $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
-	 * @param type $u 删除成功后跳转地址
+	 * @param string|object $model 可以是模型对象，或者表名，自定义模型请传递完整（例如：Content/Model）
+	 * @param string $u 删除成功后跳转地址
 	 */
 	protected function baseDelete($model, $u = 'index') {
 		$model = $this->getModelObject($model);
@@ -229,8 +230,8 @@ class CMS extends \Think\Controller {
 
 	/**
 	 * 验证码验证
-	 * @param type $verify 验证码
-	 * @param type $type 验证码类型
+	 * @param string $verify 验证码
+	 * @param string $type 验证码类型
 	 * @return boolean
 	 */
 	static public function verify($verify, $type = "verify") {

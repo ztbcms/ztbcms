@@ -13,9 +13,10 @@ use Common\Controller\Base;
 class BaseController extends Base {
     protected $_wx_user_info = array();
     protected $_userinfo = array();
+    protected $_config = array();
     protected function _initialize() {
-        G('run');
         parent::_initialize();
+        $this->_config = cache('Config');
         $userinfo = service("Passport")->getInfo();
         if ($userinfo) {
             //如果用户已经是登录了的。有必要可能要检查是否有绑定微信信息
@@ -30,12 +31,12 @@ class BaseController extends Base {
                     //没有微信资料
                     $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                     $param = "url=" . urlencode($url);
-                    $oauthUrl='http://open.zhutibang.cn/oauth2/' . C("open.alias") . '.html?'.$param;
-                    redirect($this->signEncode($oauthUrl, C('open.secret_key')));
+                    $oauthUrl = 'http://open.zhutibang.cn/oauth2/' . $this->_config['open_alias'] . '.html?' . $param;
+                    redirect($this->signEncode($oauthUrl, $this->_config['open_secret_key']));
                 }
             } else {
                 //签名验证
-                $this->signDecode(get_url(), C('open.secret_key'));
+                $this->signDecode(get_url(), $this->_config['open_secret_key']);
                 $wx_user_info = I('get.');
                 session('wx_user_info', $wx_user_info);
                 $this->_wx_user_info = session('wx_user_info');
@@ -52,7 +53,7 @@ class BaseController extends Base {
                 $data['nickname'] = $this->_wx_user_info['nickname'];
                 $data['sex'] = $this->_wx_user_info['sex'];
                 $data['userpic'] = $this->_wx_user_info['headimgurl'];
-                // $data['modelid'] = 1; //根据自己设计设置会员模型
+                $data['modelid'] = $this->_config['wx_modelid']; //根据自己设计设置会员模型
                 $data['regdate'] = time(); //注册的时间
                 $data['regip'] = get_client_ip; //注册的ip地址
                 $data['checked'] = 1; //默认用户是通过审核
@@ -89,11 +90,11 @@ class BaseController extends Base {
      */
 
     public function signEncode($url, $secret_key) {
-        $url_arr = explode('?',  $url);
+        $url_arr = explode('?', $url);
         if (empty($url_arr[1])) {
             return $this->error('参数错误');
         } else {
-            $param_str = $url_arr[1] . "&time=".time(); //加上签名的时间戳
+            $param_str = $url_arr[1] . "&time=" . time(); //加上签名的时间戳
             $sign = md5(urlencode(trim($param_str)) . $secret_key); //生成签名
             return $url_arr[0] . "?" . $param_str . "&sign=" . $sign;
         }

@@ -30,7 +30,7 @@ class MenuController extends AdminBase {
         $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
         foreach ($result as $r) {
             $r['str_manage'] = '<a href="' . U("Menu/add", array("parentid" => $r['id'])) . '">添加子菜单</a> | <a href="' . U("Menu/edit", array("id" => $r['id'])) . '">修改</a> | <a class="J_ajax_del" href="' . U("Menu/delete", array("id" => $r['id'])) . '">删除</a> ';
-            $r['status'] = $r['status'] ? "显示" : "不显示";
+            $r['status'] = $r['status'] ? '<span style="color:green;">显示</span>' : '<span style="color:red;">不显示</span>';
             $array[] = $r;
         }
         $tree->init($array);
