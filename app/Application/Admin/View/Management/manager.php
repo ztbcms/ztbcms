@@ -7,7 +7,7 @@
    <table width="100%" cellspacing="0">
         <thead>
           <tr>
-            <td width="10%">序号</td>
+            <td width="10%">ID</td>
             <td width="10%" align="left" >用户名</td>
             <td width="10%" align="left" >所属角色</td>
             <td width="10%"  align="left" >最后登录IP</td>
