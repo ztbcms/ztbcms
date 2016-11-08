@@ -92,6 +92,11 @@ class Local extends Passport {
 				return false;
 			}
 		}
+        //用户附表信息
+        $user_model = M('Model')->where(['modelid' => $user['modelid']])->find();
+        $user_data = M($user_model['tablename'])->where(['userid' => $user['userid']])->find();
+        $user['data'] = $user_data;
+
 		return $user;
 	}
 
