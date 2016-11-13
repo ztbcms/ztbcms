@@ -107,6 +107,7 @@ class Checkcode {
 
 	//输出
 	public function output($regenerate = false) {
+        ob_clean();
 		header('Pragma: public');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
