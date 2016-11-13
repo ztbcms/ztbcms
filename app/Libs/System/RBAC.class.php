@@ -183,4 +183,20 @@ class RBAC {
 		return $accessList;
 	}
 
+    /**
+     * 检测登陆用户对某个接口的访问权限
+     * @param $moduelName
+     * @param $controllerName
+     * @param $actionName
+     * @return bool
+     */
+    static function ableAccess($moduelName, $controllerName, $actionName){
+        $accessList = session("_ACCESS_LIST");
+
+        if(!empty($accessList[$moduelName]) && !empty($accessList[$moduelName][$controllerName]) && !empty($accessList[$moduelName][$controllerName][$actionName])){
+            return true;
+        }
+        return false;
+    }
+
 }
