@@ -247,7 +247,7 @@ class ContentModel extends RelationModel {
 	 * 添加验证规则
 	 * @param array $validate 规则
 	 * @param boolean $issystem 是否主表
-	 * @param boolean $name 关联名称
+	 * @param boolean|string $name 关联名称
 	 * @return array
 	 */
 	public function addValidate(array $validate, $issystem = true, $name = true) {
@@ -273,7 +273,7 @@ class ContentModel extends RelationModel {
 
 	/**
 	 * 添加自动完成
-	 * @param array $validate 规则
+	 * @param array $auto 规则
 	 * @param boolean $issystem 是否主表
 	 * @param boolean $name 关联名称
 	 * @return array
@@ -289,9 +289,9 @@ class ContentModel extends RelationModel {
 					//关联类名
 					$mappingClass = !empty($val['class_name']) ? $val['class_name'] : $key;
 					if ($issystem) {
-						$this->_auto[] = $validate;
+						$this->_auto[] = $auto;
 					} else {
-						$this->_auto[$mappingName][] = $validate;
+						$this->_auto[$mappingName][] = $auto;
 					}
 				}
 			}
@@ -320,7 +320,7 @@ class ContentModel extends RelationModel {
 		$where['locktime'] = array("EGT", $time - $Lock_the_effective_time);
 		$info = $db->where($where)->find();
 		if ($info && $info['userid'] != \Admin\Service\User::getInstance()->id) {
-			$this->error = 'o(︶︿︶)o 唉，该信息已经被用户【<font color=\"red\">' . $info['username'] . '</font>】锁定~请稍后在修改！';
+			$this->error = '该信息已经被用户【<font color=\"red\">' . $info['username'] . '</font>】锁定~请稍后在修改！';
 			return false;
 		}
 		//删除失效的
