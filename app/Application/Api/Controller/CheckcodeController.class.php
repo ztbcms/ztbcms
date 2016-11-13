@@ -8,6 +8,11 @@ namespace Api\Controller;
 
 use Common\Controller\CMS;
 
+/**
+ *  验证码处理
+ *
+ * @package Api\Controller
+ */
 class CheckcodeController extends CMS {
 
 	public function index() {
@@ -55,9 +60,9 @@ class CheckcodeController extends CMS {
 
 	/**
 	 * 验证输入，看它是否生成的代码相匹配。
-	 * @param type $type
-	 * @param type $input
-	 * @return type
+	 * @param string $type
+	 * @param string $input
+	 * @return boolean
 	 */
 	public function validate($type, $input) {
 		$checkcode = new \Checkcode();
