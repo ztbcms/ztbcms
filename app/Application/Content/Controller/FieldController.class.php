@@ -188,16 +188,53 @@ class FieldController extends AdminBase {
 	public function delete() {
 		//字段ID
 		$fieldid = I('get.fieldid', 0, 'intval');
-		if (empty($fieldid)) {
-			$this->error('字段ID不能为空！');
-		}
-		if ($this->modelfield->deleteField($fieldid)) {
-			$this->success("字段删除成功！");
-		} else {
-			$error = $this->modelfield->getError();
-			$this->error($error ? $error : "删除字段失败！");
-		}
+		$result = $this->doDelete($fieldid);
+
+        if($result['status']){
+            $this->success($result['msg']);
+        }else{
+            $this->error($result['msg']);
+        }
 	}
+
+    /**
+     * 批量删除字段
+     */
+	public function batchDelete() {
+        $fieldids = I('post.fieldids');
+
+        foreach ($fieldids as $index => $fieldid){
+            $this->doDelete($fieldid);
+        }
+        $this->success('操作成功');
+    }
+
+    /**
+     *  删除字段操作
+     * @param $fieldid
+     * @return array
+     */
+	private function doDelete($fieldid){
+        if (empty($fieldid)) {
+            return [
+                'status' => false,
+                'msg' => '字段ID不能为空'
+            ];
+        }
+        if ($this->modelfield->deleteField($fieldid)) {
+            return [
+                'status' => true,
+                'msg' => '字段删除成功'
+            ];
+
+        } else {
+            $error = $this->modelfield->getError();
+            return [
+                'status' => false,
+                'msg' => $error ? $error : "删除字段失败！"
+            ];
+        }
+    }
 
 	//字段排序
 	public function listorder() {
@@ -250,26 +287,79 @@ class FieldController extends AdminBase {
 	}
 
 	//字段的启用与禁用
-	public function disabled() {
-		//载入字段配置文件
-		include $this->fields . 'fields.inc.php';
-		$fieldid = I('get.fieldid', 0, 'intval');
-		$field = $this->modelfield->where(array('fieldid' => $fieldid))->find();
-		if (!$field) {
-			$this->error("该字段不存在！");
-		}
-		//检查是否允许被删除
-		if (in_array($field['field'], $this->modelfield->forbid_fields)) {
-			$this->error("该字段不允许被禁用！");
-		}
-		$disabled = (int) $_GET['disabled'] ? 0 : 1;
-		$status = $this->modelfield->where(array('fieldid' => $fieldid))->save(array('disabled' => $disabled));
-		if ($status) {
-			$this->success("操作成功！");
-		} else {
-			$this->error("操作失败！");
-		}
+	public function disabled($fieldid = 0) {
+        $fieldid = I('get.fieldid', $fieldid, 'intval');
+        $disabled = (int) $_GET['disabled'] ? 0 : 1;
+
+		$result = $this->doDisable($fieldid, $disabled);
+        if($result['status']){
+            $this->success($result['msg']);
+        }else{
+            $this->error($result['msg']);
+        }
 	}
+
+    /**
+     * 隐藏字段
+     */
+    public function batchDisable(){
+        $fieldids = I('post.fieldids');
+
+        foreach ($fieldids as $index => $fieldid){
+            $this->doDisable($fieldid, 1);
+        }
+        $this->success('操作成功');
+    }
+
+    /**
+     * 启用字段
+     */
+    public function batchUndisable(){
+        $fieldids = I('post.fieldids');
+
+        foreach ($fieldids as $index => $fieldid){
+            $this->doDisable($fieldid, 0);
+        }
+        $this->success('操作成功');
+    }
+
+    /**
+     * 隐藏/启用字段
+     * @param int $fieldid
+     * @param int $disabled 1 禁用 0启用
+     * @return array
+     */
+	private function doDisable($fieldid = 0, $disabled = 0){
+        //载入字段配置文件
+        include $this->fields . 'fields.inc.php';
+        $field = $this->modelfield->where(array('fieldid' => $fieldid))->find();
+        if (!$field) {
+            return [
+                'status' => false,
+                'msg' => '该字段不存在'
+            ];
+        }
+        //检查是否允许被删除
+        if (in_array($field['field'], $this->modelfield->forbid_fields)) {
+            return [
+                'status' => false,
+                'msg' => '该字段不允许被禁用'
+            ];
+        }
+
+        $status = $this->modelfield->where(array('fieldid' => $fieldid))->save(array('disabled' => $disabled));
+        if ($status) {
+            return [
+                'status' => true,
+                'msg' => '操作成功'
+            ];
+        } else {
+            return [
+                'status' => false,
+                'msg' => '操作失败'
+            ];
+        }
+    }
 
 	//模型预览
 	public function priview() {
