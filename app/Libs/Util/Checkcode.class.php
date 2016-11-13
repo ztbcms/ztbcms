@@ -1,9 +1,8 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | 验证码生成类
-// +----------------------------------------------------------------------
-
+/**
+ * 验证码生成类
+ */
 class Checkcode {
 
 	//随机因子
@@ -107,6 +106,7 @@ class Checkcode {
 
 	//输出
 	public function output($regenerate = false) {
+        ob_clean();
 		header('Pragma: public');
 		header('Expires: 0');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -122,8 +122,8 @@ class Checkcode {
 
 	/**
 	 * $regenerate
-	 * @param type $regenerate 刷新
-	 * @return type
+	 * @param boolean $regenerate 刷新
+	 * @return string
 	 */
 	protected function getVerifyCode($regenerate = false) {
 		$name = $this->getSessionKey();
@@ -146,8 +146,8 @@ class Checkcode {
 
 	/**
 	 * 验证输入，看它是否生成的代码相匹配。
-	 * @param type $input 用户输入的验证码
-	 * @param type $caseSensitive 是否验证大小写
+	 * @param string $input 用户输入的验证码
+	 * @param boolean $caseSensitive 是否验证大小写
 	 * @return boolean
 	 */
 	public function validate($input, $caseSensitive = false) {

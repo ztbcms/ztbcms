@@ -34,7 +34,7 @@ class Content extends Components {
 
 	/**
 	 * 获取错误提示
-	 * @return type
+	 * @return string
 	 */
 	public function getError() {
 		return $this->error;
@@ -44,7 +44,7 @@ class Content extends Components {
 	 * 设置数据对象值
 	 * @access public
 	 * @param mixed $data 数据
-	 * @return Model
+	 * @return Content|array
 	 */
 	public function data($data = '') {
 		if ('' === $data && !empty($this->data)) {
@@ -63,7 +63,7 @@ class Content extends Components {
 
 	/**
 	 * 添加内容
-	 * @param type $data 数据
+	 * @param array $data 数据
 	 * @return boolean
 	 */
 	public function add($data = '') {
@@ -250,7 +250,7 @@ class Content extends Components {
 
 	/**
 	 * 修改内容
-	 * @param type $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function edit($data = '') {
@@ -420,9 +420,9 @@ class Content extends Components {
 
 	/**
 	 * 信息审核
-	 * @param type $catid 栏目ID
-	 * @param type $id 信息ID
-	 * @param type $status 1为未审核，99为审核通过
+	 * @param string $catid 栏目ID
+	 * @param string $id 信息ID
+	 * @param int $status 1为未审核,99为审核通过,0为审核不通过
 	 * @return boolean
 	 */
 	public function check($catid = '', $id = '', $status = 99) {
@@ -507,8 +507,8 @@ class Content extends Components {
 
 	/**
 	 * 删除信息
-	 * @param type $id 数组/信息id
-	 * @param type $catid 栏目id
+	 * @param string $id 数组/信息id
+	 * @param string $catid 栏目id
 	 * @return boolean
 	 */
 	public function delete($id = '', $catid = '') {
@@ -574,11 +574,11 @@ class Content extends Components {
 
 	/**
 	 * 删除静态生成的文章文件
-	 * @param type $catid 栏目ID,可以是信息数组
-	 * @param type $id 信息ID
-	 * @param type $inputtime 真实发布时间
-	 * @param type $prefix 自定义文件名
-	 * @return type
+	 * @param string $catid 栏目ID,可以是信息数组
+	 * @param string $id 信息ID
+	 * @param string $inputtime 真实发布时间
+	 * @param string $prefix 自定义文件名
+	 * @return boolean
 	 */
 	public function deleteHtml($catid = '', $id = '', $inputtime = '', $prefix = '') {
 		if (empty($catid) && empty($id) && empty($inputtime)) {
@@ -630,10 +630,10 @@ class Content extends Components {
 
 	/**
 	 * 同步发布
-	 * @param type $othor_catid 需要同步发布到的栏目ID
-	 * @param type $linkurl 原信息地址
-	 * @param type $data 原数据，以关联表的数据格式
-	 * @param type $modelid 原信息模型ID
+	 * @param string $othor_catid 需要同步发布到的栏目ID
+	 * @param string $linkurl 原信息地址
+	 * @param array $data 原数据，以关联表的数据格式
+	 * @param string $modelid 原信息模型ID
 	 * @return boolean
 	 */
 	public function othor_catid($othor_catid, $linkurl, $data, $modelid) {
@@ -651,7 +651,7 @@ class Content extends Components {
 			$mid = getCategory($cid, 'modelid');
 			//判断模型是否相同
 			if ($modelid == $mid) {
-//相同
+                //相同
 				$data['catid'] = $cid;
 				$_categorys = getCategory($data['catid']);
 				//修复当被推送的文章是推荐位的文章时，推送后会把相应属性也推送过去
@@ -705,14 +705,14 @@ class Content extends Components {
 
 	/**
 	 * 生成上下篇
-	 * @param type $catid 栏目ID
-	 * @param type $id 信息ID
-	 * @param type $action 新增还是修改
+	 * @param string $catid 栏目ID
+	 * @param string $id 信息ID
+	 * @param string $action 新增还是修改
 	 * @return boolean
 	 */
 	public function relatedContent($catid, $id, $action = 'edit') {
 		if (!$catid || !$id) {
-			return;
+			return false;
 		}
 		$modelid = getCategory($catid, 'modelid');
 		$db = ContentModel::getInstance($modelid);
@@ -741,9 +741,9 @@ class Content extends Components {
 	}
 
 	/**
-	 * 获取URL规则处理后的
-	 * @param type $data
-	 * @return type
+	 * 获取URL规则处理后的URL
+	 * @param array $data
+	 * @return string
 	 */
 	protected function generateUrl($data) {
 		return $this->Url->show($data);
@@ -751,7 +751,7 @@ class Content extends Components {
 
 	/**
 	 * 获取标题图片
-	 * @param type $data
+	 * @param array $data
 	 */
 	protected function getThumb(&$data) {
 		$model = ContentModel::getInstance($this->modelid);
@@ -770,7 +770,7 @@ class Content extends Components {
 
 	/**
 	 * 自动获取简介
-	 * @param type $data
+	 * @param array $data
 	 */
 	protected function description(&$data) {
 		//自动提取摘要，如果有设置自动提取，且description为空，且有内容字段才执行
@@ -783,7 +783,8 @@ class Content extends Components {
 
 	/**
 	 * 对验证过的token进行复原
-	 * @param type $data 数据
+	 * @param array $data 数据
+     * @return boolean
 	 */
 	protected function tokenRecovery($data = array()) {
 		if (empty($data)) {

@@ -317,7 +317,7 @@ class RelationModel extends Model {
 										$pk = $model->getPk();
 										foreach ($mappingData as $vo) {
 											if (isset($vo[$pk])) {
-// 更新数据
+                                                // 更新数据
 												$mappingCondition = "$pk ={$vo[$pk]}";
 												$result = $model->where($mappingCondition)->save($vo);
 											} else {
@@ -421,7 +421,7 @@ class RelationModel extends Model {
 	 * 关联数据获取 仅用于查询后
 	 * @access public
 	 * @param string $name 关联名称
-	 * @return array
+	 * @return array|boolean
 	 */
 	public function relationGet($name) {
 		if (empty($this->data)) {
