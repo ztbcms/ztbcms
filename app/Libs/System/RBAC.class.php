@@ -12,7 +12,7 @@ class RBAC {
 
 	/**
 	 * 当前登录下权限检查
-	 * @param type $map [模块/控制器/方法]，没有时，自动获取当前进行判断
+	 * @param string $map [模块/控制器/方法]，没有时，自动获取当前进行判断
 	 * @return boolean
 	 */
 	static public function authenticate($map = '') {
@@ -149,15 +149,11 @@ class RBAC {
 		return true;
 	}
 
-	/**
-	+----------------------------------------------------------
-	 * 取得当前认证号的所有权限列表
-	+----------------------------------------------------------
-	 * @param integer $authId 用户ID
-	+----------------------------------------------------------
-	 * @access public
-	+----------------------------------------------------------
-	 */
+    /**
+     * 取得当前认证号的所有权限列表
+     * @param $authId
+     * @return array|bool
+     */
 	static public function getAccessList($authId) {
 		//用户信息
 		$userInfo = User::getInstance()->getInfo();
