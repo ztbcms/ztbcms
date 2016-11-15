@@ -25,92 +25,74 @@ class MemberController extends AdminBase {
 		$this->member = D('Member/Member');
 	}
 
-	//会员管理首页
-	public function index() {
-		$search = I("get.search", null);
-		$where = array(
-			'checked' => 1,
-		);
-		if ($search) {
-			//注册时间段
-			$start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
-			$end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d', time());
-			//开始时间
-			$where_start_time = strtotime($start_time) ? strtotime($start_time) : 0;
-			//结束时间
-			$where_end_time = strtotime($end_time) ? (strtotime($end_time) + 86400) : 0;
-			//开始时间大于结束时间，置换变量
-			if ($where_start_time > $where_end_time) {
-				$tmp = $where_start_time;
-				$where_start_time = $where_end_time;
-				$where_end_time = $tmp;
-				$tmptime = $start_time;
-				$start_time = $end_time;
-				$end_time = $tmptime;
-				unset($tmp, $tmptime);
-			}
-			//时间范围
-			if ($where_start_time) {
-				$where['regdate'] = array('between', array($where_start_time, $where_end_time));
-			}
-			//状态
-			$status = I('get.status', 0, 'intval');
-			if ($status > 0) {
-				$islock = $status == 1 ? 1 : 0;
-				$where['islock'] = array("EQ", $islock);
-			}
-			//会员模型
-			$modelid = I('get.modelid', 0, 'intval');
-			if ($modelid > 0) {
-				$where['modelid'] = array("EQ", $modelid);
-			}
-			//会员组
-			$groupid = I('get.groupid', 0, 'intval');
-			if ($groupid > 0) {
-				$where['groupid'] = array("EQ", $groupid);
-			}
-			//关键字
-			$keyword = I('get.keyword');
-			if ($keyword) {
-				$type = I('get.type', 0, 'intval');
-				switch ($type) {
-					case 1:
-						$where['username'] = array("LIKE", '%' . $keyword . '%');
-						break;
-					case 2:
-						$where['userid'] = array("EQ", $keyword);
-						break;
-					case 3:
-						$where['email'] = array("LIKE", '%' . $keyword . '%');
-						break;
-					case 4:
-						$where['regip'] = array("EQ", $keyword);
-						break;
-					case 5:
-						$where['nickname'] = array("LIKE", '%' . $keyword . '%');
-						break;
-					default:
-						$where['username'] = array("LIKE", '%' . $keyword . '%');
-						break;
-				}
-			}
-		}
-		$count = $this->member->where($where)->count();
-		$page = $this->page($count, 20);
-		$data = $this->member->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("userid" => "DESC"))->select();
+    //会员管理首页
+    public function index() {
+        $search = I("get.search", null);
+        $where = [];
+        $where['checked'] = ['EQ', 1];
+        if ($search) {
+            //注册时间段
+            $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
+            $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d', time());
+            //开始时间
+            $where_start_time = strtotime($start_time) ? strtotime($start_time) : 0;
+            //结束时间
+            $where_end_time = strtotime($end_time) ? (strtotime($end_time) + 86400) : 0;
+            //开始时间大于结束时间，置换变量
+            if ($where_start_time > $where_end_time) {
+                $tmp = $where_start_time;
+                $where_start_time = $where_end_time;
+                $where_end_time = $tmp;
+                $tmptime = $start_time;
+                $start_time = $end_time;
+                $end_time = $tmptime;
+                unset($tmp, $tmptime);
+            }
+            //时间范围
+            if ($where_start_time) {
+                $where['regdate'] = array('between', array($where_start_time, $where_end_time));
+            }
 
-		foreach ($this->groupCache as $g) {
-			$groupCache[$g['groupid']] = $g['name'];
-		}
-		foreach ($this->groupsModel as $m) {
-			$groupsModel[$m['modelid']] = $m['name'];
-		}
-		$this->assign('groupCache', $groupCache);
-		$this->assign('groupsModel', $groupsModel);
-		$this->assign("Page", $page->show('Admin'));
-		$this->assign("data", $data);
-		$this->display();
-	}
+            $filter = I('get._filter');
+            $operater = I('get._operater');
+            $value = I('get._value');
+
+
+            if (is_array($filter)) {
+                foreach ($filter as $index => $k){
+                    if( $value[$index] != '' ){
+                        $filter[$index] = trim($filter[$index]);
+                        $operater[$index] = trim($operater[$index]);
+                        $value[$index] = trim($value[$index]);
+
+                        if(strtolower($operater[$index]) == 'like'){
+                            $where[$filter[$index]] = array($operater[$index], '%' . $value[$index] . '%');
+                        }else{
+                            $where[$filter[$index]] = array($operater[$index], $value[$index]);
+                        }
+                    }
+                }
+                $this->assign('_filter', $filter);
+                $this->assign('_operater', $operater);
+                $this->assign('_value', $value);
+            }
+        }
+        $count = $this->member->where($where)->count();
+        $page = $this->page($count, 20);
+        $data = $this->member->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("userid" => "DESC"))->select();
+
+        foreach ($this->groupCache as $g) {
+            $groupCache[$g['groupid']] = $g['name'];
+        }
+        foreach ($this->groupsModel as $m) {
+            $groupsModel[$m['modelid']] = $m['name'];
+        }
+        $this->assign('groupCache', $groupCache);
+        $this->assign('groupsModel', $groupsModel);
+        $this->assign("Page", $page->show('Admin'));
+        $this->assign("data", $data);
+        $this->display();
+    }
 
 	//添加会员
 	public function add() {
