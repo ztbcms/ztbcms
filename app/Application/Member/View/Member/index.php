@@ -10,27 +10,54 @@
     <input type="hidden" value="index" name="a">
     <input type="hidden" value="1" name="search">
     <div class="search_type cc mb10">
-      <div class="mb10"> <span class="mr20"> 注册时间：
-        <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">
-        -
-        <input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
-        <select name="status">
-          <option value='0' >状态</option>
-          <option value='1' >锁定</option>
-          <option value='2' >正常</option>
-        </select>
-        <?php echo Form::select($groupCache, (int)$_GET['groupid'], 'name="groupid"', '会员组') ?>
-        <?php echo Form::select($groupsModel, (int)$_GET['modelid'], 'name="modelid"', '会员模型'); ?>
-        <select name="type">
-          <option value='1' >用户名</option>
-          <option value='2' >用户ID</option>
-          <option value='3' >邮箱</option>
-          <option value='4' >注册ip</option>
-          <option value='5' >昵称</option>
-        </select>
-        <input name="keyword" type="text" value="{$Think.get.keyword}" class="input" />
-        <button class="btn">搜索</button>
-        </span> </div>
+      <div class="mb10">
+
+        <div class="mr20">
+
+          <section style="display: inline;">
+            注册时间：
+            <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">
+            -
+            <input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
+
+          </section>
+
+          <section style="display: inline;">
+            状态:
+            <input class="input length_2" type="hidden" name="_filter[0]" value="islock">
+            <input class="input length_2" type="hidden" name="_operater[0]" value="EQ">
+
+            <select name="_value[0]" class="select_2">
+              <option value='' <if condition=" $_value[0] == '' "> selected</if>>全部</option>
+              <option value='1' <if condition=" $_value[0] == '1' "> selected</if>>锁定</option>
+              <option value='2' <if condition=" $_value[0] == '2' "> selected</if>>正常</option>
+            </select>
+          </section>
+
+          <section style="display: inline;">
+            <!-- 搜索字段 -->
+            <select name="_filter[1]" class="select_2">
+              <option value="username" <if condition=" $_filter[1] == 'username' "> selected</if>>用户名</option>
+              <option value="userid" <if condition=" $_filter[1] == 'userid' "> selected</if>>用户ID</option>
+              <option value="nickname" <if condition=" $_filter[1] == 'nickname' "> selected</if>>昵称</option>
+            </select>
+            <!-- 操作符 -->
+            <select name="_operater[1]" class="select_2">
+              <option value="EQ" <if condition=" $_operater[1] == 'EQ' "> selected</if>>等于</option>
+              <option value="NEQ" <if condition=" $_operater[1] == 'NEQ' "> selected</if>>不等于</option>
+              <option value="GT" <if condition=" $_operater[1] == 'GT' "> selected</if>>大于</option>
+              <option value="EGT" <if condition=" $_operater[1] == 'EGT' "> selected</if>>大于等于</option>
+              <option value="LT" <if condition=" $_operater[1] == 'LT' "> selected</if>>小于</option>
+              <option value="ELT" <if condition=" $_operater[1] == 'ELT' "> selected</if>>小于等于</option>
+              <option value="LIKE" <if condition=" $_operater[1] == 'LIKE' "> selected</if>>模糊查询</option>
+            </select>
+            <!-- 搜索值 -->
+            <input class="input length_3" type="text" name="_value[1]" value="{$_value[1]}">
+          </section>
+
+          <button class="btn">搜索</button>
+        </div>
+      </div>
     </div>
   </form>
   <form name="myform" action="{:U('Member/delete')}" method="post" class="J_ajaxForm">

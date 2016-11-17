@@ -30,7 +30,7 @@ class WapBehavior {
 
         return $is_mobile;
     }
-
+    
     /**
      * 检测Wap模块下是否存在对应的Controller/Action
      *
@@ -39,8 +39,7 @@ class WapBehavior {
     private function checkActionExist() {
         $cls = "\\Wap\\Controller\\" . CONTROLLER_NAME . 'Controller';
         if (class_exists($cls)) {
-            $obj = new $cls;
-            if (method_exists($obj, ACTION_NAME)) {
+            if (method_exists($cls, ACTION_NAME)) {
                 return true;
             }
         }

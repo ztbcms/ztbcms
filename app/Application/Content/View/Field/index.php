@@ -15,6 +15,7 @@
   <table width="100%" cellspacing="0" >
         <thead>
           <tr>
+            <td width="60"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"> 全选</label></td>
             <td width="70" align='center'>排序</td>
             <td width="200">字段名</td>
             <td>别名</td>
@@ -30,6 +31,7 @@
         <tbody class="td-line">
         <volist name="data" id="vo">
           <tr>
+            <td><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x" name="fieldids[]" value="{$vo.fieldid}"></td>
             <td align='center'><input name='listorders[{$vo.fieldid}]' type='text' size='3' value='{$vo.listorder}' class='input'></td>
             <td>{$vo.field}</td>
             <td>{$vo.name}</td>
@@ -72,8 +74,11 @@
       </table>
   </div>
   <div class="btn_wrap">
-      <div class="btn_wrap_pd">             
-        <button class="btn btn_submit mr10 J_ajax_submit_btn" type="submit">排序</button>
+      <div class="btn_wrap_pd">
+          <button class="btn btn_submit mr10 J_ajax_submit_btn" type="submit">排序</button>
+          <button class="btn btn_submit J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchDisable')}">隐藏字段</button>
+          <button class="btn btn_submit J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchUndisable')}">启用字段</button>
+          <button class="btn btn-danger J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchDelete')}">删除</button>
       </div>
     </div>
   </form>
