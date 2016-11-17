@@ -31,7 +31,7 @@
                                     <td class="text-center">{$list.id}</td>
                                     <td class="text-center">{$list.name}</td>
                                     <td class="text-center">
-										<a href="{:U('Admin/Goods/goodsAttributeList',array('type_id'=>$list['id']))}" data-toggle="tooltip" title="" class="btn btn-info" data-original-title="属性列表"><i class="fa fa-eye"></i></a>                                    
+										<a href="{:U('Spec/index',array('type_id'=>$list['id']))}" data-toggle="tooltip" title="" class="btn btn-info" data-original-title="属性列表"><i class="fa fa-eye"></i></a>                                    
                                         <a href="{:U('Type/addEditGoodsType',array('id'=>$list['id']))}" data-toggle="tooltip" title="" class="btn btn-primary" data-original-title="编辑"><i class="fa fa-pencil"></i></a>
                                         <a href="javascript:del_fun('{:U('Type/delGoodsType',array('id'=>$list['id']))}');" id="button-delete6" data-toggle="tooltip" title="" class="btn btn-danger" data-original-title="删除"><i class="fa fa-trash-o"></i></a>
                                     </td>
