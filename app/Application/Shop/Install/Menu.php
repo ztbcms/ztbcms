@@ -32,6 +32,17 @@ return array(
                         "type" => 1,
                         "status" => 1,
                         "name" => "商品分类",
+                    ),
+                    array(
+                        "route" => "Shop/Type/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品类型",
+                    ),array(
+                        "route" => "Shop/Spec/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品规格",
                     )
                 ),
             ),
