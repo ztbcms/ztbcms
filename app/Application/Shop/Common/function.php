@@ -206,3 +206,17 @@ function combineArray($arr1,$arr2) {
 	}
 	return $result;
 }
+/**
+ * 获取数组中的某一列
+ * @param type $arr 数组
+ * @param type $key_name  列名
+ * @return type  返回那一列的数组
+ */
+function get_arr_column($arr, $key_name)
+{
+	$arr2 = array();
+	foreach($arr as $key => $val){
+		$arr2[] = $val[$key_name];        
+	}
+	return $arr2;
+}
