@@ -425,8 +425,7 @@ class GoodsLogic extends RelationModel
     /**
      *  获取排好序的品牌列表    
      */
-    function getSortBrands()
-    {
+    function getSortBrands(){
         $brandList =  M("Brand")->select();
         $brandIdArr =  M("Brand")->where("name in (select `name` from `".C('DB_PREFIX')."brand` group by name having COUNT(id) > 1)")->getField('id,cat_id'); 
         $goodsCategoryArr = M('goodsCategory')->where("level = 1")->getField('id,name');
