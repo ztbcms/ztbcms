@@ -22,4 +22,30 @@ class ApiController extends Base {
         exit($html);
     }
 
+    /*
+     * 获取地区
+     */
+    public function getRegion(){
+        $parent_id = I('get.parent_id');
+        $selected = I('get.selected',0);  
+        if(I('get.level')==1){
+            $data = M('AreaProvince')->where("parentid=$parent_id")->select();
+        }elseif(I('get.level')==2){
+            $data = M('AreaCity')->where("parentid=$parent_id")->select();
+        }else{
+            $data = M('AreaDistrict')->where("parentid=$parent_id")->select();
+        }
+        $html = '';
+        if($data){
+            foreach($data as $v){
+            	if($v['id'] == $selected){
+            		$html .= "<option value='{$v['id']}' selected>{$v['areaname']}</option>";
+            	}else{
+                    $html .= "<option value='{$v['id']}'>{$v['areaname']}</option>";
+                }
+            }
+        }
+        echo $html;
+    }
+
 }
