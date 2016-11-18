@@ -123,7 +123,7 @@
                         <!--                        <li><a href="#tab_goods_desc" data-toggle="tab">描述信息</a></li>-->
                         <li><a href="#tab_goods_images" data-toggle="tab">商品相册</a></li>
                         <li><a href="#tab_goods_spec" data-toggle="tab">商品规格</a></li>
-                        <!--<li><a href="#tab_goods_attr" data-toggle="tab">商品属性</a></li>-->
+                        <li><a href="#tab_goods_attr" data-toggle="tab">商品属性</a></li>
                         <!--<li><a href="#tab_goods_shipping" data-toggle="tab">商品物流</a></li>-->
                     </ul>
                     <!--表单数据-->
@@ -562,47 +562,47 @@
 
 
     /** 以下 商品属性相关 [暂时关闭属性] js*/
-    // $(document).ready(function() {
+    $(document).ready(function() {
 
-    //     // 商品类型切换时 ajax 调用  返回不同的属性输入框
-    //     $("#goods_type").change(function() {
-    //         var goods_id = $("input[name='goods_id']").val();
-    //         var type_id = $(this).val();
-    //         $.ajax({
-    //             type: 'GET',
-    //             data: {
-    //                 goods_id: goods_id,
-    //                 type_id: type_id
-    //             },
-    //             url: "{:U('Goods/ajaxGetAttrInput')}",
-    //             success: function(data) {
-    //                 $("#goods_attr_table tr:gt(0)").remove()
-    //                 $("#goods_attr_table").append(data);
-    //             }
-    //         });
-    //     });
-    //     // 触发商品类型
-    //     $("#goods_type").trigger('change');
-    //     $("input[name='exchange_integral']").blur(function() {
-    //         var shop_price = parseInt($("input[name='shop_price']").val());
-    //         var exchange_integral = parseInt($(this).val());
-    //         if (shop_price * 100 < exchange_integral) {
+        // 商品类型切换时 ajax 调用  返回不同的属性输入框
+        $("#goods_type").change(function() {
+            var goods_id = $("input[name='goods_id']").val();
+            var type_id = $(this).val();
+            $.ajax({
+                type: 'GET',
+                data: {
+                    goods_id: goods_id,
+                    type_id: type_id
+                },
+                url: "{:U('Goods/ajaxGetAttrInput')}",
+                success: function(data) {
+                    $("#goods_attr_table tr:gt(0)").remove()
+                    $("#goods_attr_table").append(data);
+                }
+            });
+        });
+        // 触发商品类型
+        $("#goods_type").trigger('change');
+        $("input[name='exchange_integral']").blur(function() {
+            var shop_price = parseInt($("input[name='shop_price']").val());
+            var exchange_integral = parseInt($(this).val());
+            if (shop_price * 100 < exchange_integral) {
 
-    //         }
-    //     });
-    // });
+            }
+        });
+    });
 
 
-    // // 属性输入框的加减事件
-    // function addAttr(a) {
-    //     var attr = $(a).parent().parent().prop("outerHTML");
-    //     attr = attr.replace('addAttr', 'delAttr').replace('+', '-');
-    //     $(a).parent().parent().after(attr);
-    // }
-    // // 属性输入框的加减事件
-    // function delAttr(a) {
-    //     $(a).parent().parent().remove();
-    // }
+    // 属性输入框的加减事件
+    function addAttr(a) {
+        var attr = $(a).parent().parent().prop("outerHTML");
+        attr = attr.replace('addAttr', 'delAttr').replace('+', '-');
+        $(a).parent().parent().after(attr);
+    }
+    // 属性输入框的加减事件
+    function delAttr(a) {
+        $(a).parent().parent().remove();
+    }
 
 
     /** 以下 商品规格相关 js*/

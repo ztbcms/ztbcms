@@ -117,7 +117,7 @@ class GoodsController extends AdminBase {
                 }
 
                 //暂时关闭属性的操作
-                // $GoodsLogic->saveGoodsAttr($goods_id, $_POST['goods_type']); // 处理商品 属性
+                $GoodsLogic->saveGoodsAttr($goods_id, $_POST['goods_type']); // 处理商品 属性
 
                 $return_arr = array(
                     'status' => 1,
@@ -240,6 +240,14 @@ class GoodsController extends AdminBase {
     {
         $path = I('filename','');
         M('goods_images')->where("image_url = '$path'")->delete();
+    }
+        /**
+     * 动态获取商品属性输入框 根据不同的数据返回不同的输入框类型
+     */
+    public function ajaxGetAttrInput(){
+        $GoodsLogic = new GoodsLogic();
+        $str = $GoodsLogic->getAttrInput($_REQUEST['goods_id'],$_REQUEST['type_id']);
+        exit($str);
     }
         /**
      * 初始化编辑器链接     
