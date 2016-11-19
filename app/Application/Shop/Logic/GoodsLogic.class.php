@@ -7,8 +7,68 @@ use Common\Model\RelationModel;
  * Class CatsLogic
  * @package Home\Logic
  */
-class GoodsLogic extends RelationModel
-{
+class GoodsLogic extends RelationModel{
+
+    /**
+     * 看了又看
+     */
+    public function get_look_see($goods)
+    {
+        return M('goods')->where("goods_id !=" . $goods['goods_id'] . " and cat_id!=" . $goods['cat_id'] . " and is_on_sale = 1")->limit(12)->select();
+    }
+       /**
+     * 获取相关分类
+     */
+    public function get_siblings_cate($cat_id)
+    {
+        if (empty($cat_id))
+            return array();
+        $cate_info = M('goods_category')->where("id=$cat_id")->find();
+        $siblings_cate = M('goods_category')->where("id!=$cat_id and parent_id=" . $cate_info['parent_id'])->select();
+        return empty($siblings_cate) ? array() : $siblings_cate;
+    }
+
+    /**
+     * 获取某个商品的评论统计
+     * 全部评论数  好评数 中评数  差评数
+     */
+    public function commentStatistics($goods_id)
+    {
+        $c1 = M('ShopComment')->where("is_show = 1 and  goods_id = $goods_id and parent_id = 0 and  ceil((deliver_rank + goods_rank + service_rank) / 3) in(4,5)")->count(); // 好评
+        $c2 = M('ShopComment')->where("is_show = 1 and  goods_id = $goods_id and parent_id = 0 and  ceil((deliver_rank + goods_rank + service_rank) / 3) in(3)")->count(); // 中评
+        $c3 = M('ShopComment')->where("is_show = 1 and  goods_id = $goods_id and parent_id = 0 and  ceil((deliver_rank + goods_rank + service_rank) / 3) in(1,2)")->count(); // 差评
+
+        $c0 = $c1 + $c2 + $c3; // 所有评论        
+        $rate1 = ceil($c1 / ($c1 + $c2 + $c3) * 100); // 好评率
+        $rate2 = ceil($c2 / ($c1 + $c2 + $c3) * 100); // 中评率
+        //$rate3 = 100 - ($rate1 + $rate2); // 差评率
+        $rate3 = ceil($c3 / ($c1 + $c2 + $c3) * 100); // 差评率
+
+        return array('c0' => $c0, 'c1' => $c1, 'c2' => $c2, 'c3' => $c3, 'rate1' => $rate1, 'rate2' => $rate2, 'rate3' => $rate3);
+    }
+     /**
+     * 获取商品规格
+     */
+    public function get_spec($goods_id)
+    {
+        //商品规格 价钱 库存表 找出 所有 规格项id
+        $keys = M('SpecGoodsPrice')->where("goods_id = $goods_id")->getField("GROUP_CONCAT(`key` SEPARATOR '_') ");
+        $filter_spec = array();
+        if ($keys) {
+            $specImage = M('SpecImage')->where("goods_id = $goods_id and src != '' ")->getField("spec_image_id,src");// 规格对应的 图片表， 例如颜色
+            $keys = str_replace('_', ',', $keys);
+            $sql = "SELECT a.name,a.order,b.* FROM __PREFIX__spec AS a INNER JOIN __PREFIX__spec_item AS b ON a.id = b.spec_id WHERE b.id IN($keys) ORDER BY b.id";
+            $filter_spec2 = M()->query($sql);
+            foreach ($filter_spec2 as $key => $val) {
+                $filter_spec[$val['name']][] = array(
+                    'item_id' => $val['id'],
+                    'item' => $val['item'],
+                    'src' => $specImage[$val['id']],
+                );
+            }
+        }
+        return $filter_spec;
+    }
 
     /**
      * 获得指定分类下的子分类的数组     
