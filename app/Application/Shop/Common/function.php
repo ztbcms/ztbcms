@@ -654,3 +654,6 @@ function downloadExcel($strTable,$filename)
 	header('Pragma:public');
 	echo '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.$strTable.'</html>';
 }
+function encrypt($str){
+	return md5(C("AUTH_CODE").$str);
+}
