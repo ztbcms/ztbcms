@@ -523,7 +523,7 @@ class OrderController extends AdminBase {
         $return_goods = M('return_goods')->where("id= $id")->find();
         if($return_goods['imgs'])            
              $return_goods['imgs'] = explode(',', $return_goods['imgs']);
-        $user = M('users')->where("user_id = {$return_goods[user_id]}")->find();
+        $user = M('ShopUsers')->where("userid = {$return_goods[user_id]}")->find();
         $goods = M('goods')->where("goods_id = {$return_goods[goods_id]}")->find();
         $type_msg = array('退换','换货');
         $status_msg = array('未处理','处理中','已完成');
@@ -614,12 +614,12 @@ class OrderController extends AdminBase {
     	if($begin && $end){
     		$condition['log_time'] = array('between',"$begin,$end");
     	}
-    	$admin_id = I('admin_id');
-		if($admin_id >0 ){
-			$condition['action_user'] = $admin_id;
-		}
+    	// $admin_id = I('admin_id');
+		// if($admin_id >0 ){
+		// 	$condition['action_user'] = $admin_id;
+		// }
     	$count = $log->where($condition)->count();
-    	$Page = new \Think\Page($count,20);
+    	$Page = new \Shop\Util\Page($count,20);
     	foreach($condition as $key=>$val) {
     		$Page->parameter[$key] = urlencode($val);
     	}
@@ -627,7 +627,7 @@ class OrderController extends AdminBase {
     	$list = $log->where($condition)->order('action_id desc')->limit($Page->firstRow.','.$Page->listRows)->select();
     	$this->assign('list',$list);
     	$this->assign('page',$show);   	
-    	$admin = M('admin')->getField('admin_id,user_name');
+    	// $admin = M('admin')->getField('admin_id,user_name');
     	$this->assign('admin',$admin);    	
     	$this->display();
     }
