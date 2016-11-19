@@ -14,7 +14,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="navbar navbar-default">
-                            <form action="{:U('Admin/order/export_order')}" id="search-form2" class="navbar-form form-inline" method="post">
+                            <form action="{:U('Order/export_order')}" id="search-form2" class="navbar-form form-inline" method="post">
                                 <div class="form-group">
                                     <label class="control-label" for="input-order-id">收货人</label>
                                     <div class="input-group">
@@ -71,7 +71,7 @@
                                 	<a href="javascript:void(0)" onclick="ajax_get_table('search-form2',1)" id="button-filter search-order" class="btn btn-primary"><i class="fa fa-search"></i> 筛选</a>
                                 </div>
                                 <div class="form-group">
-                                	<a href="/index.php?m=Admin&c=Order&a=add_order" class="btn btn-primary"><i class="fa fa-search"></i>添加订单</a>
+                                	<a href="/index.php?g=Shop&m=Order&a=add_order" class="btn btn-primary"><i class="fa fa-search"></i>添加订单</a>
                                 </div>                                
                                 <button type="submit" class="btn btn-default pull-right"><i class="fa fa-file-excel-o"></i>&nbsp;导出excel</button>                               
                             </form>

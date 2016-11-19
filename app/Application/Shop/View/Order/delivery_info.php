@@ -5,7 +5,7 @@
     <!-- Main content -->
     <!--<div class="container-fluid">-->
     <div class="container-fluid">
-        <form id="delivery-form" action="{:U('Admin/order/deliveryHandle')}" method="post">
+        <form id="delivery-form" action="{:U('Order/deliveryHandle')}" method="post">
         <!--新订单列表 基本信息-->
         <div class="panel panel-default">
             <div class="panel-heading">

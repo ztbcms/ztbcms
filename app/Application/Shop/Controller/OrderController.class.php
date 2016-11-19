@@ -685,13 +685,12 @@ class OrderController extends AdminBase {
     	$strTable .= '<td style="text-align:center;font-size:12px;" width="*">商品信息</td>';
     	$strTable .= '</tr>';
 	    if(is_array($orderList)){
-	    	$region	= M('region')->getField('id,name');
 	    	foreach($orderList as $k=>$val){
 	    		$strTable .= '<tr>';
 	    		$strTable .= '<td style="text-align:center;font-size:12px;">&nbsp;'.$val['order_sn'].'</td>';
 	    		$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['create_time'].' </td>';	    		
 	    		$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['consignee'].'</td>';
-                        $strTable .= '<td style="text-align:left;font-size:12px;">'."{$region[$val['province']]},{$region[$val['city']]},{$region[$val['district']]},{$region[$val['twon']]}{$val['address']}".' </td>';                        
+                        $strTable .= '<td style="text-align:left;font-size:12px;">'.getRegionName($val['province'],1).",".getRegionName($val['city'],2).",".getRegionName($val['district'],3).",{$val['address']}".' </td>';                        
 	    		$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['mobile'].'</td>';
 	    		$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['goods_price'].'</td>';
 	    		$strTable .= '<td style="text-align:left;font-size:12px;">'.$val['order_amount'].'</td>';
@@ -730,11 +729,11 @@ class OrderController extends AdminBase {
     {
         $order = array();
         //  获取省份
-        $province = M('region')->where(array('parent_id'=>0,'level'=>1))->select();
+        $province = M('AreaProvince')->where(array('parent_id'=>0,'level'=>1))->select();
         //  获取订单城市
-        $city =  M('region')->where(array('parent_id'=>$order['province'],'level'=>2))->select();
+        $city =  M('AreaCity')->where(array('parent_id'=>$order['province'],'level'=>2))->select();
         //  获取订单地区
-        $area =  M('region')->where(array('parent_id'=>$order['city'],'level'=>3))->select();
+        $area =  M('AreaDistrict')->where(array('parent_id'=>$order['city'],'level'=>3))->select();
         //  获取配送方式
         $shipping_list = M('plugin')->where(array('status'=>1,'type'=>'shipping'))->select();
         //  获取支付方式

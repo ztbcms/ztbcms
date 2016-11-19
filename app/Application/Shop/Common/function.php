@@ -557,3 +557,100 @@ function accountLog($user_id, $user_money = 0,$pay_points = 0, $desc = '',$distr
         return false;
     }
 }
+
+    /**
+     * 订单确认收货
+     * @param $id   订单id
+     */
+    function confirm_order($id,$user_id = 0){
+        
+        $where = "order_id = $id";
+        $user_id && $where .= " and user_id = $user_id ";
+        
+        $order = M('order')->where($where)->find();
+        if($order['order_status'] != 1)
+            return array('status'=>-1,'msg'=>'该订单不能收货确认');
+        
+        $data['order_status'] = 2; // 已收货        
+        $data['pay_status'] = 1; // 已付款        
+        $data['confirm_time'] = time(); // 收货确认时间
+        if($order['pay_code'] == 'cod'){
+        	$data['pay_time'] = time();
+        }
+        $row = M('order')->where(array('order_id'=>$id))->save($data);
+        if(!$row)        
+            return array('status'=>-3,'msg'=>'操作失败');
+        //暂时不触发，后面可以用hook来执行
+        // order_give($order);// 调用送礼物方法, 给下单这个人赠送相应的礼物
+        
+        //分销设置
+        M('rebate_log')->where("order_id = $id")->save(array('status'=>2,'confirm'=>time()));
+               
+        return array('status'=>1,'msg'=>'操作成功');
+    }
+    /**
+ * 给订单送券送积分 送东西
+ */
+function order_give($order)
+{
+	$order_goods = M('order_goods')->where("order_id=".$order['order_id'])->cache(true)->select();
+	//查找购买商品送优惠券活动
+	foreach ($order_goods as $val)
+    {
+		if($val['prom_type'] == 3)
+        {
+			$prom = M('prom_goods')->where('type=3 and id='.$val['prom_id'])->find();
+			if($prom){
+				$coupon = M('coupon')->where("id=".$prom['expression'])->find();//查找优惠券模板
+				if($coupon && $coupon['createnum']>0){					                                        
+                    $remain = $coupon['createnum'] - $coupon['send_num'];//剩余派发量
+                    if($remain > 0)                                            
+                    {
+                        $data = array('cid'=>$coupon['id'],'type'=>$coupon['type'],'uid'=>$order['user_id'],'send_time'=>time());
+                        M('coupon_list')->add($data);       
+                        M('Coupon')->where("id = {$coupon['id']}")->setInc('send_num'); // 优惠券领取数量加一
+                    }
+				}
+		 	}
+		 }
+	}
+	
+	//查找订单满额送优惠券活动
+	$pay_time = $order['pay_time'];
+	$prom = M('prom_order')->where("type>1 and end_time>$pay_time and start_time<$pay_time and money<=".$order['order_amount'])->order('money desc')->find();
+	if($prom){
+		if($prom['type']==3){
+			$coupon = M('coupon')->where("id=".$prom['expression'])->find();//查找优惠券模板
+			if($coupon){
+				if($coupon['createnum']>0){
+					$remain = $coupon['createnum'] - $coupon['send_num'];//剩余派发量
+                    if($remain > 0)
+                    {
+                       $data = array('cid'=>$coupon['id'],'type'=>$coupon['type'],'uid'=>$order['user_id'],'send_time'=>time());
+                       M('coupon_list')->add($data);           
+                       M('Coupon')->where("id = {$coupon['id']}")->setInc('send_num'); // 优惠券领取数量加一
+                    }				
+				}
+			}
+		}else if($prom['type']==2){
+			accountLog($order['user_id'], 0 , $prom['expression'] ,"订单活动赠送积分");
+		}
+	}
+    $points = M('order_goods')->where("order_id = {$order[order_id]}")->sum("give_integral * goods_num");
+    $points && accountLog($order['user_id'], 0,$points,"下单赠送积分");
+}
+
+/**
+ * 导出excel
+ * @param $strTable	表格内容
+ * @param $filename 文件名
+ */
+function downloadExcel($strTable,$filename)
+{
+	header("Content-type: application/vnd.ms-excel");
+	header("Content-Type: application/force-download");
+	header("Content-Disposition: attachment; filename=".$filename."_".date('Y-m-d').".xls");
+	header('Expires:0');
+	header('Pragma:public');
+	echo '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.$strTable.'</html>';
+}
