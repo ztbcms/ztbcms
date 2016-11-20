@@ -28,6 +28,12 @@ return array(
                 "name" => "商品管理",
                 "child" => array(
                     array(
+                        "route" => "Shop/Goods/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品列表",
+                    ),
+                    array(
                         "route" => "Shop/Category/index",
                         "type" => 1,
                         "status" => 1,
@@ -38,12 +44,84 @@ return array(
                         "type" => 1,
                         "status" => 1,
                         "name" => "商品类型",
-                    ),array(
+                    ), array(
                         "route" => "Shop/Spec/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "商品规格",
-                    )
+                    ), array(
+                        "route" => "Shop/Attribute/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品属性",
+                    ), array(
+                        "route" => "Shop/Brand/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品品牌",
+                    ), array(
+                        "route" => "Shop/Comment/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品评论",
+                    ), array(
+                        "route" => "Shop/Comment/ask_list",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "商品咨询",
+                    ),
+                ),
+            ),
+            array(
+                "route" => "Shop/Order/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "订单管理",
+                "child" => array(
+                    array(
+                        "route" => "Shop/Order/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "订单列表",
+                    ),
+                    array(
+                        "route" => "Shop/Order/add_order",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "添加订单",
+                    ),
+                    array(
+                        "route" => "Shop/Order/delivery_list",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "发货单",
+                    ),
+                    array(
+                        "route" => "Shop/Order/return_list",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "退货列表",
+                    ),
+                    array(
+                        "route" => "Shop/Order/order_log",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "订单日志",
+                    ),
+                ),
+            ),
+            array(
+                "route" => "Shop/User/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "会员管理",
+                "child" => array(
+                    array(
+                        "route" => "Shop/User/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "会员列表",
+                    ),
                 ),
             ),
         ),
