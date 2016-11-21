@@ -52,6 +52,17 @@ class ContentModel extends RelationModel {
 		return $_instance[$modelid];
 	}
 
+    /**
+     * 获取栏目ID 取得内容模型实例
+     * @param $catid string
+     * @return ContentModel|NULL
+     */
+    static public function getInstanceByCatid($catid) {
+        $_modelid = getCategory($catid, 'modelid');
+
+        return self::getInstance($_modelid);
+    }
+
 	/**
 	 * 进行关联查询
 	 * @access public

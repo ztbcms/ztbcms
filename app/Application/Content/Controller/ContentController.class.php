@@ -235,7 +235,7 @@ class ContentController extends AdminBase {
 					$this->error($error ? $error : '添加失败！');
 				}
 			} else if ($category['type'] == 1) {
-//单页栏目
+                //单页栏目
 				$db = D('Content/Page');
 				if ($db->savePage($_POST)) {
 					//扩展字段处理
@@ -291,7 +291,7 @@ class ContentController extends AdminBase {
 				$this->assign("category", $category);
 				$this->display();
 			} else if ($category['type'] == 1) {
-//单网页模型
+                //单网页模型
 				$info = D('Content/Page')->getPage($this->catid);
 				if ($info && $info['style']) {
 					$style = explode(';', $info['style']);
