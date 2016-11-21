@@ -700,3 +700,44 @@ function cart_goods_num($user_id = 0,$session_id = '')
     $cart_count = $cart_count ? $cart_count : 0;
     return $cart_count;
 }
+/**
+ * 检查手机号码格式
+ * @param $mobile 手机号码
+ */
+function check_mobile($mobile){
+    if(preg_match('/1[34578]\d{9}$/',$mobile))
+        return true;
+    return false;
+}
+
+/**
+ * 检查邮箱地址格式
+ * @param $email 邮箱地址
+ */
+function check_email($email){
+    if(filter_var($email,FILTER_VALIDATE_EMAIL))
+        return true;
+    return false;
+}
+/**
+ * 获取用户信息
+ * @param $user_id_or_name  用户id 邮箱 手机 第三方id
+ * @param int $type  类型 0 user_id查找 1 邮箱查找 2 手机查找 3 第三方唯一标识查找
+ * @param string $oauth  第三方来源
+ * @return mixed
+ */
+function get_user_info($user_id_or_name,$type = 0,$oauth=''){
+    $map = array();
+    if($type == 0)
+        $map['user_id'] = $user_id_or_name;
+    if($type == 1)
+        $map['email'] = $user_id_or_name;
+    if($type == 2)
+        $map['mobile'] = $user_id_or_name;
+    if($type == 3){
+        $map['openid'] = $user_id_or_name;
+        $map['oauth'] = $oauth;
+    }
+    $user = M('ShopUsers')->where($map)->find();
+    return $user;
+}

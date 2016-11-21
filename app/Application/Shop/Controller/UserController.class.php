@@ -56,7 +56,8 @@ class UserController extends AdminBase{
     public function detail(){
         $uid = I('get.id');
         $user = D('ShopUsers')->where(array('userid'=>$uid))->find();
-        if(!$user)
+        $member = D('Member')->where(array('userid'=>$uid))->find();
+        if(!$user && !$member)
             exit($this->error('会员不存在'));
         if(IS_POST){
             //  会员信息编辑
@@ -65,12 +66,12 @@ class UserController extends AdminBase{
             if($password != '' && $password != $password2){
                 exit($this->error('两次输入密码不同'));
             }
-            if($password == '' && $password2 == ''){
+            if($password == '' || $password2 == ''){
                 unset($_POST['password']);
             }else{
                 $_POST['password'] = encrypt($_POST['password']);
+                echo service("Passport")->userEdit($member['username'], '', $password, '', 1);
             }
-
             $row = M('ShopUsers')->where(array('userid'=>$uid))->save($_POST);
             if($row)
                 exit($this->success('修改成功'));
