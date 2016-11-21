@@ -25,41 +25,8 @@ class CartLogic extends RelationModel
         $specGoodsPriceList = M('SpecGoodsPrice')->where("goods_id = $goods_id")->getField("key,key_name,price,store_count,sku"); // 获取商品对应的规格价钱 库存 条码
 		$where = " session_id = '$session_id' ";
         $user_id = $user_id ? $user_id : 0;
-		if($user_id)
-		 $where .= "  or user_id= $user_id ";
-        $catr_count = M('Cart')->where($where)->count(); // 查找购物车商品总数量
-        if($catr_count >= 20) 
-            return array('status'=>-9,'msg'=>'购物车最多只能放20种商品','result'=>'');            
-        
-        if(!empty($specGoodsPriceList) && empty($goods_spec)) // 有商品规格 但是前台没有传递过来
-            return array('status'=>-1,'msg'=>'必须传递商品规格','result'=>'');                        
-        if($goods_num <= 0) 
-            return array('status'=>-2,'msg'=>'购买商品数量不能为0','result'=>'');            
-        if(empty($goods))
-            return array('status'=>-3,'msg'=>'购买商品不存在','result'=>'');            
-        if(($goods['store_count'] < $goods_num))
-            return array('status'=>-4,'msg'=>'商品库存不足','result'=>'');        
-        if($goods['prom_type'] > 0 && $user_id == 0)
-            return array('status'=>-101,'msg'=>'购买活动商品必须先登录','result'=>'');
-        
-        //限时抢购 不能超过购买数量        
-        if($goods['prom_type'] == 1) 
-        {
-            $flash_sale = M('flash_sale')->where("id = {$goods['prom_id']} and ".time()." > start_time and ".time()." < end_time and goods_num > buy_num")->find(); // 限时抢购活动
-            if($flash_sale){
-                $cart_goods_num = M('Cart')->where("($where) and goods_id = {$goods['goods_id']}")->getField('goods_num');
-                // 如果购买数量 大于每人限购数量
-                if(($goods_num + $cart_goods_num) > $flash_sale['buy_limit'])
-                {  
-                    $cart_goods_num && $error_msg = "你当前购物车已有 $cart_goods_num 件!";
-                    return array('status'=>-4,'msg'=>"每人限购 {$flash_sale['buy_limit']}件 $error_msg",'result'=>'');
-                }                        
-                // 如果剩余数量 不足 限购数量, 就只能买剩余数量
-                if(($flash_sale['goods_num'] - $flash_sale['buy_num']) < $flash_sale['buy_limit'])
-                    return array('status'=>-4,'msg'=>"库存不够,你只能买".($flash_sale['goods_num'] - $flash_sale['buy_num'])."件了.",'result'=>'');                    
-            }
-        }                
-        
+
+
         foreach($goods_spec as $key => $val) // 处理商品规格
             $spec_item[] = $val; // 所选择的规格项                            
         if(!empty($spec_item)) // 有选择商品规格
@@ -79,15 +46,51 @@ class CartLogic extends RelationModel
         
         $catr_goods = M('Cart')->where($where)->find(); // 查找购物车是否已经存在该商品
         $price = $spec_price ? $spec_price : $goods['shop_price']; // 如果商品规格没有指定价格则用商品原始价格
+
+
+		if($user_id)
+		 $where .= "  or user_id= $user_id ";
+        $catr_count = M('Cart')->where($where)->count(); // 查找购物车商品总数量
+        if($catr_count >= 20) 
+            return array('status'=>-9,'msg'=>'购物车最多只能放20种商品','result'=>'');            
+        
+        if(!empty($specGoodsPriceList) && empty($goods_spec)) // 有商品规格 但是前台没有传递过来
+            return array('status'=>-1,'msg'=>'必须传递商品规格','result'=>'');                        
+        if($catr_goods['goods_num'] + $goods_num <= 0) 
+            return array('status'=>-2,'msg'=>'购买商品数量不能为0','result'=>'');            
+        if(empty($goods))
+            return array('status'=>-3,'msg'=>'购买商品不存在','result'=>'');            
+        if(($goods['store_count'] < ($catr_goods['goods_num'] + $goods_num)))
+            return array('status'=>-4,'msg'=>'商品库存不足','result'=>'');        
+        // if($goods['prom_type'] > 0 && $user_id == 0)
+        //     return array('status'=>-101,'msg'=>'购买活动商品必须先登录','result'=>'');
+        
+        //限时抢购 不能超过购买数量        
+        // if($goods['prom_type'] == 1) 
+        // {
+        //     $flash_sale = M('flash_sale')->where("id = {$goods['prom_id']} and ".time()." > start_time and ".time()." < end_time and goods_num > buy_num")->find(); // 限时抢购活动
+        //     if($flash_sale){
+        //         $cart_goods_num = M('Cart')->where("($where) and goods_id = {$goods['goods_id']}")->getField('goods_num');
+        //         // 如果购买数量 大于每人限购数量
+        //         if(($goods_num + $cart_goods_num) > $flash_sale['buy_limit'])
+        //         {  
+        //             $cart_goods_num && $error_msg = "你当前购物车已有 $cart_goods_num 件!";
+        //             return array('status'=>-4,'msg'=>"每人限购 {$flash_sale['buy_limit']}件 $error_msg",'result'=>'');
+        //         }                        
+        //         // 如果剩余数量 不足 限购数量, 就只能买剩余数量
+        //         if(($flash_sale['goods_num'] - $flash_sale['buy_num']) < $flash_sale['buy_limit'])
+        //             return array('status'=>-4,'msg'=>"库存不够,你只能买".($flash_sale['goods_num'] - $flash_sale['buy_num'])."件了.",'result'=>'');                    
+        //     }
+        // }                
         
         // 商品参与促销
-        if($goods['prom_type'] > 0)
-        {            
-            $prom = get_goods_promotion($goods_id,$user_id);
-            $price = $prom['price'];
-            $goods['prom_type'] = $prom['prom_type'];
-            $goods['prom_id']   = $prom['prom_id'];
-        }
+        // if($goods['prom_type'] > 0)
+        // {            
+        //     $prom = get_goods_promotion($goods_id,$user_id);
+        //     $price = $prom['price'];
+        //     $goods['prom_type'] = $prom['prom_type'];
+        //     $goods['prom_id']   = $prom['prom_id'];
+        // }
         
         $data = array(                    
                     'user_id'         => $user_id,   // 用户id
@@ -108,18 +111,15 @@ class CartLogic extends RelationModel
         );                
 
        // 如果商品购物车已经存在 
-       if($catr_goods) 
-       {          
+       if($catr_goods){          
            // 如果购物车的已有数量加上 这次要购买的数量  大于  库存输  则不再增加数量
-            if(($catr_goods['goods_num'] + $goods_num) > $goods['store_count'])
-                $goods_num = 0;
+        if(($catr_goods['goods_num'] + $goods_num) > $goods['store_count'])
+            $goods_num = 0;
             $result = M('Cart')->where("id =".$catr_goods[id])->save(  array("goods_num"=> ($catr_goods['goods_num'] + $goods_num)) ); // 数量相加        
             $cart_count = cart_goods_num($user_id,$session_id); // 查找购物车数量 
             setcookie('cn',$cart_count,null,'/');
             return array('status'=>1,'msg'=>'成功加入购物车','result'=>$cart_count);
-       }
-       else
-       {         
+       }else{         
              $insert_id = M('Cart')->add($data);
              $cart_count = cart_goods_num($user_id,$session_id); // 查找购物车数量
              setcookie('cn',$cart_count,null,'/');
