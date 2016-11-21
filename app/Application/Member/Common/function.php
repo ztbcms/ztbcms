@@ -8,7 +8,7 @@
  * 会员空间个性URL地址组装 支持不同URL模式
  * @param string $url URL表达式，格式：'[分组/模块/操作#锚点@域名]?参数1=值1&参数2=值2...'
  * @param string|array $vars 传入的参数，支持数组和字符串
- * @param string $suffix 伪静态后缀，默认为true表示获取配置值
+ * @param string|boolean $suffix 伪静态后缀，默认为true表示获取配置值
  * @param boolean $redirect 是否跳转，如果设置为true则表示跳转到该URL地址
  * @param boolean $domain 是否显示域名
  * @return string
@@ -83,15 +83,15 @@ function format_date($sTime, $type = 'mohu') {
 }
 
 /**
- *  匹配字符串中 at 的用户信息 ，被匹配的格式为：@水平凡[2]
- * @param type $str 字符串
- * @return boolean 返回匹配成功后的数组
+ *  匹配字符串中 at 的用户信息 ，被匹配的格式为：@ztbcms[2]
+ * @param string $str 字符串
+ * @return boolean|array 返回匹配成功后的数组
  */
 function matchAtUser($str) {
     if (empty($str)) {
         return false;
     }
-    preg_match_all("/@(.*?)\[([0-9]+)\]/i", $str, $matches);
+    preg_match_all("/@(.*?)\\[([0-9]+)\\]/i", $str, $matches);
     if ($matches) {
         $atUser = array();
         foreach ($matches[0] as $k => $v) {
