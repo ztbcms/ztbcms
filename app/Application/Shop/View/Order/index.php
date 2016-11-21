@@ -1,7 +1,7 @@
 <include file="Public/min-header"/>
-<link href="{$config_siteurl}statics/shop/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
-<script src="{$config_siteurl}statics/shop/plugins/daterangepicker/moment.min.js" type="text/javascript"></script>
-<script src="{$config_siteurl}statics/shop/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
+<link href="{$config_siteurl}statics/extres/shop/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<script src="{$config_siteurl}statics/extres/shop/plugins/daterangepicker/moment.min.js" type="text/javascript"></script>
+<script src="{$config_siteurl}statics/extres/shop/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
 <div class="wrapper">
     <!-- Content Header (Page header) -->
     <include file="Public/breadcrumb"/>

@@ -15,7 +15,7 @@
                              ?>" >
                     {$vo2}
                 </button>                                                        
-                        <img width="35" height="35" src="{$specImageList[$k2]|default='/statics/shop/images/add-button.jpg'}" id="item_img_{$k2}" onclick="GetUploadify3('{$k2}');"/>    
+                        <img width="35" height="35" src="{$specImageList[$k2]|default='/statics/extres/shop/images/add-button.jpg'}" id="item_img_{$k2}" onclick="GetUploadify3('{$k2}');"/>    
                         <input type="hidden" name="item_img[{$k2}]" value="{$specImageList[$k2]}" />                                                      
                 &nbsp;&nbsp;&nbsp;            
             </foreach>         

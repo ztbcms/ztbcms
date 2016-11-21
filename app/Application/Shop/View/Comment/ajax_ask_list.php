@@ -41,7 +41,7 @@
                 {$goods_list[$list[goods_id]]}
                 </td>
                 <td class="text-center">
-                    <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[is_show] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_consult','id','{$list.id}','is_show',this)"/>
+                    <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[is_show] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_consult','id','{$list.id}','is_show',this)"/>
                 </td>
                 <td class="text-center">{$consult_type[$list[consult_type]]}</td>
 				<td class="text-center">{$list.add_time|date='Y-m-d H:i:s',###}</td>

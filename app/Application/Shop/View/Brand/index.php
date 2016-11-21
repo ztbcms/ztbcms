@@ -50,7 +50,7 @@
                                     </td>
                                     <td class="text-left">{$cat_list[$list[parent_cat_id]]} {$cat_list[$list[cat_id]]}</td>                                   
                                     <td>
-                                         <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[is_hot] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('brand','id','{$list.id}','is_hot',this)"/>			                             
+                                         <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[is_hot] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('brand','id','{$list.id}','is_hot',this)"/>			                             
 			            </td>
                                     <td class="text-left">                                         
                                         <input type="text" onchange="updateSort('brand','id','{$list.id}','sort',this)" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')"  size="4"   value="{$list.sort}" class="input-sm" />
@@ -108,12 +108,12 @@ function changeBrandField(field,id,obj)
      {
          $(obj).data('isshow','0');    
          var value = 0;
-         $(obj).attr('src','{$config_siteurl}statics/shop/images/cancel.png');
+         $(obj).attr('src','{$config_siteurl}statics/extres/shop/images/cancel.png');
          
      }else{
          $(obj).data('isshow','1');
          var value = 1;
-         $(obj).attr('src','{$config_siteurl}statics/shop/images/yes.png');
+         $(obj).attr('src','{$config_siteurl}statics/extres/shop/images/yes.png');
      }    
      
      $.ajax({

@@ -37,7 +37,7 @@
                                                 <span class="direct-chat-name pull-left"><!--用户名 --></span>
                                                 <span class="direct-chat-timestamp pull-right">{$comment.add_time|date="Y-m-d H:i",###}</span>
                                             </div><!-- /.direct-chat-info -->
-                                            <img alt="{$comment.username}" src="{$config_siteurl}statics/shop/dist/img/user2-160x160.jpg" class="direct-chat-img"><!-- /.direct-chat-img -->
+                                            <img alt="{$comment.username}" src="{$config_siteurl}statics/extres/shop/dist/img/user2-160x160.jpg" class="direct-chat-img"><!-- /.direct-chat-img -->
                                             <div class="direct-chat-text">
                                                  {$comment.content}
                                             </div><!-- /.direct-chat-text -->
@@ -49,7 +49,7 @@
                                                 <span class="direct-chat-name pull-right"><!--管理员 --></span>
                                                 <span class="direct-chat-timestamp pull-left">{$v.add_time|date="Y-m-d H:i",###}</span>
                                             </div><!-- /.direct-chat-info -->
-                                            <img alt="管理员" src="{$config_siteurl}statics/shop/dist/img/user2-160x160.jpg" class="direct-chat-img"><!-- /.direct-chat-img -->
+                                            <img alt="管理员" src="{$config_siteurl}statics/extres/shop/dist/img/user2-160x160.jpg" class="direct-chat-img"><!-- /.direct-chat-img -->
                                             <div class="direct-chat-text">
                                                  {$v.content}
                                             </div>

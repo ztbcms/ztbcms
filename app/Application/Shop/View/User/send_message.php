@@ -5,10 +5,10 @@
     <title>收货地址-{$tpshop_config['shop_info_store_title']}</title>
     <meta http-equiv="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
     <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
-    <link rel="stylesheet" href="{$config_siteurl}statics/shop/bootstrap/css/edit_address.css" type="text/css">
-    <script src="{$config_siteurl}statics/shop/js/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" href="{$config_siteurl}statics/extres/shop/bootstrap/css/edit_address.css" type="text/css">
+    <script src="{$config_siteurl}statics/extres/shop/js/jquery-1.10.2.min.js"></script>
     <script src="__STATIC__/js/slider.js"></script>
-	<script src="{$config_siteurl}statics/shop/js/layer/layer-min.js"></script><!--弹窗js 参考文档 http://layer.layui.com/-->
+	<script src="{$config_siteurl}statics/extres/shop/js/layer/layer-min.js"></script><!--弹窗js 参考文档 http://layer.layui.com/-->
 </head>
 <style type="text/css">
 .wi80-BFB{width:80%}
@@ -62,8 +62,8 @@
         </div>
     </div>
 </div>
-<script src="{$config_siteurl}statics/shop/js/global.js"></script>
-<script src="{$config_siteurl}statics/shop/js/pc_common.js"></script>
+<script src="{$config_siteurl}statics/extres/shop/js/global.js"></script>
+<script src="{$config_siteurl}statics/extres/shop/js/pc_common.js"></script>
 
 <script>
     function checkForm(){

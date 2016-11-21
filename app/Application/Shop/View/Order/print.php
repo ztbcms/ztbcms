@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <title>订单打印</title>
-    <link href="{$config_siteurl}statics/shop/bootstrap/css/bootstrap.css" rel="stylesheet" media="all" />
-    <script type="text/javascript" src="{$config_siteurl}statics/shop/plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="{$config_siteurl}statics/shop/bootstrap/css/bootstrap.min.css"></script>
-    <link href="{$config_siteurl}statics/shop/bootstrap/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+    <link href="{$config_siteurl}statics/extres/shop/bootstrap/css/bootstrap.css" rel="stylesheet" media="all" />
+    <script type="text/javascript" src="{$config_siteurl}statics/extres/shop/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="{$config_siteurl}statics/extres/shop/bootstrap/css/bootstrap.min.css"></script>
+    <link href="{$config_siteurl}statics/extres/shop/bootstrap/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
     <style media="print" type="text/css">.noprint{display:none}</style>
 </head>
 <body>

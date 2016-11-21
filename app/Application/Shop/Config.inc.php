@@ -27,7 +27,8 @@ return array(
 	'sign' => 'b19cc279ed484c13c96c2f7142e2f437',
 	//依赖模块
 	'depend' => array(
-		'Member'
+		'Member',
+		'Area'
 	),
 	//行为注册
 	'tags' => array(),

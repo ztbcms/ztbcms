@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS `cms_order`;
 DROP TABLE IF EXISTS `cms_message`;
 DROP TABLE IF EXISTS `cms_group_buy`;
 DROP TABLE IF EXISTS `cms_goods_type`;
+DROP TABLE IF EXISTS `cms_goods_images`;
 DROP TABLE IF EXISTS `cms_goods_consult`;
 DROP TABLE IF EXISTS `cms_goods_category`;
 DROP TABLE IF EXISTS `cms_goods_attribute`;

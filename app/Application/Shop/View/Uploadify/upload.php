@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Uploadify</title>
-<link rel="stylesheet" type="text/css" href="{$config_siteurl}statics/shop/plugins/uploadify/uploadify.css" />
+<link rel="stylesheet" type="text/css" href="{$config_siteurl}statics/extres/shop/plugins/uploadify/uploadify.css" />
 </head>
 <body>
 <div class="W">
@@ -40,11 +40,11 @@
 	</div>
 </div>
 
-<script src="{$config_siteurl}statics/shop/plugins/uploadify/jquery.min.js" type="text/javascript"></script> 
+<script src="{$config_siteurl}statics/extres/shop/plugins/uploadify/jquery.min.js" type="text/javascript"></script> 
 <!--防止客户端缓存文件，造成uploadify.js不更新，而引起的“喔唷，崩溃啦”-->
-<script>document.write("<script type='text/javascript' "+ "src='{$config_siteurl}statics/shop/plugins/uploadify/jquery.uploadify.js?" + new Date()+ "'></s" + "cript>");
+<script>document.write("<script type='text/javascript' "+ "src='{$config_siteurl}statics/extres/shop/plugins/uploadify/jquery.uploadify.js?" + new Date()+ "'></s" + "cript>");
 </script>			
-<script src="{$config_siteurl}statics/shop/plugins/uploadify/uploadify-move.js" type="text/javascript"></script> 
+<script src="{$config_siteurl}statics/extres/shop/plugins/uploadify/uploadify-move.js" type="text/javascript"></script> 
 <script type="text/javascript">
 function Close(){
 	$("iframe.uploadframe", window.parent.document).remove();
@@ -61,7 +61,7 @@ $(function() {
 			'auto'			  : true,
 			'method'   		  : 'post',
 			'multi'   		  : true,
-			'swf'      		  : '{$config_siteurl}statics/shop/plugins/uploadify/uploadify.swf',
+			'swf'      		  : '{$config_siteurl}statics/extres/shop/plugins/uploadify/uploadify.swf',
        		'uploader'        : "{$info.upload}",
     		'progressData'    : 'all',
 			'queueSizeLimit'  : {$info.num},
@@ -69,7 +69,7 @@ $(function() {
 			'fileSizeLimit'   : '20000KB',
 	        'fileTypeDesc' 	  : 'Image Files',
 	        'fileTypeExts'    : '*.jpeg; *.jpg; *.png; *.gif',
-			'buttonImage'     : '{$config_siteurl}statics/shop/plugins/uploadify/select.png',
+			'buttonImage'     : '{$config_siteurl}statics/extres/shop/plugins/uploadify/select.png',
 			'queueID'         : 'fileQueue',
 			'onUploadStart'   : function(file){
 				$('#uploadify').uploadify('settings', 'formData', {'iswatermark':$("#iswatermark").is(':checked')});				
@@ -88,7 +88,7 @@ function SetImgContent(obj){
 	if(obj.state == 'SUCCESS'){
 		var sLi = "";
 		sLi += '<li class="img">';
-		sLi += '<img src="' + obj.url + '" width="100" height="100" onerror="this.src=\'{$config_siteurl}statics/shop/plugins/uploadify/nopic.png\'">';
+		sLi += '<img src="' + obj.url + '" width="100" height="100" onerror="this.src=\'{$config_siteurl}statics/extres/shop/plugins/uploadify/nopic.png\'">';
 		sLi += '<input type="hidden" name="fileurl_tmp[]" value="' + obj.url + '">';
 		sLi += '<a href="javascript:void(0);">删除</a>';
 		sLi += '</li>';

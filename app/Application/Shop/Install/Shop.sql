@@ -384,6 +384,17 @@ CREATE TABLE `cms_goods_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 -- ----------------------------
+-- 商品类型
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_goods_images`;
+CREATE TABLE `cms_goods_images` (
+  `img_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '图片id 自增',
+  `goods_id` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '商品id',
+  `image_url` varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
+  PRIMARY KEY (`img_id`),
+  KEY `goods_id` (`goods_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=546 DEFAULT CHARSET=utf8;
+-- ----------------------------
 -- 商品咨询表
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_goods_consult`;

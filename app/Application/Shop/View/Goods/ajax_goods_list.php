@@ -61,16 +61,16 @@
                             />
                         </td>
                         <td class="text-center">
-                            <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[is_on_sale] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_on_sale',this)" />
+                            <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[is_on_sale] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_on_sale',this)" />
                         </td>
                         <td class="text-center">
-                            <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[is_recommend] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_recommend',this)" />
+                            <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[is_recommend] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_recommend',this)" />
                         </td>
                         <td class="text-center">
-                            <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[is_new] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_new',this)" />
+                            <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[is_new] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_new',this)" />
                         </td>
                         <td class="text-center">
-                            <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[is_hot] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_hot',this)" />
+                            <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[is_hot] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods','goods_id','{$list.goods_id}','is_hot',this)" />
                         </td>
                         <td class="text-center">
                             <input type="text" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" onchange="updateSort('goods','goods_id','{$list.goods_id}','sort',this)" size="4" value="{$list.sort}" />

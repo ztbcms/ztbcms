@@ -24,7 +24,7 @@
                     <td class="text-left">{$list.name}</td>
                     <td class="text-left">{$list.spec_item}</td>
                     <td class="text-center">
-                        <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[search_index] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('spec','id','{$list.id}','search_index',this)"/>
+                        <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[search_index] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('spec','id','{$list.id}','search_index',this)"/>
                     </td>
                     <td class="text-right">
                         <input type="text" class="form-control input-sm" onchange="updateSort('spec','id','{$list.id}','order',this)" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')"  size="4" value="{$list.order}" />

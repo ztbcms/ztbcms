@@ -6,25 +6,25 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.4 -->
-    <link href="{$config_siteurl}statics/shop/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$config_siteurl}statics/extres/shop/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <!-- FontAwesome 4.3.0 -->
- 	<link href="{$config_siteurl}statics/shop/bootstrap/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+ 	<link href="{$config_siteurl}statics/extres/shop/bootstrap/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Ionicons 2.0.0 --
     <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
     <!-- Theme style -->
-    <link href="{$config_siteurl}statics/shop/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$config_siteurl}statics/extres/shop/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins 
     	folder instead of downloading all of them to reduce the load. -->
-    <link href="{$config_siteurl}statics/shop/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$config_siteurl}statics/extres/shop/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
     <!-- iCheck -->
-    <link href="{$config_siteurl}statics/shop/plugins/iCheck/flat/blue.css" rel="stylesheet" type="text/css" />   
+    <link href="{$config_siteurl}statics/extres/shop/plugins/iCheck/flat/blue.css" rel="stylesheet" type="text/css" />   
     <!-- jQuery 2.1.4 -->
-    <script src="{$config_siteurl}statics/shop/plugins/jQuery/jQuery-2.1.4.min.js"></script>
-	<script src="{$config_siteurl}statics/shop/js/global.js"></script>
-    <script src="{$config_siteurl}statics/shop/js/myFormValidate.js"></script>    
-    <script src="{$config_siteurl}statics/shop/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="{$config_siteurl}statics/shop/js/layer/layer-min.js"></script><!-- 弹窗js 参考文档 http://layer.layui.com/-->
-    <script src="{$config_siteurl}statics/shop/js/myAjax.js"></script>
+    <script src="{$config_siteurl}statics/extres/shop/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+	<script src="{$config_siteurl}statics/extres/shop/js/global.js"></script>
+    <script src="{$config_siteurl}statics/extres/shop/js/myFormValidate.js"></script>    
+    <script src="{$config_siteurl}statics/extres/shop/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$config_siteurl}statics/extres/shop/js/layer/layer-min.js"></script><!-- 弹窗js 参考文档 http://layer.layui.com/-->
+    <script src="{$config_siteurl}statics/extres/shop/js/myAjax.js"></script>
     <script type="text/javascript">
     function delfunc(obj){
     	layer.confirm('确认删除？', {

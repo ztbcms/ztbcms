@@ -51,11 +51,11 @@ function del_fun(del_url) {
 function changeTableVal(table, id_name, id_value, field, obj) {
     var src = "";
     if ($(obj).attr('src').indexOf("cancel.png") > 0) {
-        src = '/statics/shop/images/yes.png';
+        src = '/statics/extres/shop/images/yes.png';
         var value = 1;
 
     } else {
-        src = '/statics/shop/images/cancel.png';
+        src = '/statics/extres/shop/images/cancel.png';
         var value = 0;
     }
     $.ajax({

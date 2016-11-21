@@ -28,7 +28,7 @@
      * 在线编辑器相 关配置 js 
      *  参考 地址 http://fex.baidu.com/ueditor/
      */
-    window.UEDITOR_Admin_URL = "{$config_siteurl}statics/shop/plugins/Ueditor/";
+    window.UEDITOR_Admin_URL = "{$config_siteurl}statics/extres/shop/plugins/Ueditor/";
     var URL_upload = "{$URL_upload}";
     var URL_fileUp = "{$URL_fileUp}";
     var URL_scrawlUp = "{$URL_scrawlUp}";
@@ -38,10 +38,10 @@
     var URL_getMovie = "{$URL_getMovie}";
     var URL_home = "{$URL_home}";
 </script>
-<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/shop/plugins/Ueditor/ueditor.config.js"></script>
-<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/shop/plugins/Ueditor/ueditor.all.min.js">
+<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/ueditor.all.min.js">
 </script>
-<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/shop/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
     var editor;
     $(function() {
@@ -300,7 +300,7 @@
                                                 <if condition="$goodsInfo['original_img'] neq null">
                                                     &nbsp;&nbsp;
                                                     <a target="_blank" href="{$goodsInfo.original_img}" id="original_img2">
-                                                        <img width="25" height="25" src="{$config_siteurl}statics/shop/images/image_icon.jpg">
+                                                        <img width="25" height="25" src="{$config_siteurl}statics/extres/shop/images/image_icon.jpg">
                                                     </a>
                                                 </if>
                                                 <span id="err_original_img" style="color:#F00; display:none;"></span>
@@ -393,7 +393,7 @@
 
                                                 <div class="goods_xc" style="width:100px; text-align:center; margin: 5px; display:inline-block;">
                                                     <input type="hidden" name="goods_images[]" value="" />
-                                                    <a href="javascript:void(0);" onclick="GetUploadify(10,'','goods','call_back2');"><img src="{$config_siteurl}statics/shop/images/add-button.jpg" width="100" height="100" /></a>
+                                                    <a href="javascript:void(0);" onclick="GetUploadify(10,'','goods','call_back2');"><img src="{$config_siteurl}statics/extres/shop/images/add-button.jpg" width="100" height="100" /></a>
                                                     <br/>
                                                     <a href="javascript:void(0)">&nbsp;&nbsp;</a>
                                                 </div>

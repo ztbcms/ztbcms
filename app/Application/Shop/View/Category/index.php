@@ -44,10 +44,10 @@
                                                 </td>
                                                 <td><span>{$vo.mobile_name}</span></td>
                                                 <td>
-                                                    <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$vo[is_hot] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_category','id','{$vo.id}','is_hot',this)" />
+                                                    <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$vo[is_hot] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_category','id','{$vo.id}','is_hot',this)" />
                                                 </td>
                                                 <td>
-                                                    <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$vo[is_show] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_category','id','{$vo.id}','is_show',this)" />
+                                                    <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$vo[is_show] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_category','id','{$vo.id}','is_show',this)" />
                                                 </td>
                                                 <td>
                                                     <input type="text" onchange="updateSort('goods_category','id','{$vo.id}','cat_group',this)" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" size="4" value="{$vo.cat_group}" class="input-sm" />

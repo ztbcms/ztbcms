@@ -26,7 +26,7 @@
                     <td class="text-left">{$attr_input_type[$list[attr_input_type]]}</td>
                     <td class="text-left">{$list.attr_values|mb_substr=0,30,'utf-8'}</td>
                     <td class="text-center">                        
-                        <img width="20" height="20" src="{$config_siteurl}statics/shop/images/<if condition='$list[attr_index] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_attribute','attr_id','{$list.attr_id}','attr_index',this)"/>
+                        <img width="20" height="20" src="{$config_siteurl}statics/extres/shop/images/<if condition='$list[attr_index] eq 1'>yes.png<else />cancel.png</if>" onclick="changeTableVal('goods_attribute','attr_id','{$list.attr_id}','attr_index',this)"/>
                     </td>                    
                     <td class="text-left">
                         <input type="text" onchange="updateSort('goods_attribute','attr_id','{$list.attr_id}','order',this)" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')"  size="4" value="{$list.order}"/>
