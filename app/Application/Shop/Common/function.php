@@ -685,3 +685,18 @@ function navigate_goods($id,$type = 0)
     $arr = array_reverse($arr,true);
     return $arr;
 }
+/**
+ * 查看某个用户购物车中商品的数量
+ * @param type $user_id
+ * @param type $session_id
+ * @return type 购买数量
+ */
+function cart_goods_num($user_id = 0,$session_id = '')
+{
+    $where = " session_id = '$session_id' ";
+    $user_id && $where .= " or user_id = $user_id ";
+    // 查找购物车数量
+    $cart_count =  M('Cart')->where($where)->sum('goods_num');
+    $cart_count = $cart_count ? $cart_count : 0;
+    return $cart_count;
+}

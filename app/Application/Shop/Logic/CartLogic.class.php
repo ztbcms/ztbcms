@@ -19,12 +19,10 @@ class CartLogic extends RelationModel
      * @param type $goods_spec  选择规格 
      * @param type $user_id 用户id
      */
-    function addCart($goods_id,$goods_num,$goods_spec,$session_id,$user_id = 0)
-    {       
+    function addCart($goods_id,$goods_num,$goods_spec,$session_id,$user_id = 0){       
         
         $goods = M('Goods')->where("goods_id = $goods_id")->find(); // 找出这个商品        
         $specGoodsPriceList = M('SpecGoodsPrice')->where("goods_id = $goods_id")->getField("key,key_name,price,store_count,sku"); // 获取商品对应的规格价钱 库存 条码
-
 		$where = " session_id = '$session_id' ";
         $user_id = $user_id ? $user_id : 0;
 		if($user_id)
