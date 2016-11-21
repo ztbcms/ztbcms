@@ -17,9 +17,9 @@ class ShareModel extends Model {
 
 	/**
 	 * 添加分享（添加投稿）
-	 * @param type $userid 用户名
-	 * @param type $catid 栏目ID
-	 * @param type $data 提交数据
+	 * @param string $userid 用户名
+	 * @param string $catid 栏目ID
+	 * @param array $data 提交数据
 	 * @return boolean
 	 */
 	public function shareAdd($userid, $catid, $data) {
@@ -73,10 +73,10 @@ class ShareModel extends Model {
 
 	/**
 	 * 修改分享（修改投稿）
-	 * @param type $userid 用户名
-	 * @param type $catid 栏目ID
-	 * @param type $id 信息ID
-	 * @param type $data 提交数据
+	 * @param string $userid 用户名
+	 * @param string $catid 栏目ID
+	 * @param string $id 信息ID
+	 * @param array $data 提交数据
 	 * @return boolean
 	 */
 	public function shareEdit($userid, $catid, $id, $data) {
@@ -115,8 +115,8 @@ class ShareModel extends Model {
 
 	/**
 	 *  删除分享
-	 * @param type $userid
-	 * @param type $id
+	 * @param string $userid
+	 * @param string $id
 	 * @return boolean
 	 */
 	public function shareDel($userid, $id) {
@@ -146,10 +146,12 @@ class ShareModel extends Model {
 
 	/**
 	 * 添加投稿记录
-	 * @param type $catid 栏目ID
-	 * @param type $id 信息ID
-	 * @param type $userid 用户ID
-	 * @param type $integral 是否已经赠送积分
+	 * @param string $catid 栏目ID
+	 * @param string $id 信息ID
+	 * @param string $userid 用户ID
+	 * @param string $integral 是否已经赠送积分
+     * @param int $status 审核状态
+     * @return int|boolean
 	 */
 	protected function shareContentLog($catid, $id, $userid, $integral, $status = 0) {
 		//添加投稿记录

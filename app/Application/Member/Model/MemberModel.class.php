@@ -32,8 +32,8 @@ class MemberModel extends Model {
 
 	/**
 	 * 根据错误代码返回错误提示
-	 * @param type $errorCodes 错误代码
-	 * @return type
+	 * @param string $errorCodes 错误代码
+	 * @return string
 	 */
 	public function getErrorMesg($errorCodes) {
 		switch ($errorCodes) {
@@ -99,9 +99,9 @@ class MemberModel extends Model {
 
 	/**
 	 * 对明文密码，进行加密，返回加密后的密码
-	 * @param $identifier 为数字时，表示uid，其他为用户名
-	 * @param type $pass 明文密码，不能为空
-	 * @return type 返回加密后的密码
+	 * @param string $identifier 为数字时，表示uid，其他为用户名
+	 * @param string $pass 明文密码，不能为空
+	 * @return string 返回加密后的密码
 	 */
 	public function encryption($identifier, $pass, $verify = "") {
 		$v = array();
@@ -116,9 +116,9 @@ class MemberModel extends Model {
 
 	/**
 	 * 根据标识修改对应用户密码
-	 * @param type $identifier
-	 * @param type $password
-	 * @return type
+	 * @param string $identifier
+	 * @param string $password
+	 * @return boolean
 	 */
 	public function ChangePassword($identifier, $password) {
 		if (empty($identifier) || empty($password)) {
@@ -144,6 +144,7 @@ class MemberModel extends Model {
 	/**
 	 * 根据积分算出用户组
 	 * @param $point int 积分数
+     * @return int
 	 */
 	public function get_usergroup_bypoint($point = 0) {
 		$groupid = 2;
@@ -176,9 +177,9 @@ class MemberModel extends Model {
 
 	/**
 	 * 取得本应用中的用户资料
-	 * @param type $identifier
-	 * @param type $field
-	 * @return boolean
+	 * @param string $identifier
+	 * @param string $field
+	 * @return boolean|array
 	 */
 	public function getUserInfo($identifier, $field = '*') {
 		if (empty($identifier)) {
@@ -199,7 +200,7 @@ class MemberModel extends Model {
 
 	/**
 	 * 取得用户配置
-	 * @param type $userid 用户UID
+	 * @param string $userid 用户UID
 	 * @return boolean
 	 */
 	public function getUserConfig($userid) {

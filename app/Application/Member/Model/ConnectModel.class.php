@@ -26,8 +26,8 @@ class ConnectModel extends Model {
 
 	/**
 	 * 获取QQ授权地址
-	 * @param type $redirect_uri
-	 * @return type
+	 * @param string $redirect_uri
+	 * @return string
 	 */
 	public function getUrlConnectQQ($redirect_uri = '') {
 		$this->memberConfig = cache("Member_Config");
@@ -67,8 +67,8 @@ class ConnectModel extends Model {
 
 	/**
 	 * 获取新浪微博授权地址
-	 * @param type $redirect_uri
-	 * @return type
+	 * @param string $redirect_uri
+	 * @return string
 	 */
 	public function getUrlConnectSinaWeibo($redirect_uri = '') {
 		$this->memberConfig = cache("Member_Config");
@@ -104,8 +104,8 @@ class ConnectModel extends Model {
 
 	/**
 	 * 根据授权信息，取得对应绑定的用户ID
-	 * @param type $openid
-	 * @param type $app
+	 * @param string $openid
+	 * @param string $app
 	 * @return boolean
 	 */
 	public function getUserid($openid, $app) {
@@ -117,8 +117,8 @@ class ConnectModel extends Model {
 
 	/**
 	 * 根据用户ID取得相应的授权记录
-	 * @param type $userid 用户ID
-	 * @param type $app 应用标识
+	 * @param string $userid 用户ID
+	 * @param string $app 应用标识
 	 * @return boolean
 	 */
 	public function getUserAuthorize($userid, $app) {
@@ -134,9 +134,9 @@ class ConnectModel extends Model {
 
 	/**
 	 * 更新授权信息
-	 * @param type $openid
-	 * @param type $app
-	 * @param type $data
+	 * @param string $openid
+	 * @param string $app
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function connectSave($openid, $app, $data) {
@@ -163,8 +163,8 @@ class ConnectModel extends Model {
 
 	/**
 	 * 检查用户是否已经授权过
-	 * @param type $access_token
-	 * @param type $app
+	 * @param string $access_token
+	 * @param string $app
 	 * @return boolean
 	 */
 	public function isUserAuthorize($access_token, $app) {
@@ -181,7 +181,7 @@ class ConnectModel extends Model {
 
 	/**
 	 * 添加绑定信息
-	 * @param type $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function connectAdd($data) {
@@ -206,7 +206,7 @@ class ConnectModel extends Model {
 
 	/**
 	 * 删除授权关系
-	 * @param type $connectid
+	 * @param string $connectid
 	 * @return boolean
 	 */
 	public function connectDel($connectid, $userid = 0) {

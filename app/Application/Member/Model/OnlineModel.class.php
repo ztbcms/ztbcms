@@ -29,9 +29,9 @@ class OnlineModel extends Model {
 
 	/**
 	 * 取得在线用户列表
-	 * @param type $page 当前分页
-	 * @param type $limit 每次显示多少
-	 * @return type
+	 * @param int $page 当前分页
+	 * @param int $limit 每次显示多少
+	 * @return array
 	 */
 	public function getOnlineUserList($page = 1, $limit = 10) {
 		$count = $this->alias('as O')->join(' INNER JOIN `' . C('DB_PREFIX') . 'member` as M ON O.userid = M.userid')->count('M.userid');
@@ -51,8 +51,8 @@ class OnlineModel extends Model {
 
 	/**
 	 * 注册用户在线状态
-	 * @param type $userid 用户ID
-	 * @return boolean
+	 * @param int $userid 用户ID
+	 * @return boolean|int
 	 */
 	public function registerOnlineStatus($userid = 0) {
 		if (empty($userid)) {
@@ -92,8 +92,8 @@ class OnlineModel extends Model {
 
 	/**
 	 * 维护用户在线状态
-	 * @param type $userid 用户ID
-	 * @return boolean
+	 * @param int $userid 用户ID
+	 * @return boolean|array
 	 */
 	public function maintainOnlineStatus($userid = 0) {
 		if (empty($userid)) {
@@ -121,7 +121,7 @@ class OnlineModel extends Model {
 
 	/**
 	 * 注销在线状态
-	 * @param type $userid 用户ID
+	 * @param int $userid 用户ID
 	 * @return boolean
 	 */
 	public function onlineDel($userid = 0) {
