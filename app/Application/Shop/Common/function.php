@@ -397,12 +397,12 @@ function tpCache($config_key,$data = array()){
  * @param $regionId id
  */
 function getRegionName($regionId,$level=1){
-	 if(I('get.level')==1){
-            $data = M('AreaProvince')->where("id=$regionId")->select();
-        }elseif(I('get.level')==2){
-            $data = M('AreaCity')->where("id=$regionId")->select();
+	 if($level==1){
+            $data = M('AreaProvince')->where("id=$regionId")->find();
+        }elseif($level==2){
+            $data = M('AreaCity')->where("id=$regionId")->find();
         }else{
-            $data = M('AreaDistrict')->where("id=$regionId")->select();
+            $data = M('AreaDistrict')->where("id=$regionId")->find();
     }
     return $data['areaname'];
 }
