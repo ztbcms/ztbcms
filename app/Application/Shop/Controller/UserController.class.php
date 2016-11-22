@@ -167,9 +167,9 @@ class UserController extends AdminBase{
         // 获取省份
         $province = M('AreaProvince')->getField('id,areaname');
         //获取订单城市
-        $city =  M('AreaCity')->where(array('parentid'=>$order['province'],'level'=>2))->getField('id,areaname');
+        $city =  M('AreaCity')->where(array('level'=>2))->getField('id,areaname');
         //获取订单地区
-        $district =  M('AreaDistrict')->where(array('parentid'=>$order['city'],'level'=>3))->getField('id,areaname');
+        $district =  M('AreaDistrict')->where(array('level'=>3))->getField('id,areaname');
         $this->assign('lists',$lists);
         $this->assign('province',$province);
         $this->assign('city',$city);
