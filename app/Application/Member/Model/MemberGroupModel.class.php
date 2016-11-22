@@ -33,7 +33,7 @@ class MemberGroupModel extends Model {
 
 	/**
 	 * 编辑会员组
-	 * @param type $data 数据
+	 * @param array $data 数据
 	 * @return boolean
 	 */
 	public function groupEdit($data) {
@@ -61,7 +61,7 @@ class MemberGroupModel extends Model {
 
 	/**
 	 * 添加会员组
-	 * @param type $data 提交数据
+	 * @param array $data 提交数据
 	 * @return boolean
 	 */
 	public function groupAdd($data) {
@@ -83,7 +83,7 @@ class MemberGroupModel extends Model {
 
 	/**
 	 * 删除用户组
-	 * @param type $groupid 用户组ID，可以是数组
+	 * @param string|array $groupid 用户组ID，可以是数组
 	 * @return boolean
 	 */
 	public function groupDelete($groupid) {

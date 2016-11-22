@@ -30,7 +30,7 @@ class FavoriteModel extends Model {
 
 	/**
 	 * 取得用户是否有收藏权限
-	 * @param type $userid
+	 * @param string $userid
 	 * @return boolean
 	 */
 	public function isFavoriteCompetence($userid) {
@@ -47,9 +47,9 @@ class FavoriteModel extends Model {
 
 	/**
 	 * 检查是否收藏过
-	 * @param type $userid 用户ID
-	 * @param type $catid 栏目ID
-	 * @param type $id 信息ID
+	 * @param string $userid 用户ID
+	 * @param string $catid 栏目ID
+	 * @param string $id 信息ID
 	 * @return boolean
 	 */
 	public function isFavorlte($userid, $catid, $id) {
@@ -62,7 +62,7 @@ class FavoriteModel extends Model {
 
 	/**
 	 * 添加收藏
-	 * @param type $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function favoriteAdd($data) {
@@ -109,8 +109,8 @@ class FavoriteModel extends Model {
 
 	/**
 	 * 删除收藏
-	 * @param type $userid 用户UID
-	 * @param type $fid 收藏ID
+	 * @param string $userid 用户UID
+	 * @param string $fid 收藏ID
 	 * @return boolean
 	 */
 	public function favoriteDel($userid, $fid) {

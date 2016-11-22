@@ -12,8 +12,8 @@ class MemberFieldModel extends ModelFieldModel {
 
 	/**
 	 * 根据模型ID，返回表名
-	 * @param type $modelid
-	 * @param type $modelid
+	 * @param string $modelid
+	 * @param string $issystem
 	 * @return string
 	 */
 	protected function getModelTableName($modelid, $issystem) {
