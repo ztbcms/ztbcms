@@ -8,6 +8,48 @@ class OrderApiController extends BaseController {
     public function _initialize() {
         parent::_initialize();
     }
+     /*
+     * 订单列表
+     */
+    public function order_list($page=1,$limit=10){
+        $where = ' user_id='.$this->userid;
+        //条件搜索
+       if(I('get.type')){
+           $where .= C(strtoupper(I('get.type')));
+       }
+       // 搜索订单 根据商品名称 或者 订单编号
+       $search_key = trim(I('search_key'));       
+       if($search_key){
+          $where .= " and (order_sn like '%$search_key%' or order_id in (select order_id from `".C('DB_PREFIX')."order_goods` where goods_name like '%$search_key%') ) ";
+       }
+       
+        $total = M('order')->where($where)->count();
+        $order_str = "order_id DESC";
+        $order_list = M('order')->order($order_str)->where($where)->page($page,$limit)->select();
+       
+        //获取订单商品
+        $model = new \Shop\Logic\ShopUsersLogic();
+        foreach($order_list as $k=>$v){
+            $data = $model->get_order_goods($v['order_id']);
+            $order_list[$k]['goods_list'] = $data['result'];            
+        }
+        $res_data['total']=$total;
+        $res_data['page']=$page;
+        $res_data['limit']=$limit;
+        //订单状态对应的中文描述
+        $res_data['order_status']=C('ORDER_STATUS');
+        //订单物流状态对应的中文描述
+        $res_data['shipping_status']=C('SHIPPING_STATUS');
+        //订单支付状态
+        $res_data['pay_status']=C('PAY_STATUS');
+        //订单列表
+        $res_data['lists']=$order_list;
+        $result=array('status'=>1,"data"=>$res_data,'msg'=>'ok');
+        exit(json_encode($result));
+    }
+    /**
+    * 根据购物车商品下单
+    */
     public function create_order_by_cart(){
         $address_id = I("address_id"); //  收货地址id
         $invoice_title = I('invoice_title'); // 发票抬头
