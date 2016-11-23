@@ -8,6 +8,38 @@ class OrderApiController extends BaseController {
     public function _initialize() {
         parent::_initialize();
     }
+    /*
+     * 订单详情
+     */
+    public function order_detail(){
+        $id = I('get.id');
+        $map['order_id'] = $id;
+        $map['user_id'] = $this->userid;
+        $order_info = M('order')->where($map)->find();
+        
+        if(!$order_info){
+            $result=array('status'=>-1,'msg'=>'查不到指定订单信息');
+            exit(json_encode($result));
+        }
+        //获取订单商品
+        $model = new \Shop\Logic\ShopUsersLogic();
+        $data = $model->get_order_goods($order_info['order_id']);
+        $order_info['goods_list'] = $data['result'];
+        $delivery_doc = M('DeliveryDoc')->where("order_id = $id")->find();
+        //获取订单操作记录
+        $order_action = M('order_action')->where(array('order_id'=>$id))->select();
+        
+        //订单状态对应的中文描述
+        $res_data['order_status']=C('ORDER_STATUS');
+        //订单物流状态对应的中文描述
+        $res_data['shipping_status']=C('SHIPPING_STATUS');
+        //订单支付状态
+        $res_data['pay_status']=C('PAY_STATUS');
+        $res_data['order_info']=$order_info;
+        $res_data['order_action']=$order_action;
+        exit(json_encode(array('status'=>1,'data'=>$res_data,'msg'=>'ok')));
+    }
+
      /*
      * 订单列表
      */
