@@ -273,6 +273,7 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
     /**
      *  添加一个订单
      * @param type $user_id  用户id     
+     * @param type $cartList  选中购物车商品     
      * @param type $address_id 地址id
      * @param type $shipping_code 物流编号
      * @param type $invoice_title 发票
@@ -280,8 +281,7 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
      * @param type $car_price 各种价格
      * @return type $order_id 返回新增的订单id
      */
-    public function addOrder($user_id,$address_id,$shipping_code,$invoice_title,$coupon_id = 0,$car_price)
-    {
+    public function addOrder($user_id,$cartList,$address_id,$shipping_code,$invoice_title,$coupon_id = 0,$car_price){
         
         // 仿制灌水 1天只能下 50 单  // select * from `tp_order` where user_id = 1  and order_sn like '20151217%' 
         $order_count = M('Order')->where("user_id= $user_id and order_sn like '".date('Ymd')."%'")->count(); // 查找购物车商品总数量
@@ -325,13 +325,11 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
         
         // 记录订单操作日志
         logOrder($order_id,'您提交了订单，请等待系统确认','提交订单',$user_id);        
-        
         $order = M('Order')->where("order_id = $order_id")->find();                
-            
         // 1插入order_goods 表
-        $cartList = M('Cart')->where("user_id = $user_id and selected = 1")->select();
-        foreach($cartList as $key => $val)
-        {
+        $order_goods_ids=array();
+        foreach($cartList as $key => $val){
+           $order_goods_ids[]=$val['goods_id'];
            $goods = M('goods')->where("goods_id = {$val['goods_id']} ")->find();
            $data2['order_id']           = $order_id; // 订单id
            $data2['goods_id']           = $val['goods_id']; // 商品id
@@ -352,7 +350,6 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
            // 扣除商品库存  扣除库存移到 付完款后扣除
            //M('Goods')->where("goods_id = ".$val['goods_id'])->setDec('store_count',$val['goods_num']); // 商品减少库存
         } 
-        
         // 如果应付金额为0  可能是余额支付 + 积分 + 优惠券 这里订单支付状态直接变成已支付 
         if($data['order_amount'] == 0)
         {                        
@@ -370,11 +367,13 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
         }
         // 3 扣除积分 扣除余额
         if($car_price['pointsFee']>0)
-        	M('Users')->where("user_id = $user_id")->setDec('pay_points',($car_price['pointsFee'] * tpCache('shopping.point_rate'))); // 消费积分 
+        	M('ShopUsers')->where("userid = $user_id")->setDec('pay_points',($car_price['pointsFee'] * tpCache('shopping.point_rate'))); // 消费积分 
         if($car_price['balance']>0)
-        	M('Users')->where("user_id = $user_id")->setDec('user_money',$car_price['balance']); // 抵扣余额         
+        	M('ShopUsers')->where("userid = $user_id")->setDec('user_money',$car_price['balance']); // 抵扣余额         
         // 4 删除已提交订单商品
-        M('Cart')->where("user_id = $user_id and selected = 1")->delete();
+
+        $where=array('userid'=>$user_id,'goods_id'=>array('in',$order_goods_ids));
+        M('Cart')->where($where)->delete();
       
         // 5 记录log 日志
         $data4['user_id'] = $user_id;
@@ -386,23 +385,6 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
         $data4['order_id'] = $order_id;    
         // 如果使用了积分或者余额才记录
         ($data4['user_money'] || $data4['pay_points']) && M("AccountLog")->add($data4);           
-        
-        //分销开关全局
-        $distribut_switch = tpCache('distribut.switch');
-        if($distribut_switch  == 1 && file_exists(APP_PATH.'Common/Logic/DistributLogic.class.php'))
-        {
-            $distributLogic = new \Common\Logic\DistributLogic();
-            $distributLogic->rebate_log($order); // 生成分成记录
-        }
-        // 如果有微信公众号 则推送一条消息到微信
-        $user = M('users')->where("user_id = $user_id")->find();
-        if($user['oauth']== 'weixin')
-        {
-            $wx_user = M('wx_user')->find();
-            $jssdk = new \Mobile\Logic\Jssdk($wx_user['appid'],$wx_user['appsecret']);
-            $wx_content = "你刚刚下了一笔订单:{$order['order_sn']} 尽快支付,过期失效!";
-            $jssdk->push_msg($user['openid'],$wx_content);
-        }
         return array('status'=>1,'msg'=>'提交订单成功','result'=>$order_id); // 返回新增的订单id        
     }
     
