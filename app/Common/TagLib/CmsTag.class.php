@@ -612,7 +612,7 @@ class CmsTag extends TagLib {
 		if (!$sql && !$table) {
 			return false;
 		}
-		//删除，插入不执行！这样处理感觉有点鲁莽了，，，-__,-!
+		//删除，插入不执行！
 		if (strpos($tag['sql'], "delete") || strpos($tag['sql'], "insert")) {
 			return false;
 		}
