@@ -29,9 +29,21 @@
       <div class="mb10"> 
         <section style="display: inline;">
             <span class="mr20">时间：
-            <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}">-<input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" >
+            <input type="text" name="start_time1" class="input length_2 J_date" value="{$Think.get.start_time1}">-<input type="text" class="input length_2 J_date" name="end_time1" value="{$Think.get.end_time1}" >
 
         </section>
+
+        <section style="display: none;">
+          起始时间：
+          <input type="text" value="inputtime" name="_filter[1]">
+          <input type="text" value="EGT" name="_operater[1]">
+          <input type="text" value="{$_value[1]}" name="_value[1]" id="value1">
+          结束时间:
+          <input type="text" value="inputtime" name="_filter[2]">
+          <input type="text" value="ELT" name="_operater[2]">
+          <input type="text" value="{$_value[2]}" name="_value[2]" id="value2">
+        </section>
+
 
         <section style="display: inline;">
           <select name="_filter[0]" class="select_2">
@@ -214,5 +226,41 @@ function pushs() {
     });
 }
 </script>
+
+<script>
+  (function($){
+    $start_time = $("input#value1");
+    $end_time = $("input#value2");
+    $("input[name=start_time1]").on('blur', function(){
+      var val = $(this).val();
+      if(val !== ''){
+        var vs = val.split('-');
+        vs[0] = parseInt(vs[0]);
+        vs[1] = parseInt(vs[1])-1; //从0开始
+        vs[2] = parseInt(vs[2]);
+
+        var date = new Date(vs[0], vs[1], vs[2], 0,0,0,0);
+        $start_time.val(parseInt(date.getTime()/1000));
+      }else{
+        $start_time.val('');
+      }
+    });
+
+    $("input[name=end_time1]").on('blur', function(){
+      var val = $(this).val();
+      if(val !== ''){
+        var vs = val.split('-');
+        vs[0] = parseInt(vs[0]);
+        vs[1] = parseInt(vs[1])-1;//从0开始
+        vs[2] = parseInt(vs[2])+1;
+        var date = new Date(vs[0], vs[1], vs[2], 0, 0, 0, 0);
+        $end_time.val(parseInt(date.getTime()/1000) - 1);
+      }else{
+        $end_time.val('');
+      }
+    });
+  })(jQuery);
+</script>
+
 </body>
 </html>
