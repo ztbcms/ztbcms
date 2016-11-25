@@ -19,6 +19,11 @@
        </if>
     </select>
     <a href="{$url}" target="_blank"  class="btn" title="访问该栏目">访问该栏目</a>
+
+    <if condition="isModuleInstall('Transport')">
+      <a class="btn btn-primary" href="{:U('Transport/Export/classlist', I('get.'))}" target="_blank">导出到Excel</a>
+    </if>
+
   </div>
   <div class="h_a">搜索</div>
   <form method="post" action="{:U('classlist',array('catid'=>$catid))}">
