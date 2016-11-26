@@ -20,7 +20,6 @@ class CartLogic extends RelationModel
      * @param type $user_id 用户id
      */
     function addCart($goods_id,$goods_num,$goods_spec,$session_id,$user_id = 0){       
-        
         $goods = M('Goods')->where("goods_id = $goods_id")->find(); // 找出这个商品        
         $specGoodsPriceList = M('SpecGoodsPrice')->where("goods_id = $goods_id")->getField("key,key_name,price,store_count,sku"); // 获取商品对应的规格价钱 库存 条码
 		$where = " session_id = '$session_id' ";
@@ -28,7 +27,7 @@ class CartLogic extends RelationModel
 
 
         foreach($goods_spec as $key => $val) // 处理商品规格
-            $spec_item[] = $val; // 所选择的规格项                            
+            $spec_item[] = $val; // 所选择的规格项  
         if(!empty($spec_item)) // 有选择商品规格
         {
             sort($spec_item);
@@ -62,36 +61,7 @@ class CartLogic extends RelationModel
             return array('status'=>-3,'msg'=>'购买商品不存在','result'=>'');            
         if(($goods['store_count'] < ($catr_goods['goods_num'] + $goods_num)))
             return array('status'=>-4,'msg'=>'商品库存不足','result'=>'');        
-        // if($goods['prom_type'] > 0 && $user_id == 0)
-        //     return array('status'=>-101,'msg'=>'购买活动商品必须先登录','result'=>'');
-        
-        //限时抢购 不能超过购买数量        
-        // if($goods['prom_type'] == 1) 
-        // {
-        //     $flash_sale = M('flash_sale')->where("id = {$goods['prom_id']} and ".time()." > start_time and ".time()." < end_time and goods_num > buy_num")->find(); // 限时抢购活动
-        //     if($flash_sale){
-        //         $cart_goods_num = M('Cart')->where("($where) and goods_id = {$goods['goods_id']}")->getField('goods_num');
-        //         // 如果购买数量 大于每人限购数量
-        //         if(($goods_num + $cart_goods_num) > $flash_sale['buy_limit'])
-        //         {  
-        //             $cart_goods_num && $error_msg = "你当前购物车已有 $cart_goods_num 件!";
-        //             return array('status'=>-4,'msg'=>"每人限购 {$flash_sale['buy_limit']}件 $error_msg",'result'=>'');
-        //         }                        
-        //         // 如果剩余数量 不足 限购数量, 就只能买剩余数量
-        //         if(($flash_sale['goods_num'] - $flash_sale['buy_num']) < $flash_sale['buy_limit'])
-        //             return array('status'=>-4,'msg'=>"库存不够,你只能买".($flash_sale['goods_num'] - $flash_sale['buy_num'])."件了.",'result'=>'');                    
-        //     }
-        // }                
-        
-        // 商品参与促销
-        // if($goods['prom_type'] > 0)
-        // {            
-        //     $prom = get_goods_promotion($goods_id,$user_id);
-        //     $price = $prom['price'];
-        //     $goods['prom_type'] = $prom['prom_type'];
-        //     $goods['prom_id']   = $prom['prom_id'];
-        // }
-        
+     
         $data = array(                    
                     'user_id'         => $user_id,   // 用户id
                     'session_id'      => $session_id,   // sessionid

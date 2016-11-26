@@ -25,8 +25,8 @@ class CartController extends BaseController {
         //如果用户没有登录，是用session_id加入购物车
         $where= $this->userid ? array('user_id'=>$this->userid):array('session_id'=>$this->session_id);
         $cart_list=M("Cart")->where($where)->select();
-        $this->assign('cart_list',$cart_list); 
-        $this->display();          
+        $resule=array('status'=>1,'data'=>$cart_list);
+        exit(json_encode($resule));
     }
     /**
     * 设置购物车数量
@@ -60,9 +60,9 @@ class CartController extends BaseController {
      */
     function ajaxAddCart(){
         $goods_id = I("goods_id"); // 商品id
-        $goods_num = I("goods_num");// 商品数量
+        $goods_num = I("goods_num",1);// 商品数量
         $goods_spec = I("goods_spec"); // 商品规格            
-        $result = $this->cartLogic->addCart($goods_id, $goods_num, $goods_spec,$this->session_id,$this->user_id); // 将商品加入购物车                     
+        $result = $this->cartLogic->addCart($goods_id, $goods_num, $goods_spec,$this->session_id,$this->userid); // 将商品加入购物车                     
         exit(json_encode($result));       
     }
 }

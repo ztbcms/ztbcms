@@ -14,7 +14,7 @@ class UserApiController extends BaseController {
         $userinfo = service("Passport")->getInfo();
         $shop_user = M('ShopUsers')->find($userinfo['userid']);
         if ($userinfo && $shop_user) {
-            exit(json_encode(array('status' => -500, 'data' => $shop_user, 'msg' => 'ok')));
+            exit(json_encode(array('status' => 1, 'data' => $shop_user, 'msg' => 'ok')));
         } else {
             exit(json_encode(array('status' => -500, 'msg' => '没有登录')));
         }
