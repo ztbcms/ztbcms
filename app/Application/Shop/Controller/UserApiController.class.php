@@ -41,6 +41,8 @@ class UserApiController extends BaseController {
             $cartLogic = new \Shop\Logic\CartLogic();
             $cartLogic->login_cart_handle($this->session_id, $res['result']['user_id']); //用户登录后 需要对购物车 一些操作
         }
+        //除去密码的返回
+        unset($res['result']['password']);
         exit(json_encode($res));
     }
     public function reg() {

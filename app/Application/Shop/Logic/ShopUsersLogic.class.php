@@ -154,7 +154,7 @@ class ShopUsersLogic extends RelationModel {
         if (!$userid) {
             return $result = array('status' => 0, 'msg' => '账号/密码错误');
         }
-        $user = M('ShopUsers')->where("userid='%d'", $user_id)->find();
+        $user = M('ShopUsers')->where("userid='%d'", $userid)->find();
         if ($user['is_lock'] == 1) {
             $result = array('status' => -3, 'msg' => '账号异常已被锁定！！！');
         } else {
