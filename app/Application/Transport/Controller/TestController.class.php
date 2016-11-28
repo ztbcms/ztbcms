@@ -42,6 +42,10 @@ class TestController extends Base {
 
         ]);
 
+        $export->setTableStyle('border: 1px solid red');
+        $export->setTableTdStyle('border: 1px solid black');
+        $export->setTableThStyle('border: 1px solid green');
+
 
         $table = $export->exportTable();
         echo $table;

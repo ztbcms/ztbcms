@@ -21,9 +21,10 @@ class Export {
 
 
     //样式
-    protected $table_style = '';
-    protected $table_tr_style = '';
-    protected $table_td_style = '';
+    protected $table_style = 'border: 1px solid black';
+    protected $table_tr_style = 'border: 1px solid black';
+    protected $table_th_style = 'border: 1px solid black';
+    protected $table_td_style = 'border: 1px solid black';
 
     //导出文件名
     protected $filename = 'export';
@@ -73,7 +74,7 @@ class Export {
      * @return string
      */
     private function exportHeader($field) {
-        return '<th>' . $field->getExportName() . '</th>';
+        return '<th style="' . $this->table_th_style. '">' . $field->getExportName() . '</th>';
     }
 
     /**
@@ -83,7 +84,7 @@ class Export {
      * @return string
      */
     function exportHeaders($fields = []) {
-        $content_header = '<tr>';
+        $content_header = '<tr style="' . $this->table_tr_style . '">';
         foreach ($this->fields as $index => $field) {
             $content_header .= $this->exportHeader($field);
         }
@@ -102,7 +103,7 @@ class Export {
      * @return string
      */
     private function exportCell(ExportField $field, $row_data) {
-        return '<td>' . $field->filterValue($field->getFieldName(), $row_data[$field->getFieldName()],
+        return '<td style="' . $this->table_td_style .'">' . $field->filterValue($field->getFieldName(), $row_data[$field->getFieldName()],
             $row_data) . '</td>';
     }
 
@@ -113,7 +114,7 @@ class Export {
      * @return string
      */
     private function exportRow($row_data = []) {
-        $row = '<tr>';
+        $row = '<tr style="' . $this->table_tr_style .'">';
         $fields = $this->getFields();
 
         foreach ($fields as $index => $field) {
@@ -150,10 +151,10 @@ class Export {
      * @return string
      */
     function exportTable() {
-        $this->_content .= "<table>";
+        $this->_content .= '<table style="' . $this->table_style . '">';
         $this->_content .= $this->exportHeaders($this->fields);
         $this->_content .= $this->exportRows();
-        $this->_content .= "</table'>";
+        $this->_content .= '</table>';
 
         return $this->_content;
     }
@@ -321,6 +322,19 @@ EOT;
      */
     public function setCondition($condition) {
         $this->condition = $condition;
+    }
+    /**
+     * @return string
+     */
+    public function getTableThStyle() {
+        return $this->table_th_style;
+    }
+
+    /**
+     * @param string $table_th_style
+     */
+    public function setTableThStyle($table_th_style) {
+        $this->table_th_style = $table_th_style;
     }
 
 
