@@ -278,13 +278,13 @@ class IndexController extends Base {
 
 			$commentsId = $this->db->addComments($post);
 			if (false !== $commentsId) {
-				//设置评论间隔时间，cookie没啥样的感觉-__,-!
+				//设置评论间隔时间
 				if ($this->setting['expire']) {
 					cookie($post['comment_id'], '1', array('expire' => (int) $this->setting['expire']));
 				}
 
 				if ($commentsId === -1) {
-//待审核
+					//待审核
 					$error = $this->db->getError();
 					if (empty($error)) {
 						$error = '评论发表成功，但需要审核通过后才显示！';

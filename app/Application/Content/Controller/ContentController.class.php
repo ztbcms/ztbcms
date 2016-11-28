@@ -132,23 +132,6 @@ class ContentController extends AdminBase {
 		$search = I('get.search');
 		if (!empty($search)) {
 			$this->assign("search", $search);
-			//添加开始时间
-			$start_time = I('get.start_time');
-			if (!empty($start_time)) {
-				$start_time = strtotime($start_time);
-				$where['inputtime'] = array("EGT", $start_time);
-				$this->assign('start_time', $start_time);
-			}
-			//添加结束时间
-			$end_time = I('get.end_time');
-			if (!empty($end_time)) {
-				$end_time = strtotime($end_time);
-				$where['inputtime'] = array("ELT", $end_time);
-				$this->assign('end_time', $end_time);
-			}
-			if ($end_time > 0 && $start_time > 0) {
-				$where['inputtime'] = array(array('EGT', $start_time), array('ELT', $end_time));
-			}
 
 			//状态
 			$status = I('get.status', 99, 'intval');
@@ -165,11 +148,15 @@ class ContentController extends AdminBase {
                         $operater[$index] = trim($operater[$index]);
                         $value[$index] = trim($value[$index]);
 
-                        if(strtolower($operater[$index]) == 'like'){
-                            $where[$filter[$index]] = array($operater[$index], '%' . $value[$index] . '%');
-                        }else{
-                            $where[$filter[$index]] = array($operater[$index], $value[$index]);
+                        if(empty($where[$filter[$index]])){
+                            $where[$filter[$index]] = [];
                         }
+                        if(strtolower($operater[$index]) == 'like'){
+                            $condition = array($operater[$index], '%' . $value[$index] . '%');
+                        }else{
+                            $condition = array($operater[$index], $value[$index]);
+                        }
+                        $where[$filter[$index]][] = $condition;
                     }
                 }
                 $this->assign('_filter', $filter);
