@@ -22,7 +22,7 @@ class Content extends Components {
 	 * 连接内容处理服务
 	 * @access public
 	 * @param array $options 配置数组
-	 * @return array|mixed
+	 * @return Content
 	 */
 	static public function getInstance($options = array()) {
 		static $systemHandier;
@@ -66,7 +66,7 @@ class Content extends Components {
 	 * @param array $data 数据
 	 * @return boolean
 	 */
-	public function add($data = '') {
+	public function add($data = []) {
 		if (empty($data)) {
 			if (!empty($this->data)) {
 				$data = $this->data;
@@ -253,7 +253,7 @@ class Content extends Components {
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function edit($data = '') {
+	public function edit($data = []) {
 		if (empty($data)) {
 			if (!empty($this->data)) {
 				$data = $this->data;
