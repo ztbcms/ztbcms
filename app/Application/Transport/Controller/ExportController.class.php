@@ -12,14 +12,14 @@ use Transport\Core\ExportField;
 use Transport\Core\Export;
 
 /**
- * 导出
+ * 数据导出
  *
  * @package Transport\Controller
  */
 class ExportController extends AdminBase {
 
     /**
-     * 导出订单
+     * 导出栏目列表页的搜索结果
      */
     function classlist(){
         $filter = I('get._filter');
@@ -51,8 +51,10 @@ class ExportController extends AdminBase {
         //导出
         $export = new Export();
         $export->setFilename('数据导出'.date('Ymdhis')); //导出文件名
-        $export->setModel('article'); //导出模型
 
+        $modelid = getCategory(I('catid'), 'modelid');
+        $modelInfo = M('Model')->where(['modeleid' => $modelid])->field('tablename')->find();
+        $export->setModel($modelInfo['tablename']); //导出模型
 
         //筛选条件方式一
         $export->setCondition($where);
