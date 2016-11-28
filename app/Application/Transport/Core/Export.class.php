@@ -163,11 +163,37 @@ class Export {
      */
     function exportXls() {
         //申明头部，生成excel类型文件
-        header("Content-type:application/vnd.ms-excel");
+        header("Content-type:application/vnd.ms-excel;charset=UTF-8");
         header("Content-Disposition:filename=" . $this->filename . ".xls");
 
-        echo $this->exportTable();
+        $table = $this->exportTable();
+        $tempalte = $this->getTemplate();
+        echo str_replace('{{table}}', $table, $tempalte);
         exit();
+    }
+
+    /**
+     * Execl 模板，解决部分情况下出现中文乱码问题
+     * @return string
+     */
+    private function getTemplate(){
+        $tpl = <<<EOT
+<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+xmlns:x="urn:schemas-microsoft-com:office:excel" 
+xmlns="http://www.w3.org/TR/REC-html40"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html> 
+ <head> 
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" /> 
+ </head> 
+ <body> 
+     <div align=center x:publishsource="Excel"> 
+         {{table}}
+     </div> 
+ </body> 
+</html>
+EOT;
+        return $tpl;
     }
 
 
