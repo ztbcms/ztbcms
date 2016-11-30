@@ -66,13 +66,7 @@
 		container.find('.wind_color_general').show();
 		//事件触发时显示取色器
 
-        //ie6下用iframe遮盖
         var _self = this;
-        if($.browser.msie && $.browser.version < 7 ) {
-            Wind.use('bgiframe',function() {
-                _self.container.bgiframe();
-            });
-        }
 
         var positionElement = function() {
             var position = 'absolute',

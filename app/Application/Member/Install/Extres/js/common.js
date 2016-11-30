@@ -1393,7 +1393,7 @@ var upTop = {
         right: 20,
         bottom: 30
     },
-    isIe6: ($.browser.msie && parseInt($.browser.version) == 6) ? true : false,
+    isIe6: false,
     isPad: navigator.userAgent.match(/iPad|iPhone|iPod|Android/i) != null,
     mask: '',
     $this: '',

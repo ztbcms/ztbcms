@@ -11,12 +11,6 @@
         }
     });
 
-    if ($.browser.msie) {
-        //ie 都不缓存
-        $.ajaxSetup({
-            cache: false
-        });
-    }
 
     //不支持placeholder浏览器下对placeholder进行处理
     if (document.createElement('input').placeholder !== '') {
@@ -113,14 +107,6 @@
     if (ajaxForm_list.length) {
         Wind.use('ajaxForm', 'artDialog', function () {
 
-            if ($.browser.msie) {
-                //ie8及以下，表单中只有一个可见的input:text时，会整个页面会跳转提交
-                ajaxForm_list.on('submit', function (e) {
-                    //表单中只有一个可见的input:text时，enter提交无效
-                    e.preventDefault();
-                });
-            }
-
             $('button.J_ajax_submit_btn').on('click', function (e) {
                 e.preventDefault();
                 /*var btn = $(this).find('button.J_ajax_submit_btn'),
@@ -153,16 +139,6 @@
                         $('<span class="tips_error">请至少选择一项</span>').appendTo(btn.parent()).fadeIn('fast');
                     }
                     return false;
-                }
-
-                //ie处理placeholder提交问题
-                if ($.browser.msie) {
-                    form.find('[placeholder]').each(function () {
-                        var input = $(this);
-                        if (input.val() == input.attr('placeholder')) {
-                            input.val('');
-                        }
-                    });
                 }
 
                 form.ajaxSubmit({
@@ -605,11 +581,6 @@ function popPos(wrap) {
         top,
         win_height = $(window).height(),
         wrap_height = wrap.outerHeight();
-
-    if ($.browser.msie && $.browser.version < 7) {
-        ie6 = true;
-        pos = 'absolute';
-    }
 
     if (win_height < wrap_height) {
         top = 0;

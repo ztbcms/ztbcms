@@ -440,15 +440,7 @@ $(function(){
 	});
     Wind.use('validate', 'ajaxForm', 'artDialog', function () {
         var form = $('form.J_ajaxForms');
-        //ie处理placeholder提交问题
-        if ($.browser.msie) {
-            form.find('[placeholder]').each(function () {
-                var input = $(this);
-                if (input.val() == input.attr('placeholder')) {
-                    input.val('');
-                }
-            });
-        }
+
         //表单验证开始
         form.validate({
 			//是否在获取焦点时验证
