@@ -296,7 +296,7 @@ function strlen_verify(obj, checklen, maxlen) {
 
 //长度统计
 function strlen(str) {
-    return ($.browser.msie && str.indexOf('\n') != -1) ? str.replace(/\r?\n/g, '_').length : str.length;
+    return str.length;
 }
 
 function mb_cutstr(str, maxlen, dot) {

@@ -216,6 +216,7 @@
         <tr>
           <th>执行文件</th>
           <td><select class="select_4 mr5" name="cron_file">
+              <option value="">请选择执行文件</option>
               <volist name="fileList" id="vo">
               <option value="{$vo|basename=###,'.class.php'}">{$vo}</option>
               </volist>

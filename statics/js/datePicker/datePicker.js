@@ -247,11 +247,6 @@
 
 			$("body").append(root);
 
-			if($.browser.msie && $.browser.version < 7 ) {
-	            Wind.use('bgiframe',function() {
-	                root.bgiframe();
-	            });
-	        }
 		}
 
 		// trigger icon
@@ -276,7 +271,7 @@
 			currMonth = date.getMonth();
 			currDay = date.getDate();
 
-			if (e.type == "click" && !$.browser.msie) {
+			if (e.type == "click") {
 				input.focus();
 			}
 

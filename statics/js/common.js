@@ -11,12 +11,6 @@
         }
     });
 
-    if ($.browser.msie) {
-        //ie 都不缓存
-        $.ajaxSetup({
-            cache: false
-        });
-    }
 
     //不支持placeholder浏览器下对placeholder进行处理
     if (document.createElement('input').placeholder !== '') {
@@ -113,14 +107,6 @@
     if (ajaxForm_list.length) {
         Wind.use('ajaxForm', 'artDialog', function () {
 
-            if ($.browser.msie) {
-                //ie8及以下，表单中只有一个可见的input:text时，会整个页面会跳转提交
-                ajaxForm_list.on('submit', function (e) {
-                    //表单中只有一个可见的input:text时，enter提交无效
-                    e.preventDefault();
-                });
-            }
-
             $('button.J_ajax_submit_btn').on('click', function (e) {
                 e.preventDefault();
                 /*var btn = $(this).find('button.J_ajax_submit_btn'),
@@ -153,16 +139,6 @@
                         $('<span class="tips_error">请至少选择一项</span>').appendTo(btn.parent()).fadeIn('fast');
                     }
                     return false;
-                }
-
-                //ie处理placeholder提交问题
-                if ($.browser.msie) {
-                    form.find('[placeholder]').each(function () {
-                        var input = $(this);
-                        if (input.val() == input.attr('placeholder')) {
-                            input.val('');
-                        }
-                    });
                 }
 
                 form.ajaxSubmit({
@@ -364,22 +340,22 @@
             check_all.change(function (e) {
                 var check_wrap = check_all.parents('.J_check_wrap'); //当前操作区域所有复选框的父标签（重用考虑）
 
-                if ($(this).attr('checked')) {
+                if ($(this).prop('checked')) {
                     //全选状态
-                    check_items.attr('checked', true);
+                    check_items.prop('checked', true);
 
                     //所有项都被选中
                     if (check_wrap.find('input.J_check').length === check_wrap.find('input.J_check:checked').length) {
-                        check_wrap.find(total_check_all).attr('checked', true);
+                        check_wrap.find(total_check_all).prop('checked', true);
                     }
 
                 } else {
                     //非全选状态
-                    check_items.removeAttr('checked');
+                    check_items.prop('checked', false);
 
                     //另一方向的全选框取消全选状态
                     var direction_invert = check_all_direction === 'x' ? 'y' : 'x';
-                    check_wrap.find($('input.J_check_all[data-direction="' + direction_invert + '"]')).removeAttr('checked');
+                    check_wrap.find($('input.J_check_all[data-direction="' + direction_invert + '"]')).prop('checked', false);
                 }
 
             });
@@ -387,15 +363,15 @@
             //点击非全选时判断是否全部勾选
             check_items.change(function () {
 
-                if ($(this).attr('checked')) {
+                if ($(this).prop('checked')) {
 
                     if (check_items.filter(':checked').length === check_items.length) {
                         //已选择和未选择的复选框数相等
-                        check_all.attr('checked', true);
+                        check_all.prop('checked', true);
                     }
 
                 } else {
-                    check_all.removeAttr('checked');
+                    check_all.prop('checked', false);
                 }
 
             });
@@ -605,11 +581,6 @@ function popPos(wrap) {
         top,
         win_height = $(window).height(),
         wrap_height = wrap.outerHeight();
-
-    if ($.browser.msie && $.browser.version < 7) {
-        ie6 = true;
-        pos = 'absolute';
-    }
 
     if (win_height < wrap_height) {
         top = 0;

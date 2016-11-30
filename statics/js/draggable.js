@@ -62,18 +62,13 @@
     	handle.css({cursor:'move'});
     	var el = handle[0].setCapture ? handle : $(document);
         handle.on('mousedown',function(e) {
-        	 if(options.mousedown) {
+        	if(options.mousedown) {
 		        	options.mousedown(element);
-		        }
-        	if($.browser.msie){
-		        //设置鼠标捕获
-		        handle[0].setCapture();
-		    }else{
-		        //焦点丢失
-		        //$(window).blur();
-		        //阻止默认动作
-		        e.preventDefault();
-		    };
+		    }
+			//焦点丢失
+			//$(window).blur();
+			//阻止默认动作
+			e.preventDefault();
         	capture(this);
 
         	//获取窗口尺寸和滚动条状态
