@@ -340,22 +340,22 @@
             check_all.change(function (e) {
                 var check_wrap = check_all.parents('.J_check_wrap'); //当前操作区域所有复选框的父标签（重用考虑）
 
-                if ($(this).attr('checked')) {
+                if ($(this).prop('checked')) {
                     //全选状态
-                    check_items.attr('checked', true);
+                    check_items.prop('checked', true);
 
                     //所有项都被选中
                     if (check_wrap.find('input.J_check').length === check_wrap.find('input.J_check:checked').length) {
-                        check_wrap.find(total_check_all).attr('checked', true);
+                        check_wrap.find(total_check_all).prop('checked', true);
                     }
 
                 } else {
                     //非全选状态
-                    check_items.removeAttr('checked');
+                    check_items.prop('checked', false);
 
                     //另一方向的全选框取消全选状态
                     var direction_invert = check_all_direction === 'x' ? 'y' : 'x';
-                    check_wrap.find($('input.J_check_all[data-direction="' + direction_invert + '"]')).removeAttr('checked');
+                    check_wrap.find($('input.J_check_all[data-direction="' + direction_invert + '"]')).prop('checked', false);
                 }
 
             });
@@ -363,15 +363,15 @@
             //点击非全选时判断是否全部勾选
             check_items.change(function () {
 
-                if ($(this).attr('checked')) {
+                if ($(this).prop('checked')) {
 
                     if (check_items.filter(':checked').length === check_items.length) {
                         //已选择和未选择的复选框数相等
-                        check_all.attr('checked', true);
+                        check_all.prop('checked', true);
                     }
 
                 } else {
-                    check_all.removeAttr('checked');
+                    check_all.prop('checked', false);
                 }
 
             });

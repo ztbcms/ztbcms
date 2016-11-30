@@ -163,7 +163,7 @@ $(function () {
             var str = 0;
             var id = tag = '';
             $("input[name='ids[]']").each(function () {
-                if ($(this).attr('checked')) {
+                if ($(this).prop('checked')) {
                     str = 1;
                     id += tag + $(this).val();
                     tag = '|';
@@ -208,7 +208,7 @@ function pushs() {
     var str = 0;
     var id = tag = '';
     $("input[name='ids[]']").each(function () {
-        if ($(this).attr('checked')) {
+        if ($(this).prop('checked')) {
             str = 1;
             id += tag + $(this).val();
             tag = '|';
