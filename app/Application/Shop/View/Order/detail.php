@@ -123,7 +123,7 @@
                     <tbody>
                     <volist name="orderGoods" id="good">
                         <tr>
-                            <td class="text-left"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$good['goods_id']))}" target="_blank">{$good.goods_name}</a>
+                            <td class="text-left"><a href="{:U('Shop/Goods/addEditGoods',array('id'=>$good['goods_id']))}" >{$good.goods_name}</a>
                             </td>
                             <td class="text-left">{$good.goods_attr}</td>
                             <td class="text-right">{$good.goods_num}</td>
