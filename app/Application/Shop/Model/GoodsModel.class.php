@@ -96,7 +96,7 @@ class GoodsModel extends Model {
                 $v['price'] = trim($v['price']);
                 $store_count = $v['store_count'] = trim($v['store_count']); // 记录商品总库存
                 $v['sku'] = trim($v['sku']);
-                $dataList[] = array('goods_id' => $goods_id, 'key' => $k, 'key_name' => $v['key_name'], 'price' => $v['price'], 'store_count' => $v['store_count'], 'sku' => $v['sku']);
+                $dataList[] = array('goods_id' => $goods_id, 'key' => $k, 'key_name' => $v['key_name'], 'price' => $v['price'], 'store_count' => $v['store_count'], 'sku' => $v['sku'],'bar_code'=>'');
                 // 修改商品后购物车的商品价格也修改一下
                 M('cart')->where("goods_id = $goods_id and spec_key = '$k'")->save(array(
                     'market_price' => $v['price'], //市场价
