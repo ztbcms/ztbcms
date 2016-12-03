@@ -3,6 +3,10 @@
  
 [在线文档](http://ztbcms.com)
 
+<a href="http://www.phptherightway.com">
+    <img src="http://www.phptherightway.com/images/banners/leaderboard-728x90.png" alt="PHP: The Right Way"/>
+</a>
+
 ## 环境要求
 
 * PHP版本需要5.4+ 推荐5.6(未支持PHP 7)
