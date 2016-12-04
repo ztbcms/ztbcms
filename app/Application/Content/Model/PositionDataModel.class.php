@@ -106,11 +106,11 @@ class PositionDataModel extends Model {
 		}
 		//更改文章推荐位状态
 		$status = ContentModel::getInstance($modelid)->where(array('id' => $id))->save(array('posid' => $posids));
-		if (false !== $status && $status > 0) {
+        if (false !== $status && $status > 0) {
 			return true;
 		} else {
 			//有可能副表
-			$tablename = ucwords(getModel($modelid, 'tablename'));
+			$tablename = getModel($modelid, 'tablename');
 			if ($this->field_exists("{$tablename}_data", 'posid')) {
 				return M($tablename . 'Data')->where(array('id' => $id))->save(array('posid' => $posids)) !== false ? true : false;
 			}
