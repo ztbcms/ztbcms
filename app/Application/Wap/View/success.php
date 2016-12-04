@@ -30,7 +30,7 @@
 
 <script language="javascript">
 setTimeout(function(){
-	location.href = '{$jumpUrl}';
+    location.replace('{$jumpUrl}');
 }, parseInt('{$waitSecond}'));
 </script>
 </body>
