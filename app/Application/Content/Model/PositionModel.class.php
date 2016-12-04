@@ -181,7 +181,7 @@ class PositionModel extends Model {
 	private function content_pos($id, $modelid) {
 		$id = intval($id);
 		$modelid = intval($modelid);
-        $posids = 0
+        $posids = 0;
 		if ($id && $modelid) {
 			$db_data = M("PositionData");
 			$MODEL = cache("Model");
