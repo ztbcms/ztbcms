@@ -24,7 +24,7 @@
 <script language="javascript">
 setTimeout(function(){
 	location.href = '{$jumpUrl}';
-},{$waitSecond});
+}, parseInt('{$waitSecond}'));
 </script>
 </body>
 </html>
