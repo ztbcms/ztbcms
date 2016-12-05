@@ -22,8 +22,8 @@
 <script src="{$config_siteurl}statics/js/common.js?v"></script>
 <script language="javascript">
 setTimeout(function(){
-	location.href = '{$jumpUrl}';
-},{$waitSecond});
+	location.replace('{$jumpUrl}');
+}, parseInt('{$waitSecond}'));
 </script>
 </body>
 </html>

@@ -19,7 +19,7 @@ class PositionModel extends Model {
 
 	/**
 	 * 添加推荐位
-	 * @param type $data 数据
+	 * @param array $data 数据
 	 * @return boolean
 	 */
 	public function positionAdd($data) {
@@ -46,7 +46,7 @@ class PositionModel extends Model {
 
 	/**
 	 * 更新推荐位
-	 * @param type $data 数据
+	 * @param array $data 数据
 	 * @return boolean
 	 */
 	public function positionSave($data) {
@@ -75,7 +75,7 @@ class PositionModel extends Model {
 
 	/**
 	 * 删除推荐位
-	 * @param type $posid 推荐位ID
+	 * @param string $posid 推荐位ID
 	 * @return boolean
 	 */
 	public function positionDel($posid) {
@@ -101,6 +101,9 @@ class PositionModel extends Model {
 	/**
 	 * 推荐位推送修改接口
 	 * 适合在文章发布、修改时调用
+     * 调用方式
+     *   $push = D("Position");
+     *    $push->positionUpdate(323, 25, 45, array(20,21), array('title'=>'文章标题','thumb'=>'缩略图路径','inputtime'='时间戳'));
 	 * @param int $id 推荐文章ID
 	 * @param int $modelid 模型ID
 	 * @param array $posid 推送到的推荐位ID
@@ -108,9 +111,7 @@ class PositionModel extends Model {
 	 * @param int $expiration 过期时间设置
 	 * @param int $undel 是否判断推荐位去除情况
 	 * @param string $model 调取的数据模型
-	 * 调用方式
-	 * $push = D("Position");
-	 * $push->positionUpdate(323, 25, 45, array(20,21), array('title'=>'文章标题','thumb'=>'缩略图路径','inputtime'='时间戳'));
+     * @return boolean
 	 */
 	public function positionUpdate($id, $modelid, $catid, $posid, $data, $expiration = 0, $undel = 0, $model = 'content') {
 		$arr = $param = array();
@@ -142,6 +143,7 @@ class PositionModel extends Model {
 	 * @param int $catid 栏目ID
 	 * @param int $id 文章id
 	 * @param array $input_posid 传入推荐位数组
+     * @return boolean
 	 */
 	private function position_del($catid, $id, $input_posid) {
 		$array = array();
@@ -172,12 +174,14 @@ class PositionModel extends Model {
 
 	/**
 	 * 判断文章是否被推荐，同时更新推荐状态
-	 * @param $id
-	 * @param $modelid
+	 * @param string $id
+	 * @param string $modelid
+     * @return int
 	 */
 	private function content_pos($id, $modelid) {
 		$id = intval($id);
 		$modelid = intval($modelid);
+        $posids = 0;
 		if ($id && $modelid) {
 			$db_data = M("PositionData");
 			$MODEL = cache("Model");
@@ -195,6 +199,7 @@ class PositionModel extends Model {
 	 * @param array $arr 参数 表单数据，只在请求添加时传递。 例：array('modelid'=>1, 'catid'=>12);
 	 * @param int $expiration 过期时间设置
 	 * @param string $model 调取的数据库型名称
+     * @return boolean
 	 */
 	public function position_list($param = array(), $arr = array(), $expiration = 0, $model = 'content') {
 		if ($arr['dosubmit']) {
