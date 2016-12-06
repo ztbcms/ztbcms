@@ -148,7 +148,7 @@ class ShopUsersLogic extends RelationModel {
             return $result = array('status' => 0, 'msg' => '请填写账号或密码');
         }
         $userid = service('Passport')->loginLocal('mobile_' . $username, $password, $cookieTime ? 86400 * 180 : 86400);
-        if (!userid) {
+        if (!$userid) {
             $userid = service('Passport')->loginLocal('email_' . $username, $password, $cookieTime ? 86400 * 180 : 86400);
         }
         if (!$userid) {
