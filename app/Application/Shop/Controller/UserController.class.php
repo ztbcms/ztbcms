@@ -70,7 +70,7 @@ class UserController extends AdminBase{
                 unset($_POST['password']);
             }else{
                 $_POST['password'] = encrypt($_POST['password']);
-                echo service("Passport")->userEdit($member['username'], '', $password, '', 1);
+                service("Passport")->userEdit($member['username'], '', $password, '', 1);
             }
             $row = M('ShopUsers')->where(array('userid'=>$uid))->save($_POST);
             if($row)
