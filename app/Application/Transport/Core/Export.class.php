@@ -19,22 +19,34 @@ class Export {
     protected $condition = array();
     protected $filterString = ''; //sql
 
-
-    //样式
-    protected $table_style = 'border: 1px solid black';
-    protected $table_tr_style = 'border: 1px solid black';
-    protected $table_th_style = 'border: 1px solid black';
-    protected $table_td_style = 'border: 1px solid black';
-
     //导出文件名
     protected $filename = 'export';
 
     //导出表格内容
     protected $_content = '';
 
-    //
+    /**
+     * 源数据
+     * @var array
+     */
     protected $data = [];
 
+    /**
+     * Excel处理器
+     * @var null|\PHPExcel
+     */
+    private $phpexcel = null;
+    /**
+     * Excel数据
+     * @var array
+     */
+    private $excel_data = [];
+
+    public function __construct() {
+        include(APP_PATH . '/Transport/Libs/PHPExcel.php');
+
+        $this->phpexcel = new \PHPExcel();
+    }
     /**
      * 获取数据筛选条件
      *
@@ -74,7 +86,7 @@ class Export {
      * @return string
      */
     private function exportHeader($field) {
-        return '<th style="' . $this->table_th_style. '">' . $field->getExportName() . '</th>';
+        return $field->getExportName();
     }
 
     /**
@@ -84,14 +96,16 @@ class Export {
      * @return string
      */
     function exportHeaders($fields = []) {
-        $content_header = '<tr style="' . $this->table_tr_style . '">';
-        foreach ($this->fields as $index => $field) {
-            $content_header .= $this->exportHeader($field);
+        $content_header = '<tr>';
+        $excel_headers = [];
+        foreach ($fields as $index => $field) {
+            $content_header .= '<th>' . $this->exportHeader($field) . '</th>';
+            $excel_headers[] = $this->exportHeader($field);
         }
 
         $content_header .= '</tr>';
 
-
+        $this->excel_data[] = $excel_headers;
         return $content_header;
     }
 
@@ -103,8 +117,8 @@ class Export {
      * @return string
      */
     private function exportCell(ExportField $field, $row_data) {
-        return '<td style="' . $this->table_td_style .'">' . $field->filterValue($field->getFieldName(), $row_data[$field->getFieldName()],
-            $row_data) . '</td>';
+        return $field->filterValue($field->getFieldName(), $row_data[$field->getFieldName()],
+            $row_data) ;
     }
 
     /**
@@ -114,14 +128,17 @@ class Export {
      * @return string
      */
     private function exportRow($row_data = []) {
-        $row = '<tr style="' . $this->table_tr_style .'">';
+        $row = '<tr>';
         $fields = $this->getFields();
 
+        $excel_row = [];
         foreach ($fields as $index => $field) {
-            $row .= $this->exportCell($field, $row_data);
+            $row .= '<td>' . $this->exportCell($field, $row_data). '</td>';
+            $excel_row[] = $this->exportCell($field, $row_data);
         }
 
         $row .= '</tr>';
+        $this->excel_data[] = $excel_row;
 
         return $row;
     }
@@ -134,10 +151,7 @@ class Export {
     private function exportRows() {
         $content_rows = '';
         $data = $this->getData();
-        if (empty($data)) {
-            $data = $this->getExportData();
-            $this->setData($data);
-        }
+
         foreach ($data as $index => $row_data) {
             $content_rows .= $this->exportRow($row_data);
         }
@@ -151,7 +165,14 @@ class Export {
      * @return string
      */
     function exportTable() {
-        $this->_content .= '<table style="' . $this->table_style . '">';
+        //先提取数据
+        $data = $this->getData();
+        if (empty($data)) {
+            $data = $this->getExportData();
+            $this->setData($data);
+        }
+
+        $this->_content .= '<table>';
         $this->_content .= $this->exportHeaders($this->fields);
         $this->_content .= $this->exportRows();
         $this->_content .= '</table>';
@@ -163,40 +184,42 @@ class Export {
      * 生成 XLS 文件
      */
     function exportXls() {
-        //申明头部，生成excel类型文件
-        header("Content-type:application/vnd.ms-excel;charset=UTF-8");
-        header("Content-Disposition:filename=" . $this->filename . ".xls");
 
-        $table = $this->exportTable();
-        $tempalte = $this->getTemplate();
-        echo str_replace('{{table}}', $table, $tempalte);
-        exit();
+        $this->exportTable();
+
+        //设置表格
+        $this->phpexcel->getProperties()->setCreator($this->filterString)
+            ->setLastModifiedBy('ZTBCMS')
+            ->setTitle("Office 2007 XLSX Document")
+            ->setSubject("Office 2007 XLSX Document")
+            ->setDescription("Document for Office 2007 XLSX, generated using PHP classes.")
+            ->setKeywords("office 2007 openxml php")
+            ->setCategory("ZTBCMS");
+
+        //填充数据
+        foreach ($this->excel_data as $key => $row) {
+            $num = $key + 1;
+            $i=0;
+            foreach ($row as $key2 => $value2) {
+                $value2 = ' ' . $value2; //处理XLS自动把该行纯数字并且比较长，自动转为客服计数，会自动补全0
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue( \PHPExcel_Cell::stringFromColumnIndex($i). ($num), $value2);
+                $i++;
+            }
+        }
+
+        //设置表格并输出
+        $this->phpexcel->getActiveSheet()->setTitle($this->filename);
+        header('Content-Type: application/vnd.ms-excel');
+        header("Content-Disposition: attachment;filename={$this->filename}.xls");
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public'); // HTTP/1.0
+        $objWriter =  \PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter->save('php://output');
+        exit;
     }
-
-    /**
-     * Execl 模板，解决部分情况下出现中文乱码问题
-     * @return string
-     */
-    private function getTemplate(){
-        $tpl = <<<EOT
-<html xmlns:o="urn:schemas-microsoft-com:office:office" 
-xmlns:x="urn:schemas-microsoft-com:office:excel" 
-xmlns="http://www.w3.org/TR/REC-html40"> 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html> 
- <head> 
-    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" /> 
- </head> 
- <body> 
-     <div align=center x:publishsource="Excel"> 
-         {{table}}
-     </div> 
- </body> 
-</html>
-EOT;
-        return $tpl;
-    }
-
 
     /**
      * @return array
@@ -210,48 +233,6 @@ EOT;
      */
     public function setFields($fields) {
         $this->fields = $fields;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableStyle() {
-        return $this->table_style;
-    }
-
-    /**
-     * @param string $table_style
-     */
-    public function setTableStyle($table_style) {
-        $this->table_style = $table_style;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableTrStyle() {
-        return $this->table_tr_style;
-    }
-
-    /**
-     * @param string $table_tr_style
-     */
-    public function setTableTrStyle($table_tr_style) {
-        $this->table_tr_style = $table_tr_style;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableTdStyle() {
-        return $this->table_td_style;
-    }
-
-    /**
-     * @param string $table_td_style
-     */
-    public function setTableTdStyle($table_td_style) {
-        $this->table_td_style = $table_td_style;
     }
 
     /**
@@ -283,14 +264,14 @@ EOT;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getData() {
         return $this->data;
     }
 
     /**
-     * @param string $data
+     * @param array $data
      */
     public function setData($data) {
         $this->data = $data;
@@ -323,19 +304,5 @@ EOT;
     public function setCondition($condition) {
         $this->condition = $condition;
     }
-    /**
-     * @return string
-     */
-    public function getTableThStyle() {
-        return $this->table_th_style;
-    }
-
-    /**
-     * @param string $table_th_style
-     */
-    public function setTableThStyle($table_th_style) {
-        $this->table_th_style = $table_th_style;
-    }
-
 
 }

@@ -23,7 +23,7 @@ class ExportController extends AdminBase {
      */
     function classlist(){
         $filter = I('get._filter');
-        $operater = I('get._operater');
+        $operator = I('get._operator');
         $value = I('get._value');
 
         $where = array();
@@ -31,16 +31,16 @@ class ExportController extends AdminBase {
             foreach ($filter as $index => $k){
                 if( $value[$index] != '' ){
                     $filter[$index] = trim($filter[$index]);
-                    $operater[$index] = trim($operater[$index]);
+                    $operator[$index] = trim($operator[$index]);
                     $value[$index] = trim($value[$index]);
 
                     if(empty($where[$filter[$index]])){
                         $where[$filter[$index]] = [];
                     }
-                    if(strtolower($operater[$index]) == 'like'){
-                        $condition = array($operater[$index], '%' . $value[$index] . '%');
+                    if(strtolower($operator[$index]) == 'like'){
+                        $condition = array($operator[$index], '%' . $value[$index] . '%');
                     }else{
-                        $condition = array($operater[$index], $value[$index]);
+                        $condition = array($operator[$index], $value[$index]);
                     }
 
                     $where[$filter[$index]][] = $condition;
