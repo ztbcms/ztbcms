@@ -54,7 +54,7 @@ class MemberController extends AdminBase {
             }
 
             $filter = I('get._filter');
-            $operater = I('get._operater');
+            $operator = I('get._operator');
             $value = I('get._value');
 
 
@@ -62,18 +62,18 @@ class MemberController extends AdminBase {
                 foreach ($filter as $index => $k){
                     if( $value[$index] != '' ){
                         $filter[$index] = trim($filter[$index]);
-                        $operater[$index] = trim($operater[$index]);
+                        $operator[$index] = trim($operator[$index]);
                         $value[$index] = trim($value[$index]);
 
-                        if(strtolower($operater[$index]) == 'like'){
-                            $where[$filter[$index]] = array($operater[$index], '%' . $value[$index] . '%');
+                        if(strtolower($operator[$index]) == 'like'){
+                            $where[$filter[$index]] = array($operator[$index], '%' . $value[$index] . '%');
                         }else{
-                            $where[$filter[$index]] = array($operater[$index], $value[$index]);
+                            $where[$filter[$index]] = array($operator[$index], $value[$index]);
                         }
                     }
                 }
                 $this->assign('_filter', $filter);
-                $this->assign('_operater', $operater);
+                $this->assign('_operator', $operator);
                 $this->assign('_value', $value);
             }
         }

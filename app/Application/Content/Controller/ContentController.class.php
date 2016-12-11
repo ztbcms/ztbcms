@@ -138,29 +138,29 @@ class ContentController extends AdminBase {
             $where['status'] = array("EQ", $status);
 
             $filter = I('get._filter');
-            $operater = I('get._operater');
+            $operator = I('get._operator');
             $value = I('get._value');
 
             if (is_array($filter)) {
                 foreach ($filter as $index => $k){
                     if( $value[$index] != '' ){
                         $filter[$index] = trim($filter[$index]);
-                        $operater[$index] = trim($operater[$index]);
+                        $operator[$index] = trim($operator[$index]);
                         $value[$index] = trim($value[$index]);
 
                         if(empty($where[$filter[$index]])){
                             $where[$filter[$index]] = [];
                         }
-                        if(strtolower($operater[$index]) == 'like'){
-                            $condition = array($operater[$index], '%' . $value[$index] . '%');
+                        if(strtolower($operator[$index]) == 'like'){
+                            $condition = array($operator[$index], '%' . $value[$index] . '%');
                         }else{
-                            $condition = array($operater[$index], $value[$index]);
+                            $condition = array($operator[$index], $value[$index]);
                         }
                         $where[$filter[$index]][] = $condition;
                     }
                 }
                 $this->assign('_filter', $filter);
-                $this->assign('_operater', $operater);
+                $this->assign('_operator', $operator);
                 $this->assign('_value', $value);
             }
 		}
