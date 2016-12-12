@@ -11,16 +11,22 @@ use Common\Controller\Base;
 use Transport\Core\Export;
 use Transport\Core\ExportField;
 use Transport\Core\ExportFilter;
+use Transport\Core\Import;
+use Transport\FieldFilter\ContentImportFilter;
 
 /**
- * http://{domain}/?g=transport&m=test&a=index
+ * http://{domain}/?g=transport&m=testExport&a=index
  *
  * @package Transport\Controller
  */
 class TestController extends Base {
 
+    protected function _initialize() {
+        parent::_initialize();
+    }
 
-    function index(){
+
+    function testExport(){
 
         $export = new Export();
 
@@ -46,6 +52,31 @@ class TestController extends Base {
         echo $table;
 //        $export->exportXls();
         exit();
+    }
+
+
+    function testImport(){
+        $import = new Import();
+
+        $import->setModel('article');
+
+        $import->setFields([
+//            new ExportField('id', 'ID' , null),
+            new ExportField('catid', '栏目ID' , null),
+            new ExportField('title', '标题' , null),
+//            new ExportField('inputtime', '发布时间' , 'InputtimeFilter'),
+//            new ExportField('content', '内容', 'ContentImportFilter')
+        ]);
+
+        $import->setImportData([
+            ['栏目ID', '标题'],
+            ['10', '你好，这里是31'],
+            ['10', '你好，这里是32'],
+            ['10', '你好，这里是33'],
+            ['10', '你好，这里是34'],
+        ]);
+
+        $import->import();
     }
 
 }
