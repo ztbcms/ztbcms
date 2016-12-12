@@ -19,16 +19,8 @@ class Import {
     //字段
     protected $fields = array();
 
-    //文件名
-    protected $filename = 'import';
-
-    //导出表格内容
-    protected $_content = '';
-
-    protected $tpl_object = [];
-
-    protected $header_fields = [];
-
+    //导入文件名
+    protected $filename = '';
     /**
      * 数据
      *
@@ -59,23 +51,8 @@ class Import {
      * 导入表格
      */
     function importTable() {
-        $headers = $this->importHeaders();
-        $header_fields = [];
+        $this->importHeaders();
 
-        //构建单个模型数据属性
-        foreach ($headers as $i => $header) {
-            foreach ($this->fields as $_i => $field) {
-                if ($field->getExportName() == $header) {
-                    $this->tpl_object[$field->getFieldName()] = '';
-                    $header_fields[] = $field;
-                }
-            }
-        }
-
-        //移除行头
-        array_shift($this->excel_data);
-
-        $this->header_fields = $header_fields;
         $this->importRows();
 
         $this->importData();
@@ -89,15 +66,15 @@ class Import {
         $db = M($this->getModel());
         if (!empty($this->data)) {
             foreach ($this->data as $index => $data) {
+                //TODO 可以配置导入策略：1. 若有相同，覆盖导入 2. 若有相同忽略导入 （目前默认1,以主键为唯一表示）
+                //TODO 检测哪一些导入成功，哪一些失败了
 
-                if (isset($data[$db->getPk()])) {
-                    //有主键
-                    $where[$db->getPk()] = $data[$db->getPk()];
-                    unset($data[$db->getPk()]);
-                    $db->where($where)->save($data);
-                } else {
-                    $db->add($data);
+                $pk = $db->getPk();
+                if(isset($data[$pk])){
+                    unset($data[$pk]);
                 }
+
+                $db->add($data);
             }
         }
     }
@@ -107,7 +84,7 @@ class Import {
      * @return mixed
      */
     private function importHeaders() {
-        return $this->excel_data[0];
+        return array_shift($this->excel_data);
     }
 
     /**
@@ -127,10 +104,17 @@ class Import {
      * @return array
      */
     private function importRow(array $row_data) {
-        $result = $this->tpl_object;
-        foreach ($this->header_fields as $index => $field) {
-            $result[$field->getFieldName()] = $this->importCell($field, $row_data[$index], $row_data);
+        $result = [];
+        foreach ($this->fields as $index => $field) {
+
+            if(isset($row_data[$index])){
+                $cell_data = $row_data[$index];
+            }else{
+                $cell_data = '';
+            }
+            $result[$field->getFieldName()] = $this->importCell($field, $cell_data, $row_data);
         }
+
 
         return $result;
     }
@@ -147,12 +131,36 @@ class Import {
         return $this->data;
     }
 
+    /**
+     * 加载Excel数据
+     */
+    private function loadExcelData(){
+
+        if(empty($this->excel_data)){
+            $objReader = \PHPExcel_IOFactory::createReader('Excel5');
+            $objPHPExcel = $objReader->load($this->filename);
+            $objWorksheet = $objPHPExcel->getActiveSheet();
+            $highestRow = $objWorksheet->getHighestRow();
+            $highestColumn = $objWorksheet->getHighestColumn();
+            $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
+            $excelData = array();
+            for ($row = 1; $row <= $highestRow; $row++) {
+                for ($col = 0; $col < $highestColumnIndex; $col++) {
+                    $excelData[$row][] =(string)$objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+                }
+            }
+
+            $this->setImportData($excelData);
+        }
+    }
+
 
     /**
      * 开始导入
      */
     function import() {
 
+        $this->loadExcelData();
         $this->importTable();
     }
 
@@ -200,6 +208,22 @@ class Import {
     public function setImportData(array $excel_data) {
         $this->excel_data = $excel_data;
     }
+
+    /**
+     * @return string
+     */
+    public function getFilename() {
+        return $this->filename;
+    }
+
+    /**
+     * @param string $filename
+     */
+    public function setFilename($filename) {
+        $this->filename = $filename;
+    }
+
+
 
 
 }

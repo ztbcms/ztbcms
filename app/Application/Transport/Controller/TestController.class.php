@@ -61,21 +61,27 @@ class TestController extends Base {
         $import->setModel('article');
 
         $import->setFields([
-//            new ExportField('id', 'ID' , null),
-            new ExportField('catid', '栏目ID' , null),
+            new ExportField('id', 'ID' , null),
             new ExportField('title', '标题' , null),
-//            new ExportField('inputtime', '发布时间' , 'InputtimeFilter'),
-//            new ExportField('content', '内容', 'ContentImportFilter')
+            new ExportField('inputtime', '发布时间' , 'InputtimeImportFilter'),
+            new ExportField('catid', '栏目ID' , 'SampleCatidImportFilter'),
+            new ExportField('status', '审核状态', 'PassStatusImportFilter')
         ]);
 
-        $import->setImportData([
-            ['栏目ID', '标题'],
-            ['10', '你好，这里是31'],
-            ['10', '你好，这里是32'],
-            ['10', '你好，这里是33'],
-            ['10', '你好，这里是34'],
-        ]);
+        //法一：采用自定义的导入数据方式
+//        $import->setImportData([
+//            ['栏目ID', '标题'],
+//            ['10', '你好，这里是31'],
+//            ['10', '你好，这里是32'],
+//            ['10', '你好，这里是33'],
+//            ['10', '你好，这里是34'],
+//        ]);
 
+        //法二： 采用Excel文件导入
+        $filename = APP_PATH . '/Transport/Data/数据导出20161213123245.xls';
+        $import->setFilename($filename);
+
+        //开始导入
         $import->import();
     }
 
