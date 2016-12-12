@@ -94,9 +94,9 @@ class Import {
                     //有主键
                     $where[$db->getPk()] = $data[$db->getPk()];
                     unset($data[$db->getPk()]);
-                    $res = $db->where($where)->save($data);
+                    $db->where($where)->save($data);
                 } else {
-                    $res = $db->add($data);
+                    $db->add($data);
                 }
             }
         }
@@ -113,11 +113,12 @@ class Import {
     /**
      * 处理导入一个单元格
      * @param ExportField $field
-     * @param             $cell_data
+     * @param string $cell_data
+     * @param array $row_data
      * @return mixed
      */
-    private function importCell(ExportField $field, $cell_data) {
-        return $field->filterValue($field->getFieldName(), $cell_data, $cell_data);
+    private function importCell(ExportField $field, $cell_data, $row_data) {
+        return $field->filterValue($field->getFieldName(), $cell_data, $row_data);
     }
 
     /**
@@ -128,7 +129,7 @@ class Import {
     private function importRow(array $row_data) {
         $result = $this->tpl_object;
         foreach ($this->header_fields as $index => $field) {
-            $result[$field->getFieldName()] = $this->importCell($field, $row_data[$index]);
+            $result[$field->getFieldName()] = $this->importCell($field, $row_data[$index], $row_data);
         }
 
         return $result;
