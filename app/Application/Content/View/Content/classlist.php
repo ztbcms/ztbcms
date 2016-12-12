@@ -41,11 +41,11 @@
         <section style="display: none;">
           起始时间：
           <input type="text" value="inputtime" name="_filter[1]">
-          <input type="text" value="EGT" name="_operater[1]">
+          <input type="text" value="EGT" name="_operator[1]">
           <input type="text" value="{$_value[1]}" name="_value[1]" id="value1">
           结束时间:
           <input type="text" value="inputtime" name="_filter[2]">
-          <input type="text" value="ELT" name="_operater[2]">
+          <input type="text" value="ELT" name="_operator[2]">
           <input type="text" value="{$_value[2]}" name="_value[2]" id="value2">
         </section>
 
@@ -57,14 +57,14 @@
             <option value="title" <if condition=" $_filter[0] == 'title' "> selected</if>>标题</option>
           </select>
 
-          <select name="_operater[0]" class="select_2">
-            <option value="EQ" <if condition=" $_operater[0] == 'EQ' "> selected</if>>等于</option>
-            <option value="NEQ" <if condition=" $_operater[0] == 'NEQ' "> selected</if>>不等于</option>
-            <option value="GT" <if condition=" $_operater[0] == 'GT' "> selected</if>>大于</option>
-            <option value="EGT" <if condition=" $_operater[0] == 'EGT' "> selected</if>>大于等于</option>
-            <option value="LT" <if condition=" $_operater[0] == 'LT' "> selected</if>>小于</option>
-            <option value="ELT" <if condition=" $_operater[0] == 'ELT' "> selected</if>>小于等于</option>
-            <option value="LIKE" <if condition=" $_operater[0] == 'LIKE' "> selected</if>>模糊查询</option>
+          <select name="_operator[0]" class="select_2">
+            <option value="EQ" <if condition=" $_operator[0] == 'EQ' "> selected</if>>等于</option>
+            <option value="NEQ" <if condition=" $_operator[0] == 'NEQ' "> selected</if>>不等于</option>
+            <option value="GT" <if condition=" $_operator[0] == 'GT' "> selected</if>>大于</option>
+            <option value="EGT" <if condition=" $_operator[0] == 'EGT' "> selected</if>>大于等于</option>
+            <option value="LT" <if condition=" $_operator[0] == 'LT' "> selected</if>>小于</option>
+            <option value="ELT" <if condition=" $_operator[0] == 'ELT' "> selected</if>>小于等于</option>
+            <option value="LIKE" <if condition=" $_operator[0] == 'LIKE' "> selected</if>>模糊查询</option>
           </select>
 
           <input class="input length_2" type="text" name="_value[0]" value="{$_value[0]}">
