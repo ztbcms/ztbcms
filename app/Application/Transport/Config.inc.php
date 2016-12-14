@@ -24,7 +24,7 @@ return array(
 	//适配最低ZtbFCMS版本，
 	'adaptation' => '2.0.0.0',
 	//签名
-	'sign' => 'b19cc279ed484c13c96c2f7142e2f437',
+	'sign' => '2fa528afab8210bbcaf5ce73e03a0555',
 	//依赖模块
 	'depend' => array(
 		'Member'
