@@ -9,4 +9,7 @@
 <link href="{$config_siteurl}statics/admin/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 <link href="{$config_siteurl}statics/admin/theme/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
 
+<!-- iconfont -->
+<link rel="stylesheet" href="{$config_siteurl}statics/css/iconfont/iconfont.css">
+
 <Admintemplate file="Admin/Common/Js"/>
