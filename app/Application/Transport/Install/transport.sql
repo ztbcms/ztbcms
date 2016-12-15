@@ -1,6 +1,6 @@
 CREATE TABLE `cms_transport_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `task_id` int(11) NOT NULL COMMENT '对应任务ID',
+  `task_id` int(11) NOT NULL COMMENT '关联任务ID',
   `filter` varchar(128) NOT NULL DEFAULT '' COMMENT '字段',
   `operator` varchar(16) NOT NULL DEFAULT '' COMMENT '操作符',
   `value` varchar(128) DEFAULT '' COMMENT '值',
@@ -12,6 +12,7 @@ CREATE TABLE `cms_transport_field` (
   `field_name` varchar(128) NOT NULL DEFAULT '' COMMENT '字段名',
   `export_name` varchar(128) NOT NULL DEFAULT '' COMMENT '对外(表格)字段名',
   `filter` varchar(128) NOT NULL DEFAULT '' COMMENT '处理方法',
+  `task_id` int(11) NOT NULL COMMENT '关联任务ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
