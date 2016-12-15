@@ -209,6 +209,7 @@ class Export {
 
         //设置表格并输出
         $this->phpexcel->getActiveSheet()->setTitle($this->filename);
+        ob_end_clean();//清除缓冲区,避免乱码
         header('Content-Type: application/vnd.ms-excel');
         header("Content-Disposition: attachment;filename={$this->filename}.xls");
         header('Cache-Control: max-age=0');
