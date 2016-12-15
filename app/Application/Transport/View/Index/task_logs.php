@@ -5,9 +5,6 @@
 
     <Admintemplate file="Common/Nav"/>
 
-    <div style="margin: 8px;">
-        <a class="btn btn-primary" href="{:U('Cron/Index/index')}" target="_blank">触发定时任务</a>
-    </div>
     <div class="table_list">
         <table width="100%">
             <thead>

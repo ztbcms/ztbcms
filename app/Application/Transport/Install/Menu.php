@@ -21,6 +21,14 @@ return array(
                 "type" => 1,
                 "status" => 1,
                 "name" => "任务列表",
+                "child" => array(
+                    array(
+                        "route" => "Transport/Index/task_create_index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "创建任务",
+                    ),
+                )
             ),
             array(
                 "route" => "Transport/Index/task_logs",
