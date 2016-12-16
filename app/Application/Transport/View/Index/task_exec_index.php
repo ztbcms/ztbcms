@@ -1,5 +1,33 @@
 <?php if (!defined('CMS_VERSION')) exit(); ?>
 <Admintemplate file="Common/Head"/>
+
+<!--  simditor 上传组件 -->
+<script type="text/javascript" src="{$config_siteurl}statics/admin/simditor/scripts/module.min.js"></script>
+<script type="text/javascript" src="{$config_siteurl}statics/admin/simditor/scripts/uploader.min.js"></script>
+
+<style>
+    .uploader-container{
+        position: relative;
+        width: 300px;
+        height: 60px;
+        background: grey;
+    }
+    .upload-draft{
+        text-align: center;
+        color: white;
+        position: absolute;
+        top: 40%;
+        left: 39%;
+    }
+    .uploader-container input[type=file]{
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        opacity: 0;
+    }
+</style>
 <body class="J_scroll_fixed">
 <div class="wrap">
 
@@ -58,8 +86,12 @@
                 <if condition="$type EQ 1">
                     <tr>
                         <th>导入文件</th>
-                        <td><input type="text" class="input length_5 mr5" name="filename" value="/Users/jayin/Desktop/project/fenxiangbei/ztbcms
-/Transport/Data/数据导出20161213123245.xls"></td>
+                        <td>
+                            <div class="uploader-container" >
+                                <p class="upload-draft"  >点击上传</p>
+                                <input type="file" name="upload_file"  accept="application/vnd.ms-excel,application/x-xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                            </div>
+                            <input type="text" class="input length_5 mr5" name="filename" value="" readonly accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></td>
                         <td><div class="fun_tips"></div></td>
                     </tr>
                 </if>
@@ -82,10 +114,54 @@
     </form>
     <!--结束-->
 </div>
-<script src="{$config_siteurl}statics/js/common.js?v"></script>
+
 <script>
     (function($){
+        //=== 文件上传
+        //TODO ： 添加上传进度条
+        var uploader = simple.uploader({
+            url: "{:U('Transport/Upload/upload')}"
+        });
+        ////上传前
+        uploader.on('beforeupload', function (e, file) {
+            // do something before upload
+            console.log('beforeupload')
+            console.log(file)
+        });
+        ////上传中
+        uploader.on('uploadprogress', function (e, file, loaded, total) {
+            // do something before upload
+            console.log('uploadprogress')
+        });
+        //上传成功响应
+        uploader.on('uploadsuccess', function (e, file, result) {
+            // do something before upload
 
+//            console.log('uploadsuccess');
+//            console.log(e);
+//            console.log(file);
+//            console.log(result)
+            result = JSON.parse(result);
+            console.log(result)
+            if(res.status){
+                $('input[name=filename]').val(result.data.url);
+            }else{
+                alert(result.msg)
+            }
+        });
+        //上传网络错误时
+        uploader.on('uploaderror', function (e, file, xhr, status) {
+            // do something before upload
+            console.log('uploaderror')
+            console.log(xhl);
+            console.log(status)
+        });
+
+        $('input[name=upload_file]').on('change', function (e) {
+            uploader.upload(this.files);
+        });
+
+        //=== 文件上传 END
     })(jQuery);
 </script>
 </body>

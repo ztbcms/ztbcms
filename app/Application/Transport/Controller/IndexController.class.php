@@ -252,7 +252,7 @@ class IndexController extends AdminBase  {
             }
             $import->setFields($fields);
 
-            $import->setFilename($task_log['filename']);
+            $import->setFilename(getcwd() . $task_log['filename']);
 
 //            $import->exportTable();
             //开始导入
