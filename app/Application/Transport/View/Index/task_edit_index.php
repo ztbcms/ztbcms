@@ -75,91 +75,95 @@
     </form>
 
 
-    <div class="h_a">设置筛选条件</div>
-    <form class="J_ajaxForm"  action="{:U('Transport/Index/task_update_condition')}" method="post" id="condition_form">
-        <div class="table_full">
-            <table width="100%">
-                <col class="th" />
-                <col width="1000" />
-                <tr>
-                    <th>新增筛选条件</th>
-                    <td>
-                        <label>字段: </label>
-                        <input type="text" class="input length_3 mr2" name="new_filter" value="">
-
-                        <label>条件:</label>
-                        <select name="new_operator" class="select_1">
-                            <option value="EQ"> = </option>
-                            <option value="NEQ"> != </option>
-                            <option value="GT"> > </option>
-                            <option value="EGT"> >= </option>
-                            <option value="LT"> < </option>
-                            <option value="ELT"> <= </option>
-                            <option value="LIKE"> LIKE </option>
-                        </select>
-
-                        <label>值: </label>
-                        <input type="text" class="input length_3 mr2" name="new_value" value="">
-
-                        <a class="btn btn-success" onclick="addCondition()"><i class="iconfont icon-add1"></i>新增</a>
-                    </td>
-                    <td><div class="fun_tips"></div></td>
-                </tr>
-
-                <tr>
-                    <th>当前筛选条件</th>
-                    <template id="tpl_condition">
-                        <div id="condition_{condition_id}" class="condition_item">
+    <!--  导出才需要设置筛选条件  -->
+    <if condition="$type EQ 2">
+        <div class="h_a">设置筛选条件</div>
+        <form class="J_ajaxForm"  action="{:U('Transport/Index/task_update_condition')}" method="post" id="condition_form">
+            <div class="table_full">
+                <table width="100%">
+                    <col class="th" />
+                    <col width="1000" />
+                    <tr>
+                        <th>新增筛选条件</th>
+                        <td>
                             <label>字段: </label>
-                            <input type="text" class="input length_3 mr2" name="condition_filter[]" value="{new_filter}">
+                            <input type="text" class="input length_3 mr2" name="new_filter" value="">
 
-                            <label>条件: </label>
-                            <input type="text" class="input length_3 mr2" name="condition_operator[]" value="{new_operator}" readonly>
+                            <label>条件:</label>
+                            <select name="new_operator" class="select_1">
+                                <option value="EQ"> = </option>
+                                <option value="NEQ"> != </option>
+                                <option value="GT"> > </option>
+                                <option value="EGT"> >= </option>
+                                <option value="LT"> < </option>
+                                <option value="ELT"> <= </option>
+                                <option value="LIKE"> LIKE </option>
+                            </select>
 
                             <label>值: </label>
-                            <input type="text" class="input length_3 mr2" name="condition_value[]" value="{new_value}">
-                            <a  onclick="delete_condition('{condition_id}')" class="btn btn-danger"><i class="iconfont icon-close"></i>删除</a>
-                        </div>
-                    </template>
-                    <td>
-                        <div id="conditions_container">
-                            <volist name="task_conditions" id="condition">
-                                <div id="condition_{$condition['id']}" class="condition_item">
-                                    <label>字段: </label>
-                                    <input type="text" class="input length_3 mr2" name="condition_filter[]" value="{$condition['filter']}">
+                            <input type="text" class="input length_3 mr2" name="new_value" value="">
 
-                                    <label>条件: </label>
-                                    <input type="text" class="input length_3 mr2" name="condition_operator[]" value="{$condition['operator']}" readonly>
+                            <a class="btn btn-success" onclick="addCondition()"><i class="iconfont icon-add1"></i>新增</a>
+                        </td>
+                        <td><div class="fun_tips"></div></td>
+                    </tr>
 
-                                    <label>值: </label>
-                                    <input type="text" class="input length_3 mr2" name="condition_value[]" value="{$condition['value']}">
-                                    <a  onclick="delete_condition('{$condition["id"]}')" class="btn btn-danger"><i class="iconfont icon-close"></i>删除</a>
-                                </div>
-                            </volist>
-                        </div>
-                    </td>
-                    <td><div class="fun_tips"></div></td>
-                </tr>
+                    <tr>
+                        <th>当前筛选条件</th>
+                        <template id="tpl_condition">
+                            <div id="condition_{condition_id}" class="condition_item">
+                                <label>字段: </label>
+                                <input type="text" class="input length_3 mr2" name="condition_filter[]" value="{new_filter}">
 
-                <tr style="display: none;">
-                    <th>ID</th>
-                    <td>
-                        <input type="text" value="{$id}" name="task_id">
-                    </td>
-                    <td><div class="fun_tips"></div></td>
-                </tr>
+                                <label>条件: </label>
+                                <input type="text" class="input length_3 mr2" name="condition_operator[]" value="{new_operator}" readonly>
+
+                                <label>值: </label>
+                                <input type="text" class="input length_3 mr2" name="condition_value[]" value="{new_value}">
+                                <a  onclick="delete_condition('{condition_id}')" class="btn btn-danger"><i class="iconfont icon-close"></i>删除</a>
+                            </div>
+                        </template>
+                        <td>
+                            <div id="conditions_container">
+                                <volist name="task_conditions" id="condition">
+                                    <div id="condition_{$condition['id']}" class="condition_item">
+                                        <label>字段: </label>
+                                        <input type="text" class="input length_3 mr2" name="condition_filter[]" value="{$condition['filter']}">
+
+                                        <label>条件: </label>
+                                        <input type="text" class="input length_3 mr2" name="condition_operator[]" value="{$condition['operator']}" readonly>
+
+                                        <label>值: </label>
+                                        <input type="text" class="input length_3 mr2" name="condition_value[]" value="{$condition['value']}">
+                                        <a  onclick="delete_condition('{$condition["id"]}')" class="btn btn-danger"><i class="iconfont icon-close"></i>删除</a>
+                                    </div>
+                                </volist>
+                            </div>
+                        </td>
+                        <td><div class="fun_tips"></div></td>
+                    </tr>
+
+                    <tr style="display: none;">
+                        <th>ID</th>
+                        <td>
+                            <input type="text" value="{$id}" name="task_id">
+                        </td>
+                        <td><div class="fun_tips"></div></td>
+                    </tr>
 
 
-                <tr>
-                    <th>操作</th>
-                    <td>
-                        <button class="btn btn_submit J_ajax_submit_btn" type="submit">提 交</button>
-                    </td>
-                    <td><div class="fun_tips"></div></td>
-                </tr>
-            </table>
-        </div>
-    </form>
+                    <tr>
+                        <th>操作</th>
+                        <td>
+                            <button class="btn btn_submit J_ajax_submit_btn" type="submit">提 交</button>
+                        </td>
+                        <td><div class="fun_tips"></div></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </if>
+
 
     <div class="h_a">设置字段映射</div>
     <form class="J_ajaxForm"  action="{:U('Transport/Index/task_update_field')}" method="post" id="field_form">

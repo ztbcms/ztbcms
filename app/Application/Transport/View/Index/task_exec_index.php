@@ -58,7 +58,8 @@
                 <if condition="$type EQ 1">
                     <tr>
                         <th>导入文件</th>
-                        <td><input type="file" class="input length_5 mr5" name="filename" value=""></td>
+                        <td><input type="text" class="input length_5 mr5" name="filename" value="/Users/jayin/Desktop/project/fenxiangbei/ztbcms
+/Transport/Data/数据导出20161213123245.xls"></td>
                         <td><div class="fun_tips"></div></td>
                     </tr>
                 </if>

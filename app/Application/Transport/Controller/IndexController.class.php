@@ -10,6 +10,7 @@ namespace Transport\Controller;
 use Common\Controller\AdminBase;
 use Transport\Core\Export;
 use Transport\Core\ExportField;
+use Transport\Core\Import;
 use Transport\Model\TransportTaskModel;
 
 /**
@@ -238,7 +239,25 @@ class IndexController extends AdminBase  {
             $export->exportXls();
         }else{
             //导出
-            echo 'TODO';
+            $import = new Import();
+
+            $import->setModel($task['model']);
+
+            //字段映射
+            $fields = [];
+            $task_fields = M('TransportField')->where(['task_id' => $task['id']])->select();
+            foreach ($task_fields as $index => $field){
+
+                $fields[] = new ExportField($field['field_name'], $field['export_name'], $field['filter']);
+            }
+            $import->setFields($fields);
+
+            $import->setFilename($task_log['filename']);
+
+//            $import->exportTable();
+            //开始导入
+            $import->import();
+            $this->success('导入成功');
         }
     }
 
