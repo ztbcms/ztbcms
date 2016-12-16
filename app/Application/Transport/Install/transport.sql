@@ -34,6 +34,7 @@ CREATE TABLE `ztb_transport_task_log` (
   `result` int(1) NOT NULL DEFAULT '1' COMMENT '任务结果:1成功 2失败',
   `remark` varchar(256) DEFAULT NULL COMMENT '备注',
   `title` varchar(128) NOT NULL DEFAULT '' COMMENT '任务标题',
+  `import_file` varchar(512) NOT NULL DEFAULT '' COMMENT '导入文件路径',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
