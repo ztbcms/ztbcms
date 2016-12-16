@@ -201,7 +201,7 @@
                     <td>
                         <div id="fields_container">
                             <volist name="task_fields" id="field">
-                                <div id="condition_{$field['id']}" class="field_item">
+                                <div id="field_{$field['id']}" class="field_item">
                                     <label>内部字段名: </label>
                                     <input type="text" class="input length_3 mr2" name="field_field_name[]" value="{$field['field_name']}">
 
@@ -210,7 +210,7 @@
 
                                     <label>过滤处理器: </label>
                                     <input type="text" class="input length_3 mr2" name="field_filter[]" value="{$field['filter']}">
-                                    <a  onclick="delete_field('$field["id"]')" class="btn btn-danger"><i class="iconfont icon-close"></i>删除</a>
+                                    <a  onclick="delete_field('{$field["id"]}')" class="btn btn-danger"><i class="iconfont icon-close"></i>删除</a>
                                 </div>
                             </volist>
                         </div>
