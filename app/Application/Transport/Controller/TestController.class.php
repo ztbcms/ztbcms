@@ -81,6 +81,8 @@ class TestController extends Base {
         $filename = APP_PATH . '/Transport/Data/数据导出20161213123245.xls';
         $import->setFilename($filename);
 
+        //导入预览
+        //$import->exportTable();
         //开始导入
         $import->import();
     }
