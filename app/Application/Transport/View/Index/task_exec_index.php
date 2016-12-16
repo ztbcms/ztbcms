@@ -5,7 +5,7 @@
 
     <Admintemplate file="Common/Nav"/>
     <div class="h_a">执行任务</div>
-    <form class="J_ajaxForm"  action="{:U('Transport/Index/task_create')}" method="post">
+    <form class=""  action="{:U('Transport/Index/task_log_create')}" method="post">
         <div class="table_full">
             <table width="100%">
                 <col class="th" />
@@ -13,23 +13,31 @@
                 <col />
                 <tr>
                     <th>任务标题</th>
-                    <td>{$title}</td>
+                    <td>{$title}
+                        <input type="hidden" name="title" value="{$title}">
+                    </td>
                     <td><div class="fun_tips"></div></td>
                 </tr>
 
                 <tr>
                     <th>任务描述</th>
-                    <td>{$description}</td>
+                    <td>{$description}
+                        <input type="hidden" name="remark" value="{$description}">
+                    </td>
                     <td><div class="fun_tips"></div></td>
                 </tr>
+
                 <tr>
                     <th>任务类型</th>
                     <td>
                         <if condition="$type EQ 1">导入任务</if>
                         <if condition="$type EQ 2">导出任务</if>
+
+                        <input type="hidden" name="type" value="{$type}">
                     </td>
                     <td><div class="fun_tips"></div></td>
                 </tr>
+
                 <tr>
                     <th>模型</th>
                     <td>
@@ -39,10 +47,18 @@
                     <td><div class="fun_tips"></div></td>
                 </tr>
 
+                <tr style="display: none;">
+                    <th>关联任务ID</th>
+                    <td>
+                        <input type="text" name="task_id" value="{$id}">
+                    </td>
+                    <td><div class="fun_tips"></div></td>
+                </tr>
+
                 <if condition="$type EQ 1">
                     <tr>
                         <th>导入文件</th>
-                        <td><input type="file" class="input length_5 mr5" name="title" value=""></td>
+                        <td><input type="file" class="input length_5 mr5" name="filename" value=""></td>
                         <td><div class="fun_tips"></div></td>
                     </tr>
                 </if>
@@ -50,7 +66,7 @@
                 <if condition="$type EQ 2">
                     <tr>
                         <th>导出文件名</th>
-                        <td><input type="text" class="input length_5 mr5" name="title" value=""></td>
+                        <td><input type="text" class="input length_5 mr5" name="filename" value=""></td>
                         <td><div class="fun_tips">默认:标题+创建时间</div></td>
                     </tr>
                 </if>
@@ -59,7 +75,7 @@
         </div>
         <div class="">
             <div class="btn_wrap_pd">
-                <button class="btn btn_submit J_ajax_submit_btn" type="submit">执行</button>
+                <button class="btn btn_submit " type="submit">执行</button>
             </div>
         </div>
     </form>

@@ -8,6 +8,9 @@ namespace Transport\Controller;
 
 
 use Common\Controller\AdminBase;
+use Transport\Core\Export;
+use Transport\Core\ExportField;
+use Transport\Model\TransportTaskModel;
 
 /**
  * Class IndexController
@@ -166,8 +169,17 @@ class IndexController extends AdminBase  {
      * 执行任务预览页
      */
     function task_exec_index(){
-        $task = $this->db->where(['id' => I('get.id')])->find();
+        $task_id = I('get.id');
+        $task = $this->db->where(['id' => $task_id])->find();
         $this->assign($task);
+
+        $task_conditions = M('TransportCondition')->where(['task_id' => $task_id])->select();
+        $this->assign('task_conditions', $task_conditions);
+
+
+        $task_fields = M('TransportField')->where(['task_id' => $task_id])->select();
+        $this->assign('task_fields', $task_fields);
+
         $this->display();
     }
 
@@ -175,7 +187,59 @@ class IndexController extends AdminBase  {
      * 执行任务
      */
     function task_exec(){
+        $task_log_id = I('task_log_id');
 
+        $task_log = M('TransportTaskLog')->where(['id' => $task_log_id])->find();
+        $task = M('TransportTask')->where(['id' => $task_log['task_id']])->find();
+
+        if($task['type'] == TransportTaskModel::TYPE_EXPORT){
+            //导出任务处理
+
+            $export = new Export();
+            $filename = empty($task_log['filename'])? $task['title'].date('YmdHis', time()) : $task_log['filename'];
+            $export->setFilename($filename); //导出文件名
+            $export->setModel($task['model']); //导出模型
+
+            //筛选条件
+            $task_conditions = M('TransportCondition')->where(['task_id' => $task['id']])->select();
+            $where = [];
+            foreach ($task_conditions as $index => $condition){
+
+                if(!empty($condition)){
+                    $filter = trim($condition['filter']);
+                    $operator = trim($condition['operator']);
+                    $value = trim($condition['value']);
+
+                    if(empty($where[$filter])){
+                        $where[$filter] = [];
+                    }
+
+                    if(strtolower($operator) == 'like'){
+                        $new_condition = array($operator, '%' . $value . '%');
+                    }else{
+                        $new_condition = array($operator, $value);
+                    }
+                    $where[$filter][] = $new_condition;
+                }
+            }
+            $export->setCondition($where);
+
+            //字段映射
+            $fields = [];
+            $task_fields = M('TransportField')->where(['task_id' => $task['id']])->select();
+            foreach ($task_fields as $index => $field){
+                $fields[] = new ExportField($field['field_name'], $field['export_name'], $field['filter']);
+            }
+            $export->setFields($fields);
+
+            //取消下面两行注释,即可预览导出结果
+            //$table = $export->exportTable();
+            //echo $table; exit();
+            $export->exportXls();
+        }else{
+            //导出
+            echo 'TODO';
+        }
     }
 
     /**
@@ -183,6 +247,23 @@ class IndexController extends AdminBase  {
      */
     function task_logs(){
         $this->display();
+    }
+
+    /**
+     * 创建任务执行日志
+     */
+    function task_log_create(){
+        $data = I('post.');
+
+        $id = M('TransportTaskLog')->data($data)->add();
+        if($id){
+            //跳转去执行...
+           $this->redirect('task_exec', ['task_log_id' => $id]);
+
+        }else{
+            $this->error('任务执行失败');
+        }
+
     }
 
 
