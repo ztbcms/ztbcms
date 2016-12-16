@@ -80,6 +80,7 @@
         <div class="table_full">
             <table width="100%">
                 <col class="th" />
+                <col width="1000" />
                 <tr>
                     <th>新增筛选条件</th>
                     <td>
