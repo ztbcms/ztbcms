@@ -246,6 +246,15 @@ class IndexController extends AdminBase  {
      * 任务执行日志
      */
     function task_logs(){
+        $default_limit = 20;
+
+        $data = M('TransportTaskLog')->page(I('page', 1))->limit(I('limit', $default_limit))->order('inputtime DESC')->select();
+        $this->assign('data', $data);
+
+        $sum = M('TransportTaskLog')->count();
+        $page = $this->page( $sum, $default_limit);
+
+        $this->assign('Page', $page->show());
         $this->display();
     }
 
@@ -255,6 +264,7 @@ class IndexController extends AdminBase  {
     function task_log_create(){
         $data = I('post.');
 
+        $data['inputtime'] = time();
         $id = M('TransportTaskLog')->data($data)->add();
         if($id){
             //跳转去执行...
