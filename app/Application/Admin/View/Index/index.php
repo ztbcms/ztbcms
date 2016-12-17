@@ -9,7 +9,7 @@
 <!-- THEME Bootstrap -->
 <link href="{$config_siteurl}statics/admin/theme/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 <link href="{$config_siteurl}statics/admin/theme/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="{$config_siteurl}statics/css/default_iconfont.css">
+<link rel="stylesheet" href="{$config_siteurl}statics/css/iconfont/iconfont.css">
 <style>
 .fullScreen .content th {
 	display: none;
