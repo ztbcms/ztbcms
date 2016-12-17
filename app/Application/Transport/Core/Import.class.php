@@ -55,7 +55,7 @@ class Import {
 
         $this->importRows();
 
-        $this->importData();
+
 
     }
 
@@ -154,6 +154,36 @@ class Import {
         }
     }
 
+    /**
+     * 输出表格
+     */
+    private function previewTable(){
+        $content = '<table>';
+
+        foreach ($this->data as $index => $row){
+            $content .= '<tr>';
+
+            foreach ($row as $i => $cell){
+                $content .= '<td>' . $cell . '</td>';
+            }
+            $content .= '</tr>';
+        }
+
+        $content .= '</table>';
+
+        echo $content;
+    }
+
+    /**
+     * 导入XLS数据，但不插入到数据库，做阅览
+     */
+    function exportTable(){
+        $this->loadExcelData();
+        $this->importTable();
+
+        $this->previewTable();
+    }
+
 
     /**
      * 开始导入
@@ -162,6 +192,8 @@ class Import {
 
         $this->loadExcelData();
         $this->importTable();
+
+        $this->importData();
     }
 
     /**

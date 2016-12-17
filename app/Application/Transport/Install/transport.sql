@@ -1,6 +1,6 @@
 CREATE TABLE `cms_transport_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `task_id` int(11) NOT NULL COMMENT '对应任务ID',
+  `task_id` int(11) NOT NULL COMMENT '关联任务ID',
   `filter` varchar(128) NOT NULL DEFAULT '' COMMENT '字段',
   `operator` varchar(16) NOT NULL DEFAULT '' COMMENT '操作符',
   `value` varchar(128) DEFAULT '' COMMENT '值',
@@ -12,6 +12,7 @@ CREATE TABLE `cms_transport_field` (
   `field_name` varchar(128) NOT NULL DEFAULT '' COMMENT '字段名',
   `export_name` varchar(128) NOT NULL DEFAULT '' COMMENT '对外(表格)字段名',
   `filter` varchar(128) NOT NULL DEFAULT '' COMMENT '处理方法',
+  `task_id` int(11) NOT NULL COMMENT '关联任务ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -25,13 +26,14 @@ CREATE TABLE `cms_transport_task` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务模板';
 
-CREATE TABLE `cms_transport_task_log` (
+CREATE TABLE `ztb_transport_task_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL COMMENT '对应任务ID',
   `inputtime` int(11) NOT NULL COMMENT '创建时间',
   `filename` varchar(128) NOT NULL DEFAULT '' COMMENT '关联文件路径',
   `result` int(1) NOT NULL DEFAULT '1' COMMENT '任务结果:1成功 2失败',
   `remark` varchar(256) DEFAULT NULL COMMENT '备注',
+  `title` varchar(128) NOT NULL DEFAULT '' COMMENT '任务标题',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
