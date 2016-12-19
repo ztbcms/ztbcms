@@ -16,7 +16,6 @@ class UploadController extends Base {
 	 * swfupload 上传
 	 * 通过swf上传成功以后回调处理时会调用swfupload_json方法增加cookies！
 	 */
-
 	public function swfupload() {
 		if (IS_POST) {
 			$sess_id = I("post.sessid", 0);

@@ -145,10 +145,10 @@ class AttachmentsController extends Base {
 
 	/**
 	 * 设置upload上传的json格式cookie
-	 * @param type $aid 附件id
-	 * @param type $src 附件路径
-	 * @param type $filename 附件名称
-	 * @return type
+	 * @param string $aid 附件id
+	 * @param string $src 附件路径
+	 * @param string $filename 附件名称
+	 * @return string
 	 */
 	protected function upload_json($aid, $src, $filename) {
 		return service("Attachment")->upload_json($aid, $src, $filename);
@@ -157,8 +157,8 @@ class AttachmentsController extends Base {
 	/**
 	 * 检查是否可以上传
 	 * @param string $module 模块名
-	 * @param type $args 上传参数
-	 * @param type $authkey 验证参数
+	 * @param string $args 上传参数
+	 * @param string $authkey 验证参数
 	 * @return boolean|string
 	 */
 	protected function isUpload($module, $args, $authkey) {
@@ -184,12 +184,15 @@ class AttachmentsController extends Base {
 
 	/**
 	 * 获取临时未处理的图片
-	 * @return type
+	 * @return array
 	 */
 	protected function att_not_used() {
 		//获取临时未处理文件列表
 		//修复如果cookie里面有加反斜杠，去除
 		$att_json = \Input::getVar(cookie('att_json'));
+        $att_cookie_arr = [];
+        $att = [];
+
 		if ($att_json) {
 			if ($att_json) {
 				$att_cookie_arr = explode('||', $att_json);
@@ -219,9 +222,10 @@ class AttachmentsController extends Base {
 
 	/**
 	 * 用于图片附件上传加水印回调方法
-	 * @param type $_this
-	 * @param type $fileInfo
-	 * @param type $params
+	 * @param array|mixed $_this
+	 * @param array $fileInfo
+	 * @param array $params
+     * @return boolean
 	 */
 	public static function water($_this, $fileInfo, $params) {
 		//网站拍照
@@ -250,6 +254,7 @@ class AttachmentsController extends Base {
 			}
 			\Image::water($source, $water, $source, $alpha, $waterPos, $quality);
 		}
+		return true;
 	}
 
 }
