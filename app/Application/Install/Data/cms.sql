@@ -82,13 +82,13 @@ CREATE TABLE `cms_attachment_index` (
 DROP TABLE IF EXISTS `cms_behavior`;
 CREATE TABLE `cms_behavior` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` char(30) NOT NULL DEFAULT '' COMMENT '行为唯一标识',
-  `title` char(80) NOT NULL DEFAULT '' COMMENT '行为说明',
-  `remark` char(140) NOT NULL DEFAULT '' COMMENT '行为描述',
+  `name` varchar(128) NOT NULL DEFAULT '' COMMENT '行为唯一标识',
+  `title` varchar(256) NOT NULL DEFAULT '' COMMENT '行为说明',
+  `remark` varchar(256) NOT NULL DEFAULT '' COMMENT '行为描述',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-控制器，2-视图',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态（0：禁用，1：正常）',
   `system` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否系统',
-  `module` char(20) NOT NULL DEFAULT '' COMMENT '所属模块',
+  `module` varchar(128) NOT NULL DEFAULT '' COMMENT '所属模块',
   `datetime` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='系统行为表';
@@ -713,6 +713,8 @@ CREATE TABLE `cms_position_data` (
   `expiration` int(10) NOT NULL,
   `extention` char(30) NOT NULL DEFAULT '',
   `synedit` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否同步编辑',
+  `inputtime` int(11) NOT NULL COMMENT '创建时间',
+  `updatetime` int(11) NOT NULL COMMENT '更新时间',
   KEY `posid` (`posid`),
   KEY `listorder` (`listorder`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='推荐位数据表';

@@ -162,6 +162,8 @@ class AdminController extends AdminBase {
 					$file_arr = explode('_', $basename);
 					$basename = array_pop($file_arr);
 				}
+                $width = isset($width) ? $width : 'auto';
+                $height = isset($height) ? $height : 'auto';
 				$new_file = $Prefix . $width . '_' . $height . '_' . $basename;
 				//栏目ID
 				$catid = I('get.catid', 0, 'intval');
@@ -201,6 +203,7 @@ class AdminController extends AdminBase {
 		$config = cache('Config');
 		$aid = I('get.aid');
 		$info = M("Attachment")->where(array('aid' => $aid))->find();
+        $thumbs = [];
 		if ($info) {
 			$infos = glob(dirname($this->path . $info['filepath']) . '/thumb_*' . basename($info['filepath']));
 			foreach ($infos as $n => $thumb) {

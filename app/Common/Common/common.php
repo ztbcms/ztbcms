@@ -22,10 +22,10 @@ function cache($name, $value = '', $options = null) {
 			return $cache->get($name);
 		}
 	} elseif (is_null($value)) {
-//删除缓存
+        //删除缓存
 		return $cache->remove($name);
 	} else {
-//缓存数据
+        //缓存数据
 		if (is_array($options)) {
 			$expire = isset($options['expire']) ? $options['expire'] : NULL;
 		} else {
@@ -38,8 +38,9 @@ function cache($name, $value = '', $options = null) {
 /**
  * 调试，用于保存数组到txt文件 正式生产删除
  * 用法：array2file($info, SITE_PATH.'post.txt');
- * @param type $array
- * @param type $filename
+ * @param array $array
+ * @param string $filename
+ * @return  boolean
  */
 function array2file($array, $filename) {
 	if (defined("APP_DEBUG") && APP_DEBUG) {
@@ -57,7 +58,7 @@ function array2file($array, $filename) {
 
 /**
  * 返回CMS对象
- * @return Object
+ * @return \Common\Controller\CMS
  */
 function CMS() {
 	return \Common\Controller\CMS::app();
@@ -65,9 +66,9 @@ function CMS() {
 
 /**
  * 快捷方法取得服务
- * @param type $name 服务类型
- * @param type $params 参数
- * @return type
+ * @param string $name 服务类型
+ * @param array $params 参数
+ * @return \Libs\System\Service
  */
 function service($name, $params = array()) {
 	return \Libs\System\Service::getInstance($name, $params);
@@ -75,7 +76,8 @@ function service($name, $params = array()) {
 
 /**
  * 生成上传附件验证
- * @param $args   参数
+ * @param string $args  参数
+ * @return  string
  */
 function upload_key($args) {
 	return md5($args . md5(C("AUTHCODE") . $_SERVER['HTTP_USER_AGENT']));
@@ -83,7 +85,7 @@ function upload_key($args) {
 
 /**
  * 检查模块是否已经安装
- * @param type $moduleName 模块名称
+ * @param string $moduleName 模块名称
  * @return boolean
  */
 function isModuleInstall($moduleName) {
@@ -96,7 +98,7 @@ function isModuleInstall($moduleName) {
 
 /**
  * 产生一个指定长度的随机字符串,并返回给用户
- * @param type $len 产生字符串的长度
+ * @param int $len 产生字符串的长度
  * @return string 随机字符串
  */
 function genRandomString($len = 6) {
@@ -120,10 +122,11 @@ function genRandomString($len = 6) {
 
 /**
  * 生成SEO
- * @param $catid        栏目ID
- * @param $title        标题
- * @param $description  描述
- * @param $keyword      关键词
+ * @param string $catid        栏目ID
+ * @param string $title        标题
+ * @param string $description  描述
+ * @param string $keyword      关键词
+ * @return string
  */
 function seo($catid = '', $title = '', $description = '', $keyword = '') {
 	if (!empty($title)) {
@@ -155,9 +158,9 @@ function seo($catid = '', $title = '', $description = '', $keyword = '') {
  *  通过用户邮箱，取得gravatar头像
  * @since 2.5
  * @param int|string|object $id_or_email 一个用户ID，电子邮件地址
- * @param int $size 头像图片的大小
+ * @param int|string $size 头像图片的大小
  * @param string $default 如果没有可用的头像是使用默认图像的URL
- * @param string $alt 替代文字使用中的形象标记。默认为空白
+ * @param boolean $alt 替代文字使用中的形象标记。默认为空白
  * @return string <img>
  */
 function get_avatar($id_or_email, $size = '96', $default = '', $alt = false) {
@@ -301,9 +304,9 @@ function page($total, $size = 0, $number = 0, $config = array()) {
 
 /**
  * 获取栏目相关信息
- * @param type $catid 栏目id
- * @param type $field 返回的字段，默认返回全部，数组
- * @param type $newCache 是否强制刷新
+ * @param string $catid 栏目id
+ * @param tstringype $field 返回的字段，默认返回全部，数组
+ * @param boolean $newCache 是否强制刷新
  * @return boolean
  */
 function getCategory($catid, $field = '', $newCache = false) {
@@ -348,9 +351,9 @@ function getCategory($catid, $field = '', $newCache = false) {
 
 /**
  * 获取模型数据
- * @param type $modelid 模型ID
- * @param type $field 返回的字段，默认返回全部，数组
- * @return boolean
+ * @param string $modelid 模型ID
+ * @param string $field 返回的字段，默认返回全部，数组
+ * @return boolean|string
  */
 function getModel($modelid, $field = '') {
 	if (empty($modelid)) {
@@ -380,9 +383,9 @@ function getModel($modelid, $field = '') {
 
 /**
  * 检测一个数据长度是否超过最小值
- * @param type $value 数据
- * @param type $length 最小长度
- * @return type
+ * @param string $value 数据
+ * @param int $length 最小长度
+ * @return boolean
  */
 function isMin($value, $length) {
 	return mb_strlen($value, 'utf-8') >= (int) $length ? true : false;
@@ -390,9 +393,9 @@ function isMin($value, $length) {
 
 /**
  * 检测一个数据长度是否超过最大值
- * @param type $value 数据
- * @param type $length 最大长度
- * @return type
+ * @param string $value 数据
+ * @param int $length 最大长度
+ * @return boolean
  */
 function isMax($value, $length) {
 	return mb_strlen($value, 'utf-8') <= (int) $length ? true : false;
@@ -400,8 +403,8 @@ function isMax($value, $length) {
 
 /**
  * 取得文件扩展
- * @param type $filename 文件名
- * @return type 后缀
+ * @param string $filename 文件名
+ * @return string 后缀
  */
 function fileext($filename) {
 	$pathinfo = pathinfo($filename);
@@ -410,8 +413,8 @@ function fileext($filename) {
 
 /**
  * 对 javascript escape 解码
- * @param type $str
- * @return type
+ * @param string $str
+ * @return string
  */
 function unescape($str) {
 	$ret = '';
@@ -443,9 +446,10 @@ function unescape($str) {
 
 /**
  * 字符截取
- * @param $string 需要截取的字符串
- * @param $length 长度
- * @param $dot
+ * @param string $sourcestr 需要截取的字符串
+ * @param int $length 长度
+ * @param string $dot
+ * @return string
  */
 function str_cut($sourcestr, $length, $dot = '...') {
 	$returnstr = '';
@@ -469,7 +473,7 @@ function str_cut($sourcestr, $length, $dot = '...') {
 			$i = $i + 1; //实际的Byte数仍计1个
 			$n++; //但考虑整体美观，大写字母计成一个高位字符
 		} else {
-//其他情况下，包括小写字母和半角标点符号，
+            //其他情况下，包括小写字母和半角标点符号，
 			$returnstr = $returnstr . substr($sourcestr, $i, 1);
 			$i = $i + 1; //实际的Byte数计1个
 			$n = $n + 0.5; //小写字母和半角标点等与半个高位字符宽...
@@ -484,12 +488,13 @@ function str_cut($sourcestr, $length, $dot = '...') {
 /**
  * flash上传初始化
  * 初始化swfupload上传中需要的参数
- * @param $module 模块名称
- * @param $catid 栏目id
- * @param $args 传递参数
- * @param $userid 用户id
- * @param $groupid 用户组id 默认游客
- * @param $isadmin 是否为管理员模式
+ * @param string $module 模块名称
+ * @param string $catid 栏目id
+ * @param string $args 传递参数
+ * @param string $userid 用户id
+ * @param string|int $groupid 用户组id 默认游客
+ * @param boolean $isadmin 是否为管理员模式
+ * @return string
  */
 function initupload($module, $catid, $args, $userid, $groupid = 8, $isadmin = false) {
 	if (empty($module)) {
@@ -597,8 +602,8 @@ function initupload($module, $catid, $args, $userid, $groupid = 8, $isadmin = fa
 
 /**
  * 取得URL地址中域名部分
- * @param type $url
- * @return \url 返回域名
+ * @param string $url
+ * @return string|boolean 返回域名
  */
 function urlDomain($url) {
 	if ($url) {
@@ -610,7 +615,7 @@ function urlDomain($url) {
 
 /**
  * 获取当前页面完整URL地址
- * @return type 地址
+ * @return string 地址
  */
 function get_url() {
 	$sys_protocal = isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://';
@@ -622,8 +627,9 @@ function get_url() {
 
 /**
  * 返回附件类型图标
- * @param $file 附件名称
- * @param $type png为大图标，gif为小图标
+ * @param string $file 附件名称
+ * @param string $type png为大图标，gif为小图标
+ * @return string
  */
 function file_icon($file, $type = 'png') {
 	$ext_arr = array('doc', 'docx', 'ppt', 'xls', 'txt', 'pdf', 'mdb', 'jpg', 'gif', 'png', 'bmp', 'jpeg', 'rar', 'zip', 'swf', 'flv');
@@ -654,8 +660,8 @@ function file_icon($file, $type = 'png') {
 
 /**
  * 根据文件扩展名来判断是否为图片类型
- * @param type $file 文件名
- * @return type 是图片类型返回 true，否则返回 false
+ * @param string $file 文件名
+ * @return boolean 是图片类型返回 true，否则返回 false
  */
 function isImage($file) {
 	$ext_arr = array('jpg', 'gif', 'png', 'bmp', 'jpeg', 'tiff');
@@ -666,18 +672,18 @@ function isImage($file) {
 
 /**
  * 对URL中有中文的部分进行编码处理
- * @param type $url 地址 http://www.ztbcms.com/s?wd=博客
- * @return type ur;编码后的地址 http://www.ztbcms.com/s?wd=%E5%8D%9A%20%E5%AE%A2
+ * @param string $url 地址 http://www.ztbcms.com/s?wd=博客
+ * @return string ur;编码后的地址 http://www.ztbcms.com/s?wd=%E5%8D%9A%20%E5%AE%A2
  */
 function cn_urlencode($url) {
 	$pregstr = "/[\x{4e00}-\x{9fa5}]+/u"; //UTF-8中文正则
 	if (preg_match_all($pregstr, $url, $matchArray)) {
-//匹配中文，返回数组
+        //匹配中文，返回数组
 		foreach ($matchArray[0] as $key => $val) {
 			$url = str_replace($val, urlencode($val), $url); //将转译替换中文
 		}
 		if (strpos($url, ' ')) {
-//若存在空格
+            //若存在空格
 			$url = str_replace(' ', '%20', $url);
 		}
 	}
@@ -686,7 +692,7 @@ function cn_urlencode($url) {
 
 /**
  * 获取模版文件 格式 主题://模块/控制器/方法
- * @param type $templateFile
+ * @param string $templateFile
  * @return boolean|string
  */
 function parseTemplateFile($templateFile = '') {
@@ -755,9 +761,9 @@ function parseTemplateFile($templateFile = '') {
 
 /**
  * 获取点击数
- * @param type $catid 栏目ID
- * @param type $id 信息ID
- * @return type
+ * @param string $catid 栏目ID
+ * @param string $id 信息ID
+ * @return string|int
  */
 function hits($catid, $id) {
 	return \Content\Model\ContentModel::getInstance(getCategory($catid, 'modelid'))->where(array('id' => $id))->getField('views');
@@ -765,9 +771,9 @@ function hits($catid, $id) {
 
 /**
  * 标题链接获取
- * @param type $catid 栏目id
- * @param type $id 信息ID
- * @return type 链接地址
+ * @param string $catid 栏目id
+ * @param string $id 信息ID
+ * @return string 链接地址
  */
 function titleurl($catid, $id) {
 	return \Content\Model\ContentModel::getInstance(getCategory($catid, 'modelid'))->where(array('id' => $id))->getField("url");
@@ -775,9 +781,9 @@ function titleurl($catid, $id) {
 
 /**
  * 获取文章评论总数
- * @param type $catid 栏目ID
- * @param type $id 信息ID
- * @return type
+ * @param string $catid 栏目ID
+ * @param string $id 信息ID
+ * @return string|int
  */
 function commcount($catid, $id) {
 	$comment_id = "c-{$catid}-{$id}";
@@ -786,8 +792,9 @@ function commcount($catid, $id) {
 
 /**
  * 生成标题样式
- * @param $style   样式，通常时字段style，以“;”隔开，第一个是文字颜色，第二个是否加粗
- * @param $html    是否显示完整的STYLE样式代码
+ * @param string $style   样式，通常时字段style，以“;”隔开，第一个是文字颜色，第二个是否加粗
+ * @param string $html    是否显示完整的STYLE样式代码
+ * @return string
  */
 function title_style($style, $html = 1) {
 	$str = '';
@@ -809,12 +816,12 @@ function title_style($style, $html = 1) {
 
 /**
  * 生成缩略图
- * @param type $imgurl 图片地址
- * @param type $width 缩略图宽度
- * @param type $height 缩略图高度
- * @param type $thumbType 缩略图生成方式 1 按设置大小截取 0 按原图等比例缩略
- * @param type $smallpic 图片不存在时显示默认图片
- * @return type
+ * @param string $imgurl 图片地址
+ * @param float $width 缩略图宽度
+ * @param float $height 缩略图高度
+ * @param int $thumbType 缩略图生成方式 1 按设置大小截取 0 按原图等比例缩略
+ * @param string $smallpic 图片不存在时显示默认图片
+ * @return string
  */
 function thumb($imgurl, $width = 100, $height = 100, $thumbType = 0, $smallpic = 'nopic.gif') {
 	static $_thumb_cache = array();
@@ -876,10 +883,10 @@ function thumb($imgurl, $width = 100, $height = 100, $thumbType = 0, $smallpic =
 
 /**
  * 获取用户头像
- * @param type $uid 用户ID
+ * @param string $uid 用户ID
  * @param int $format 头像规格，默认参数90，支持 180,90,45,30
- * @param type $dbs 该参数为true时，表示使用查询数据库的方式，取得完整的头像地址。默认false
- * @return type 返回头像地址
+ * @param boolean $dbs 该参数为true时，表示使用查询数据库的方式，取得完整的头像地址。默认false
+ * @return string 返回头像地址
  */
 function getavatar($uid, $format = 90, $dbs = false) {
 	return service('Passport')->getUserAvatar($uid, $format, $dbs);
@@ -887,9 +894,10 @@ function getavatar($uid, $format = 90, $dbs = false) {
 
 /**
  * 邮件发送
- * @param type $address 接收人 单个直接邮箱地址，多个可以使用数组
- * @param type $title 邮件标题
- * @param type $message 邮件内容
+ * @param string $address 接收人 单个直接邮箱地址，多个可以使用数组
+ * @param string $title 邮件标题
+ * @param string $message 邮件内容
+ * @return string|boolean
  */
 function SendMail($address, $title, $message) {
 	$config = cache('Config');

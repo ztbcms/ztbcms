@@ -238,9 +238,11 @@ class PositionModel extends Model {
 							if ($r['synedit'] == '0') {
 								//同步时，不从新设置排序值
 								unset($info['listorder']);
+                                $info['updatetime'] = time();
 								$pos_data->where(array('catid' => $catid,'id' => $d['id'], 'posid' => $pid))->data($info)->save();
 							}
 						} else {
+                            $info['inputtime'] = $info['updatetime'] = time();
 							$status = $pos_data->data($info)->add();
 							if ($status !== false) {
 								$this->content_pos($info['id'], $info['modelid']);
