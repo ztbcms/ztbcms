@@ -26,7 +26,7 @@ class PositionController extends AdminBase {
 		}
 		$model = M('PositionData');
 		if ($action == 0) {
-//初始化
+            //初始化
 			$count = $model->where(array('posid' => $posid))->count();
 			$lun = ceil($count / 20);
 			$_GET['lun'] = $lun;
@@ -72,6 +72,7 @@ class PositionController extends AdminBase {
 					'modelid' => $modelid,
 					'thumb' => $textcontent['thumb'] ? 1 : 0,
 					'data' => serialize($textcontent),
+                    'updatetime' => time()
 				);
 				$model->where(array('posid' => $posid, 'id' => $rs['id'], 'catid' => $rs['catid'], 'modelid' => $modelid))->save($newsData);
 				$cid = $rs['id'];

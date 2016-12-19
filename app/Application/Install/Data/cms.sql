@@ -713,6 +713,8 @@ CREATE TABLE `cms_position_data` (
   `expiration` int(10) NOT NULL,
   `extention` char(30) NOT NULL DEFAULT '',
   `synedit` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否同步编辑',
+  `inputtime` int(11) NOT NULL COMMENT '创建时间',
+  `updatetime` int(11) NOT NULL COMMENT '更新时间',
   KEY `posid` (`posid`),
   KEY `listorder` (`listorder`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='推荐位数据表';

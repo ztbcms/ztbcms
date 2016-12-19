@@ -15,6 +15,12 @@ class PositionDataModel extends Model {
 		//array(验证字段,验证规则,错误提示,验证条件,附加规则,验证时间)
 	);
 
+    //自动完成
+    protected $_auto = array(
+        array('inputtime', 'time', self::MODEL_INSERT, 'function'),
+        array('updatetime', 'time', self::MODEL_BOTH, 'function'),
+    );
+
 	/**
 	 * 推荐位中被推送过来的信息编辑
 	 * @param array $data
