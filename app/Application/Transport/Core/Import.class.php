@@ -167,6 +167,7 @@ class Import {
         }
         $content .= '</table>';
         echo $content;
+        exit();
     }
 
     /**
