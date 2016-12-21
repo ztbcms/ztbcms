@@ -62,7 +62,7 @@ class Import {
     /**
      * 导入数据
      */
-    private function importData() {
+    public function importData() {
         $db = M($this->getModel());
         if (!empty($this->data)) {
             foreach ($this->data as $index => $data) {
@@ -134,7 +134,7 @@ class Import {
     /**
      * 加载Excel数据
      */
-    private function loadExcelData(){
+    public function loadExcelData(){
 
         if(empty($this->excel_data)){
             $objReader = \PHPExcel_IOFactory::createReader('Excel5');
@@ -177,7 +177,7 @@ class Import {
     /**
      * 导入XLS数据，但不插入到数据库，做阅览
      */
-    function exportTable(){
+    public function exportTable(){
         $this->loadExcelData();
         $this->importTable();
 
@@ -188,7 +188,7 @@ class Import {
     /**
      * 开始导入
      */
-    function import() {
+    public function import() {
 
         $this->loadExcelData();
         $this->importTable();
@@ -229,7 +229,7 @@ class Import {
      *
      * @return array|mixed
      */
-    private function getImportData() {
+    public function getImportData() {
         return $this->excel_data;
     }
 

@@ -52,7 +52,7 @@ class Export {
      *
      * @return array
      */
-    private function getConditions() {
+    public function getConditions() {
         return $this->getCondition();
     }
 
@@ -61,7 +61,7 @@ class Export {
      *
      * @return array|mixed
      */
-    private function getExportData() {
+    public function getExportData() {
         $filter = $this->getConditions();
         $filterString = $this->getFilterString();
         $db = M($this->getModel())->where($filter);
@@ -95,7 +95,7 @@ class Export {
      * @param $fields array
      * @return string
      */
-    function exportHeaders($fields = []) {
+    private function exportHeaders($fields = []) {
         $content_header = '<tr>';
         $excel_headers = [];
         foreach ($fields as $index => $field) {
@@ -164,7 +164,7 @@ class Export {
      *
      * @return string
      */
-    function exportTable() {
+    public function exportTable() {
         //先提取数据
         $data = $this->getData();
         if (empty($data)) {
@@ -183,7 +183,7 @@ class Export {
     /**
      * 生成 XLS 文件
      */
-    function exportXls() {
+    public function exportXls() {
 
         $this->exportTable();
 
