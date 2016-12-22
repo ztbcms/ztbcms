@@ -153,7 +153,7 @@ class Hook {
 						continue;
 						break;
 				}
-				if (false === $result) {
+				if (isset($result) && false === $result) {
 					// 如果返回false 则中断插件执行
 					return;
 				}
@@ -171,7 +171,7 @@ class Hook {
 	 * @param array $name 规则
 	 * @param string $tag 方法名（标签名）
 	 * @param Mixed $params 传入的参数
-	 * @return void
+	 * @return boolean|array
 	 */
 	static public function exec($name, $tag, &$params = NULL) {
 		if ('Behavior' == substr($name, -8)) {
