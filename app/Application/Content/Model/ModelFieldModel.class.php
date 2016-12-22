@@ -819,7 +819,7 @@ class ModelFieldModel extends Model {
 		$cache = array();
 		$modelList = M("Model")->select();
 		foreach ($modelList as $info) {
-			$data = $this->where(array("modelid" => $info['modelid']))->order(" listorder ASC ")->select();
+			$data = $this->where(array("modelid" => $info['modelid'], "disabled" => 0))->order(" listorder ASC ")->select();
 			$fieldList = array();
 			if (!empty($data) && is_array($data)) {
 				foreach ($data as $rs) {
