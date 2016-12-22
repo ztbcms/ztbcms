@@ -25,7 +25,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 根据行为ID取得对应的行为信息和规则
-	 * @param type $id 行为ID
+	 * @param string $id 行为ID
 	 * @return boolean|array
 	 */
 	public function getBehaviorById($id) {
@@ -51,7 +51,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 添加行为，同时添加行为规则
-	 * @param type $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function addBehavior($data) {
@@ -102,7 +102,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 编辑行为规则
-	 * @param type $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function editBehavior($data) {
@@ -179,7 +179,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 删除行为
-	 * @param type $id 行为ID
+	 * @param string $id 行为ID
 	 * @return boolean
 	 */
 	public function delBehaviorById($id) {
@@ -218,7 +218,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 根据所属模块，删除对应的行为规则
-	 * @param type $module 模块标识
+	 * @param string $module 模块标识
 	 * @return boolean
 	 */
 	public function ruleDelByModule($module) {
@@ -252,7 +252,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 行为状态转换
-	 * @param type $id 行为ID
+	 * @param string $id 行为ID
 	 * @return boolean
 	 */
 	public function statusBehaviorById($id) {
@@ -302,8 +302,8 @@ class BehaviorModel extends Model {
 	 *                                    '具体的规则2',
 	 *                   ),
 	 *  )
-	 * @param type $module 模块标识
-	 * @param type $behaviorRule 对应规则
+	 * @param string $module 模块标识
+	 * @param array $behaviorRule 对应规则
 	 * @return boolean
 	 */
 	public function moduleBehaviorInstallation($module, $behaviorRule) {
@@ -366,7 +366,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 卸载模块时删除对应模块安装时创建的规则！
-	 * @param type $module 模块标识
+	 * @param string $module 模块标识
 	 * @return boolean
 	 */
 	public function moduleBehaviorUninstall($module) {
@@ -379,7 +379,7 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 缓存行为规则
-	 * @return boolean
+	 * @return boolean|array
 	 */
 	public function behavior_cache() {
 		$behaviorList = $this->where(array('status' => 1))->order(array('id' => 'ASC'))->select();
@@ -523,8 +523,8 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 执行SQL规则行为，也就是type为3的
-	 * @param type $rule 规则
-	 * @param type $params 参数
+	 * @param array|boolean $rule 规则
+	 * @param array $params 参数
 	 * @return boolean
 	 */
 	protected function executionSQL($rule = false, &$params = null) {
@@ -574,8 +574,8 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 执行规则行为，也是就是类型为1的规则
-	 * @param type $rule
-	 * @param type $params
+	 * @param array|boolean $rule
+	 * @param array $params
 	 * @return boolean
 	 */
 	protected function execution($rule = false, &$params = null) {
@@ -627,9 +627,9 @@ class BehaviorModel extends Model {
 
 	/**
 	 * 规则条件参数处理
-	 * @param type $condition 条件
-	 * @param type $params 参数
-	 * @return type
+	 * @param array $condition 条件
+	 * @param array $params 参数
+	 * @return string
 	 */
 	protected function ruleParams($condition, $params = null) {
 		//操作的条件参数处理
