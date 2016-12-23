@@ -27,17 +27,20 @@ class Export {
 
     /**
      * 源数据
+     *
      * @var array
      */
     protected $data = [];
 
     /**
      * Excel处理器
+     *
      * @var null|\PHPExcel
      */
     private $phpexcel = null;
     /**
      * Excel数据
+     *
      * @var array
      */
     private $excel_data = [];
@@ -47,12 +50,13 @@ class Export {
 
         $this->phpexcel = new \PHPExcel();
     }
+
     /**
      * 获取数据筛选条件
      *
      * @return array
      */
-    private function getConditions() {
+    public function getConditions() {
         return $this->getCondition();
     }
 
@@ -61,12 +65,12 @@ class Export {
      *
      * @return array|mixed
      */
-    private function getExportData() {
+    public function getExportData() {
         $filter = $this->getConditions();
         $filterString = $this->getFilterString();
         $db = M($this->getModel())->where($filter);
 
-        if(!empty($filterString)){
+        if (!empty($filterString)) {
             $db = $db->where($filter);
         }
         $data = $db->select();
@@ -95,7 +99,7 @@ class Export {
      * @param $fields array
      * @return string
      */
-    function exportHeaders($fields = []) {
+    private function exportHeaders($fields = []) {
         $content_header = '<tr>';
         $excel_headers = [];
         foreach ($fields as $index => $field) {
@@ -106,6 +110,7 @@ class Export {
         $content_header .= '</tr>';
 
         $this->excel_data[] = $excel_headers;
+
         return $content_header;
     }
 
@@ -117,8 +122,7 @@ class Export {
      * @return string
      */
     private function exportCell(ExportField $field, $row_data) {
-        return $field->filterValue($field->getFieldName(), $row_data[$field->getFieldName()],
-            $row_data) ;
+        return $field->filterValue($field->getFieldName(), $row_data[$field->getFieldName()], $row_data);
     }
 
     /**
@@ -133,7 +137,7 @@ class Export {
 
         $excel_row = [];
         foreach ($fields as $index => $field) {
-            $row .= '<td>' . $this->exportCell($field, $row_data). '</td>';
+            $row .= '<td>' . $this->exportCell($field, $row_data) . '</td>';
             $excel_row[] = $this->exportCell($field, $row_data);
         }
 
@@ -164,7 +168,7 @@ class Export {
      *
      * @return string
      */
-    function exportTable() {
+    public function exportTable() {
         //先提取数据
         $data = $this->getData();
         if (empty($data)) {
@@ -183,26 +187,21 @@ class Export {
     /**
      * 生成 XLS 文件
      */
-    function exportXls() {
+    public function exportXls() {
 
         $this->exportTable();
 
         //设置表格
-        $this->phpexcel->getProperties()->setCreator($this->filterString)
-            ->setLastModifiedBy('ZTBCMS')
-            ->setTitle("Office 2007 XLSX Document")
-            ->setSubject("Office 2007 XLSX Document")
-            ->setDescription("Document for Office 2007 XLSX, generated using PHP classes.")
-            ->setKeywords("office 2007 openxml php")
-            ->setCategory("ZTBCMS");
+        $this->phpexcel->getProperties()->setCreator($this->filterString)->setLastModifiedBy('ZTBCMS')->setTitle("Office 2007 XLSX Document")->setSubject("Office 2007 XLSX Document")->setDescription("Document for Office 2007 XLSX, generated using PHP classes.")->setKeywords("office 2007 openxml php")->setCategory("ZTBCMS");
 
         //填充数据
         foreach ($this->excel_data as $key => $row) {
             $num = $key + 1;
-            $i=0;
+            $i = 0;
             foreach ($row as $key2 => $value2) {
                 $value2 = ' ' . $value2; //处理XLS自动把该行纯数字并且比较长，自动转为客服计数，会自动补全0
-                $this->phpexcel->setActiveSheetIndex(0)->setCellValue( \PHPExcel_Cell::stringFromColumnIndex($i). ($num), $value2);
+                $this->phpexcel->setActiveSheetIndex(0)->setCellValue(\PHPExcel_Cell::stringFromColumnIndex($i) . ($num),
+                    $value2);
                 $i++;
             }
         }
@@ -217,7 +216,7 @@ class Export {
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Cache-Control: cache, must-revalidate');
         header('Pragma: public'); // HTTP/1.0
-        $objWriter =  \PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
+        $objWriter = \PHPExcel_IOFactory::createWriter($this->phpexcel, 'Excel5');
         $objWriter->save('php://output');
         exit;
     }

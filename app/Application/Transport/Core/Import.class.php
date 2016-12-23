@@ -52,17 +52,13 @@ class Import {
      */
     function importTable() {
         $this->importHeaders();
-
         $this->importRows();
-
-
-
     }
 
     /**
      * 导入数据
      */
-    private function importData() {
+    public function importData() {
         $db = M($this->getModel());
         if (!empty($this->data)) {
             foreach ($this->data as $index => $data) {
@@ -70,10 +66,9 @@ class Import {
                 //TODO 检测哪一些导入成功，哪一些失败了
 
                 $pk = $db->getPk();
-                if(isset($data[$pk])){
+                if (isset($data[$pk])) {
                     unset($data[$pk]);
                 }
-
                 $db->add($data);
             }
         }
@@ -81,6 +76,7 @@ class Import {
 
     /**
      * 处理导入表头
+     *
      * @return mixed
      */
     private function importHeaders() {
@@ -89,9 +85,10 @@ class Import {
 
     /**
      * 处理导入一个单元格
+     *
      * @param ExportField $field
-     * @param string $cell_data
-     * @param array $row_data
+     * @param string      $cell_data
+     * @param array       $row_data
      * @return mixed
      */
     private function importCell(ExportField $field, $cell_data, $row_data) {
@@ -100,6 +97,7 @@ class Import {
 
     /**
      * 处理导入一行
+     *
      * @param array $row_data
      * @return array
      */
@@ -107,20 +105,20 @@ class Import {
         $result = [];
         foreach ($this->fields as $index => $field) {
 
-            if(isset($row_data[$index])){
+            if (isset($row_data[$index])) {
                 $cell_data = $row_data[$index];
-            }else{
+            } else {
                 $cell_data = '';
             }
             $result[$field->getFieldName()] = $this->importCell($field, $cell_data, $row_data);
         }
-
 
         return $result;
     }
 
     /**
      * 处理导入多行
+     *
      * @return array
      */
     private function importRows() {
@@ -134,9 +132,8 @@ class Import {
     /**
      * 加载Excel数据
      */
-    private function loadExcelData(){
-
-        if(empty($this->excel_data)){
+    public function loadExcelData() {
+        if (empty($this->excel_data)) {
             $objReader = \PHPExcel_IOFactory::createReader('Excel5');
             $objPHPExcel = $objReader->load($this->filename);
             $objWorksheet = $objPHPExcel->getActiveSheet();
@@ -146,7 +143,7 @@ class Import {
             $excelData = array();
             for ($row = 1; $row <= $highestRow; $row++) {
                 for ($col = 0; $col < $highestColumnIndex; $col++) {
-                    $excelData[$row][] =(string)$objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+                    $excelData[$row][] = (string)$objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
                 }
             }
 
@@ -157,27 +154,26 @@ class Import {
     /**
      * 输出表格
      */
-    private function previewTable(){
+    private function previewTable() {
         $content = '<table>';
 
-        foreach ($this->data as $index => $row){
+        foreach ($this->data as $index => $row) {
             $content .= '<tr>';
 
-            foreach ($row as $i => $cell){
+            foreach ($row as $i => $cell) {
                 $content .= '<td>' . $cell . '</td>';
             }
             $content .= '</tr>';
         }
-
         $content .= '</table>';
-
         echo $content;
+        exit();
     }
 
     /**
      * 导入XLS数据，但不插入到数据库，做阅览
      */
-    function exportTable(){
+    public function exportTable() {
         $this->loadExcelData();
         $this->importTable();
 
@@ -188,7 +184,7 @@ class Import {
     /**
      * 开始导入
      */
-    function import() {
+    public function import() {
 
         $this->loadExcelData();
         $this->importTable();
@@ -229,12 +225,13 @@ class Import {
      *
      * @return array|mixed
      */
-    private function getImportData() {
+    public function getImportData() {
         return $this->excel_data;
     }
 
     /**
      * 设置导入数据
+     *
      * @param array $excel_data
      */
     public function setImportData(array $excel_data) {
@@ -254,8 +251,5 @@ class Import {
     public function setFilename($filename) {
         $this->filename = $filename;
     }
-
-
-
 
 }
