@@ -10,67 +10,75 @@ namespace Sms\Controller;
 
 use Common\Controller\Base;
 
-
-// //云之讯
-// use Sms\Lib\Ucpaas\Ucpaas;
-
 class ApiController extends Base {
 
     protected $operator;
     protected $conf;
-    
+
     protected function _initialize() {
         parent::_initialize();
 
-        //获取正在使用的短信平台
-        $this->operator = M('smsOperator')->where("enable='1'")->find();
-        //获取短信配置
-        $this->conf = M("sms" . ucfirst($this->operator['tablename']))->select()[0];
-
-        if (empty($this->conf)) {
-            $this->error("短信模块缺失配置，请先到后台设置！");
-            return false;
-        }
-
+        //获取默认短信平台，如果没有传入短信平台，则使用次短信平台发送
+        $this->operator = M('smsOperator')->where("enable='1'")->find()['tablename'];
     }
 
     /**
-    * 发送短信
-    *
-    * @param string $to      短信接收人，多个接收人号码之间使用英文半角逗号隔开
-    * @param array  $param  短信模板变量，必须为JSON字符串，非必填字段
-    * @return array {result => 短信发送结果，id => 数据库日志ID，msg => 发生错误时，错误信息}
-    */
-    public function sendSms(){
-        
-        $to = I('get.to');
-        $param = I('get.param');
+     * 发送短信
+     *
+     * @param string $template 短信模板ID，从后台配置获取
+     * @param string $to       短信接收人，多个接收人号码之间使用英文半角逗号隔开
+     * @param array  $param    短信模板变量，数组或者json字符串
+     * @param array  $operator 短信平台，不传入时，使用后台配置的默认短信平台
+     *
+     * @return array operator => 发送平台，
+     *               template => 短信模板数据，
+     *               recv => 短信接收人
+     *               param => 短信模版参数
+     *               sendtime => 发送时间
+     *               result => 发送结果
+     */
+    public function sendSms($template, $to, $param = NULL, $operator = NULL) {
+
+        $operator = NULL == $operator ? $this->operator : $operator;
+
+        if (is_array($param)) {
+            $param = json_encode($param);
+        }
+
+        $model = M('sms_' . $operator);
+        $conf = $model->find($template);
 
         //检查是否存在指定的文件
-        $file = dirname(dirname(__FILE__)) . "\\Lib\\" . ucfirst($this->operator['tablename']). "\\helper.php";
+        $file = dirname(dirname(__FILE__)) . "\\Lib\\" . ucfirst($operator) . "\\helper.php";
 
-        if (file_exists($file)){
+        if (file_exists($file)) {
             //导入当前模块下Lib目录下的指定文件
-            require_once (PROJECT_PATH . "application/Sms/Lib/" . ucfirst($this->operator['tablename']) . "/helper.php");
-            $className = "\\Sms\\Lib\\" . ucfirst($this->operator['tablename']) . "\\helper";
-            $helper = new $className($this->conf);
-            $data = $helper->send($to,$param);
+            require_once(PROJECT_PATH . "application/Sms/Lib/" . ucfirst($operator) . "/helper.php");
+            $className = "\\Sms\\Lib\\" . ucfirst($operator) . "\\helper";
+            $helper = new $className();
+            $result = json_encode($helper->send($conf, $to, $param));
 
             //发送结果存入数据库
-            if (M('sms')->create($data['log'])){
-                M('sms')->add($data['log']);
-                $sms = M('sms')->where(array("recv" => $to))->find();
+            $log = array(
+                'operator' => $operator,
+                'template' => json_encode($conf),
+                'recv'     => $to,
+                'param'    => $param,
+                'sendtime' => time(),
+                'result'   => $result,
+            );
+
+            if (M('sms_log')->create($log)) {
+                M('sms_log')->add($log);
             }
 
-            //返回此次操作的数据库记录ID
-            $data['resp']['dbid'] = $sms['id'];
+            return json_decode($result,true);
 
-            return $data['resp'];
-
-        }else{
+        }
+        else {
             $this->error("所选短信平台暂不支持");
         }
 
-         
+
     }
 }

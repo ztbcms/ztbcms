@@ -1,11 +1,12 @@
-DROP TABLE IF EXISTS `cms_sms`;
+DROP TABLE IF EXISTS `cms_sms_log`;
 
-CREATE TABLE `cms_sms` (
+CREATE TABLE `cms_sms_log` (
   `id` int(11) NOT NULL COMMENT 'ID' AUTO_INCREMENT,
 	`operator` VARCHAR (80) NOT NULL COMMENT '运营商',
   `template` varchar(80) NOT NULL COMMENT '短信模板ID',
   `recv` text NOT NULL COMMENT '接收人',
   `param` varchar(255) DEFAULT '' COMMENT '短信模板变量',
+  `sendtime` VARCHAR (80) COMMENT '发送时间',
 	`result` text DEFAULT '' COMMENT '发送结果',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

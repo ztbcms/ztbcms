@@ -17,13 +17,13 @@ return array(
         //子菜单列表
         "child" => array(
             array(
-                "route" => "Sms/Index/addOperator",
+                "route" => "Sms/Index/operator_add",
                 "type" => 1,
                 "status" => 1,
                 "name" => "添加平台",
             ),
             array(
-                "route" => "Sms/Index/operator",
+                "route" => "Sms/Index/operators",
                 "type" => 1,
                 "status" => 1,
                 "name" => "平台设置",

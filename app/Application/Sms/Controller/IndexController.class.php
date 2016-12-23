@@ -11,23 +11,136 @@ namespace Sms\Controller;
 
 use Common\Controller\AdminBase;
 
-class IndexController extends AdminBase{
+class IndexController extends AdminBase {
+
+    protected $operatorModel;
 
     //初始化
-	protected function _initialize() {
-		parent::_initialize();
+    protected function _initialize() {
+        parent::_initialize();
+        $this->operatorModel = M('smsOperator');
     }
 
-    public function operator(){
-        $this->assign("operators",M('smsOperator')->select());
+    /**
+     * 展示短信平台列表页面
+     */
+    public function operators() {
         $this->display();
     }
 
-    public function addOperator(){
-        if(IS_POST){
-            $name = trim(I('post.name'));
-            $tablename = trim(I('post.tablename'));
-            $remark = trim(I('post.remark'));
+    /**
+     * 展示短信平台模型页面
+     */
+    public function model() {
+        $operator = I('get.operator');
+        $this->assign("operator", $operator);
+        $this->display();
+    }
+
+    /**
+     * 展示配置短信模版页面
+     */
+    public function modules() {
+        $this->display();
+    }
+
+    /**
+     * 设置默认短信平台
+     */
+    public function choose() {
+
+        $operator = I('get.operator', "", "trim");
+
+        //取消所有平台的选中
+        $data['enable'] = 0;
+        $this->operatorModel->where(TRUE)->save($data);
+
+        //启用所选平台
+        $data['enable'] = 1;
+        $this->operatorModel->where(array("tablename" => $operator))->save($data);
+
+        $this->success("平台变更成功，使用前请确认平台配置");
+    }
+
+    /**
+     * 获取短信平台
+     */
+    public function get_operators() {
+
+        $operators = $this->operatorModel->select();
+
+        $error = $this->operatorModel->getError();
+        empty($error) ? $result['status'] = TRUE : $result['status'] = FALSE;
+        $result['error'] = $error;
+        $result['datas']['count'] = count($operators);
+        $result['datas']['operators'] = $operators;
+
+        $this->ajaxReturn($result);
+    }
+
+    /**
+     * 获取表字段详细信息
+     */
+    public function get_fields() {
+        //获取表字段
+        $tablename = C('DB_PREFIX') . "sms_" . I('get.operator', "", "trim");
+        $Model = new \Think\Model();
+        $fields = $Model->query("show full fields from $tablename");
+        unset($fields[0]);
+
+        $result = array(
+            'status' => TRUE,
+            'datas'  => array(
+                'operator' => $this->operatorModel->where("tablename='%s'", I('get.operator'))->find(),
+                'fields'   => $fields,
+            ),
+        );
+
+        $this->ajaxReturn($result);
+    }
+
+    /**
+     * 获取记录及字段详细信息
+     */
+    public function get_modules() {
+
+        //获取表字段
+        $tablename = C('DB_PREFIX') . "sms_" . I('get.operator', "", "trim");
+        $Model = new \Think\Model();
+        $fields = $Model->query("show full fields from $tablename");
+        unset($fields[0]);
+
+        //获取记录
+        $tablename = "sms_" . I('get.operator', "", "trim");
+        $Model = M($tablename);
+        if (I('get.id')) {
+            $modules = $Model->find(I('get.id'));
+        }
+        else {
+            $modules = $Model->select();
+        }
+
+        $result = array(
+            'status' => TRUE,
+            'datas'  => array(
+                'operator' => $this->operatorModel->where("tablename='%s'", I('get.operator'))->find(),
+                'fields'   => $fields,
+                'modules'  => $modules,
+            ),
+        );
+
+        $this->ajaxReturn($result);
+    }
+
+    /**
+     * 添加短信平台
+     */
+    public function operator_add() {
+        if (IS_POST) {
+            $name = I('post.name', "", "trim");
+            $tablename = I('post.tablename', "", "trim");
+            $full_tablename = C('DB_PREFIX') . "sms_" . $tablename;
+            $remark = I('post.remark', "", "trim");
 
 
             $data['name'] = $name;
@@ -35,179 +148,216 @@ class IndexController extends AdminBase{
             $data['remark'] = $remark;
             $data['enable'] = 0;
 
-            $operatorModel = M('smsOperator');
-
-            if ($operatorModel->create($data)){
-            
-                $operatorModel->add($data);
+            if ($this->operatorModel->create($data)) {
 
                 //新建短信平台配置表
-                $sql = "CREATE TABLE `ztb_sms_$tablename` (`id` int(11) NOT NULL COMMENT 'ID' AUTO_INCREMENT,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                $sql = "CREATE TABLE `$full_tablename` (`id` int(11) NOT NULL COMMENT 'ID' AUTO_INCREMENT,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
                 $Model = new \Think\Model();
-                if (false === $Model->execute($sql)){
-                    //删除配置
-                    $operatorModel->where("name='$name'")->delete();
-                    $this->error("创建短信平台失败");
-                }else{
+
+                try {
+                    if (FALSE === $Model->execute($sql)) {
+                        throw new \Exception();
+                    }
+                    $this->operatorModel->add($data);
+
                     $this->success("创建平台成功，请前往平台设置字段。");
+
+                } catch (\Exception $e) {
+
+                    $this->error("创建短信平台失败");
+
                 }
-            }else{
-                $this->error($operatorModel->getError());
+            }
+            else {
+                $this->error($this->operatorModel->getError());
             }
 
-            
-        }else{
+
+        }
+        else {
             $this->display();
         }
     }
 
-    public function delOperator(){
+    /**
+     * 删除平台表
+     */
+    public function operator_del() {
 
-        $tablename = I('get.operator');
+        $tablename = C('DB_PREFIX') . "sms_" . I('post.operator', "", "trim");
 
-        //删除平台表
-        $sql = "DROP TABLE IF EXISTS `ztb_sms_$tablename`;";
+        $sql = "DROP TABLE IF EXISTS `$tablename`;";
         $Model = new \Think\Model();
-        if (false === $Model->execute($sql)){
-            $this->error("删除短信平台失败");
-        }else{
-            //删除配置
-            M('smsOperator')->where("tablename='$tablename'")->delete();
-            $this->success("删除平台成功");
-        }
-    }
 
-    //短信配置设置
-    public function choose(){
-
-        $operator = trim(I('get.operator'));
-
-        //取消所有平台的选中
-        $data['enable'] = 0;
-        M("smsOperator")->where(true)->save($data);
-
-        //启用所选平台
-        $data['enable'] = 1;
-        M('smsOperator')->where(array("tablename" => $operator))->save($data);
-
-        $this->success("平台变更成功，使用前请确认平台配置");
-    }
-
-    public function model(){
-        //获取表字段
-        $tablename = ucfirst(I('get.operator'));
-        $keys = M('sms'. $tablename)->getDbFields();
-        foreach ($keys as $k => $v){
-            $fields[$v]['value'] = "";
-        }
-        unset($fields['id']);
-        
-        $fields = static::getComments($tablename,$fields);
-
-        $this->assign("operator", M('smsOperator')->where("tablename='%s'", $tablename)->find());
-        $this->assign("fields",$fields);
-        $this->display();
-    }
-
-    public function addField(){
-        if(IS_POST){
-
-            $tablename = trim(I("post.operator"));
-            $fieldname = trim(I('post.name'));
-            $default = trim(I('post.default'));
-            $comment = trim(I('post.comment'));
-
-            $sql = "ALTER TABLE `ztb_sms_$tablename` ADD `$fieldname` VARCHAR(255) DEFAULT '$default' COMMENT '$comment'";
-            $Model = new \Think\Model();
-            if (false === $Model->execute($sql)){
-                //删除配置
-                $operatorModel->where("name=$name")->delete();
-                $this->error("字段新增失败");
-            }
-            $this->success("字段新增成功");
-            
-        }else{
-            $tablename = ucfirst(I("get.operator"));
-            $this->assign("operator", M('smsOperator')->where("tablename='%s'", $tablename)->find());
-            $this->display();
-        }
-    }
-
-    public function delField(){
-
-        $tablename = trim(I('get.operator'));
-        $column = trim(I('get.key'));
-        
-        $sql = "alter table `ztb_sms_$tablename` drop column $column";
-        $Model = new \Think\Model();
-        if (false === $Model->execute($sql)){
-            $this->error("字段删除失败");
-        }
-        $this->success("字段删除成功");
-    }
-
-    public function conf(){
-        if(IS_POST){
-
-            $tableName = ucfirst(trim(I('post.operator')));
-
-            foreach($_POST as $k => $v){
-                $_POST[$k] = trim($v);
+        try {
+            if (FALSE === $Model->execute($sql)) {
+                throw new \Exception();
             }
 
-            $table = M('sms'. $tableName);
-            $conf = $table->select();
+            $where['tablename'] = I('post.operator', "", "trim");
+            $this->operatorModel->where($where)->delete();
 
-            if (empty($conf)){
-                if ($table->create($_POST)!==FALSE){
-                    $table->add($_POST);
-                    $this->success("配置成功");
-                }else{
-                    $this->error("配置失败");
+            $this->ajaxReturn(array(
+                'status' => TRUE,
+            ));
+
+        } catch (\Exception $e) {
+
+            $this->ajaxReturn(array(
+                'status' => FALSE,
+            ));
+
+        }
+    }
+
+    /**
+     * 添加字段
+     */
+    public function field_add() {
+
+        $tablename = C('DB_PREFIX') . "sms_" . I("post.operator", "", "trim");
+        $fieldname = trim(I('post.name', "", "trim"));
+        $default = trim(I('post.default', "", "trim"));
+        $comment = trim(I('post.comment', "", "trim"));
+
+        $sql = "ALTER TABLE `$tablename` ADD `$fieldname` VARCHAR(255) DEFAULT '$default' COMMENT '$comment'";
+        $Model = new \Think\Model();
+
+        FALSE === $Model->execute($sql) ? $result = array(
+            'status' => FALSE,
+        ) : $result = array(
+            'status' => TRUE,
+        );
+
+        $this->ajaxReturn($result);
+    }
+
+    /**
+     * 删除字段
+     */
+    public function field_del() {
+
+        $tablename = C('DB_PREFIX') . "sms_" . I("post.operator", "", "trim");
+
+        $field = I('post.field', "", "trim");
+
+        $sql = "alter table `$tablename` drop column `$field`";
+
+        $Model = new \Think\Model();
+
+        FALSE === $Model->execute($sql) ? $result = array(
+            'status' => FALSE,
+        ) : $result = array(
+            'status' => TRUE,
+        );
+
+        $this->ajaxReturn($result);
+    }
+
+    /**
+     * 添加模板
+     */
+    public function module_add() {
+
+        //去除多余的空格字符
+        foreach ($_POST as $k => $v) {
+            $_POST[ $k ] = trim($v);
+        }
+
+        try {
+            $tableName = "sms_" . $_POST['operator'];
+            $table = M($tableName);
+
+            if ($table->create($_POST) !== FALSE) {
+                $table->add($_POST);
+                $this->ajaxReturn(array(
+                    'status' => TRUE,
+                ));
+            }
+            else {
+                $this->ajaxReturn(array(
+                    'status' => FALSE,
+                    'error'  => $table->getError(),
+                ));
+            }
+        } catch (\Exception $e) {
+            $this->ajaxReturn(array(
+                'status' => FALSE,
+                'error'  => $e->getMessage(),
+            ));
+        }
+    }
+
+    /**
+     * 删除模板
+     */
+    public function module_del() {
+
+        $tableName = "sms_" . I('post.operator', NULL);
+        $id = I('post.id', NULL);
+        try {
+            $table = M($tableName);
+
+            if (FALSE !== $table->delete($id)) {
+                $this->ajaxReturn(array(
+                    'status' => TRUE,
+                ));
+            }
+            else {
+                $this->ajaxReturn(array(
+                    'status' => FALSE,
+                    'error'  => $table->getError(),
+                ));
+            }
+        } catch (\Exception $e) {
+            $this->ajaxReturn(array(
+                'status' => FALSE,
+                'error'  => $e->getMessage(),
+            ));
+        }
+    }
+
+    /**
+     * 修改模板
+     */
+    public function module_edit() {
+
+        if (IS_POST) {
+
+            //去除多余的空格字符
+            foreach ($_POST as $k => $v) {
+                $_POST[ $k ] = trim($v);
+            }
+
+            $tableName = "sms_" . I('post.operator', NULL);
+            unset($_POST['operator']);
+
+            try{
+                $Model = M($tableName);
+
+                if (FALSE !== $Model->save($_POST)) {
+                    $this->ajaxReturn(array(
+                        'status' => TRUE,
+                    ));
                 }
-            }else{
-                $table->where("id='%d'", $conf[0]['id'])->save($_POST);
-                $this->success("配置成功");
+                else {
+                    $this->ajaxReturn(array(
+                        'status' => FALSE,
+                        'error'  => $Model->getError(),
+                    ));
+                }
+            }catch (\Exception $e){
+
+                $this->ajaxReturn(array(
+                    'status' => FALSE,
+                    'error'  => $e->getMessage(),
+                ));
             }
 
-        }else{
-            //获取表字段
-            $tablename = ucfirst(I('get.operator'));
-            $keys = M('sms'. $tablename)->getDbFields();
-            foreach ($keys as $k => $v){
-                $fields[$v]['value'] = "";
-            }
-            unset($fields['id']);
-            
-            $fields = static::getComments($tablename,$fields);
-
-            $this->assign("operator", M('smsOperator')->where("tablename='%s'", $tablename)->find());
-            $this->assign("fields",$fields);
+        }
+        else if (IS_GET) {
             $this->display();
         }
-    }
-
-    public function getComments($tablename, $fields){
-        $tablename = C('DB_PREFIX') . "sms_" .$tablename;
-        
-        $Model = new \Think\Model();        
-        $fullFields = $Model->query("show full fields from $tablename");
-        
-        $fieldsValue = $Model->query("select * from $tablename")[0];
-
-        foreach($fullFields as $k => $v){
-            $fieldname = $v['field'];
-            if (isset($fields[$fieldname])){
-                $fields[$v['field']]['comment'] = $v['comment'];
-            }
-            if (!empty($fieldsValue)){
-                $fields[$fieldname]['value'] = $fieldsValue[$v['field']];
-            }
-        }
-
-        unset($fields['id']);
-
-        return $fields;
     }
 
 }
