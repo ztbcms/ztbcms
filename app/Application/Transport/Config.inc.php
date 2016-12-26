@@ -20,7 +20,7 @@ return array(
 	//作者邮箱
 	'authoremail' => 'tonjayin@gmail.com',
 	//版本号，请不要带除数字外的其他字符
-	'version' => '0.6.0.1',
+	'version' => '0.6.0.2',
 	//适配最低ZtbFCMS版本，
 	'adaptation' => '2.0.0.0',
 	//签名
