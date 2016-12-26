@@ -47,8 +47,8 @@
                     <td>
                         <?php $models = M('Model')->select();?>
                         <select  name="model" class="mr10">
-                            <volist name="models" id="model">
-                                <option value="{$model['tablename']}" <?php echo ($model == $model['tablename']?'selected':'')?>>{$model['name']}</option>
+                            <volist name="models" id="m">
+                                <option value="{$m['tablename']}" <?php echo ($model == $m['tablename']?'selected':'')?>>{$m['name']}</option>
                             </volist>
                         </select>
                     </td>
