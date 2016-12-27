@@ -49,7 +49,7 @@ class ApiController extends Base {
         $conf = $model->find($template);
 
         //检查是否存在指定的文件
-        $file = dirname(dirname(__FILE__)) . "\\Lib\\" . ucfirst($operator) . "\\helper.php";
+        $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "Lib" . DIRECTORY_SEPARATOR . ucfirst($operator) . DIRECTORY_SEPARATOR."helper.php";
 
         if (file_exists($file)) {
             //导入当前模块下Lib目录下的指定文件
