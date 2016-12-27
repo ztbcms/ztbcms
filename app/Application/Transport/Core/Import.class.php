@@ -143,7 +143,7 @@ class Import {
             $excelData = array();
             for ($row = 1; $row <= $highestRow; $row++) {
                 for ($col = 0; $col < $highestColumnIndex; $col++) {
-                    $excelData[$row][] = (string)$objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+                    $excelData[$row][] = trim((string)$objWorksheet->getCellByColumnAndRow($col, $row)->getValue());
                 }
             }
 
