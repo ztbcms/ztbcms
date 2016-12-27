@@ -8,10 +8,12 @@
         <table width="100%">
             <thead>
             <tr>
+                <td>ID</td>
                 <td>计划标题</td>
                 <td>备注</td>
                 <td>文件名</td>
                 <td>执行时间</td>
+                <td>操作</td>
             </tr>
             </thead>
 
@@ -21,12 +23,23 @@
                 $next = $r['next_time'] ? date("Y-m-d H:i",$r['next_time']) : '-';
                 ?>
                 <tr>
+                    <td>{$r.id}</td>
                     <td>{$r.title}</td>
                     <td>{$r.remark}</td>
-                    <td>{$r.filename}</td>
+                    <td>
+                        <?php
+                        $_task = M('TransportTask')->where(['id' => $r['task_id']])->find();
+                        ?>
+                        <if condition="$_task['type'] == 1">
+                                <a href="{$r['filename']}">点击下载导入Excel文件</a>
+                            <else/>
+                                {$r['filename']}
+                        </if>
+                    </td>
                     <td>
                       {:date('Y-m-d H:i:s', $r['inputtime'])}
                     </td>
+                    <td><a href="{:U('Transport/Index/task_exec', ['task_log_id' => $r['id']])}" target="_blank">立即执行</a></td>
                 </tr>
             </volist>
         </table>
