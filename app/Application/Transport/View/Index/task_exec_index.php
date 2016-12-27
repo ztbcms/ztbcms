@@ -141,8 +141,8 @@
 //            console.log(file);
 //            console.log(result)
             result = JSON.parse(result);
-            console.log(result)
-            if(res.status){
+            // console.log(result)
+            if(result.status){
                 $('input[name=filename]').val(result.data.url);
             }else{
                 alert(result.msg)
