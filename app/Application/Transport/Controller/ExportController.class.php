@@ -22,6 +22,9 @@ class ExportController extends AdminBase {
      * 导出栏目列表页的搜索结果
      */
     function classlist(){
+        //设置脚本最大执行时间
+		set_time_limit(0);
+        
         $filter = I('get._filter');
         $operator = I('get._operator');
         $value = I('get._value');

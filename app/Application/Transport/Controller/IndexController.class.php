@@ -188,6 +188,9 @@ class IndexController extends AdminBase  {
      * 执行任务
      */
     function task_exec(){
+        //设置脚本最大执行时间
+		set_time_limit(0);
+
         $task_log_id = I('task_log_id');
 
         $task_log = M('TransportTaskLog')->where(['id' => $task_log_id])->find();
