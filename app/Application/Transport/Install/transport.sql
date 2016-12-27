@@ -26,7 +26,7 @@ CREATE TABLE `cms_transport_task` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务模板';
 
-CREATE TABLE `ztb_transport_task_log` (
+CREATE TABLE `cms_transport_task_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL COMMENT '对应任务ID',
   `inputtime` int(11) NOT NULL COMMENT '创建时间',

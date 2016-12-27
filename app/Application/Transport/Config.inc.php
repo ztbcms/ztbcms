@@ -20,15 +20,13 @@ return array(
 	//作者邮箱
 	'authoremail' => 'tonjayin@gmail.com',
 	//版本号，请不要带除数字外的其他字符
-	'version' => '0.6.0.1',
+	'version' => '0.6.0.3',
 	//适配最低ZtbFCMS版本，
 	'adaptation' => '2.0.0.0',
 	//签名
 	'sign' => '2fa528afab8210bbcaf5ce73e03a0555',
 	//依赖模块
-	'depend' => array(
-		'Member'
-	),
+	'depend' => array(),
 	//行为注册
 	'tags' => array(),
 	//缓存，格式：缓存key=>array('module','model','action')
