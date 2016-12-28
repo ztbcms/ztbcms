@@ -241,7 +241,7 @@ class IndexController extends AdminBase  {
             //echo $table; exit();
             $export->exportXls();
         }else{
-            //导出
+            //导入
             $import = new Import();
 
             $import->setModel($task['model']);
