@@ -289,11 +289,12 @@ class IndexController extends AdminBase  {
         $data['inputtime'] = time();
         $id = M('TransportTaskLog')->data($data)->add();
         if($id){
-            //跳转去执行...
-           $this->redirect('task_exec', ['task_log_id' => $id]);
+            //跳转
+            $this->redirect('task_logs');
+            $this->success('创建任务执行日志成功', U('Transport/Index/task_logs'));
 
         }else{
-            $this->error('任务执行失败');
+            $this->error('创建任务执行日志失败');
         }
 
     }
