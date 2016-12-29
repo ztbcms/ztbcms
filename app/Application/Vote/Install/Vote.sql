@@ -24,7 +24,7 @@ CREATE TABLE `cms_vote` (
   KEY `enabled` (`enabled`),
   KEY `fromdate` (`fromdate`,`todate`),
   KEY `todate` (`todate`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='投票';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='投票';
 
 DROP TABLE IF EXISTS `cms_vote_data`;
 CREATE TABLE `cms_vote_data` (
@@ -38,7 +38,7 @@ CREATE TABLE `cms_vote_data` (
   KEY `subjectid` (`subjectid`),
   KEY `userid` (`userid`),
   KEY `ip` (`ip`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='投票数据';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='投票数据';
 
 DROP TABLE IF EXISTS `cms_vote_option`;
 CREATE TABLE `cms_vote_option` (
@@ -51,4 +51,4 @@ CREATE TABLE `cms_vote_option` (
   PRIMARY KEY (`optionid`),
   KEY `subjectid` (`subjectid`),
   KEY `stat` (`stat`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='投票选项';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='投票选项';

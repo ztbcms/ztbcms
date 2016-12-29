@@ -10,4 +10,4 @@ CREATE TABLE `cms_domains` (
   `domain` varchar(255) DEFAULT NULL COMMENT '域名',
   `status` int(1) DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='域名绑定';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='域名绑定';

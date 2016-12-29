@@ -17,4 +17,4 @@ CREATE TABLE `cms_addons` (
   `has_adminlist` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1-有后台列表 0-无后台列表',
   PRIMARY KEY (`id`),
   KEY `sign` (`sign`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='插件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件表';
