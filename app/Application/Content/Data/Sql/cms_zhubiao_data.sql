@@ -8,4 +8,4 @@ CREATE TABLE `@cms@@zhubiao@_data` (
   `allow_comment` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `relation` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
