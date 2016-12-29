@@ -18,4 +18,4 @@ CREATE TABLE `cms_cron` (
   `data` text COMMENT '数据',
   PRIMARY KEY (`cron_id`),
   KEY `idx_next_time` (`next_time`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='计划任务表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='计划任务表';

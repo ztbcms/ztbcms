@@ -12,7 +12,7 @@ CREATE TABLE `cms_connect` (
   `expires` int(10) NOT NULL COMMENT 'token过期时间',
   PRIMARY KEY (`connectid`),
   KEY `openid` (`openid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='登录授权';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='登录授权';
 -- ----------------------------
 -- Table structure for `cms_member`
 -- ----------------------------
@@ -51,7 +51,7 @@ CREATE TABLE `cms_member` (
   PRIMARY KEY  (`userid`),
   UNIQUE KEY `username` (`username`),
   KEY `email` (`email`(20))
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='会员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员表';
 
 -- ----------------------------
 -- Table structure for `cms_member_favorite`
@@ -68,7 +68,7 @@ CREATE TABLE `cms_member_favorite` (
   `datetime` int(11) NOT NULL COMMENT '添加时间戳',
   PRIMARY KEY  (`fid`),
   KEY `userid` (`userid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='会员收藏表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员收藏表';
 
 -- ----------------------------
 -- Table structure for `cms_member_online`
@@ -98,7 +98,7 @@ CREATE TABLE `cms_member_content` (
   `time` int(10) NOT NULL COMMENT '添加时间',
   PRIMARY KEY  (`id`),
   KEY `userid` (`catid`,`content_id`,`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='会员投稿信息记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员投稿信息记录表';
 
 -- ----------------------------
 -- Table structure for `cms_member_group`
@@ -128,7 +128,7 @@ CREATE TABLE `cms_member_group` (
   PRIMARY KEY  (`groupid`),
   KEY `disabled` (`disabled`),
   KEY `listorder` (`sort`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='会员组';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='会员组';
 
 -- ----------------------------
 -- Records of cms_member_group

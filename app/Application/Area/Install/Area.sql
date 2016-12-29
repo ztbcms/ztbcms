@@ -14,7 +14,7 @@ CREATE TABLE `cms_area_province` (
   `level` tinyint(1) NOT NULL,
   `sort` tinyint(3) unsigned DEFAULT '50' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `cms_area_province` (`id`, `areaname`, `parentid`, `shortname`, `lng`, `lat`, `level`, `sort`)
 VALUES
@@ -66,7 +66,7 @@ CREATE TABLE `cms_area_city` (
   `level` tinyint(1) NOT NULL,
   `sort` tinyint(3) unsigned DEFAULT '50' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `cms_area_city` (`id`, `areaname`, `parentid`, `shortname`, `lng`, `lat`, `level`, `sort`)
 VALUES
@@ -474,7 +474,7 @@ CREATE TABLE `cms_area_district` (
   `level` tinyint(1) NOT NULL,
   `sort` tinyint(3) unsigned DEFAULT '50' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `cms_area_district` (`id`, `areaname`, `parentid`, `shortname`, `lng`, `lat`, `level`, `sort`)
 VALUES
@@ -4169,7 +4169,7 @@ CREATE TABLE `cms_area_street` (
   `level` tinyint(1) NOT NULL,
   `sort` tinyint(3) unsigned DEFAULT '50' COMMENT '排序',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO `cms_area_street` (`id`, `areaname`, `parentid`, `shortname`, `lng`, `lat`, `level`, `sort`)
@@ -46577,7 +46577,7 @@ CREATE TABLE `cms_area_school` (
   `province_id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   PRIMARY KEY (`school_id`)
-)  ENGINE=MyISAM DEFAULT CHARSET=utf8;
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO `cms_area_school` (`school_id`, `school_name`, `province_id`, `type_id`)
