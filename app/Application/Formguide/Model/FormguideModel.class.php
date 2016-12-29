@@ -45,7 +45,7 @@ class FormguideModel extends ModelModel {
                        `datetime` int(10) unsigned NOT NULL,
                        `ip` char(15) NOT NULL,
                        PRIMARY KEY (`dataid`)
-                    ) ENGINE=MyISAM;";
+                    ) ENGINE=InnoDB;";
 		//表名替换
 		$sql = str_replace("think_form_table", C("DB_PREFIX") . $tableName, $sql);
 		return $this->sql_execute($sql);
