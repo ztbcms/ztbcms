@@ -47,14 +47,6 @@
                 </tr>
 
                 <tr>
-                    <th>任务描述</th>
-                    <td>{$description}
-                        <input type="hidden" name="remark" value="{$description}">
-                    </td>
-                    <td><div class="fun_tips"></div></td>
-                </tr>
-
-                <tr>
                     <th>任务类型</th>
                     <td>
                         <if condition="$type EQ 1">导入任务</if>
@@ -70,6 +62,14 @@
                     <td>
                         <?php $_model = M('Model')->where(['tablename' => $model])->find();?>
                         {$_model['name']}
+                    </td>
+                    <td><div class="fun_tips"></div></td>
+                </tr>
+
+                <tr>
+                    <th>备注</th>
+                    <td>
+                        <input  class="input length_5 mr5" type="text" name="remark" value="">
                     </td>
                     <td><div class="fun_tips"></div></td>
                 </tr>

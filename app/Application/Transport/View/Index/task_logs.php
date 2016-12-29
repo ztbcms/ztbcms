@@ -12,7 +12,7 @@
                 <td>计划标题</td>
                 <td>备注</td>
                 <td>文件名</td>
-                <td>执行时间</td>
+                <td>创建时间</td>
                 <td>操作</td>
             </tr>
             </thead>
