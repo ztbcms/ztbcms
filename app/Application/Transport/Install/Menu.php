@@ -11,7 +11,7 @@ return array(
         //状态，1是显示，0不显示（需要参数的，建议不显示，例如编辑,删除等操作）
         "status" => 1,
         //名称
-        "name" => "数据导入导出管理",
+        "name" => "数据导入导出管理模块",
         //备注
         "remark" => "数据导入导出管理",
         //子菜单列表
@@ -26,7 +26,43 @@ return array(
                         "route" => "Transport/Index/task_create_index",
                         "type" => 1,
                         "status" => 1,
+                        "name" => "创建任务页面",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_create",
+                        "type" => 1,
+                        "status" => 1,
                         "name" => "创建任务",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_edit_index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "编辑任务页面",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_edit",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "编辑任务",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_delete",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "删除任务",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_update_condition",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "更新筛选条件信息",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_update_field",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "更新设置字段映射",
                     ),
                 )
             ),
@@ -34,7 +70,27 @@ return array(
                 "route" => "Transport/Index/task_logs",
                 "type" => 1,
                 "status" => 1,
-                "name" => "执行记录",
+                "name" => "执行记录页面",
+                "child" => array(
+                    array(
+                        "route" => "Transport/Index/task_log_create",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "创建任务执行日志",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_exec",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "执行任务",
+                    ),
+                    array(
+                        "route" => "Transport/Index/task_exec_index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "执行任务预览页",
+                    ),
+                )
             ),
         ),
     ),
