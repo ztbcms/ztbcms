@@ -188,6 +188,7 @@ class IndexController extends AdminBase  {
      * 执行任务
      */
     function task_exec(){
+        $isPreview = I('get.preview');
         //设置脚本最大执行时间
 		set_time_limit(0);
 
@@ -237,9 +238,13 @@ class IndexController extends AdminBase  {
             $export->setFields($fields);
 
             //取消下面两行注释,即可预览导出结果
-            //$table = $export->exportTable();
-            //echo $table; exit();
-            $export->exportXls();
+            if($isPreview){
+                $table = $export->exportTable();
+                echo $table;
+                exit();
+            }else{
+                $export->exportXls();
+            }
         }else{
             //导入
             $import = new Import();
@@ -257,10 +262,13 @@ class IndexController extends AdminBase  {
 
             $import->setFilename(getcwd() . $task_log['filename']);
 
-//            $import->exportTable();
-            //开始导入
-            $import->import();
-            $this->success('导入成功');
+            if($isPreview){
+                $import->exportTable();
+            }else{
+                //开始导入
+                $import->import();
+                $this->success('导入成功');
+            }
         }
     }
 
@@ -298,8 +306,4 @@ class IndexController extends AdminBase  {
         }
 
     }
-
-
-
-
 }
