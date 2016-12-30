@@ -18,7 +18,7 @@ use Transport\Model\TransportTaskModel;
  *
  * @package Transport\Controller
  */
-class IndexController extends AdminBase  {
+class IndexController extends AdminBase {
 
     private $db;
 
@@ -32,7 +32,7 @@ class IndexController extends AdminBase  {
     /**
      * 任务列表页
      */
-    function index(){
+    function index() {
         $data = $this->db->select();
         $this->assign('data', $data);
 
@@ -40,30 +40,22 @@ class IndexController extends AdminBase  {
     }
 
     /**
-     * 任务详情
-     */
-    function task_detail(){
-        $this->display();
-    }
-
-    /**
      * 创建任务页
      */
-    function task_create_index(){
+    function task_create_index() {
         $this->display();
     }
 
     /**
      * 创建任务
      */
-    function task_create(){
+    function task_create() {
         $data = I('post.');
 
-
-        if($this->db->create($data)){
+        if ($this->db->create($data)) {
             $this->db->add();
             $this->success('创建成功');
-        }else{
+        } else {
             $this->error($this->db->getDbError());
         }
 
@@ -72,24 +64,21 @@ class IndexController extends AdminBase  {
     /**
      * 删除任务
      */
-    function task_delete(){
+    function task_delete() {
         $this->db->where(['id' => I('get.id')])->delete();
         $this->success('操作成功');
     }
 
-
-
     /**
      * 编辑任务页
      */
-    function task_edit_index(){
+    function task_edit_index() {
         $task_id = I('get.id');
         $task = $this->db->where(['id' => $task_id])->find();
         $this->assign($task);
 
         $task_conditions = M('TransportCondition')->where(['task_id' => $task_id])->select();
         $this->assign('task_conditions', $task_conditions);
-
 
         $task_fields = M('TransportField')->where(['task_id' => $task_id])->select();
         $this->assign('task_fields', $task_fields);
@@ -100,7 +89,7 @@ class IndexController extends AdminBase  {
     /**
      * 编辑任务
      */
-    function task_edit(){
+    function task_edit() {
         $task_id = I('task_id');
         $data = I('post.');
         $this->db->where(['id' => $task_id])->save($data);
@@ -111,7 +100,7 @@ class IndexController extends AdminBase  {
     /**
      * 更新筛选条件信息
      */
-    function task_update_condition(){
+    function task_update_condition() {
         $task_id = I('post.task_id');
         $filter = I('post.condition_filter');
         $operator = I('post.condition_operator');
@@ -121,7 +110,7 @@ class IndexController extends AdminBase  {
         M('TransportCondition')->where(['task_id' => $task_id])->delete();
 
         $batch_data = [];
-        foreach ($filter as $index => $f){
+        foreach ($filter as $index => $f) {
             $batch_data[] = [
                 'task_id' => $task_id,
                 'filter' => $filter[$index],
@@ -130,7 +119,7 @@ class IndexController extends AdminBase  {
             ];
         }
 
-        foreach ($batch_data as $index => $data){
+        foreach ($batch_data as $index => $data) {
             M('TransportCondition')->add($data);
         }
 
@@ -140,7 +129,7 @@ class IndexController extends AdminBase  {
     /**
      * 更新设置字段映射
      */
-    function task_update_field(){
+    function task_update_field() {
         $task_id = I('post.task_id');
         $field_name = I('post.field_field_name');
         $export_name = I('post.field_export_name');
@@ -150,7 +139,7 @@ class IndexController extends AdminBase  {
         M('TransportField')->where(['task_id' => $task_id])->delete();
 
         $batch_data = [];
-        foreach ($field_name as $index => $f){
+        foreach ($field_name as $index => $f) {
             $batch_data[] = [
                 'task_id' => $task_id,
                 'field_name' => $field_name[$index],
@@ -159,7 +148,7 @@ class IndexController extends AdminBase  {
             ];
         }
 
-        foreach ($batch_data as $index => $data){
+        foreach ($batch_data as $index => $data) {
             M('TransportField')->add($data);
         }
 
@@ -169,7 +158,7 @@ class IndexController extends AdminBase  {
     /**
      * 执行任务预览页
      */
-    function task_exec_index(){
+    function task_exec_index() {
         $task_id = I('get.id');
         $task = $this->db->where(['id' => $task_id])->find();
         $this->assign($task);
@@ -187,41 +176,41 @@ class IndexController extends AdminBase  {
     /**
      * 执行任务
      */
-    function task_exec(){
+    function task_exec() {
         $isPreview = I('get.preview');
         //设置脚本最大执行时间
-		set_time_limit(0);
+        set_time_limit(0);
 
         $task_log_id = I('task_log_id');
 
         $task_log = M('TransportTaskLog')->where(['id' => $task_log_id])->find();
         $task = M('TransportTask')->where(['id' => $task_log['task_id']])->find();
 
-        if($task['type'] == TransportTaskModel::TYPE_EXPORT){
+        if ($task['type'] == TransportTaskModel::TYPE_EXPORT) {
             //导出任务处理
 
             $export = new Export();
-            $filename = empty($task_log['filename'])? $task['title'].date('YmdHis', time()) : $task_log['filename'];
+            $filename = empty($task_log['filename']) ? $task['title'] . date('YmdHis', time()) : $task_log['filename'];
             $export->setFilename($filename); //导出文件名
             $export->setModel($task['model']); //导出模型
 
             //筛选条件
             $task_conditions = M('TransportCondition')->where(['task_id' => $task['id']])->select();
             $where = [];
-            foreach ($task_conditions as $index => $condition){
+            foreach ($task_conditions as $index => $condition) {
 
-                if(!empty($condition)){
+                if (!empty($condition)) {
                     $filter = trim($condition['filter']);
                     $operator = trim($condition['operator']);
                     $value = trim($condition['value']);
 
-                    if(empty($where[$filter])){
+                    if (empty($where[$filter])) {
                         $where[$filter] = [];
                     }
 
-                    if(strtolower($operator) == 'like'){
+                    if (strtolower($operator) == 'like') {
                         $new_condition = array($operator, '%' . $value . '%');
-                    }else{
+                    } else {
                         $new_condition = array($operator, $value);
                     }
                     $where[$filter][] = $new_condition;
@@ -232,20 +221,20 @@ class IndexController extends AdminBase  {
             //字段映射
             $fields = [];
             $task_fields = M('TransportField')->where(['task_id' => $task['id']])->select();
-            foreach ($task_fields as $index => $field){
+            foreach ($task_fields as $index => $field) {
                 $fields[] = new ExportField($field['field_name'], $field['export_name'], $field['filter']);
             }
             $export->setFields($fields);
 
             //取消下面两行注释,即可预览导出结果
-            if($isPreview){
+            if ($isPreview) {
                 $table = $export->exportTable();
                 echo $table;
                 exit();
-            }else{
+            } else {
                 $export->exportXls();
             }
-        }else{
+        } else {
             //导入
             $import = new Import();
 
@@ -254,7 +243,7 @@ class IndexController extends AdminBase  {
             //字段映射
             $fields = [];
             $task_fields = M('TransportField')->where(['task_id' => $task['id']])->select();
-            foreach ($task_fields as $index => $field){
+            foreach ($task_fields as $index => $field) {
 
                 $fields[] = new ExportField($field['field_name'], $field['export_name'], $field['filter']);
             }
@@ -262,9 +251,9 @@ class IndexController extends AdminBase  {
 
             $import->setFilename(getcwd() . $task_log['filename']);
 
-            if($isPreview){
+            if ($isPreview) {
                 $import->exportTable();
-            }else{
+            } else {
                 //开始导入
                 $import->import();
                 $this->success('导入成功');
@@ -275,14 +264,15 @@ class IndexController extends AdminBase  {
     /**
      * 任务执行日志
      */
-    function task_logs(){
+    function task_logs() {
         $default_limit = 20;
 
-        $data = M('TransportTaskLog')->page(I('page', 1))->limit(I('limit', $default_limit))->order('inputtime DESC')->select();
+        $data = M('TransportTaskLog')->page(I('page', 1))->limit(I('limit',
+            $default_limit))->order('inputtime DESC')->select();
         $this->assign('data', $data);
 
         $sum = M('TransportTaskLog')->count();
-        $page = $this->page( $sum, $default_limit);
+        $page = $this->page($sum, $default_limit);
 
         $this->assign('Page', $page->show());
         $this->display();
@@ -291,17 +281,17 @@ class IndexController extends AdminBase  {
     /**
      * 创建任务执行日志
      */
-    function task_log_create(){
+    function task_log_create() {
         $data = I('post.');
 
         $data['inputtime'] = time();
         $id = M('TransportTaskLog')->data($data)->add();
-        if($id){
+        if ($id) {
             //跳转
             $this->redirect('task_logs');
             $this->success('创建任务执行日志成功', U('Transport/Index/task_logs'));
 
-        }else{
+        } else {
             $this->error('创建任务执行日志失败');
         }
 
