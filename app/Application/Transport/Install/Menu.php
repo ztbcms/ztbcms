@@ -76,7 +76,7 @@ return array(
                         "route" => "Transport/Index/task_log_create",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "创建任务执行日志操作",
+                        "name" => "创建执行日志操作",
                     ),
                     array(
                         "route" => "Transport/Index/task_exec",

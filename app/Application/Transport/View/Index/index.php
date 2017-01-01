@@ -33,7 +33,7 @@
                     <td>
                         <a href="{:U('Transport/Index/task_edit_index',array('id'=>$r['id']))}" class="mr5"> 编辑 </a>
                         |  <a class="J_ajax_del" href="{:U('Transport/Index/task_delete',array('id'=>$r['id']))}"> 删除 </a>
-                        |  <a href="{:U('Transport/Index/task_exec_index',array('id'=>$r['id']))}"> 立即执行 </a>
+                        |  <a href="{:U('Transport/Index/task_exec_index',array('id'=>$r['id']))}"> 创建执行日志 </a>
                     </td>
                 </tr>
             </volist>
