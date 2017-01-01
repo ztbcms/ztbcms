@@ -6,7 +6,11 @@
 
 namespace Transport\Core;
 
-
+/**
+ * 导入导出筛选条件
+ *
+ * @package Transport\Core
+ */
 class ExportFilter {
 
     private $field;
