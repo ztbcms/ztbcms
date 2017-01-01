@@ -107,7 +107,7 @@
         </div>
         <div class="">
             <div class="btn_wrap_pd">
-                <button class="btn btn_submit " type="submit">执行</button>
+                <button class="btn btn_submit " type="submit">创建执行日志</button>
             </div>
         </div>
     </form>

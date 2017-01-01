@@ -7,7 +7,7 @@
 namespace Transport\Core;
 
 /**
- * 导入表格
+ * 导入Excel表格核心实现类
  *
  * @package Transport\Core
  */
