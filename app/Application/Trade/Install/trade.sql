@@ -14,4 +14,4 @@ CREATE TABLE `cms_trade` (
   `update_time` int(10) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(255) DEFAULT '' COMMENT '备注信息',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;

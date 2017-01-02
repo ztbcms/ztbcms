@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS `cms_links` (
   PRIMARY KEY (`id`),
   KEY `visible` (`visible`),
   KEY `termsid` (`termsid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='友情链接' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='友情链接' AUTO_INCREMENT=1 ;

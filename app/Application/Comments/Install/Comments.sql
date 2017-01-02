@@ -20,7 +20,7 @@ CREATE TABLE `cms_comments` (
   KEY `comment_id` (`comment_id`),
   KEY `approved` (`approved`),
   KEY `parent` (`parent`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='评论表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
 
 -- ----------------------------
 -- Table structure for `cms_comments_data_1`
@@ -31,7 +31,7 @@ CREATE TABLE `cms_comments_data_1` (
   `comment_id` char(30) NOT NULL COMMENT '所属文章Id',
   `content` text NOT NULL COMMENT '评论内容',
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='评论副表1';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论副表1';
 
 -- ----------------------------
 -- Table structure for `cms_comments_emotion`
@@ -44,7 +44,7 @@ CREATE TABLE `cms_comments_emotion` (
   `vieworder` int(10) unsigned NOT NULL default '0' COMMENT '排序',
   `isused` tinyint(3) unsigned NOT NULL default '1' COMMENT '是否使用',
   PRIMARY KEY  (`emotion_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='表情数据表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='表情数据表';
 
 -- ----------------------------
 -- Table structure for `cms_comments_field`
@@ -63,7 +63,7 @@ CREATE TABLE `cms_comments_field` (
   `system` tinyint(1) NOT NULL COMMENT '是否系统字段',
   PRIMARY KEY  (`fid`),
   UNIQUE KEY `fname` (`fname`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='评论自定义字段表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论自定义字段表';
 
 -- ----------------------------
 -- Records of cms_comments_field
@@ -86,7 +86,7 @@ CREATE TABLE `cms_comments_setting` (
   `strlength` int(5) NOT NULL COMMENT '允许最大字数',
   `status` tinyint(1) NOT NULL COMMENT '关闭/开启评论',
   `expire` int(11) NOT NULL COMMENT '评论间隔时间单位秒'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='评论配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论配置';
 
 -- ----------------------------
 -- Records of cms_comments_setting

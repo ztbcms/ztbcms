@@ -13,7 +13,7 @@ CREATE TABLE `cms_collection_content` (
   PRIMARY KEY  (`id`),
   KEY `nodeid` (`nodeid`),
   KEY `status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='采集内容表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='采集内容表';
 
 
 -- ----------------------------
@@ -24,7 +24,7 @@ CREATE TABLE `cms_collection_history` (
   `md5` char(32) NOT NULL COMMENT 'URL地址MD5值',
   `nodeid` smallint(6) NOT NULL COMMENT '采集节点ID',
   PRIMARY KEY  (`md5`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8  COMMENT='采集历史';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  COMMENT='采集历史';
 
 
 -- ----------------------------
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `cms_collection_node` (
   `coll_order` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '导入顺序',
   `customize_config` text NOT NULL COMMENT '自定义采集规则',
   PRIMARY KEY (`nodeid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='采集节点配置' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='采集节点配置' AUTO_INCREMENT=1 ;
 
 
 -- ----------------------------
@@ -83,4 +83,4 @@ CREATE TABLE `cms_collection_program` (
   `config` text NOT NULL COMMENT '配置信息',
   PRIMARY KEY  (`id`),
   KEY `nodeid` (`nodeid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='采集导入规则表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='采集导入规则表';

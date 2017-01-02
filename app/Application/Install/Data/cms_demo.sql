@@ -36,7 +36,7 @@ CREATE TABLE `cms_article` (
   KEY `listorder` (`catid`,`status`,`listorder`,`id`),
   KEY `catid` (`catid`,`weekviews`,`views`,`dayviews`,`monthviews`,`status`,`id`),
   KEY `thumb` (`thumb`)
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 --  Records of `cms_article`
@@ -60,7 +60,7 @@ CREATE TABLE `cms_article_data` (
   `relation` varchar(255)  NOT NULL DEFAULT '',
   `copyfrom` varchar(255)  NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 --  Records of `cms_article_data`
@@ -113,7 +113,7 @@ CREATE TABLE `cms_download` (
   KEY `listorder` (`catid`,`status`,`listorder`,`id`),
   KEY `catid` (`catid`,`weekviews`,`views`,`dayviews`,`monthviews`,`status`,`id`),
   KEY `thumb` (`thumb`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 --  Records of `cms_download`
@@ -134,7 +134,7 @@ CREATE TABLE `cms_download_data` (
   `relation` varchar(255)  NOT NULL DEFAULT '',
   `download` text ,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 --  Records of `cms_download_data`
@@ -192,7 +192,7 @@ CREATE TABLE `cms_photo` (
   KEY `listorder` (`catid`,`status`,`listorder`,`id`),
   KEY `catid` (`catid`,`weekviews`,`views`,`dayviews`,`monthviews`,`status`,`id`),
   KEY `thumb` (`thumb`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 --  Records of `cms_photo`
@@ -213,7 +213,7 @@ CREATE TABLE `cms_photo_data` (
   `relation` varchar(255)  NOT NULL DEFAULT '',
   `imgs` text ,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ;
 
 -- ----------------------------
 --  Records of `cms_photo_data`

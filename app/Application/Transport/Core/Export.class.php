@@ -6,7 +6,11 @@
 
 namespace Transport\Core;
 
-
+/**
+ * 导出操作核心类
+ *
+ * @package Transport\Core
+ */
 class Export {
 
     //导出模型名称(一般为不含前缀的表名)

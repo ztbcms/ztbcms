@@ -12,7 +12,7 @@
                 <td>计划标题</td>
                 <td>备注</td>
                 <td>文件名</td>
-                <td>执行时间</td>
+                <td>创建时间</td>
                 <td>操作</td>
             </tr>
             </thead>
@@ -39,7 +39,11 @@
                     <td>
                       {:date('Y-m-d H:i:s', $r['inputtime'])}
                     </td>
-                    <td><a href="{:U('Transport/Index/task_exec', ['task_log_id' => $r['id']])}" target="_blank">立即执行</a></td>
+                    <td>
+                        <a href="{:U('Transport/Index/task_exec', ['task_log_id' => $r['id']])}" target="_blank">立即执行</a>
+                        |<a href="{:U('Transport/Index/task_exec', ['task_log_id' => $r['id'], 'preview' => 1])}" target="_blank" style="margin-left: 4px;">预览</a>
+
+                    </td>
                 </tr>
             </volist>
         </table>
