@@ -15,7 +15,7 @@ class UploadController extends AdminBase  {
     const isadmin = 1; //后台上传
 
     /**
-     *  上传
+     *  上传Excel文件操作
      */
     public function upload() {
         if (IS_POST) {
