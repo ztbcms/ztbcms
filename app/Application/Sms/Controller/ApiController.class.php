@@ -53,7 +53,7 @@ class ApiController extends Base {
 
         if (file_exists($file)) {
             //导入当前模块下Lib目录下的指定文件
-            require_once(PROJECT_PATH . "application/Sms/Lib/" . ucfirst($operator) . "/helper.php");
+            require_once(PROJECT_PATH . "Application/Sms/Lib/" . ucfirst($operator) . "/helper.php");
             $className = "\\Sms\\Lib\\" . ucfirst($operator) . "\\helper";
             $helper = new $className();
             $result = json_encode($helper->send($conf, $to, $param));
