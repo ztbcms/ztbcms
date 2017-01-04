@@ -25,6 +25,7 @@
             <td width="60" align='center'>搜索</td>
             <td width="60" align='center'>排序</td>
             <td width="60" align='center'>投稿</td>
+            <td width="80" align='center'>基本信息</td>
             <td width="150" align='center'>管理操作</td>
           </tr>
         </thead>
@@ -41,6 +42,7 @@
             <td align='center'><if condition="$vo['issearch'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
             <td align='center'><if condition="$vo['isorder'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
             <td align='center'><if condition="$vo['isadd'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
+            <td align='center'><if condition="$vo['isbase'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
             <td align='center'>
             <?php
 			$operate = array();
