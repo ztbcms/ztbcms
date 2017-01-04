@@ -56,7 +56,7 @@ class ExportController extends AdminBase {
         $export->setFilename('数据导出'.date('Ymdhis')); //导出文件名
 
         $modelid = getCategory(I('catid'), 'modelid');
-        $modelInfo = M('Model')->where(['modeleid' => $modelid])->field('tablename')->find();
+        $modelInfo = M('Model')->where(['modelid' => $modelid])->field('tablename')->find();
         $export->setModel($modelInfo['tablename']); //导出模型
 
         //筛选条件方式一
