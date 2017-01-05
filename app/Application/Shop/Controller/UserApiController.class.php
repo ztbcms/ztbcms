@@ -29,22 +29,20 @@ class UserApiController extends BaseController {
         $username = trim($username);
         $password = trim($password);
 
-        $logic = new ShopUsersLogic();
-        $res = $logic->login($username, $password);
-        if ($res['status'] == 1) {
-            $res['url'] = urldecode(I('post.referurl'));
-            session('user', $res['result']);
-            setcookie('user_id', $res['result']['user_id'], null, '/');
-            setcookie('is_distribut', $res['result']['is_distribut'], null, '/');
-            $nickname = empty($res['result']['nickname']) ? $username : $res['result']['nickname'];
+        $user_service = new UserService();
+        $res = $user_service->login($username, $password);
+        if ($res) {
+            //商城一系列操作登录
+            session('user', $res);
+            setcookie('user_id', $res['user_id'], null, '/');
+            $nickname = empty($res['nickname']) ? $username : $res['nickname'];
             setcookie('uname', urlencode($nickname), null, '/');
             setcookie('cn', 0, time() - 3600, '/');
-            $cartLogic = new \Shop\Logic\CartLogic();
-            $cartLogic->login_cart_handle($this->session_id, $res['result']['user_id']); //用户登录后 需要对购物车 一些操作
+            unset($res['password']);
+            $this->success($res);
+        }else{
+            $this->error($user_service->get_err_msg());
         }
-        //除去密码的返回
-        unset($res['result']['password']);
-        exit(json_encode($res));
     }
     public function register() {
         //验证码检验

@@ -71,34 +71,6 @@ class ShopUsersLogic extends RelationModel {
             return array('status'=>-1,'msg'=>'添加失败','result'=>'');
         return array('status'=>1,'msg'=>'添加成功','result'=>$address_id);
     }
-    /*
-     * 登陆
-     */
-    public function login($username, $password) {
-        $result = array();
-        if (!$username || !$password) {
-            return $result = array('status' => 0, 'msg' => '请填写账号或密码');
-        }
-        $userid = service('Passport')->loginLocal('mobile_' . $username, $password, $cookieTime ? 86400 * 180 : 86400);
-        if (!$userid) {
-            $userid = service('Passport')->loginLocal('email_' . $username, $password, $cookieTime ? 86400 * 180 : 86400);
-        }
-        if (!$userid) {
-            return $result = array('status' => 0, 'msg' => '账号/密码错误');
-        }
-        $user = M('ShopUsers')->where("userid='%d'", $userid)->find();
-        if ($user['is_lock'] == 1) {
-            $result = array('status' => -3, 'msg' => '账号异常已被锁定！！！');
-        } else {
-            //查询用户信息之后, 查询用户的登记昵称
-            // $levelId = $user['level'];
-            // $levelName = M("user_level")->where("level_id = {$levelId}")->getField("level_name");
-            // $user['level_name'] = $levelName;
-            $result = array('status' => 1, 'msg' => '登陆成功', 'result' => $user);
-        }
-        return $result;
-    }
-
     /**
      * 获取指定用户信息
      * @param $uid int 用户UID
