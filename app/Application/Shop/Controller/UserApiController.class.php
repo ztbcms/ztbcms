@@ -1,6 +1,7 @@
 <?php
 namespace Shop\Controller;
 use Shop\Logic\ShopUsersLogic;
+use Shop\Service\UserService;
 
 class UserApiController extends BaseController {
     public function _initialize() {
@@ -45,21 +46,19 @@ class UserApiController extends BaseController {
         unset($res['result']['password']);
         exit(json_encode($res));
     }
-    public function reg() {
-        $logic = new ShopUsersLogic();
+    public function register() {
         //验证码检验
         $username = I('post.username', '');
         $password = I('post.password', '');
         $password2 = I('post.password2', '');
-      
-        $data = $logic->reg($username, $password, $password2);
-        if ($data['status'] != 1) {
-            exit(json_encode($data));
+        $user_service=new UserService();
+        $res = $user_service->register($username, $password, $password2);
+        if ($res) {
+            session('user', $res);
+            $this->success($res);
+        }else{
+            $this->error($user_service->get_err_msg());
         }
-        session('user', $data['result']);
-        $cartLogic = new \Shop\Logic\CartLogic();
-        $cartLogic->login_cart_handle($this->session_id, $data['result']['user_id']); //用户登录后 需要对购物车 一些操作
-        exit(json_encode($data));
     }
      /*
      * 用户地址列表
