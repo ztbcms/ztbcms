@@ -36,7 +36,7 @@
                     </div>              
                     <div class="pull-right">
                         <input type="hidden" name="id" value="{$goodsType.id}">
-                        <button class="btn btn-primary" title="" data-toggle="tooltip" type="submit" data-original-title="保存"><i class="fa fa-save"></i></button>
+                        <button class="btn btn-primary" title="" data-toggle="tooltip" type="submit" data-original-title="保存"><i class="fa fa-save"></i> 确认</button>
                     </div>
 			    </form><!--表单数据-->
                 </div>
