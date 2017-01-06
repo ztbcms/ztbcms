@@ -77,7 +77,7 @@ class GoodsLogic extends RelationModel{
      * @param   int     $selected   当前选中分类的ID
      * @param   boolean $re_type    返回的类型: 值为真时返回下拉列表,否则返回数组
      * @param   int     $level      限定返回的级数。为0时返回所有级数
-     * @return  mix
+     * @return  mixed
      */
     public function goods_cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0)
     {
@@ -104,9 +104,9 @@ class GoodsLogic extends RelationModel{
     
     /**
      * 获取指定id下的 所有分类      
-     * @global type $goods_category 所有商品分类
-     * @param type $id 当前显示的 菜单id
-     * @return 返回数组 Description
+     * @global array $goods_category 所有商品分类
+     * @param string $id 当前显示的 菜单id
+     * @return array 返回数组
      */
     public function get_cat_tree($id)
     {
@@ -124,9 +124,9 @@ class GoodsLogic extends RelationModel{
     
     /**
      * 移除指定$parent_id_path 分类以及下的所有分类
-     * @global type $cat_list 所有商品分类
-     * @param type $parent_id_path 指定的id
-     * @return 返回数组 Description
+     * @global array $cat_list 所有商品分类
+     * @param string $parent_id_path 指定的id
+     * @return array 返回数组
      */
     public function remove_cat($cat_list,$parent_id_path)
     {
@@ -141,9 +141,8 @@ class GoodsLogic extends RelationModel{
     
     /**
      * 改变或者添加分类时 需要修改他下面的 parent_id_path  和 level 
-     * @global type $cat_list 所有商品分类
-     * @param type $parent_id_path 指定的id
-     * @return 返回数组 Description
+     * @global array $cat_list 所有商品分类
+     * @param string|int $id 指定的id
      */
     public function refresh_cat($id)
     {            
@@ -174,6 +173,7 @@ class GoodsLogic extends RelationModel{
      * 动态获取商品属性输入框 根据不同的数据返回不同的输入框类型
      * @param int $goods_id 商品id
      * @param int $type_id 商品属性类型id
+     * @return string
      */
     public function getAttrInput($goods_id,$type_id)
     {
@@ -259,7 +259,7 @@ class GoodsLogic extends RelationModel{
     }
    
     /**
-     *  给指定商品添加属性 或修改属性 更新到 tp_goods_attr
+     * 给指定商品添加属性 或修改属性 更新到 tp_goods_attr
      * @param int $goods_id  商品id
      * @param int $goods_type  商品类型id
      */
@@ -343,8 +343,8 @@ class GoodsLogic extends RelationModel{
     
     /**
      * 获取 规格的 笛卡尔积
-     * @param $goods_id 商品 id     
-     * @param $spec_arr 笛卡尔积
+     * @param string $goods_id 商品 id
+     * @param string $spec_arr 笛卡尔积
      * @return string 返回表格字符串
      */
     public function getSpecInput($goods_id, $spec_arr)
@@ -414,8 +414,9 @@ class GoodsLogic extends RelationModel{
     
     /**
      * 获取指定规格类型下面的所有规格  但不包括规格项 供商品分类列表页帅选作用
-     * @param type $type_id
-     * @param type $checked
+     * @param string $type_id
+     * @param array $checked
+     * @return string
      */
     function GetSpecCheckboxList($type_id, $checked = array()){
         $list = M('Spec')->where("type_id = $type_id")->order('`order` desc')->select();        
@@ -434,8 +435,9 @@ class GoodsLogic extends RelationModel{
     
     /**
      * 获取指定商品类型下面的所有属性  供商品分类列表页帅选作用
-     * @param type $type_id
-     * @param type $checked
+     * @param string $type_id
+     * @param array $checked
+     * @return string
      */
     function GetAttrCheckboxList($type_id, $checked = array()){                
         $list = M('GoodsAttribute')->where("type_id = $type_id and attr_index > 0 ")->order('`order` desc')->select();        
@@ -453,8 +455,9 @@ class GoodsLogic extends RelationModel{
     }
     
     /**
-     *  获取选中的下拉框
-     * @param type $cat_id
+     * 获取选中的下拉框
+     * @param string $cat_id
+     * @return array
      */
     function find_parent_cat($cat_id)
     {

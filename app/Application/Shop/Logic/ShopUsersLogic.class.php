@@ -5,8 +5,12 @@ namespace Shop\Logic;
 use Common\Model\RelationModel;
 
 class ShopUsersLogic extends RelationModel {
-       /*
+
+    /**
      * 获取订单商品
+     *
+     * @param $order_id
+     * @return mixed
      */
     public function get_order_goods($order_id){
         $sql = "SELECT og.*,g.original_img FROM __PREFIX__order_goods og LEFT JOIN __PREFIX__goods g ON g.goods_id = og.goods_id WHERE order_id = ".$order_id;
@@ -19,8 +23,8 @@ class ShopUsersLogic extends RelationModel {
     }
     /**
      * 地址添加/编辑
-     * @param $user_id 用户id
-     * @param $user_id 地址id(编辑时需传入)
+     * @param string $user_id 用户id
+     * @param string $user_id 地址id(编辑时需传入)
      * @return array
      */
     public function add_address($user_id,$address_id=0,$data){
@@ -73,9 +77,9 @@ class ShopUsersLogic extends RelationModel {
     }
     /**
      * 注册
-     * @param $username  邮箱或手机
-     * @param $password  密码
-     * @param $password2 确认密码
+     * @param string $username  邮箱或手机
+     * @param string $password  密码
+     * @param string $password2 确认密码
      * @return array
      */
     public function reg($username, $password, $password2) {
