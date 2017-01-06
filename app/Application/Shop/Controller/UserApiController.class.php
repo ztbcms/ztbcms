@@ -45,6 +45,7 @@ class UserApiController extends BaseController {
         unset($res['result']['password']);
         exit(json_encode($res));
     }
+
     public function reg() {
         $logic = new ShopUsersLogic();
         //验证码检验
@@ -61,7 +62,8 @@ class UserApiController extends BaseController {
         $cartLogic->login_cart_handle($this->session_id, $data['result']['user_id']); //用户登录后 需要对购物车 一些操作
         exit(json_encode($data));
     }
-     /*
+
+    /**
      * 用户地址列表
      */
     public function address_list(){
@@ -76,7 +78,8 @@ class UserApiController extends BaseController {
         $resulet=array('status'=>1,'data'=>$list);
         exit(json_encode($resulet));
     }
-      /*
+
+    /**
      * 添加地址
      */
     public function add_address(){
@@ -86,7 +89,8 @@ class UserApiController extends BaseController {
             exit(json_encode($data)); 
         }
     }
-     /*
+
+    /**
      * 编辑地址
      */
     public function edit_address(){
@@ -102,7 +106,8 @@ class UserApiController extends BaseController {
             exit(json_encode($data)); 
         }
     }
-      /*
+
+    /**
      * 设置默认收货地址
      */
     public function set_default(){
@@ -115,7 +120,8 @@ class UserApiController extends BaseController {
             $resulet=array('status'=>1,'msg'=>'操作成功');
         exit(json_encode($resulet));
     }
-      /*
+
+    /**
      * 地址删除
      */
     public function del_address(){

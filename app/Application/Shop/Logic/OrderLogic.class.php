@@ -26,8 +26,10 @@ class OrderLogic extends RelationModel
         return $res;
     }
 
-    /*
+    /**
      * 获取订单信息
+     * @param $order_id
+     * @return mixed
      */
     public function getOrderInfo($order_id)
     {
@@ -38,8 +40,11 @@ class OrderLogic extends RelationModel
         return $order;
     }
 
-    /*
+
+    /**
      * 根据商品型号获取商品
+     * @param $goods_id_arr
+     * @return array|bool
      */
     public function get_spec_goods($goods_id_arr){
     	if(!is_array($goods_id_arr)) return false;
@@ -72,8 +77,12 @@ class OrderLogic extends RelationModel
     		return $order_goods;	
     }
 
-    /*
+    /**
      * 订单操作记录
+     * @param string  $order_id
+     * @param string $action
+     * @param string $note
+     * @return mixed
      */
     public function orderActionLog($order_id,$action,$note=''){    	
         $order = M('order')->where(array('order_id'=>$order_id))->find();
@@ -88,8 +97,10 @@ class OrderLogic extends RelationModel
         return M('order_action')->add($data);//订单操作记录
     }
 
-    /*
+    /**
      * 获取订单商品总价格
+     * @param $order_id
+     * @return mixed
      */
     public function getGoodsAmount($order_id){
         $sql = "SELECT SUM(goods_num * goods_price) AS goods_amount FROM __PREFIX__order_goods WHERE order_id = {$order_id}";
@@ -107,8 +118,10 @@ class OrderLogic extends RelationModel
         return date('YmdHi') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
     }
 
-    /*
+    /**
      * 获取当前可操作的按钮
+     * @param $order
+     * @return array
      */
     public function getOrderButton($order){
         /*
@@ -156,7 +169,11 @@ class OrderLogic extends RelationModel
         return $btn;
     }
 
-    
+    /**
+     * @param string $order_id
+     * @param string $act
+     * @return bool
+     */
     public function orderProcessHandle($order_id,$act){
     	$updata = array();
     	switch ($act){
@@ -233,6 +250,7 @@ class OrderLogic extends RelationModel
     /**
      *	处理发货单
      * @param array $data  查询数量
+     * @return boolean
      */
     public function deliveryHandle($data){
 		$order = $this->getOrderInfo($data['order_id']);

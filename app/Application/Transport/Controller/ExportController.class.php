@@ -28,8 +28,9 @@ class ExportController extends AdminBase {
         $filter = I('get._filter');
         $operator = I('get._operator');
         $value = I('get._value');
+        $catid = I('get.catid');
 
-        $where = array();
+        $where = array('catid' => $catid);
         if (is_array($filter)) {
             foreach ($filter as $index => $k){
                 if( $value[$index] != '' ){
@@ -55,22 +56,36 @@ class ExportController extends AdminBase {
         $export = new Export();
         $export->setFilename('数据导出'.date('Ymdhis')); //导出文件名
 
-        $modelid = getCategory(I('catid'), 'modelid');
-        $modelInfo = M('Model')->where(['modeleid' => $modelid])->field('tablename')->find();
+        $modelid = getCategory($catid, 'modelid');
+        $modelInfo = M('Model')->where(['modelid' => $modelid])->field('tablename')->find();
         $export->setModel($modelInfo['tablename']); //导出模型
 
         //筛选条件方式一
         $export->setCondition($where);
 
-        $export->setFields([
-
-            new ExportField('id', 'ID' , null),
-            new ExportField('title', '标题' , null),
-            new ExportField('inputtime', '发布时间' , 'InputtimeFilter'),
-
-        ]);
-
-
+        $export_fields = array();
+        $modelField = cache('ModelField');
+        //读取数据模型缓存
+        $fields = $modelField[$modelid];
+        foreach ($fields as $key => $val){
+            $field_filter = null;
+            //时间
+            if($val['formtype'] == 'datetime'){
+                $field_filter = 'DatetimeExportFilter';
+            }
+            //栏目ID -> 栏目名
+            if($val['formtype'] == 'catid'){
+                $field_filter = 'CatnameExportFilter';
+            }
+            //状态码 -> 状态文案
+            if($key == 'status'){
+                $field_filter = 'StatusExportFilter';
+            }
+            $export_fields[] = new ExportField($key, $val['name'], $field_filter);
+        }
+        //开始导出
+        $export->setFields($export_fields);
+//        预览
 //        $table = $export->exportTable();
 //        echo $table;
         $export->exportXls();

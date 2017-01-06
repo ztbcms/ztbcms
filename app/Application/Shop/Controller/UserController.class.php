@@ -158,7 +158,8 @@ class UserController extends AdminBase{
     	}
     	$this->display();
     }
-      /**
+
+    /**
      * 用户收货地址查看
      */
     public function address(){
@@ -176,10 +177,8 @@ class UserController extends AdminBase{
         $this->assign('district',$district);
         $this->display();
     }
-     /**
-     *
-     * @time 2016/08/31
-     * @author dyr
+
+    /**
      * 发送站内信
      */
     public function sendMessage()
@@ -192,10 +191,9 @@ class UserController extends AdminBase{
         $this->assign('users',$users);
         $this->display('send_message');
     }
+
     /**
      * 发送系统消息
-     * @author dyr
-     * @time  2016/09/01
      */
     public function doSendMessage()
     {
@@ -229,9 +227,6 @@ class UserController extends AdminBase{
     }
 
     /**
-     *
-     * @time 2016/09/03
-     * @author dyr
      * 发送邮件
      */
     public function sendMail()
@@ -249,7 +244,8 @@ class UserController extends AdminBase{
         $this->assign('users', $users);
         $this->display('send_mail');
     }
-      /**
+
+    /**
      * 删除会员
      */
     public function delete(){

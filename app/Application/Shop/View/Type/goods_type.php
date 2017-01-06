@@ -9,7 +9,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-list"></i> 订单详情</h3>
+                    <h3 class="panel-title"><i class="fa fa-list"></i> 商品类型</h3>
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-tabs">
@@ -36,7 +36,7 @@
                     </div>              
                     <div class="pull-right">
                         <input type="hidden" name="id" value="{$goodsType.id}">
-                        <button class="btn btn-primary" title="" data-toggle="tooltip" type="submit" data-original-title="保存"><i class="fa fa-save"></i></button>
+                        <button class="btn btn-primary" title="" data-toggle="tooltip" type="submit" data-original-title="保存"><i class="fa fa-save"></i> 确认</button>
                     </div>
 			    </form><!--表单数据-->
                 </div>

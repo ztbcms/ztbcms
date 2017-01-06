@@ -21,8 +21,9 @@ class UploadifyController extends AdminBase{
         $this->display();
     }
     
-    /*
-              删除上传的图片
+    /**
+     * 删除上传的图片
+     * @return bool
      */
     public function delupload(){
         $action=isset($_GET['action']) ? $_GET['action'] : null;
@@ -35,7 +36,6 @@ class UploadifyController extends AdminBase{
             $filetype = explode('/',$size['mime']);
             if($filetype[0]!='image'){
                 return false;
-                exit;
             }
             unlink($filename);
             exit;

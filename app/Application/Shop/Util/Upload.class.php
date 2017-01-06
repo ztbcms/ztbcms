@@ -114,7 +114,7 @@ class Upload {
 
     /**
      * 上传文件
-     * @param 文件信息数组 $files ，通常是 $_FILES数组
+     * @param string|array 文件信息数组 $files ，通常是 $_FILES数组
      */
     public function upload($files='') {
         if('' === $files){
@@ -339,6 +339,7 @@ class Upload {
     /**
      * 检查文件大小是否合法
      * @param integer $size 数据
+     * @return bool
      */
     private function checkSize($size) {
         return !($size > $this->maxSize) || (0 == $this->maxSize);
@@ -347,6 +348,7 @@ class Upload {
     /**
      * 检查上传的文件MIME类型是否合法
      * @param string $mime 数据
+     * @return bool
      */
     private function checkMime($mime) {
         return empty($this->config['mimes']) ? true : in_array(strtolower($mime), $this->mimes);
@@ -355,6 +357,7 @@ class Upload {
     /**
      * 检查上传的文件后缀是否合法
      * @param string $ext 后缀
+     * @return bool
      */
     private function checkExt($ext) {
         return empty($this->config['exts']) ? true : in_array(strtolower($ext), $this->exts);
@@ -363,6 +366,7 @@ class Upload {
     /**
      * 根据上传文件命名规则取得保存文件名
      * @param string $file 文件信息
+     * @return bool|string
      */
     private function getSaveName($file) {
         $rule = $this->saveName;
@@ -386,7 +390,8 @@ class Upload {
 
     /**
      * 获取子目录的名称
-     * @param array $file  上传的文件信息
+     * @param string $filename  上传的文件信息
+     * @return string
      */
     private function getSubPath($filename) {
         $subpath = '';

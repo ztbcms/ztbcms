@@ -64,6 +64,12 @@ return array(
                         "status" => 0,
                         "name" => "更新设置字段映射操作",
                     ),
+                    array(
+                        "route" => "Transport/Upload/upload",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "上传Excel文件操作",
+                    ),
                 )
             ),
             array(
@@ -91,6 +97,12 @@ return array(
                         "name" => "执行任务预览",
                     ),
                 )
+            ),
+            array(
+                "route" => "Transport/Export/classlist",
+                "type" => 1,
+                "status" => 0,
+                "name" => "导出栏目列表页的搜索结果",
             ),
         ),
     ),
