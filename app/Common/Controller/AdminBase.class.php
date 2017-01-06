@@ -19,8 +19,8 @@ class AdminBase extends CMS {
 		C(array(
 			"USER_AUTH_ON" => true, //是否开启权限认证
 			"USER_AUTH_TYPE" => 1, //默认认证类型 1 登录认证 2 实时认证
-			"REQUIRE_AUTH_MODULE" => "", //需要认证模块
-			"NOT_AUTH_MODULE" => "Public", //无需认证模块
+			"REQUIRE_AUTH_CONTROLLER" => "", //需要认证控制器
+			"NOT_AUTH_CONTROLLER" => "Public", //无需认证控制器
             "REQUIRE_AUTH_ACTION" => "", //需要认证的操作
             "NOT_AUTH_ACTION" => "", //无需认证的操作
 			"USER_AUTH_GATEWAY" => U("Admin/Public/login"), //登录地址
