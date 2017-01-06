@@ -115,7 +115,7 @@ class CartLogic extends RelationModel
         //if($selected != NULL)
         //    $where = " selected = $selected "; // 购物车选中状态
         
-        if($user[user_id])// 如果用户已经登录则按照用户id查询
+        if($user['user_id'])// 如果用户已经登录则按照用户id查询
         {
              $where .= " and user_id = $user[user_id] ";
              // 给用户计算会员价 登录前后不一样             
@@ -123,7 +123,7 @@ class CartLogic extends RelationModel
         else
         {
             $where .= " and session_id = '$session_id'";
-            $user[user_id] = 0;
+            $user['user_id'] = 0;
         }
                                 
         $cartList = M('Cart')->where($where)->select();  // 获取购物车商品 
