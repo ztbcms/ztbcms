@@ -1,14 +1,10 @@
 <?php
 namespace Shop\Controller;
 
-use Shop\Logic\ShopUsersLogic;
 use Shop\Service\UserService;
 
 class UserApiController extends BaseController {
-    public function _initialize() {
-        parent::_initialize();
 
-    }
     /**
      * 获取登录用户信息
      */
@@ -16,9 +12,9 @@ class UserApiController extends BaseController {
         $userinfo = service("Passport")->getInfo();
         $shop_user = M('ShopUsers')->find($userinfo['userid']);
         if ($userinfo && $shop_user) {
-            $this->success($shop_user);
+            $this->success($shop_user, '', true);
         } else {
-            $this->error('没有登录', -500);
+            $this->error('没有登录', -500, 1);
         }
     }
 
@@ -41,9 +37,9 @@ class UserApiController extends BaseController {
             setcookie('uname', urlencode($nickname), null, '/');
             setcookie('cn', 0, time() - 3600, '/');
             unset($res['password']);
-            $this->success($res);
+            $this->success($res, '', true);
         } else {
-            $this->error($user_service->get_err_msg());
+            $this->error($user_service->get_err_msg(), '', true);
         }
     }
 
@@ -56,9 +52,10 @@ class UserApiController extends BaseController {
         $res = $user_service->register($username, $password, $password2);
         if ($res) {
             session('user', $res);
-            $this->success($res);
+            unset($res['password']);
+            $this->success($res, '', true);
         } else {
-            $this->error($user_service->get_err_msg());
+            $this->error($user_service->get_err_msg(), '', true);
         }
     }
 
@@ -74,7 +71,7 @@ class UserApiController extends BaseController {
             $value['district_name'] = getRegionName($value['district'], 3);
             $list[] = $value;
         }
-        $this->success($list);
+        $this->success($list, '', true);
     }
 
     /**
@@ -82,11 +79,15 @@ class UserApiController extends BaseController {
      */
     public function add_address() {
         if (IS_POST) {
-            $logic = new ShopUsersLogic();
-            $data = $logic->add_address($this->userid, 0, I('post.'));
-            $this->success($data);
+            $user_service = new UserService();
+            $data = $user_service->add_eidt_address($this->userid, 0, I('post.'));
+            if ($data) {
+                $this->success($data, '', true);
+            } else {
+                $this->error($user_service->get_err_msg(), '', true);
+            }
         } else {
-            $this->error('请求方法错误');
+            $this->error('请求方法错误', '', true);
         }
     }
 
@@ -97,15 +98,15 @@ class UserApiController extends BaseController {
         if (IS_POST) {
             $id = I('post.id');
             if (!$id) {
-                exit(json_encode(array('status' => -1, 'msg' => '参数错误')));
+                $this->error('参数错误', '', true);
             }
             $post = I('post.');
             unset($post['id']);
-            $logic = new ShopUsersLogic();
-            $data = $logic->add_address($this->userid, $id, $post);
-            $this->success($data);
-        }else{
-            $this->error('请求方法错误');
+            $user_service = new UserService();
+            $data = $user_service->add_eidt_address($this->userid, 0, I('post.'));
+            $this->success($data, '', true);
+        } else {
+            $this->error('请求方法错误', '', true);
         }
     }
 
@@ -120,9 +121,9 @@ class UserApiController extends BaseController {
             'address_id' => $id
         ))->save(array('is_default' => 1));
         if (!$row) {
-            $this->error('操作失败');
+            $this->error('操作失败', '', true);
         } else {
-            $this->success('操作成功');
+            $this->success('操作成功', '', true);
         }
     }
 
@@ -139,9 +140,9 @@ class UserApiController extends BaseController {
             $address2 && M('UserAddress')->where("address_id = {$address2['address_id']}")->save(array('is_default' => 1));
         }
         if (!$row) {
-            $this->error('操作失败');
+            $this->error('操作失败', '', true);
         } else {
-            $this->success('操作成功');
+            $this->success('操作成功', '', true);
         }
     }
 }
