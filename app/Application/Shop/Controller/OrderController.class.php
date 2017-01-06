@@ -782,7 +782,7 @@ class OrderController extends AdminBase {
                     if(!$rec_id)                 
                         $this->error('添加失败');                                  
                 }
-                $this->success('添加商品成功',U("Shop/Order/detail",array('order_id'=>$order_id)));
+                $this->success('添加订单成功',U("Shop/Order/detail",array('order_id'=>$order_id)));
                 exit();
             }
             else{
