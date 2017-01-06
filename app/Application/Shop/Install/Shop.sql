@@ -246,7 +246,7 @@ CREATE TABLE `cms_order_goods` (
   `rec_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '表id自增',
   `order_id` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '订单id',
   `goods_id` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '商品id',
-  `goods_name` varchar(120) NOT NULL DEFAULT '' COMMENT '视频名称',
+  `goods_name` varchar(120) NOT NULL DEFAULT '' COMMENT '商品名称',
   `goods_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '商品货号',
   `goods_num` smallint(5) unsigned NOT NULL DEFAULT '1' COMMENT '购买数量',
   `market_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '市场价',

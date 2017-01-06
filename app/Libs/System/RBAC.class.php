@@ -50,12 +50,12 @@ class RBAC {
 			$_controller = array();
 			//动作
 			$_action = array();
-			if ("" != C('REQUIRE_AUTH_MODULE')) {
-				//需要认证的模块
-				$_controller['yes'] = explode(',', strtoupper(C('REQUIRE_AUTH_MODULE')));
+			if ("" != C('REQUIRE_AUTH_CONTROLLER')) {
+				//需要认证的控制器
+				$_controller['yes'] = explode(',', strtoupper(C('REQUIRE_AUTH_CONTROLLER')));
 			} else {
-				//无需认证的模块
-				$_controller['no'] = explode(',', strtoupper(C('NOT_AUTH_MODULE')));
+				//无需认证的控制器
+				$_controller['no'] = explode(',', strtoupper(C('NOT_AUTH_CONTROLLER')));
 			}
 			//检查当前模块是否需要认证
 			if ((!empty($_controller['no']) && !in_array(strtoupper(CONTROLLER_NAME), $_controller['no'])) || (!empty($_controller['yes']) && in_array(strtoupper(CONTROLLER_NAME), $_controller['yes']))) {
