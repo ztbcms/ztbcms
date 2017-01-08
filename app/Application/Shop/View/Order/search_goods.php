@@ -114,7 +114,7 @@
 		   $(this).remove();
 	    });
 		$(".btn-info").remove();
-        javascript:window.parent.call_back($('#goos_table').html().replace(/选择/,'购买数量'));
+        window.parent.call_back($('#goos_table').html().replace(/选择/,'购买数量'));
   }    
   </script>
 </div>

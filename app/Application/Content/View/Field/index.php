@@ -25,6 +25,7 @@
             <td width="60" align='center'>搜索</td>
             <td width="60" align='center'>排序</td>
             <td width="60" align='center'>投稿</td>
+            <td width="80" align='center'>基本信息</td>
             <td width="150" align='center'>管理操作</td>
           </tr>
         </thead>
@@ -41,6 +42,7 @@
             <td align='center'><if condition="$vo['issearch'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
             <td align='center'><if condition="$vo['isorder'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
             <td align='center'><if condition="$vo['isadd'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
+            <td align='center'><if condition="$vo['isbase'] eq 1"><font color="blue">√</font><else /> <font color="red">╳</font></if></td>
             <td align='center'>
             <?php
 			$operate = array();
@@ -49,12 +51,12 @@
 			}
 			if(\Libs\System\RBAC::authenticate('disabled')){
 				if(in_array($vo['field'],$forbid_fields)){
-					$operate[] = '<font color="#BEBEBE"> 隐藏 </font>';
+					$operate[] = '<font color="#BEBEBE"> 禁用 </font>';
 				}else{
 					if($vo['disabled'] == 0){
-						$operate[] = '<a href="'.U("Field/disabled",array("fieldid"=>$vo['fieldid'],"modelid"=>$vo['modelid'],"disabled"=>0)).'">隐藏</a>';
+						$operate[] = '<a href="'.U("Field/disabled",array("fieldid"=>$vo['fieldid'],"modelid"=>$vo['modelid'],"disabled"=>0)).'">禁用</a>';
 					}else{
-						$operate[] = '<a href="'.U("Field/disabled",array("fieldid"=>$vo['fieldid'],"modelid"=>$vo['modelid'],"disabled"=>1)).'"><font color="#FF0000">显示</font></a>';
+						$operate[] = '<a href="'.U("Field/disabled",array("fieldid"=>$vo['fieldid'],"modelid"=>$vo['modelid'],"disabled"=>1)).'"><font color="#FF0000">启用</font></a>';
 					}
 				}
 			}
@@ -76,7 +78,7 @@
   <div class="btn_wrap">
       <div class="btn_wrap_pd">
           <button class="btn btn_submit mr10 J_ajax_submit_btn" type="submit">排序</button>
-          <button class="btn btn_submit J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchDisable')}">隐藏字段</button>
+          <button class="btn btn_submit J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchDisable')}">禁用字段</button>
           <button class="btn btn_submit J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchUndisable')}">启用字段</button>
           <button class="btn btn-danger J_ajax_submit_btn" type="submit" data-action="{:U('Content/Field/batchDelete')}">删除</button>
       </div>

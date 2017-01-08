@@ -138,7 +138,7 @@ function getFirstCharter($str) {
 }
 
 /**
- *   实现中文字串截取无乱码的方法
+ * 实现中文字串截取无乱码的方法
  */
 function getSubstr($string, $start, $length) {
     if (mb_strlen($string, 'utf-8') > $length) {
@@ -151,7 +151,8 @@ function getSubstr($string, $start, $length) {
 
 /**
  * 获取某个商品分类的 儿子 孙子  重子重孙 的 id
- * @param type $cat_id
+ * @param string $cat_id
+ * @return array|string
  */
 function getCatGrandson($cat_id) {
     $GLOBALS['catGrandson'] = array();
@@ -170,7 +171,7 @@ function getCatGrandson($cat_id) {
 
 /**
  * 递归调用找到 重子重孙
- * @param type $cat_id
+ * @param string $cat_id
  */
 function getCatGrandson2($cat_id) {
     $GLOBALS['catGrandson'][] = $cat_id;
@@ -220,7 +221,8 @@ function delFile($dir, $file_type = '') {
 }
 /**
  * 刷新商品库存, 如果商品有设置规格库存, 则商品总库存 等于 所有规格库存相加
- * @param type $goods_id  商品id
+ * @param string $goods_id  商品id
+ * @return bool
  */
 function refresh_stock($goods_id) {
     $count = M("SpecGoodsPrice")->where("goods_id = $goods_id")->count();
@@ -235,8 +237,6 @@ function refresh_stock($goods_id) {
 
 /**
  * 多个数组的笛卡尔积
- *
- * @param unknown_type $data
  */
 function combineDika() {
     $data = func_get_args();
@@ -256,8 +256,9 @@ function combineDika() {
 
 /**
  * 两个数组的笛卡尔积
- * @param unknown_type $arr1
- * @param unknown_type $arr2
+ * @param array $arr1
+ * @param array $arr2
+ * @return array
  */
 function combineArray($arr1, $arr2) {
     $result = array();
@@ -272,9 +273,9 @@ function combineArray($arr1, $arr2) {
 }
 /**
  * 获取数组中的某一列
- * @param type $arr 数组
- * @param type $key_name  列名
- * @return type  返回那一列的数组
+ * @param array $arr 数组
+ * @param string $key_name  列名
+ * @return array  返回那一列的数组
  */
 function get_arr_column($arr, $key_name) {
     $arr2 = array();
@@ -286,8 +287,9 @@ function get_arr_column($arr, $key_name) {
 
 /**
  * 获取商品库存
- * @param type $goods_id 商品id
- * @param type $key  库存 key
+ * @param string $goods_id 商品id
+ * @param string $key  库存 key
+ * @return array
  */
 function getGoodNum($goods_id, $key) {
     if (!empty($key)) {
@@ -300,17 +302,18 @@ function getGoodNum($goods_id, $key) {
 
 /**
  * 计算订单金额
- * @param type $user_id  用户id
- * @param type $order_goods  购买的商品
- * @param type $shipping  物流code
- * @param type $shipping_price 物流费用, 如果传递了物流费用 就不在计算物流费
- * @param type $province  省份
- * @param type $city 城市
- * @param type $district 县
- * @param type $pay_points 积分
- * @param type $user_money 余额
- * @param type $coupon_id  优惠券
- * @param type $couponCode  优惠码
+ * @param string|int $user_id  用户id
+ * @param string|int $order_goods  购买的商品
+ * @param string|int $shipping_code  物流code
+ * @param string|int $shipping_price 物流费用, 如果传递了物流费用 就不在计算物流费
+ * @param string|int $province  省份
+ * @param string|int $city 城市
+ * @param string|int $district 县
+ * @param string|int $pay_points 积分
+ * @param int $user_money 余额
+ * @param string|int $coupon_id  优惠券
+ * @param string|int $couponCode  优惠码
+ * @return array
  */
 
 function calculate_price($user_id = 0, $order_goods, $shipping_code = '', $shipping_price = 0, $province = 0, $city = 0, $district = 0, $pay_points = 0, $user_money = 0, $coupon_id = 0, $couponCode = '') {
@@ -445,7 +448,7 @@ function tpCache($config_key, $data = array()) {
                     if ($v != $temp[$k]) {
                         M('ShopConfig')->where("name='$k'")->save($newArr);
                     }
-//缓存key存在且值有变更新此项
+                    //缓存key存在且值有变更新此项
                 }
             }
             //更新后的数据库记录
@@ -465,7 +468,7 @@ function tpCache($config_key, $data = array()) {
 }
 /**
  * 根据id获取地区名字
- * @param $regionId id
+ * @param string $regionId id
  */
 function getRegionName($regionId, $level = 1) {
     if ($level == 1) {
@@ -480,8 +483,9 @@ function getRegionName($regionId, $level = 1) {
 
 /**
  * 支付完成修改订单
- * $order_sn 订单号
- * $pay_status 默认1 为已支付
+ * @param string $order_sn 订单号
+ * @param string|int $pay_status 默认1 为已支付
+ * @return boolean
  */
 function update_pay_status($order_sn, $pay_status = 1) {
     if (stripos($order_sn, 'recharge') !== false) {
@@ -526,7 +530,7 @@ function update_pay_status($order_sn, $pay_status = 1) {
 
 /**
  * 根据 order_goods 表扣除商品库存
- * @param type $order_id  订单id
+ * @param string $order_id  订单id
  */
 function minus_stock($order_id) {
     $orderGoodsArr = M('OrderGoods')->where("order_id = $order_id")->select();
@@ -552,7 +556,7 @@ function minus_stock($order_id) {
 }
 /**
  * 更新会员等级,折扣，消费总额
- * @param $user_id  用户ID
+ * @param string $user_id  用户ID
  * @return boolean
  */
 function update_user_level($user_id) {
@@ -578,11 +582,10 @@ function update_user_level($user_id) {
 
 /**
  * 订单操作日志
- * 参数示例
- * @param type $order_id  订单id
- * @param type $action_note 操作备注
- * @param type $status_desc 操作状态  提交订单, 付款成功, 取消, 等待收货, 完成
- * @param type $user_id  用户id 默认为管理员
+ * @param string $order_id  订单id
+ * @param string $action_note 操作备注
+ * @param string $status_desc 操作状态  提交订单, 付款成功, 取消, 等待收货, 完成
+ * @param string|int $user_id  用户id 默认为管理员
  * @return boolean
  */
 function logOrder($order_id, $action_note, $status_desc, $user_id = 0) {
@@ -610,10 +613,10 @@ function logOrder($order_id, $action_note, $status_desc, $user_id = 0) {
  * @param   float   $user_money     可用余额变动
  * @param   int     $pay_points     消费积分变动
  * @param   string  $desc    变动说明
- * @param   float   distribut_money 分佣金额
+ * @param   float   $distribut_money 分佣金额
  * @return  bool
  */
-function accountLog($user_id, $user_money = 0, $pay_points = 0, $desc = '', $distribut_money = 0) {
+function accountLog($user_id, $user_money = 0.0, $pay_points = 0, $desc = '', $distribut_money = 0.0) {
     /* 插入帐户变动记录 */
     $account_log = array(
         'userid' => $user_id,
@@ -635,7 +638,9 @@ function accountLog($user_id, $user_money = 0, $pay_points = 0, $desc = '', $dis
 
 /**
  * 订单确认收货
- * @param $id   订单id
+ * @param string $id   订单id
+ * @param string|int $user_id
+ * @return array
  */
 function confirm_order($id, $user_id = 0) {
 
@@ -668,6 +673,7 @@ function confirm_order($id, $user_id = 0) {
 }
 /**
  * 给订单送券送积分 送东西
+ * @param array
  */
 function order_give($order) {
     $order_goods = M('order_goods')->where("order_id=" . $order['order_id'])->cache(true)->select();
@@ -715,8 +721,8 @@ function order_give($order) {
 
 /**
  * 导出excel
- * @param $strTable    表格内容
- * @param $filename 文件名
+ * @param string $strTable    表格内容
+ * @param string $filename 文件名
  */
 function downloadExcel($strTable, $filename) {
     header("Content-type: application/vnd.ms-excel");
@@ -731,9 +737,10 @@ function encrypt($str) {
 }
 
 /**
- *  面包屑导航  用于前台商品
- * @param type $id 商品id  或者是 商品分类id
- * @param type $type 默认0是传递商品分类id  id 也可以传递 商品id type则为1
+ * 面包屑导航  用于前台商品
+ * @param string $id 商品id  或者是 商品分类id
+ * @param int $type 默认0是传递商品分类id  id 也可以传递 商品id type则为1
+ * @return array
  */
 function navigate_goods($id, $type = 0) {
     $cat_id = $id; //
@@ -759,9 +766,9 @@ function navigate_goods($id, $type = 0) {
 }
 /**
  * 查看某个用户购物车中商品的数量
- * @param type $user_id
- * @param type $session_id
- * @return type 购买数量
+ * @param string|int $user_id
+ * @param string $session_id
+ * @return int 购买数量
  */
 function cart_goods_num($user_id = 0, $session_id = '') {
     $where = " session_id = '$session_id' ";
@@ -773,7 +780,8 @@ function cart_goods_num($user_id = 0, $session_id = '') {
 }
 /**
  * 检查手机号码格式
- * @param $mobile 手机号码
+ * @param string $mobile  手机号码
+ * @return bool
  */
 function check_mobile($mobile) {
     if (preg_match('/1[34578]\d{9}$/', $mobile)) {
@@ -785,7 +793,8 @@ function check_mobile($mobile) {
 
 /**
  * 检查邮箱地址格式
- * @param $email 邮箱地址
+ * @param string $email  邮箱地址
+ * @return bool
  */
 function check_email($email) {
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -796,7 +805,7 @@ function check_email($email) {
 }
 /**
  * 获取用户信息
- * @param $user_id_or_name  用户id 邮箱 手机 第三方id
+ * @param string $user_id_or_name  用户id 邮箱 手机 第三方id
  * @param int $type  类型 0 user_id查找 1 邮箱查找 2 手机查找 3 第三方唯一标识查找
  * @param string $oauth  第三方来源
  * @return mixed

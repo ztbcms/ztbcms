@@ -14,10 +14,11 @@ class CartLogic extends RelationModel
     
     /**
      * 加入购物车方法
-     * @param type $goods_id  商品id
-     * @param type $goods_num   商品数量
-     * @param type $goods_spec  选择规格 
-     * @param type $user_id 用户id
+     * @param string $goods_id  商品id
+     * @param int $goods_num   商品数量
+     * @param array $goods_spec  选择规格
+     * @param string|int $user_id 用户id
+     * @return array
      */
     function addCart($goods_id,$goods_num,$goods_spec,$session_id,$user_id = 0){       
         $goods = M('Goods')->where("goods_id = $goods_id")->find(); // 找出这个商品        
@@ -101,10 +102,11 @@ class CartLogic extends RelationModel
     
     /**
      * 购物车列表 
-     * @param type $user   用户
-     * @param type $session_id  session_id
-     * @param type $selected  是否被用户勾选中的 0 为全部 1为选中  一般没有查询不选中的商品情况
-     * $mode 0  返回数组形式  1 直接返回result
+     * @param array $user   用户
+     * @param string $session_id  session_id
+     * @param int $selected  是否被用户勾选中的 0 为全部 1为选中  一般没有查询不选中的商品情况
+     * @param int $mode 0  返回数组形式  1 直接返回result
+     * @return array
      */
     function cartList($user = array() , $session_id = '', $selected = 0,$mode =0)
     {                   
@@ -113,7 +115,7 @@ class CartLogic extends RelationModel
         //if($selected != NULL)
         //    $where = " selected = $selected "; // 购物车选中状态
         
-        if($user[user_id])// 如果用户已经登录则按照用户id查询
+        if($user['user_id'])// 如果用户已经登录则按照用户id查询
         {
              $where .= " and user_id = $user[user_id] ";
              // 给用户计算会员价 登录前后不一样             
@@ -121,7 +123,7 @@ class CartLogic extends RelationModel
         else
         {
             $where .= " and session_id = '$session_id'";
-            $user[user_id] = 0;
+            $user['user_id'] = 0;
         }
                                 
         $cartList = M('Cart')->where($where)->select();  // 获取购物车商品 
@@ -148,10 +150,10 @@ class CartLogic extends RelationModel
     
 /**
  * 计算商品的的运费 
- * @param type $shipping_code 物流 编号
- * @param type $province  省份
- * @param type $city     市
- * @param type $district  区
+ * @param string $shipping_code 物流 编号
+ * @param string $province  省份
+ * @param string $city     市
+ * @param string $district  区
  * @return int
  */
 function cart_freight2($shipping_code,$province,$city,$district,$weight)
@@ -199,9 +201,10 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
   
     /**
      * 获取用户可以使用的优惠券
-     * @param type $user_id  用户id 
-     * @param type $coupon_id 优惠券id
-     * $mode 0  返回数组形式  1 直接返回result
+     * @param string $user_id  用户id
+     * @param string $coupon_id 优惠券id
+     * @param  int $mode 0  返回数组形式  1 直接返回result
+     * @return array|int
      */
     public function getCouponMoney($user_id, $coupon_id,$mode)
     {
@@ -220,9 +223,9 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
     
     /**
      * 根据优惠券代码获取优惠券金额
-     * @param type $couponCode 优惠券代码
-     * @param type $order_momey Description 订单金额
-     * return -1 优惠券不存在 -2 优惠券已过期 -3 订单金额没达到使用券条件
+     * @param string $couponCode 优惠券代码
+     * @param string|float $order_momey Description 订单金额
+     * @return array -1 优惠券不存在 -2 优惠券已过期 -3 订单金额没达到使用券条件
      */
     public function getCouponMoneyByCode($couponCode,$order_momey)
     {
@@ -242,14 +245,14 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
     
     /**
      *  添加一个订单
-     * @param type $user_id  用户id     
-     * @param type $cartList  选中购物车商品     
-     * @param type $address_id 地址id
-     * @param type $shipping_code 物流编号
-     * @param type $invoice_title 发票
-     * @param type $coupon_id 优惠券id
-     * @param type $car_price 各种价格
-     * @return type $order_id 返回新增的订单id
+     * @param string $user_id  用户id
+     * @param array $cartList  选中购物车商品
+     * @param string $address_id 地址id
+     * @param string $shipping_code 物流编号
+     * @param string $invoice_title 发票
+     * @param string|int $coupon_id 优惠券id
+     * @param array $car_price 各种价格
+     * @return string $order_id 返回新增的订单id
      */
     public function addOrder($user_id,$cartList,$address_id,$shipping_code,$invoice_title,$coupon_id = 0,$car_price){
         
@@ -360,8 +363,9 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
     
     /**
      * 查看购物车的商品数量
-     * @param type $user_id
-     * $mode 0  返回数组形式  1 直接返回result
+     * @param string $user_id
+     * @param $mode 0  返回数组形式  1 直接返回result
+     * @return array
      */
     public function cart_count($user_id,$mode = 0){
         $count = M('Cart')->where("user_id = $user_id and selected = 1")->count();
@@ -373,8 +377,9 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
    /**
     * 获取商品团购价
     * 如果商品没有团购活动 则返回 0
-    * @param type $attr_id
-    * $mode 0  返回数组形式  1 直接返回result
+    * @param string $goods_id
+    * @param $mode 0  返回数组形式  1 直接返回result
+    * @return array|int
     */
    public function get_group_buy_price($goods_id,$mode=0)
    {
@@ -388,8 +393,9 @@ function cart_freight2($shipping_code,$province,$city,$district,$weight)
    
    /**
     * 用户登录后 需要对购物车 一些操作
-    * @param type $session_id
-    * @param type $user_id
+    * @param string $session_id
+    * @param string $user_id
+    * @return bool
     */
    public function login_cart_handle($session_id,$user_id)
    {

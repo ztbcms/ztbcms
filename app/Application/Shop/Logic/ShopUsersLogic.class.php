@@ -5,8 +5,12 @@ namespace Shop\Logic;
 use Common\Model\RelationModel;
 
 class ShopUsersLogic extends RelationModel {
-       /*
+
+    /**
      * 获取订单商品
+     *
+     * @param $order_id
+     * @return mixed
      */
     public function get_order_goods($order_id){
         $sql = "SELECT og.*,g.original_img FROM __PREFIX__order_goods og LEFT JOIN __PREFIX__goods g ON g.goods_id = og.goods_id WHERE order_id = ".$order_id;
@@ -17,7 +21,6 @@ class ShopUsersLogic extends RelationModel {
         $return['result'] = $goods_list;
         return $return;
     }
-
     /**
      * 改变用户信息
      * @param int $uid
