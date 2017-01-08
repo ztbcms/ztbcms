@@ -38,9 +38,8 @@ class CartController extends BaseController {
             //设置购物车数据操作
             $result = $cart_service->add_cart($goods_id, $goods_num, $goods_spec, $this->session_id,
                 $this->user_id); // 将商品加入购物车
-            $result['set_num'] = $set_num;
             if($result){
-                $this->success($result,'',true);
+                $this->success($set_num,'',true);
             }else{
                 $this->error($cart_service->get_err_msg(),'',true);
             }
