@@ -22,7 +22,7 @@
         <!-- Logo -->
         <a href="javascript:void(0);" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>A</b>LT</span>
+            <span class="logo-mini"><b>Z</b>TB</span>
             <!-- logo for regular state and mobile devices -->
             <span class="logo-lg"><b>{$Config.sitename}</b></span>
         </a>
@@ -206,6 +206,15 @@
             $('#deletecache').on('click', function(){
                 iframeJudge({url: $(this).data('url')});
             });
+
+            //用于维持在线
+            function online(){
+                $.get('<?php echo U("Admin/Index/index");?>');
+            }
+            //维持在线
+            setInterval(function(){
+                online();
+            }, 60 * 1000);
         })(jQuery);
     </script>
 </literal>
