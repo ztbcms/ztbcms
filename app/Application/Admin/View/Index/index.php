@@ -151,7 +151,7 @@
 
             function iframe_height(){
 
-                var def_iframe_height = document.body.clientWidth - $(".navbar.navbar-static-top").height();
+                var def_iframe_height = $(window).height() - $(".navbar.navbar-static-top").height();
                 $("#B_frame").height(def_iframe_height);
             }
 
