@@ -1,4 +1,4 @@
-<include file="Public/min-header" />
+<include file="Public/min-header"/>
 <!--物流配置 css -start-->
 <style>
     ul.group-list {
@@ -7,7 +7,7 @@
         margin: auto 5px;
         list-style: disc outside none;
     }
-    
+
     ul.group-list li {
         white-space: nowrap;
         float: left;
@@ -38,13 +38,16 @@
     var URL_getMovie = "{$URL_getMovie}";
     var URL_home = "{$URL_home}";
 </script>
-<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/ueditor.config.js"></script>
-<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/ueditor.all.min.js">
+<script type="text/javascript" charset="utf-8"
+        src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8"
+        src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/ueditor.all.min.js">
 </script>
-<script type="text/javascript" charset="utf-8" src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" charset="utf-8"
+        src="{$config_siteurl}statics/extres/shop/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
     var editor;
-    $(function() {
+    $(function () {
         //具体参数配置在  editor_config.js  中
         var options = {
             zIndex: 999,
@@ -55,22 +58,22 @@
             removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign', //允许的最大字符数 'fullscreen',
             pasteplain: false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
             autoHeightEnabled: true
-                /*   autotypeset: {
-                       mergeEmptyline: true,        //合并空行
-                       removeClass: true,           //去掉冗余的class
-                       removeEmptyline: false,      //去掉空行
-                       textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
-                       imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
-                       pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
-                       clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
-                       clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
-                       removeEmptyNode: false,      //去掉空节点
-                                                    //可以去掉的标签
-                       removeTagNames: {"font": 1},
-                       indent: false,               // 行首缩进
-                       indentValue: '0em'           //行首缩进的大小
-                   }*/
-                ,
+            /*   autotypeset: {
+             mergeEmptyline: true,        //合并空行
+             removeClass: true,           //去掉冗余的class
+             removeEmptyline: false,      //去掉空行
+             textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+             imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+             pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+             clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+             clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+             removeEmptyNode: false,      //去掉空节点
+             //可以去掉的标签
+             removeTagNames: {"font": 1},
+             indent: false,               // 行首缩进
+             indentValue: '0em'           //行首缩进的大小
+             }*/
+            ,
             toolbars: [
                 ['fullscreen', 'source', '|', 'undo', 'redo',
                     '|', 'bold', 'italic', 'underline', 'fontborder',
@@ -106,12 +109,13 @@
 </script>
 <!--以上是在线编辑器 代码  end-->
 <div class="wrapper">
-    <include file="Public/breadcrumb" />
+    <include file="Public/breadcrumb"/>
     <section class="content">
         <!-- Main content -->
         <div class="container-fluid">
             <div class="pull-right">
-                <a href="javascript:history.go(-1)" data-toggle="tooltip" title="" class="btn btn-default" data-original-title="返回"><i class="fa fa-reply"></i></a>
+                <a href="javascript:history.go(-1)" data-toggle="tooltip" title="" class="btn btn-default"
+                   data-original-title="返回"><i class="fa fa-reply"></i></a>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -135,242 +139,294 @@
 
                                 <table class="table table-bordered">
                                     <tbody>
-                                        <tr>
-                                            <td>商品名称:</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.goods_name}" name="goods_name" class="form-control" style="width:550px;" />
-                                                <span id="err_goods_name" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>商品简介:</td>
-                                            <td>
-                                                <textarea rows="3" cols="80" name="goods_remark">{$goodsInfo.goods_remark}</textarea>
-                                                <span id="err_goods_remark" style="color:#F00; display:none;"></span>
+                                    <tr>
+                                        <td>商品名称:</td>
+                                        <td>
+                                            <input type="text" id="goods_name" value="{$goodsInfo.goods_name}" name="goods_name"
+                                                   class="form-control" style="width:550px;"/>
+                                            <span id="err_goods_name" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>商品简介:</td>
+                                        <td>
+                                            <textarea rows="3" cols="80"
+                                                      name="goods_remark">{$goodsInfo.goods_remark}</textarea>
+                                            <span id="err_goods_remark" style="color:#F00; display:none;"></span>
 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>商品货号</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.goods_sn}" name="goods_sn" class="form-control" style="width:350px;" />
-                                                <span id="err_goods_sn" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SPU</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.spu}" name="spu" class="form-control" style="width:350px;" />
-                                                <span id="err_goods_spu" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SKU</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.sku}" name="sku" class="form-control" style="width:350px;" />
-                                                <span id="err_goods_sku" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>商品分类:</td>
-                                            <td>
-                                                <div class="col-xs-3">
-                                                    <select name="cat_id" id="cat_id" onchange="get_category(this.value,'cat_id_2','0');" class="form-control" style="width:250px;margin-left:-15px;">
-                                        <option value="0">请选择商品分类</option>                                      
-                                             <foreach name="cat_list" item="v" key="k" >                                                                                          
-                                               <option value="{$v['id']}" <if condition="$v['id'] eq $level_cat['1']">selected="selected"</if> >
-                                               		{$v['name']}
-                                               </option>
-                                             </foreach>
-                                      </select>
-                                                </div>
-                                                <div class="col-xs-3">
-                                                    <select name="cat_id_2" id="cat_id_2" onchange="get_category(this.value,'cat_id_3','0');" class="form-control" style="width:250px;margin-left:-15px;">
-                                        <option value="0">请选择商品分类</option>
-                                      </select>
-                                                </div>
-                                                <div class="col-xs-3">
-                                                    <select name="cat_id_3" id="cat_id_3" class="form-control" style="width:250px;margin-left:-15px;">
-                                        <option value="0">请选择商品分类</option>
-                                      </select>
-                                                </div>
-                                                <span id="err_cat_id" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>扩展分类:</td>
-                                            <td>
-                                                <div class="col-xs-3">
-                                                    <select name="extend_cat_id" id="extend_cat_id" onchange="get_category(this.value,'extend_cat_id_2','0');" class="form-control" style="width:250px;margin-left:-15px;">
-                                        <option value="0">请选择商品分类</option>                                      
-                                             <foreach name="cat_list" item="v" key="k" >                                                                                          
-                                               <option value="{$v['id']}" <if condition="$v['id'] eq $level_cat2['1']">selected="selected"</if> >
-                                               		{$v['name']}
-                                               </option>
-                                             </foreach>
-                                      </select>
-                                                </div>
-                                                <div class="col-xs-3">
-                                                    <select name="extend_cat_id_2" id="extend_cat_id_2" onchange="get_category(this.value,'extend_cat_id_3','0');" class="form-control" style="width:250px;margin-left:-15px;">
-                                        <option value="0">请选择商品分类</option>
-                                      </select>
-                                                </div>
-                                                <div class="col-xs-3">
-                                                    <select name="extend_cat_id_3" id="extend_cat_id_3" class="form-control" style="width:250px;margin-left:-15px;">
-                                        <option value="0">请选择商品分类</option>
-                                      </select>
-                                                </div>
-                                                <span id="err_cat_id" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>商品货号</td>
+                                        <td>
+                                            <input type="text" value="{$goodsInfo.goods_sn}" name="goods_sn"
+                                                   class="form-control" style="width:350px;"/>
+                                            <span id="err_goods_sn" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <!--  注释没有必要的字段-->
+                                    <!-- <tr>
+                                         <td>SPU</td>
+                                         <td>
+                                             <input type="text" value="{$goodsInfo.spu}" name="spu" class="form-control" style="width:350px;" />
+                                             <span id="err_goods_spu" style="color:#F00; display:none;"></span>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>SKU</td>
+                                         <td>
+                                             <input type="text" value="{$goodsInfo.sku}" name="sku" class="form-control" style="width:350px;" />
+                                             <span id="err_goods_sku" style="color:#F00; display:none;"></span>
+                                         </td>
+                                     </tr>-->
+                                    <tr>
+                                        <td>商品分类:</td>
+                                        <td>
+                                            <div class="col-xs-3">
+                                                <select name="cat_id" id="cat_id"
+                                                        onchange="get_category(this.value,'cat_id_2','0');"
+                                                        class="form-control" style=" margin-left:-15px;">
+                                                    <option value="0">请选择商品分类</option>
+                                                    <foreach name="cat_list" item="v" key="k">
+                                                        <option value="{$v['id']}"
+                                                        <if condition="$v['id'] eq $level_cat['1']">
+                                                            selected="selected"
+                                                        </if>
+                                                        >
+                                                        {$v['name']}
+                                                        </option>
+                                                    </foreach>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <select name="cat_id_2" id="cat_id_2"
+                                                        onchange="get_category(this.value,'cat_id_3','0');"
+                                                        class="form-control" style=" margin-left:-15px;">
+                                                    <option value="0">请选择商品分类</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <select name="cat_id_3" id="cat_id_3" class="form-control"
+                                                        style=" margin-left:-15px;">
+                                                    <option value="0">请选择商品分类</option>
+                                                </select>
+                                            </div>
+                                            <span id="err_cat_id" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>扩展分类:</td>
+                                        <td>
+                                            <div class="col-xs-3">
+                                                <select name="extend_cat_id" id="extend_cat_id"
+                                                        onchange="get_category(this.value,'extend_cat_id_2','0');"
+                                                        class="form-control" style=" margin-left:-15px;">
+                                                    <option value="0">请选择商品分类</option>
+                                                    <foreach name="cat_list" item="v" key="k">
+                                                        <option value="{$v['id']}"
+                                                        <if condition="$v['id'] eq $level_cat2['1']">
+                                                            selected="selected"
+                                                        </if>
+                                                        >
+                                                        {$v['name']}
+                                                        </option>
+                                                    </foreach>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <select name="extend_cat_id_2" id="extend_cat_id_2"
+                                                        onchange="get_category(this.value,'extend_cat_id_3','0');"
+                                                        class="form-control" style=" margin-left:-15px;">
+                                                    <option value="0">请选择商品分类</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <select name="extend_cat_id_3" id="extend_cat_id_3" class="form-control"
+                                                        style=" margin-left:-15px;">
+                                                    <option value="0">请选择商品分类</option>
+                                                </select>
+                                            </div>
+                                            <span id="err_cat_id" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>商品品牌:</td>
+                                        <td>
+                                            <select name="brand_id" id="brand_id" class="form-control" style=" ">
+                                                <option value="">所有品牌</option>
+                                                <foreach name="brandList" item="v" key="k">
+                                                    <option value="{$v['id']}"
+                                                    <if condition="$v['id'] eq $goodsInfo['brand_id'] ">
+                                                        selected="selected"
+                                                    </if>
+                                                    >
+                                                    {$v['name']}
+                                                    </option>
+                                                </foreach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>供应商:</td>
+                                        <td>
+                                            <select name="suppliers_id" id="suppliers_id" class="form-control"
+                                                    style=" ">
+                                                <option value="0">不指定供应商属于本店商品</option>
+                                                <foreach name="suppliersList" item="v" key="k">
+                                                    <option value="{$v['suppliers_id']}"
+                                                    <if condition="$v['suppliers_id'] eq $goodsInfo['suppliers_id'] ">
+                                                        selected="selected"
+                                                    </if>
+                                                    >
+                                                    {$v['suppliers_name']}
+                                                    </option>
+                                                </foreach>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>本店售价:</td>
+                                        <td>
+                                            <input type="text" value="{$goodsInfo.shop_price}" name="shop_price"
+                                                   class="form-control" style="width:150px;"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                            <span id="err_shop_price" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>市场价:</td>
+                                        <td>
+                                            <input type="text" value="{$goodsInfo.market_price}" name="market_price"
+                                                   class="form-control" style="width:150px;"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                            <span id="err_market_price" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>成本价:</td>
+                                        <td>
+                                            <input type="text" value="{$goodsInfo.cost_price}" name="cost_price"
+                                                   class="form-control" style="width:150px;"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                            <span id="err_cost_price" style="color:#F00; display:none"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>佣金:</td>
+                                        <td>
+                                            <input type="text" value="{$goodsInfo.commission}" name="commission"
+                                                   class="form-control" style="width:150px;"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/> 用于分销的分成金额
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>上传商品图片:</td>
+                                        <td>
+                                            <input type="button" class="btn btn-default" value="上传图片"
+                                                   onclick="GetUploadify(1,'','goods','call_back');"/>
+                                            <input type="text" class="input-sm" name="original_img" id="original_img"
+                                                   value="{$goodsInfo.original_img}"/>
+                                            <if condition="$goodsInfo['original_img'] neq null">
+                                                &nbsp;&nbsp;
+                                                <a target="_blank" href="{$goodsInfo.original_img}" id="original_img2">
+                                                    <img width="25" height="25"
+                                                         src="{$config_siteurl}statics/extres/shop/images/image_icon.jpg">
+                                                </a>
+                                            </if>
+                                            <span id="err_original_img" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>商品重量:</td>
+                                        <td>
+                                            <input type="text" class="form-control" style="width:150px;"
+                                                   value="{$goodsInfo.weight}" name="weight"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/> &nbsp;克
+                                            (以克为单位)
+                                            <span id="err_weight" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>是否包邮:</td>
+                                        <td>
+                                            是:<input type="radio"
+                                            <if condition="$goodsInfo[is_free_shipping] eq 1">checked="checked"</if>
+                                            value="1" name="is_free_shipping" /> 否:
+                                            <input type="radio"
+                                            <if condition="$goodsInfo[is_free_shipping] eq 0">checked="checked"</if>
+                                            value="0" name="is_free_shipping" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>库存数量:</td>
+                                        <td>
+                                            <if condition="$goodsInfo[goods_id] gt 0">
+                                                <input type="text" value="{$goodsInfo.store_count}" class="form-control"
+                                                       style="width:150px;" name="store_count"
+                                                       onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                       onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                                <else/>
+                                                <input type="text" value="{$tpshop_config[basic_default_storage]}"
+                                                       class="form-control" style="width:150px;" name="store_count"
+                                                       onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                       onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                            </if>
 
-                                        <!--
-                                <tr>
-                                    <td>商品分类:</td>
-                                    <td>
-                                      <select name="cat_id" id="cat_id" class="form-control" style="width:250px;">
-                                        <option value="">所有分类</option>
-                                             <foreach name="cat_list" item="v" key="k" >                                                                                          
-                                               <option value="{$v['id']}" <if condition="$v['id'] eq $goodsInfo['cat_id'] ">selected="selected"</if> >
-                                               		<?php echo  str_pad('',($v[level] * 5),'-',STR_PAD_LEFT);  ?> {$v['name']}
-                                               </option>
-                                             </foreach>
-                                      </select>                                    
-                                    </td>
-                                </tr>
--->
-                                        <tr>
-                                            <td>商品品牌:</td>
-                                            <td>
-                                                <select name="brand_id" id="brand_id" class="form-control" style="width:250px;">
-                                       		 <option value="">所有品牌</option>
-                                            <foreach name="brandList" item="v" key="k" >
-                                               <option value="{$v['id']}"  <if condition="$v['id'] eq $goodsInfo['brand_id'] ">selected="selected"</if>>
-                                               		{$v['name']}
-                                               </option>
-                                        	 </foreach>
-                                      </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>供应商:</td>
-                                            <td>
-                                                <select name="suppliers_id" id="suppliers_id" class="form-control" style="width:250px;">
-                                            <option value="0">不指定供应商属于本店商品</option>
-                                            <foreach name="suppliersList" item="v" key="k" >
-                                                <option value="{$v['suppliers_id']}"  <if condition="$v['suppliers_id'] eq $goodsInfo['suppliers_id'] ">selected="selected"</if>>
-                                                {$v['suppliers_name']}
-                                                </option>
-                                            </foreach>
-                                        </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>本店售价:</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.shop_price}" name="shop_price" class="form-control" style="width:150px;" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                <span id="err_shop_price" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>市场价:</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.market_price}" name="market_price" class="form-control" style="width:150px;" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                <span id="err_market_price" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>成本价:</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.cost_price}" name="cost_price" class="form-control" style="width:150px;" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                <span id="err_cost_price" style="color:#F00; display:none"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>佣金:</td>
-                                            <td>
-                                                <input type="text" value="{$goodsInfo.commission}" name="commission" class="form-control" style="width:150px;" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />                                                用于分销的分成金额
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>上传商品图片:</td>
-                                            <td>
-                                                <input type="button" class="btn btn-default" value="上传图片" onclick="GetUploadify(1,'','goods','call_back');" />
-                                                <input type="text" class="input-sm" name="original_img" id="original_img" value="{$goodsInfo.original_img}" />
-                                                <if condition="$goodsInfo['original_img'] neq null">
-                                                    &nbsp;&nbsp;
-                                                    <a target="_blank" href="{$goodsInfo.original_img}" id="original_img2">
-                                                        <img width="25" height="25" src="{$config_siteurl}statics/extres/shop/images/image_icon.jpg">
-                                                    </a>
-                                                </if>
-                                                <span id="err_original_img" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>商品重量:</td>
-                                            <td>
-                                                <input type="text" class="form-control" style="width:150px;" value="{$goodsInfo.weight}" name="weight" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />                                                &nbsp;克 (以克为单位)
-                                                <span id="err_weight" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>是否包邮:</td>
-                                            <td>
-                                                是:<input type="radio" <if condition="$goodsInfo[is_free_shipping] eq 1">checked="checked"</if> value="1" name="is_free_shipping" /> 否:
-                                                <input type="radio" <if condition="$goodsInfo[is_free_shipping] eq 0">checked="checked"</if> value="0" name="is_free_shipping" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>库存数量:</td>
-                                            <td>
-                                                <if condition="$goodsInfo[goods_id] gt 0">
-                                                    <input type="text" value="{$goodsInfo.store_count}" class="form-control" style="width:150px;" name="store_count" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                    <else />
-                                                    <input type="text" value="{$tpshop_config[basic_default_storage]}" class="form-control" style="width:150px;" name="store_count" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                </if>
-
-                                                <span id="err_store_count" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>赠送积分:</td>
-                                            <td>
-                                                <input type="text" class="form-control" style="width:150px;" value="{$goodsInfo.give_integral}" name="give_integral" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                <span id="err_give_integral" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>兑换积分:</td>
-                                            <td>
-                                                <input type="text" class="form-control" style="width:150px;" value="{$goodsInfo.exchange_integral}" name="exchange_integral" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" />
-                                                <span id="err_exchange_integral" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <!--
-                                <tr>
-                                    <td>设置:</td>
-                                    <td>
-                                    	<input type="checkbox" checked="checked" value="{$goodsInfo.is_on_sale}" name="is_on_sale"/> 上架&nbsp;&nbsp;
-	                                <input type="checkbox" checked="checked" value="{$goodsInfo.is_free_shipping}" name="is_free_shipping"/> 包邮&nbsp;&nbsp;
-                                        <input type="checkbox" checked="checked" value="{$goodsInfo.is_recommend}" name="is_recommend"/>推荐&nbsp;&nbsp;
-                                        <input type="checkbox" checked="checked" value="{$goodsInfo.is_new}" name="is_new"/>新品&nbsp;&nbsp;
-                                    </td>
-                                </tr>
-                                -->
-                                        <tr>
-                                            <td>商品关键词:</td>
-                                            <td>
-                                                <input type="text" class="form-control" style="width:550px;" value="{$goodsInfo.keywords}" name="keywords" />用空格分隔
-                                                <span id="err_keywords" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>商品详情描述:</td>
-                                            <td width="85%">
-                                                <textarea class="span12 ckeditor" id="goods_content" name="goods_content" title="">{$goodsInfo.goods_content}</textarea>
-                                                <span id="err_goods_content" style="color:#F00; display:none;"></span>
-                                            </td>
-                                        </tr>
+                                            <span id="err_store_count" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>赠送积分:</td>
+                                        <td>
+                                            <input type="text" class="form-control" style="width:150px;"
+                                                   value="{$goodsInfo.give_integral}" name="give_integral"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                            <span id="err_give_integral" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>兑换积分:</td>
+                                        <td>
+                                            <input type="text" class="form-control" style="width:150px;"
+                                                   value="{$goodsInfo.exchange_integral}" name="exchange_integral"
+                                                   onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                   onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+                                            <span id="err_exchange_integral" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <!--
+                            <tr>
+                                <td>设置:</td>
+                                <td>
+                                    <input type="checkbox" checked="checked" value="{$goodsInfo.is_on_sale}" name="is_on_sale"/> 上架&nbsp;&nbsp;
+                                <input type="checkbox" checked="checked" value="{$goodsInfo.is_free_shipping}" name="is_free_shipping"/> 包邮&nbsp;&nbsp;
+                                    <input type="checkbox" checked="checked" value="{$goodsInfo.is_recommend}" name="is_recommend"/>推荐&nbsp;&nbsp;
+                                    <input type="checkbox" checked="checked" value="{$goodsInfo.is_new}" name="is_new"/>新品&nbsp;&nbsp;
+                                </td>
+                            </tr>
+                            -->
+                                    <tr>
+                                        <td>商品关键词:</td>
+                                        <td>
+                                            <input type="text" class="form-control" style="width:550px;"
+                                                   value="{$goodsInfo.keywords}" name="keywords"/>用空格分隔
+                                            <span id="err_keywords" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>商品详情描述:</td>
+                                        <td width="85%">
+                                            <textarea class="span12 ckeditor" id="goods_content" name="goods_content"
+                                                      title="">{$goodsInfo.goods_content}</textarea>
+                                            <span id="err_goods_content" style="color:#F00; display:none;"></span>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -380,25 +436,33 @@
                             <div class="tab-pane" id="tab_goods_images">
                                 <table class="table table-bordered">
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <foreach name="goodsImages" item="vo" key="k">
-                                                    <div style="width:100px; text-align:center; margin: 5px; display:inline-block;" class="goods_xc">
-                                                        <input type="hidden" value="{$vo['image_url']}" name="goods_images[]">
-                                                        <a onclick="" href="{$vo['image_url']}" target="_blank"><img width="100" height="100" src="{$vo['image_url']}"></a>
-                                                        <br>
-                                                        <a href="javascript:void(0)" onclick="ClearPicArr2(this,'{$vo['image_url']}')">删除</a>
-                                                    </div>
-                                                </foreach>
-
-                                                <div class="goods_xc" style="width:100px; text-align:center; margin: 5px; display:inline-block;">
-                                                    <input type="hidden" name="goods_images[]" value="" />
-                                                    <a href="javascript:void(0);" onclick="GetUploadify(10,'','goods','call_back2');"><img src="{$config_siteurl}statics/extres/shop/images/add-button.jpg" width="100" height="100" /></a>
-                                                    <br/>
-                                                    <a href="javascript:void(0)">&nbsp;&nbsp;</a>
+                                    <tr>
+                                        <td>
+                                            <foreach name="goodsImages" item="vo" key="k">
+                                                <div style="width:100px; text-align:center; margin: 5px; display:inline-block;"
+                                                     class="goods_xc">
+                                                    <input type="hidden" value="{$vo['image_url']}"
+                                                           name="goods_images[]">
+                                                    <a onclick="" href="{$vo['image_url']}" target="_blank"><img
+                                                                width="100" height="100" src="{$vo['image_url']}"></a>
+                                                    <br>
+                                                    <a href="javascript:void(0)"
+                                                       onclick="ClearPicArr2(this,'{$vo['image_url']}')">删除</a>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </foreach>
+
+                                            <div class="goods_xc"
+                                                 style="width:100px; text-align:center; margin: 5px; display:inline-block;">
+                                                <input type="hidden" name="goods_images[]" value=""/>
+                                                <a href="javascript:void(0);"
+                                                   onclick="GetUploadify(10,'','goods','call_back2');"><img
+                                                            src="{$config_siteurl}statics/extres/shop/images/add-button.jpg"
+                                                            width="100" height="100"/></a>
+                                                <br/>
+                                                <a href="javascript:void(0)">&nbsp;&nbsp;</a>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -410,12 +474,16 @@
                                     <tr>
                                         <td>商品类型:</td>
                                         <td>
-                                            <select name="spec_type" id="spec_type" class="form-control" style="width:250px;">
-                                        <option value="0">选择商品类型</option>
-                                        <foreach name="goodsType" item="vo" key="k" >
-                                            <option value="{$vo.id}"<if condition="$goodsInfo[spec_type] eq $vo[id]"> selected="selected" </if> >{$vo.name}</option>
-                                        </foreach>                                        
-                                      </select>
+                                            <select name="spec_type" id="spec_type" class="form-control" style=" ">
+                                                <option value="0">选择商品类型</option>
+                                                <foreach name="goodsType" item="vo" key="k">
+                                                    <option value="{$vo.id}"
+                                                    <if condition="$goodsInfo[spec_type] eq $vo[id]">
+                                                        selected="selected"
+                                                    </if>
+                                                    >{$vo.name}</option>
+                                                </foreach>
+                                            </select>
                                         </td>
                                     </tr>
 
@@ -432,12 +500,16 @@
                                     <tr>
                                         <td>商品属性:</td>
                                         <td>
-                                            <select name="goods_type" id="goods_type" class="form-control" style="width:250px;">
-                                        <option value="0">选择商品属性</option>
-                                        <foreach name="goodsType" item="vo" key="k" >
-                                            <option value="{$vo.id}"<if condition="$goodsInfo[goods_type] eq $vo[id]"> selected="selected" </if> >{$vo.name}</option>
-                                        </foreach>                                        
-                                      </select>
+                                            <select name="goods_type" id="goods_type" class="form-control" style=" ">
+                                                <option value="0">选择商品属性</option>
+                                                <foreach name="goodsType" item="vo" key="k">
+                                                    <option value="{$vo.id}"
+                                                    <if condition="$goodsInfo[goods_type] eq $vo[id]">
+                                                        selected="selected"
+                                                    </if>
+                                                    >{$vo.name}</option>
+                                                </foreach>
+                                            </select>
                                         </td>
                                     </tr>
                                 </table>
@@ -460,7 +532,12 @@
                                                 <ul class="group-list">
                                                     <foreach name="shipping_area" item="vv">
                                                         <if condition="$vv[shipping_code] eq $shipping[code]">
-                                                            <li><label><input type="checkbox" name="shipping_area_ids[]" value="{$vv.shipping_area_id}" <if condition="in_array($vv['shipping_area_id'],$goods_shipping_area_ids)">checked='checked='</if> ck="mod-{$kk}">{$vv.shipping_area_name}</label></li>
+                                                            <li><label><input type="checkbox" name="shipping_area_ids[]"
+                                                                              value="{$vv.shipping_area_id}"
+                                                                    <if condition="in_array($vv['shipping_area_id'],$goods_shipping_area_ids)">
+                                                                        checked='checked='
+                                                                    </if>
+                                                                    ck="mod-{$kk}">{$vv.shipping_area_name}</label></li>
                                                         </if>
                                                     </foreach>
                                                     <div class="clear-both"></div>
@@ -474,7 +551,9 @@
                         </div>
                         <div class="pull-right">
                             <input type="hidden" name="goods_id" value="{$goodsInfo.goods_id}">
-                            <button class="btn btn-primary" onclick="ajax_submit_form('addEditGoodsForm','{:U('Goods/addEditGoods?is_ajax=1')}');" title="" data-toggle="tooltip" type="button" data-original-title="保存">保存</button>
+                            <button class="btn btn-primary" id="save_btn" title="" data-toggle="tooltip" type="button"
+                                    data-original-title="保存">保存
+                            </button>
                         </div>
                     </form>
                     <!--表单数据-->
@@ -485,15 +564,23 @@
     </section>
 </div>
 <script>
-    $(document).ready(function() {
-        $(":checkbox[cka]").click(function() {
+    $('#save_btn').click(function () {
+        //保存商品信息
+        if(!$('#goods_name').val()){
+            alert('请输入商品名称')
+            return ;
+        }
+        ajax_submit_form('addEditGoodsForm', "{:U('Goods/addEditGoods?is_ajax=1')}")
+    })
+    $(document).ready(function () {
+        $(":checkbox[cka]").click(function () {
             var $cks = $(":checkbox[ck='" + $(this).attr("cka") + "']");
             if ($(this).is(':checked')) {
-                $cks.each(function() {
+                $cks.each(function () {
                     $(this).prop("checked", true);
                 });
             } else {
-                $cks.each(function() {
+                $cks.each(function () {
                     $(this).removeAttr('checked');
                 });
             }
@@ -542,7 +629,7 @@
                 action: "del",
                 filename: path
             },
-            success: function() {
+            success: function () {
                 $(obj).parent().remove(); // 删除完服务器的, 再删除 html上的图片				 
             }
         });
@@ -553,19 +640,18 @@
             data: {
                 filename: path
             },
-            success: function() {
+            success: function () {
                 //		 
             }
         });
     }
 
 
-
     /** 以下 商品属性相关 [暂时关闭属性] js*/
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         // 商品类型切换时 ajax 调用  返回不同的属性输入框
-        $("#goods_type").change(function() {
+        $("#goods_type").change(function () {
             var goods_id = $("input[name='goods_id']").val();
             var type_id = $(this).val();
             $.ajax({
@@ -575,7 +661,7 @@
                     type_id: type_id
                 },
                 url: "{:U('Goods/ajaxGetAttrInput')}",
-                success: function(data) {
+                success: function (data) {
                     $("#goods_attr_table tr:gt(0)").remove()
                     $("#goods_attr_table").append(data);
                 }
@@ -583,7 +669,7 @@
         });
         // 触发商品类型
         $("#goods_type").trigger('change');
-        $("input[name='exchange_integral']").blur(function() {
+        $("input[name='exchange_integral']").blur(function () {
             var shop_price = parseInt($("input[name='shop_price']").val());
             var exchange_integral = parseInt($(this).val());
             if (shop_price * 100 < exchange_integral) {
@@ -606,10 +692,10 @@
 
 
     /** 以下 商品规格相关 js*/
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         // 商品类型切换时 ajax 调用  返回不同的属性输入框
-        $("#spec_type").change(function() {
+        $("#spec_type").change(function () {
             var goods_id = '{$goodsInfo.goods_id}';
             var spec_type = $(this).val();
             $.ajax({
@@ -619,7 +705,7 @@
                     spec_type: spec_type
                 },
                 url: "{:U('Goods/ajaxGetSpecSelect')}",
-                success: function(data) {
+                success: function (data) {
                     $("#ajax_spec_data").html('')
                     $("#ajax_spec_data").append(data);
                     //alert('132');
@@ -630,30 +716,30 @@
         // 触发商品规格
         $("#spec_type").trigger('change');
     });
-
     /** 以下是编辑时默认选中某个商品分类*/
     $(document).ready(function() {
 
         <if condition = "$level_cat['2'] gt 0" >
             // 商品分类第二个下拉菜单
-            get_category('{$level_cat[1]}', 'cat_id_2', '{$level_cat[2]}'); 
-        </if> 
+            get_category('{$level_cat[1]}', 'cat_id_2', '{$level_cat[2]}');
+        </if>
         <if condition = "$level_cat['3'] gt 0" >
             // 商品分类第二个下拉菜单
-            get_category('{$level_cat[2]}', 'cat_id_3', '{$level_cat[3]}'); 
+            get_category('{$level_cat[2]}', 'cat_id_3', '{$level_cat[3]}');
         </if>
 
         //  扩展分类
         <if condition = "$level_cat2['2'] gt 0" >
             // 商品分类第二个下拉菜单
-            get_category('{$level_cat2[1]}', 'extend_cat_id_2', '{$level_cat2[2]}'); 
-            </if> 
+            get_category('{$level_cat2[1]}', 'extend_cat_id_2', '{$level_cat2[2]}');
+        </if>
         <if condition = "$level_cat2['3'] gt 0" >
             // 商品分类第二个下拉菜单
-            get_category('{$level_cat2[2]}', 'extend_cat_id_3', '{$level_cat2[3]}'); 
-            </if>
+            get_category('{$level_cat2[2]}', 'extend_cat_id_3', '{$level_cat2[3]}');
+        </if>
 
     });
+
 </script>
 </body>
 
