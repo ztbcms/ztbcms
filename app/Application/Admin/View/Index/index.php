@@ -62,7 +62,7 @@
 
                         <ul class="dropdown-menu">
                             <li class="footer" style="text-align: center; margin: 6px">
-                                <a href="{:U('Admin/Public/logout"')}">注销</a>
+                                <a href="{:U('Admin/Public/logout')}">注销</a>
 
                             </li>
                         </ul>
