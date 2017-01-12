@@ -43,7 +43,7 @@ class ContentModel extends RelationModel {
 					array('catid', 'require', '请选择栏目！', 1, 'regex', 1),
 					array('catid', 'isUltimate', '该模型非终极栏目，无法添加信息！', 1, 'callback', 1),
 					//标题
-					array('title', 'require', '标题必须填写！', 1, 'regex', 1),
+//					array('title', 'require', '标题必须填写！', 1, 'regex', 1),
 				);
 			}
 			//设置模型id

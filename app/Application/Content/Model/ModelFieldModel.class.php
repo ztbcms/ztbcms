@@ -18,7 +18,7 @@ class ModelFieldModel extends Model {
 	//允许添加但必须唯一的字段（字段名）
 	public $unique_fields = array('pages', 'readpoint', 'author', 'copyfrom', 'islink', 'posid');
 	//禁止被禁用（隐藏）的字段列表（字段名）
-	public $forbid_fields = array('catid', 'title' /* 'updatetime', 'inputtime', 'url', 'listorder', 'status', 'template', 'username', 'allow_comment', 'tags' */);
+	public $forbid_fields = array('catid', /* 'title' , 'updatetime', 'inputtime', 'url', 'listorder', 'status', 'template', 'username', 'allow_comment', 'tags' */);
 	//禁止被删除的字段列表（字段名）
 	public $forbid_delete = array('catid', /* 'typeid', */'title', 'thumb', 'keyword', 'keywords', 'updatetime', 'tags', 'inputtime', 'posid', 'url', 'listorder', 'status', 'template', 'username', 'allow_comment');
 	//可以追加 JS和CSS 的字段（字段名）
