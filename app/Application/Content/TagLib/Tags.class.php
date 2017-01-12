@@ -16,8 +16,8 @@ class Tags {
 
 	/**
 	 * 组合查询条件
-	 * @param type $data
-	 * @return type
+	 * @param array $data
+	 * @return array
 	 */
 	public function where($data) {
 		$where = array();
@@ -52,6 +52,7 @@ class Tags {
 
 	/**
 	 * 统计
+     * @return int
 	 */
 	public function count($data) {
 		if ($data['action'] == 'lists') {
@@ -68,7 +69,8 @@ class Tags {
 	 * num	 否	 10	 返回数量
 	 * order	 否	 null	 排序类型
 	 *
-	 * @param $data
+	 * @param array $data
+     * @return array
 	 */
 	public function lists($data) {
 		//缓存时间
@@ -107,6 +109,8 @@ class Tags {
 	 * 参数名	 是否必须	 默认值	 说明
 	 * num	 否	 10	 返回数量
 	 * order	 否	 hits DESC	 排序类型
+     * @param array $data
+     * @return array
 	 */
 	public function top($data) {
 		//缓存时间

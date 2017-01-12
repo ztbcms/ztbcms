@@ -9,6 +9,7 @@ define('CODETABLEDIR', APP_PATH . 'Content/Data/');
 /**
  * gbk转拼音
  * @param $txt
+ * @return string
  */
 function gbk_to_pinyin($txt) {
 	$l = strlen($txt);
@@ -42,6 +43,7 @@ function gbk_to_pinyin($txt) {
  * Ascii转拼音
  * @param $asc
  * @param $pyarr
+ * @return string
  */
 function asc_to_pinyin($asc, &$pyarr) {
 	if ($asc < 128) {
@@ -53,7 +55,6 @@ function asc_to_pinyin($asc, &$pyarr) {
 			if ($id >= $asc) {
 				return $p;
 			}
-
 		}
 	}
 }
