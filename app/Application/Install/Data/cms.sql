@@ -566,6 +566,8 @@ CREATE TABLE `cms_model` (
   `js_template` varchar(30) NOT NULL DEFAULT '' COMMENT 'JS模板',
   `sort` tinyint(3) NOT NULL DEFAULT '0' COMMENT '排序',
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '模块标识',
+  `add_customtemplate` varchar(30) NOT NULL DEFAULT '' COMMENT '添加信息模板',
+  `edit_customtemplate` varchar(30) NOT NULL DEFAULT '' COMMENT '编辑信息模板',
   PRIMARY KEY (`modelid`),
   KEY `type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='内容模型列表';

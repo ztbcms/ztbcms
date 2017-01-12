@@ -276,7 +276,13 @@ class ContentController extends AdminBase {
 				$this->assign("formJavascript", $formJavascript);
 				$this->assign("setting", $setting);
 				$this->assign("category", $category);
-				$this->display();
+                //获取模板
+                $tpl = getAdminTemplate($this->catid, 'add');
+                if(empty($tpl)){
+                    $this->display();
+                }else{
+                    $this->display('Addtemplate/' . $tpl);
+                }
 			} else if ($category['type'] == 1) {
                 //单网页模型
 				$info = D('Content/Page')->getPage($this->catid);
@@ -380,7 +386,13 @@ class ContentController extends AdminBase {
 			$this->assign("formValidateRules", $formValidateRules);
 			$this->assign("formValidateMessages", $formValidateMessages);
 			$this->assign("formJavascript", $formJavascript);
-			$this->display();
+            //获取模板
+            $tpl = getAdminTemplate($this->catid, 'edit');
+            if(empty($tpl)){
+                $this->display();
+            }else{
+                $this->display('Edittemplate/' . $tpl);
+            }
 		}
 	}
 

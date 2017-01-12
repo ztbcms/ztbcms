@@ -382,6 +382,28 @@ function getModel($modelid, $field = '') {
 }
 
 /**
+ * 获取后台信息列表，添加，编辑模板
+ * 模板获取的有限级别：栏目设置 > 模型设置
+ * @param $catid
+ * @param $customtemplate_prefix `list`或`add`或`edit`
+ * @return null|string 如果没有设置则返回null
+ */
+function getAdminTemplate($catid, $customtemplate_prefix){
+    $category = getCategory($catid);
+    $model = getModel($category['modelid']);
+    $tpl_name = $customtemplate_prefix . '_customtemplate';
+    if(empty($category['setting'][$tpl_name])){
+        if(empty($model[$tpl_name])){
+            return null;
+        }else{
+            return $model[$tpl_name];
+        }
+    }else{
+        return $category['setting'][$tpl_name];
+    }
+}
+
+/**
  * 检测一个数据长度是否超过最小值
  * @param string $value 数据
  * @param int $length 最小长度
