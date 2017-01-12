@@ -77,17 +77,6 @@ if(is_array($forminfos['senior'])) {
    }
 }
 ?>
-         <tr>
-          <td><b>状态</b></td>
-        </tr>
-        <tr>
-          <td>
-          <span class="switch_list cc">
-			<label><input type="radio" name="info[status]" value="99" <if condition=" $data['status']==99 "> checked</if>><span>审核通过</span></label>
-			<label><input type="radio" name="info[status]" value="1"  <if condition=" $data['status']==1 "> checked</if>><span>待审核</span></label>
-            <label><input type="radio" name="info[status]" value="0"  <if condition=" $data['status']==0 "> checked</if>><span>审核未通过</span></label>
-		 </span></td>
-        </tr>
       </table>
     </div>
   </div>
