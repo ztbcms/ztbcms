@@ -67,7 +67,19 @@
           </td>
           
         </tr>
-          <!--  栏目模板选择 -->
+
+          <tr>
+              <th>后台信息添加模板：</th>
+              <td class="y-bg"><input type="text" class="input" name="add_customtemplate" value=""  size="30" placeholder="默认后台列表页，如add_xx.php"/>
+                  <span class="gray">模板名称<b>不需要</b>后缀，不设置为使用默认列表，增加列表模板可在/app/Application/Content/View/Addtemplate/里增加文件</span>
+              </td>
+          </tr>
+          <tr>
+              <th>后台信息编辑模板：</th>
+              <td class="y-bg"><input type="text" class="input" name="edit_customtemplate" value=""  size="30" placeholder="默认后台列表页，如edit_xx.php"/>
+                  <span class="gray">模板名称<b>不需要</b>后缀，不设置为使用默认列表，增加列表模板可在/app/Application/Content/View/Edittemplate/里增加文件</span>
+              </td>
+          </tr>
 
       </table>
     </div>

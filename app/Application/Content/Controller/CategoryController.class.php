@@ -335,10 +335,10 @@ class CategoryController extends AdminBase {
 				$this->assign("Member_group", cache("Member_group"));
 			}
 			if ($data['type'] == 1) {
-//单页栏目
+                //单页栏目
 				$this->display("singlepage_edit");
 			} else if ($data['type'] == 2) {
-//外部栏目
+                //外部栏目
 				$this->display("wedit");
 			} else {
 				$this->display();
@@ -401,7 +401,7 @@ class CategoryController extends AdminBase {
 
 	/**
 	 * 修复栏目数据
-	 * @param type $categorys 需要修复的栏目数组
+	 * @param array $categorys 需要修复的栏目数组
 	 * @return boolean
 	 */
 	protected function repair($categorys) {
@@ -456,9 +456,9 @@ class CategoryController extends AdminBase {
 
 	/**
 	 * 检查目录是否存在
-	 * @param type $return_method 显示方式，1 ajax返回
-	 * @param type $catdir 栏目目录
-	 * @param type $catid 栏目id
+	 * @param int $return_method 显示方式，1 ajax返回
+	 * @param string $catdir 栏目目录
+	 * @param int|string $catid 栏目id
 	 * @return boolean
 	 */
 	public function public_check_catdir($return_method = 1, $catdir = '', $catid = 0) {

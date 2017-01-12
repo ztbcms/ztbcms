@@ -6,14 +6,16 @@
 
 namespace Content\TagLib;
 
+use Content\Model\ContentModel;
+
 class Content {
 
 	public $db, $table_name, $modelid, $where;
 
 	/**
 	 * 组合查询条件
-	 * @param type $attr
-	 * @return type
+	 * @param array $attr
+	 * @return array
 	 */
 	public function where($attr) {
 		$where = array();
@@ -50,11 +52,12 @@ class Content {
 	/**
 	 * 初始化模型
 	 * @param $catid
+     * @return ContentModel|null
 	 */
 	public function set_modelid($catid = 0, $isModelid = false) {
 		if ($catid && !$isModelid) {
 			if (getCategory($catid, 'type') && getCategory($catid, 'type') != 0) {
-				return false;
+				return null;
 			}
 			$this->modelid = getCategory($catid, 'modelid');
 		} else {
@@ -86,7 +89,8 @@ class Content {
 	 * moreinfo	 否	 0	 是否调用副表数据 1为是
 	 *
 	 * moreinfo参数属性，本参数表示在返回数据的时候，会把副表中的数据也一起返回。一个内容模型分为2个表，一个主表一个副表，主表中一般是保存了标题、所属栏目等等短小的数据（方便用于索引），而副表则保存了大字段的数据，如内容等数据。在模型管理中新建字段的时候，是允许你选择存入到主表还是副表的（我们推荐的是，把不重要的信息放到副表中）。
-	 * @param $data
+	 * @param array $data
+     * @return array|boolean
 	 */
 	public function lists($data) {
 		//缓存时间
@@ -158,6 +162,7 @@ class Content {
 	 * order	 否	 null	 排序类型（本月排行- monthviews DESC 、本周排行 - weekviews DESC、今日排行 - dayviews DESC）
 	 * num	 是	 null	 数据调用数量
 	 * @param $data
+     * @return array|boolean
 	 */
 	public function hits($data) {
 		$catid = intval($data['catid']);
@@ -249,7 +254,8 @@ class Content {
 	 * relation	 否	 $relation	 无需更改
 	 * keywords	 否	 null	 内容页面取值：$rs[keywords]
 	 * num	 是	 null	 数据调用数量
-	 * @param $data
+	 * @param array $data
+     * @return array|boolean
 	 */
 	public function relation($data) {
 		//缓存时间
@@ -342,7 +348,7 @@ class Content {
 		}
 		//根据关键字，进行标题匹配
 		if ($data['keywords'] && $limit > $number) {
-//根据关键字的相关文章
+            //根据关键字的相关文章
 			$limit = ($limit - $number <= 0) ? 0 : ($limit - $number);
 			$keywords_arr = $data['keywords'];
 			if ($keywords_arr && !is_array($keywords_arr)) {

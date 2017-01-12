@@ -54,7 +54,7 @@ class CreatehtmlController extends AdminBase {
 			$modelid = intval($_POST['modelid']);
 			if (!isset($set_catid)) {
 				if ($catids[0] != 0) {
-//指定栏目
+                    //指定栏目
 					$update_url_catids = $catids;
 				} else {
 					//栏目不限
@@ -214,7 +214,7 @@ class CreatehtmlController extends AdminBase {
 					$pagesize = $number;
 					$order = 'DESC';
 				} elseif ($type == 'date') {
-//以时间段更新
+                    //以时间段更新
 					if ($fromdate) {
 						$fromtime = strtotime($fromdate . ' 00:00:00');
 						$where["inputtime"] = array("EGT", $fromtime);
@@ -224,7 +224,7 @@ class CreatehtmlController extends AdminBase {
 						$where["inputtime"] = array(array("EGT", $fromtime), array("ELT", $fromtime), 'and');
 					}
 				} elseif ($type == 'id') {
-//以id段更新
+                    //以id段更新
 					//起始id
 					$fromid = intval($fromid);
 					//结束id
@@ -398,7 +398,7 @@ class CreatehtmlController extends AdminBase {
 					$where['catid'] = array("IN", $catids);
 					$first = 1;
 				} elseif (count($catids) == 1 && $catids[0] == 0) {
-//不限制栏目
+                    //不限制栏目
 					$catids = array();
 					foreach ($this->categorys as $catid => $cat) {
 						$cat = getCategory($cat['catid']);
@@ -440,7 +440,7 @@ class CreatehtmlController extends AdminBase {
 					$pagesize = $number;
 					$order = 'DESC';
 				} elseif ($type == 'date') {
-//以时间段更新
+                    //以时间段更新
 					if ($fromdate) {
 						$fromtime = strtotime($fromdate . ' 00:00:00');
 						$where["inputtime"] = array("EGT", $fromtime);
@@ -450,7 +450,7 @@ class CreatehtmlController extends AdminBase {
 						$where["inputtime"] = array(array("EGT", $fromtime), array("ELT", $fromtime), 'and');
 					}
 				} elseif ($type == 'id') {
-//以id段更新
+                    //以id段更新
 					//起始id
 					$fromid = intval($fromid);
 					//结束id
@@ -694,7 +694,7 @@ class CreatehtmlController extends AdminBase {
 
 	/**
 	 * 执行URL更新操作
-	 * @param type $data 数据
+	 * @param array $data 数据
 	 * @return boolean
 	 */
 	private function urls($data) {

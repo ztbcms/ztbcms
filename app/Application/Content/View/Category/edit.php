@@ -234,9 +234,20 @@
             </if>
             <tr>
               <th>后台信息列表模板：</th>
-              <td><input type="text" name="setting[list_customtemplate]" id="catdir" class="input" value="{$data['setting']['list_customtemplate']}">
+              <td><input type="text" name="setting[list_customtemplate]" class="input" value="{$data['setting']['list_customtemplate']}">
               <span class="gray">模板名称不带后缀，不设置为使用默认列表，增加列表模板可在/app/Application/Content/View/Listtemplate/里增加文件</span></td>
             </tr>
+
+              <tr>
+                  <th>后台信息添加模板：</th>
+                  <td><input type="text" name="setting[add_customtemplate]" class="input" value="{$data['setting']['add_customtemplate']}">
+                      <span class="gray">模板名称不带后缀，不设置为使用默认列表，增加列表模板可在/app/Application/Content/View/Addtemplate/里增加文件</span></td>
+              </tr>
+              <tr>
+                  <th>后台信息编辑模板：</th>
+                  <td><input type="text" name="setting[edit_customtemplate]" class="input" value="{$data['setting']['edit_customtemplate']}">
+                      <span class="gray">模板名称不带后缀，不设置为使用默认列表，增加列表模板可在/app/Application/Content/View/Edittemplate/里增加文件</span></td>
+              </tr>
           </table>
         </div>
       </div>
