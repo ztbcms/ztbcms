@@ -287,6 +287,7 @@ class ContentController extends AdminBase {
 						$info['style_font_weight'] = $style[1];
 					}
 				}
+                $setting = $category['setting'];
 				$extend = $category['setting']['extend'];
 
 				$this->assign("catid", $this->catid);
