@@ -84,11 +84,11 @@ class Model extends \Think\Model {
 	/**
 	 * 删除表
 	 * @param string $tablename 不带表前缀的表名
-	 * @return type
+	 * @return mixed
 	 */
 	public function drop_table($tablename) {
 		$tablename = C("DB_PREFIX") . $tablename;
-		return $this->query("DROP TABLE $tablename");
+		return $this->execute("DROP TABLE `$tablename`");
 	}
 
 	/**

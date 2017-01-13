@@ -201,9 +201,10 @@ class ContentController extends AdminBase {
 			if (empty($catid)) {
 				$this->error("请指定栏目ID！");
 			}
-			if (trim($_POST['info']['title']) == '') {
-				$this->error("标题不能为空！");
-			}
+//			标题可以为空
+//			if (trim($_POST['info']['title']) == '') {
+//				$this->error("标题不能为空！");
+//			}
 			//获取当前栏目配置
 			$category = getCategory($catid);
 			//栏目类型为0

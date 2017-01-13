@@ -24,7 +24,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>是否禁用模型</th>
+			<th>是否禁用</th>
 			<td>
 				<input type="checkbox" value="1" name="disabled" <if condition=" $data['disabled'] eq '1' ">checked</if> >
 			</td>

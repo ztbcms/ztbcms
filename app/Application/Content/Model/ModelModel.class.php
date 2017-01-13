@@ -43,7 +43,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 检查需要创建的表名是否为系统保留名称
-	 * @param type $tablename 表名，不带表前缀
+	 * @param string $tablename 表名，不带表前缀
 	 * @return boolean 存在返回false，不存在返回true
 	 */
 	public function checkTablename($tablename) {
@@ -82,8 +82,8 @@ class ModelModel extends Model {
 
 	/**
 	 * 创建会员模型
-	 * @param type $tableName 模型主表名称（不包含表前缀）
-	 * @param type $modelId 所属模型id
+	 * @param string $tableName 模型主表名称（不包含表前缀）
+	 * @param string $modelId 所属模型id
 	 * @return boolean
 	 */
 	public function AddModelMember($tableName, $modelId) {
@@ -101,7 +101,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 创建模型
-	 * @param type $data 提交数据
+	 * @param array $data 提交数据
 	 * @return boolean
 	 */
 	public function addModel($data) {
@@ -136,7 +136,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 编辑模型
-	 * @param type $data 提交数据
+	 * @param array $data 提交数据
 	 * @return boolean
 	 */
 	public function editModel($data, $modelid = 0) {
@@ -205,8 +205,8 @@ class ModelModel extends Model {
 
 	/**
 	 * 创建内容模型
-	 * @param type $tableName 模型主表名称（不包含表前缀）
-	 * @param type $modelId 模型id
+	 * @param string $tableName 模型主表名称（不包含表前缀）
+	 * @param string $modelId 模型id
 	 * @return boolean
 	 */
 	protected function createModel($tableName, $modelId) {
@@ -229,7 +229,8 @@ class ModelModel extends Model {
 
 	/**
 	 * 删除表
-	 * $table 不带表前缀
+	 * @param $table string 不带表前缀
+     * @return boolean
 	 */
 	public function deleteTable($table) {
 		if ($this->table_exists($table)) {
@@ -240,7 +241,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 根据模型ID删除模型
-	 * @param type $modelid 模型id
+	 * @param string $modelid 模型id
 	 * @return boolean
 	 */
 	public function deleteModel($modelid) {
@@ -264,16 +265,16 @@ class ModelModel extends Model {
 		$this->deleteTable($model_table);
 		if ((int) $modeldata['type'] == 0) {
 			//删除副表
-			$this->DeleteTable($model_table . "_data");
+			$this->deleteTable($model_table . "_data");
 		}
 		return true;
 	}
 
 	/**
 	 * 模型导入
-	 * @param type $data 数据
-	 * @param type $tablename 导入的模型表名
-	 * @param type $name 模型名称
+	 * @param array $data 数据
+	 * @param string $tablename 导入的模型表名
+	 * @param string $name 模型名称
 	 * @return int|boolean
 	 */
 	public function import($data, $tablename = '', $name = '') {
@@ -325,7 +326,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 模型导出
-	 * @param type $modelid 模型ID
+	 * @param string $modelid 模型ID
 	 * @return boolean
 	 */
 	public function export($modelid) {
@@ -363,7 +364,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 执行SQL
-	 * @param type $sqls SQL语句
+	 * @param string $sqls SQL语句
 	 * @return boolean
 	 */
 	protected function sql_execute($sqls) {
@@ -382,8 +383,8 @@ class ModelModel extends Model {
 
 	/**
 	 * SQL语句预处理
-	 * @param type $sql
-	 * @return type
+	 * @param string $sql
+	 * @return array
 	 */
 	public function sql_split($sql) {
 		if (mysql_get_server_info() > '4.1' && C('DB_CHARSET')) {
@@ -415,8 +416,8 @@ class ModelModel extends Model {
 
 	/**
 	 * 根据模型类型取得数据用于缓存
-	 * @param type $type
-	 * @return type
+	 * @param string $type
+	 * @return array
 	 */
 	public function getModelAll($type = null) {
 		$where = array('disabled' => 0);
@@ -433,7 +434,7 @@ class ModelModel extends Model {
 
 	/**
 	 * 生成模型缓存，以模型ID为下标的数组
-	 * @return boolean
+	 * @return array
 	 */
 	public function model_cache() {
 		$data = $this->getModelAll();
