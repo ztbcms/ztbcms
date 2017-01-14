@@ -6,6 +6,6 @@
 
 return array(
 	"CMS_APPNAME" => "ZTBCMS内容管理系统", //产品名称
-    "CMS_BUILD" => 201701131104, //产品流水号
-    "CMS_VERSION" => "3.5.0.0", //产品版本号
+    "CMS_BUILD" => 201701142149, //产品流水号
+    "CMS_VERSION" => "3.6.0.0", //产品版本号
 );
