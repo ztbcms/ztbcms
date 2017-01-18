@@ -27,7 +27,7 @@ class Form {
                 var editorURL = GV.DIMAUB;
                 </script>
                 <script type="text/javascript"  src="' . CONFIG_SITEURL_MODEL . 'statics/js/ueditor/editor_config.js"></script>
-                <script type="text/javascript"  src="' . CONFIG_SITEURL_MODEL . 'statics/js/ueditor/editor_all_min.js"></script>';
+                <script type="text/javascript"  src="' . CONFIG_SITEURL_MODEL . 'statics/js/ueditor/editor_all_min.js"></script></script><script type="text/javascript"  src="' . CONFIG_SITEURL_MODEL . 'statics/js/ueditor/defaultFilterFix.js"></script>';
             define('EDITOR_INIT', 1);
         }
 
