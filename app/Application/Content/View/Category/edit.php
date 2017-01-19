@@ -469,10 +469,10 @@
 function extend_type(type){
 	if(type == 'radio' || type == 'checkbox'){
 		$('.setting_radio').show();
-		$('.setting_radio textarea').attr('disabled',false);
+		$('.setting_radio textarea').prop('disabled',false);
 	}else{
 		$('.setting_radio').hide();
-		$('.setting_radio textarea').attr('disabled',true);
+		$('.setting_radio textarea').prop('disabled',true);
 	}
 }
 
@@ -695,7 +695,7 @@ $(function(){
             //验证通过，提交表单
             submitHandler: function (forms) {
                 $(forms).ajaxSubmit({
-                    url: form.attr('action'), //按钮上是否自定义提交地址(多按钮情况)
+                    url: form.prop('action'), //按钮上是否自定义提交地址(多按钮情况)
                     dataType: 'json',
                     beforeSubmit: function (arr, $form, options) {
                         

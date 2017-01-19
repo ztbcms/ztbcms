@@ -18,7 +18,8 @@ class OperationlogModel extends Model {
 
     /**
      * 记录日志
-     * @param type $message 说明
+     * @param string $message 说明
+     * @return boolean
      */
     public function record($message, $status = 0) {
         $fangs = 'GET';

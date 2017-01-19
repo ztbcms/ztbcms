@@ -23,7 +23,7 @@ class MenuModel extends Model {
 
     /**
      * 获取菜单
-     * @return type
+     * @return array
      */
     public function getMenuList() {
         $items['0changyong'] = array(
@@ -58,7 +58,9 @@ class MenuModel extends Model {
     /**
      * 按父ID查找菜单子项
      * @param integer $parentid   父菜单ID  
-     * @param integer $with_self  是否包括他自己
+     * @param boolean $with_self  是否包括他自己
+     * @return array
+     *
      */
     public function adminMenu($parentid, $with_self = false) {
         //父节点ID
@@ -108,14 +110,15 @@ class MenuModel extends Model {
 
     /**
      * 取得树形结构的菜单
-     * @param type $myid
-     * @param type $parent
-     * @param type $Level
-     * @return type
+     * @param string $myid
+     * @param string $parent
+     * @param integer $Level
+     * @return array
      */
     public function getTree($myid, $parent = "", $Level = 1) {
         $data = $this->adminMenu($myid);
         $Level++;
+        $ret = array();
         if (is_array($data)) {
             foreach ($data as $a) {
                 $id = $a['id'];
@@ -147,9 +150,7 @@ class MenuModel extends Model {
 
     /**
      * 获取菜单导航
-     * @param type $app
-     * @param type $model
-     * @param type $action
+     * @return array
      */
     public function getMenu() {
         $menuid = I('get.menuid', 0, 'intval');
@@ -175,9 +176,9 @@ class MenuModel extends Model {
         if ($data['controller']) {
             $data['controller'] = ucwords($data['controller']);
         }
-        if ($data['action']) {
-            $data['action'] = strtolower($data['action']);
-        }
+//        if ($data['action']) {
+//            $data['action'] = strtolower($data['action']);
+//        }
         //清除缓存
         cache('Menu', NULL);
     }
@@ -186,7 +187,7 @@ class MenuModel extends Model {
      * 模块安装时进行菜单注册
      * @param array $data 菜单数据
      * @param array $config 模块配置
-     * @param type $parentid 父菜单ID
+     * @param int $parentid 父菜单ID
      * @return boolean
      */
     public function installModuleMenu(array $data, array $config, $parentid = 0) {
@@ -234,8 +235,8 @@ class MenuModel extends Model {
 
     /**
      * 把模块安装时，Menu.php中配置的route进行转换
-     * @param type $route route内容
-     * @param type $moduleNama 安装模块名称
+     * @param string $route route内容
+     * @param string $moduleNama 安装模块名称
      * @return array
      */
     private function menuRoute($route, $moduleNama) {
@@ -253,8 +254,7 @@ class MenuModel extends Model {
 
     /**
      * 更新缓存
-     * @param type $data
-     * @return type
+     * @return array|boolean
      */
     public function menu_cache() {
         $data = $this->select();

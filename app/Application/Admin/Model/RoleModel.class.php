@@ -26,7 +26,7 @@ class RoleModel extends Model {
 
     /**
      * 通过递归的方式获取该角色下的全部子角色
-     * @param type $id
+     * @param string $id
      * @return string
      */
     public function getArrchildid($id) {
@@ -46,9 +46,9 @@ class RoleModel extends Model {
 
     /**
      * 通过递归的方式获取父角色ID列表
-     * @param type $id 角色ID
-     * @param type $arrparentid
-     * @param type $n
+     * @param string $id 角色ID
+     * @param string $arrparentid
+     * @param int $n
      * @return boolean
      */
     public function getArrparentid($id, $arrparentid = '', $n = 1) {
@@ -111,9 +111,9 @@ class RoleModel extends Model {
 
     /**
      * 检查指定菜单是否有权限
-     * @param type $data menu表中数组，单条
-     * @param type $roleid 需要检查的角色ID
-     * @param type $priv_data 已授权权限表数据
+     * @param array $data menu表中数组，单条
+     * @param string $roleid 需要检查的角色ID
+     * @param array $priv_data 已授权权限表数据
      * @return boolean
      */
     public function isCompetence($data, $roleid, $priv_data = array()) {
@@ -162,7 +162,7 @@ class RoleModel extends Model {
 
     /**
      * 按规则排序组合
-     * @param type $priv_data
+     * @param array $priv_data
      * @return array
      */
     private function privArrStr($priv_data) {
@@ -218,7 +218,7 @@ class RoleModel extends Model {
 
     /**
      * 根据角色ID返回全部权限
-     * @param type $roleid 角色ID
+     * @param string $roleid 角色ID
      * @return array  
      */
     public function getAccessList($roleid) {

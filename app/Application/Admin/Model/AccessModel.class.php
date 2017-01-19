@@ -12,8 +12,8 @@ class AccessModel extends Model {
 
     /**
      * 根据角色ID返回全部权限
-     * @param type $roleid 角色ID
-     * @return array  
+     * @param string $roleid 角色ID
+     * @return array|boolean
      */
     public function getAccessList($roleid) {
         if (empty($roleid)) {
@@ -39,8 +39,8 @@ class AccessModel extends Model {
 
     /**
      * 检查用户是否有对应权限
-     * @param type $map 方法[模块/控制器/方法]，为空自动获取
-     * @return type
+     * @param string $map 方法[模块/控制器/方法]，为空自动获取
+     * @return boolean
      */
     public function isCompetence($map = '') {
         //超级管理员
@@ -77,9 +77,9 @@ class AccessModel extends Model {
 
     /**
      * 返回用户权限列表，用于授权
-     * @param type $roleid 角色
-     * @param type $userId 用户ID
-     * @return type
+     * @param string $roleid 角色
+     * @param string|int $userId 用户ID
+     * @return boolean|array
      */
     public function getUserAccessList($roleid, $userId = 0) {
         if (empty($roleid)) {
@@ -91,7 +91,6 @@ class AccessModel extends Model {
         foreach ($result as $rs) {
             $data = array(
                 'id' => $rs['id'],
-                'checked' => $rs['id'],
                 'parentid' => $rs['parentid'],
                 'name' => $rs['name'] . ($rs['type'] == 0 ? "(菜单项)" : ""),
                 'checked' => D('Admin/Role')->isCompetence($rs, $roleid, $data) ? true : false,
@@ -103,8 +102,8 @@ class AccessModel extends Model {
 
     /**
      * 角色授权
-     * @param type $addauthorize 授权数据
-     * @param type $roleid 角色id
+     * @param array $addauthorize 授权数据
+     * @param string $roleid 角色id
      * @return boolean
      */
     public function batchAuthorize($addauthorize, $roleid = 0) {
