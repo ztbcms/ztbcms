@@ -78,7 +78,7 @@ class AccessModel extends Model {
     /**
      * 返回用户权限列表，用于授权
      * @param string $roleid 角色
-     * @param string $userId 用户ID
+     * @param string|int $userId 用户ID
      * @return boolean|array
      */
     public function getUserAccessList($roleid, $userId = 0) {
@@ -91,7 +91,6 @@ class AccessModel extends Model {
         foreach ($result as $rs) {
             $data = array(
                 'id' => $rs['id'],
-                'checked' => $rs['id'],
                 'parentid' => $rs['parentid'],
                 'name' => $rs['name'] . ($rs['type'] == 0 ? "(菜单项)" : ""),
                 'checked' => D('Admin/Role')->isCompetence($rs, $roleid, $data) ? true : false,
