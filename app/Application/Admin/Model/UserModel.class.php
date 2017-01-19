@@ -30,7 +30,7 @@ class UserModel extends Model {
 
     /**
      * 获取用户信息
-     * @param type $identifier 用户名或者用户ID
+     * @param string $identifier 用户名或者用户ID
      * @return boolean|array
      */
     public function getUserInfo($identifier, $password = NULL) {
@@ -57,8 +57,8 @@ class UserModel extends Model {
 
     /**
      * 更新登录状态信息
-     * @param type $userId
-     * @return type
+     * @param string $userId
+     * @return boolean|array
      */
     public function loginStatus($userId) {
         $this->find((int) $userId);
@@ -98,7 +98,8 @@ class UserModel extends Model {
 
     /**
      * 修改管理员信息
-     * @param type $data
+     * @param array $data
+     * @return boolean
      */
     public function amendManager($data) {
         if (empty($data) || !is_array($data) || !isset($data['id'])) {
@@ -128,7 +129,7 @@ class UserModel extends Model {
 
     /**
      * 创建管理员
-     * @param type $data
+     * @param array $data
      * @return boolean
      */
     public function createManager($data) {
@@ -150,7 +151,7 @@ class UserModel extends Model {
 
     /**
      * 删除管理员
-     * @param type $userId
+     * @param string $userId
      * @return boolean
      */
     public function deleteUser($userId) {
@@ -173,8 +174,8 @@ class UserModel extends Model {
 
     /**
      * 插入成功后的回调方法
-     * @param type $data 数据
-     * @param type $options 表达式
+     * @param array $data 数据
+     * @param string $options 表达式
      */
     protected function _after_insert($data, $options) {
         //添加信息后，更新密码字段

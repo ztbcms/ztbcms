@@ -12,7 +12,7 @@ class AdminPanelModel extends Model {
 
     /**
      * 添加常用菜单
-     * @param type $data
+     * @param array $data
      * @return boolean
      */
     public function addPanel($data) {
@@ -31,8 +31,8 @@ class AdminPanelModel extends Model {
 
     /**
      * 返回某个用户的全部常用菜单
-     * @param type $userid 用户ID
-     * @return type
+     * @param string $userid 用户ID
+     * @return array
      */
     public function getAllPanel($userid) {
         return $this->where(array('userid' => $userid))->select();
@@ -40,7 +40,7 @@ class AdminPanelModel extends Model {
 
     /**
      * 检查该菜单是否已经添加过
-     * @param type $mid 菜单ID
+     * @param string $mid 菜单ID
      * @return boolean
      */
     public function isExist($mid) {
