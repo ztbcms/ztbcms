@@ -175,9 +175,9 @@ class MenuModel extends Model {
         if ($data['controller']) {
             $data['controller'] = ucwords($data['controller']);
         }
-        if ($data['action']) {
-            $data['action'] = strtolower($data['action']);
-        }
+//        if ($data['action']) {
+//            $data['action'] = strtolower($data['action']);
+//        }
         //清除缓存
         cache('Menu', NULL);
     }
