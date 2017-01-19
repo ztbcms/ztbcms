@@ -62,12 +62,12 @@
               <td><ul class="switch_list cc ">
                   <li>
                     <label>
-                      <input type='radio' name='isbatch' value='1'  onClick="$('#normal_add').hide();$('#catdir_tr').hide();$('#batch_add').show();$('#catname').attr('disabled',true);$('#catdir').attr('disabled',true);">
+                      <input type='radio' name='isbatch' value='1'  onClick="$('#normal_add').hide();$('#catdir_tr').hide();$('#batch_add').show();$('#catname').prop('disabled',true);$('#catdir').prop('disabled',true);">
                       <span>批量添加</span></label>
                   </li>
                   <li>
                     <label>
-                      <input type='radio' name='isbatch' value='0'  checked onClick="$('#normal_add').show();$('#catdir_tr').show();$('#batch_add').hide();$('#catname').attr('disabled',false);$('#catdir').attr('disabled',false);">
+                      <input type='radio' name='isbatch' value='0'  checked onClick="$('#normal_add').show();$('#catdir_tr').show();$('#batch_add').hide();$('#catname').prop('disabled',false);$('#catdir').prop('disabled',false);">
                       <span>单条添加</span></label>
                   </li>
                 </ul></td>
@@ -438,10 +438,10 @@
 function extend_type(type){
 	if(type == 'radio' || type == 'checkbox'){
 		$('.setting_radio').show();
-		$('.setting_radio textarea').attr('disabled',false);
+		$('.setting_radio textarea').prop('disabled',false);
 	}else{
 		$('.setting_radio').hide();
-		$('.setting_radio textarea').attr('disabled',true);
+		$('.setting_radio textarea').prop('disabled',true);
 	}
 }
 $(function(){
@@ -587,7 +587,7 @@ $(function(){
 	});
 	
 	$("#child").click(function(){
-		if($(this).attr("checked")){
+		if($(this).prop("checked")){
 			$('#fmmb').hide();
 			$('#plmb').show();
 			$('#lbmb').show();
@@ -661,7 +661,7 @@ $(function(){
             //验证通过，提交表单
             submitHandler: function (forms) {
                 $(forms).ajaxSubmit({
-                    url: form.attr('action'), //按钮上是否自定义提交地址(多按钮情况)
+                    url: form.prop('action'), //按钮上是否自定义提交地址(多按钮情况)
                     dataType: 'json',
                     beforeSubmit: function (arr, $form, options) {
                         
