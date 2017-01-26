@@ -26,9 +26,9 @@
       <tr>
         <th><strong>作为主表字段</strong></th>
         <td>
-          <input type="radio" name="issystem" id="field_basic_table1" value="1">
+          <input type="radio" name="issystem" id="field_basic_table1" value="1" checked>
           是
-          <input type="radio" id="field_basic_table0" name="issystem" value="0" checked>
+          <input type="radio" id="field_basic_table0" name="issystem" value="0">
           否</td>
       </tr>
       <tr>
