@@ -43,9 +43,9 @@ class AvatarController extends CMS {
     /**
      *  通过用户邮箱，取得gravatar头像
      * @param int|string|object $id_or_email 一个用户ID，电子邮件地址
-     * @param int               $size 头像图片的大小
+     * @param int|string               $size 头像图片的大小
      * @param string            $default 如果没有可用的头像是使用默认图像的URL
-     * @param string            $alt 替代文字使用中的形象标记。默认为空白
+     * @param string|boolean            $alt 替代文字使用中的形象标记。默认为空白
      * @return string <img>
      */
     protected function getAvatar($id_or_email, $size = '96', $default = '', $alt = false) {
