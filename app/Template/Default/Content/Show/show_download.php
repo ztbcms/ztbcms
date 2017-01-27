@@ -141,9 +141,7 @@ var GV = {
       </ul>
       <div style="clear:both"></div>
     </div>
-    <div class="ad250" style="width:250px;height:250px;margin-bottom:8px;border:1px solid #ccc;"> 
-      <img src="http://placekitten.com/250/250" />
-    </div>
+
     <div class="hot_tj">
       <h2><span class="h2_txt">热点推荐</span></h2>
       <ul>

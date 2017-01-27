@@ -62,9 +62,6 @@
   </div>
   <!--article_list_left end-->
   <div class="article_list_right right">
-    <div class="ad250" style="width:250px;height:250px;margin-bottom:8px;border:1px solid #ccc;overflow:hidden"> 
-      <img src="http://placekitten.com/250/250" />
-    </div>
     
     <!--分类栏目end-->
     <div class="rand_pic">
@@ -90,9 +87,7 @@
       <div style="clear:both"></div>
     </div>
     <!--热门推荐 end-->
-    <div class="ad250" style="width:250px;height:250px;margin-bottom:8px;border:1px solid #ccc;overflow:hidden"> 
-      <img src="http://placekitten.com/250/250" />
-    </div>
+
   </div>
   <div style="clear:both"></div>
 </div>
