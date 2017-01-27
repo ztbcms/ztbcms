@@ -49,12 +49,12 @@ class AttachmentModel extends Model {
 	 *      'savename' => '5002ba343fc9d.jpg',//保存文件名
 	 *      'hash' => '77b5118c1722da672b0ddce3c4388e64',
 	 * )
-	 * @param type $module 模块
-	 * @param type $catid 栏目id
-	 * @param type $isthumb 是否缩略图
-	 * @param type $isadmin 是否后台
-	 * @param type $userid 用户id
-	 * @param type $time 时间戳
+	 * @param string $module 模块
+	 * @param int $catid 栏目id
+	 * @param int $isthumb 是否缩略图
+	 * @param int $isadmin 是否后台
+	 * @param int $userid 用户id
+	 * @param int $time 时间戳
 	 * @return boolean|int
 	 */
 	public function fileInfoAdd(array $info, $module = 'contents', $catid = 0, $isthumb = 0, $isadmin = 0, $userid = 0, $time = 0) {
