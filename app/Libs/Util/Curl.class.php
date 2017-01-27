@@ -7,13 +7,13 @@ class Curl {
 
     /**
      * 
-     * @param type $method 请求方式
-     * @param type $url 地址
-     * @param type $fields 附带参数，可以是数组，也可以是字符串
-     * @param type $userAgent 浏览器UA
-     * @param type $httpHeaders header头部，数组形式
-     * @param type $username 用户名
-     * @param type $password 密码
+     * @param string $method 请求方式
+     * @param string $url 地址
+     * @param string $fields 附带参数，可以是数组，也可以是字符串
+     * @param string $userAgent 浏览器UA
+     * @param string $httpHeaders header头部，数组形式
+     * @param string $username 用户名
+     * @param string $password 密码
      * @return boolean
      */
     public  function execute($method, $url, $fields = '', $userAgent = '', $httpHeaders = '', $username = '', $password = '') {
@@ -78,12 +78,12 @@ class Curl {
 
     /**
      * 发送POST请求
-     * @param type $url 地址
-     * @param type $fields 附带参数，可以是数组，也可以是字符串
-     * @param type $userAgent 浏览器UA
-     * @param type $httpHeaders header头部，数组形式
-     * @param type $username 用户名
-     * @param type $password 密码
+     * @param string $url 地址
+     * @param string $fields 附带参数，可以是数组，也可以是字符串
+     * @param string $userAgent 浏览器UA
+     * @param string $httpHeaders header头部，数组形式
+     * @param string $username 用户名
+     * @param string $password 密码
      * @return boolean
      */
     public function post($url, $fields, $userAgent = '', $httpHeaders = '', $username = '', $password = '') {
@@ -99,11 +99,11 @@ class Curl {
 
     /**
      * GET
-     * @param type $url 地址
-     * @param type $userAgent 浏览器UA
-     * @param type $httpHeaders header头部，数组形式
-     * @param type $username 用户名
-     * @param type $password 密码
+     * @param string $url 地址
+     * @param string $userAgent 浏览器UA
+     * @param string $httpHeaders header头部，数组形式
+     * @param string $username 用户名
+     * @param string $password 密码
      * @return boolean
      */
     public function get($url, $userAgent = '', $httpHeaders = '', $username = '', $password = '') {
@@ -119,7 +119,7 @@ class Curl {
 
     /**
      * curl支持 检测
-     * @return boolean
+     * @return boolean|mixed
      */
     public function create() {
         $ch = null;

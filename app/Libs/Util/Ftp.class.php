@@ -27,13 +27,15 @@ class Ftp {
 
     /**
      * 连接FTP服务器
-     * @param string $host    　　 服务器地址
-     * @param string $username　　　用户名
-     * @param string $password　　　密码
-     * @param integer $port　　　　   服务器端口，默认值为21
-     * @param boolean $pasv        是否开启被动模式
-     * @param boolean $ssl　　　　 　是否使用SSL连接
-     * @param integer $timeout     超时时间　
+     *
+     * @param string  $host     　　 服务器地址
+     * @param string  $username 　　　用户名
+     * @param string  $password 　　　密码
+     * @param string  $port     　　　　   服务器端口，默认值为21
+     * @param boolean $pasv     是否开启被动模式
+     * @param boolean $ssl      　　　　 　是否使用SSL连接
+     * @param integer $timeout  超时时间　
+     * @return bool
      */
     public function connect($host, $username = '', $password = '', $port = '21', $pasv = false, $ssl = false, $timeout = 30) {
         $start = time();
@@ -63,7 +65,8 @@ class Ftp {
 
     /**
      * 创建文件夹
-     * @param string $dirname 目录名，
+     * @param string $dirname 目录名
+     * @return boolean
      */
     public function mkdir($dirname) {
         if (!$this->link) {
@@ -88,6 +91,7 @@ class Ftp {
      * 上传文件
      * @param string $remote 远程存放地址
      * @param string $local 本地存放地址
+     * @return boolean
      */
     public function put($remote, $local) {
         if (!$this->link) {
@@ -110,6 +114,7 @@ class Ftp {
      * 删除文件夹
      * @param string $dirname  目录地址
      * @param boolean $enforce 强制删除
+     * @return boolean
      */
     public function rmdir($dirname, $enforce = false) {
         if (!$this->link) {
@@ -133,6 +138,7 @@ class Ftp {
     /**
      * 删除指定文件
      * @param string $filename 文件名
+     * @return boolean
      */
     public function f_delete($filename) {
         if (!$this->link) {
@@ -150,7 +156,7 @@ class Ftp {
     /**
      * 返回给定目录的文件列表
      * @param string $dirname  目录地址
-     * @return array 文件列表数据
+     * @return array|string 文件列表数据
      */
     public function nlist($dirname) {
         if (!$this->link) {
@@ -168,6 +174,7 @@ class Ftp {
     /**
      * 在 FTP 服务器上改变当前目录
      * @param string $dirname 修改服务器上当前目录
+     * @return boolean
      */
     public function chdir($dirname) {
         if (!$this->link) {
@@ -203,7 +210,7 @@ class Ftp {
     /**
      * 检测目录名
      * @param string $url 目录
-     * @return 由 / 分开的返回数组
+     * @return string 由 / 分开的返回数组
      */
     private function ck_dirname($url) {
         $url = str_replace('\\', '/', $url);

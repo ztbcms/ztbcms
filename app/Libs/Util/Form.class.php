@@ -4,16 +4,17 @@ class Form {
 
     /**
      * 编辑器
-     * @param int $textareaid 字段名
-     * @param int $toolbar 标准型 full 简洁型 basic
+     * @param string $textareaid 字段名
+     * @param string $toolbar 标准型 full 简洁型 basic
      * @param string $module 模块名称
-     * @param int $catid 栏目id
-     * @param boole $allowupload  是否允许上传
-     * @param boole $allowbrowser 是否允许浏览文件
+     * @param string $catid 栏目id
+     * @param int $allowupload  是否允许上传
+     * @param int $allowbrowser 是否允许浏览文件
      * @param string $alowuploadexts 允许上传类型
      * @param string $allowuploadnum 每次允许上传的文件数量
-     * @param string $height 编辑器高度
-     * @param string $disabled_page 是否禁用分页和子标题
+     * @param int $height 编辑器高度
+     * @param int $disabled_page 是否禁用分页和子标题
+     * @return string
      * 附件上传，要引入这两个JS content_addtop.js swf2ckeditor.js
      * 注意：使用这个，需另外单独增加编辑的实例化代码！
      */
@@ -91,16 +92,17 @@ class Form {
     /**
      * 单张图片上传
      * @param string $name 表单名称
-     * @param int $id 表单id
+     * @param string $id 表单id
      * @param string $value 表单默认值
      * @param string $moudle 模块名称
-     * @param int $catid 栏目id
+     * @param string $catid 栏目id
      * @param int $size 表单大小
      * @param string $class 表单风格
      * @param string $ext 表单扩展属性 如果 js事件等
      * @param string $alowexts 允许图片格式
      * @param array $thumb_setting 
      * @param int $watermark_setting  0或1
+     * @return string
      */
     public static function images($name, $id = '', $value = '', $moudle = '', $catid = '', $size = 50, $class = 'input', $ext = '', $alowexts = '', $thumb_setting = array(), $watermark_setting = 0) {
         if (!$id)
@@ -121,15 +123,16 @@ class Form {
     /**
      * 
      * @param string $name 表单名称
-     * @param int $id 表单id
+     * @param string $id 表单id
      * @param string $value 表单默认值
      * @param string $moudle 模块名称
-     * @param int $catid 栏目id
+     * @param string $catid 栏目id
      * @param int $size 表单大小
      * @param string $class 表单风格
      * @param string $ext 表单扩展属性 如果 js事件等
      * @param string $alowexts 允许图片格式
-     * @param array $file_setting 
+     * @param array $file_setting
+     * @return string
      */
     public static function upfiles($name, $id = '', $value = '', $moudle = '', $catid = '', $size = 50, $class = '', $ext = '', $alowexts = '', $file_setting = array()) {
         if (!$id)
@@ -154,11 +157,12 @@ class Form {
 
     /**
      * 日期时间控件
-     * @param $name 控件name，id
-     * @param $value 选中值
-     * @param $isdatetime 是否显示时间
-     * @param $loadjs 是否重复加载js，防止页面程序加载不规则导致的控件无法显示
-     * @param $showweek 是否显示周，使用，true | false
+     * @param string $name 控件name，id
+     * @param string $value 选中值
+     * @param int $isdatetime 是否显示时间
+     * @param int $loadjs 是否重复加载js，防止页面程序加载不规则导致的控件无法显示
+     * @param string $showweek 是否显示周，使用，true | false
+     * @return string
      */
     public static function date($name, $value = '', $isdatetime = 0, $loadjs = 0, $showweek = 'true', $timesystem = 1) {
         if ($value == '0000-00-00 00:00:00')
@@ -184,14 +188,14 @@ class Form {
 
     /**
      * 栏目选择
-     * @param string $file 栏目缓存文件名
      * @param intval/array $catid 别选中的ID，多选是可以是数组
      * @param string $str 属性
      * @param string $default_option 默认选项
-     * @param intval $modelid 按所属模型筛选
-     * @param intval $type 栏目类型
-     * @param intval $onlysub 只可选择子栏目
-     * @param intval $is_push 加载权限表模型 ,获取会员组ID值,以备下面投入判断用
+     * @param int $modelid 按所属模型筛选
+     * @param int $type 栏目类型
+     * @param int $onlysub 只可选择子栏目
+     * @param int $is_push 加载权限表模型 ,获取会员组ID值,以备下面投入判断用
+     * @return string
      */
     public static function select_category($catid = 0, $str = '', $default_option = '', $modelid = 0, $type = -1, $onlysub = 0, $is_push = 0) {
         $tree = new \Tree();
@@ -254,10 +258,10 @@ class Form {
 
     /**
      * 下拉选择框
-     * @param type $array 数据
-     * @param type $id 默认选择
-     * @param type $str 属性
-     * @param type $default_option 默认选项
+     * @param array $array 数据
+     * @param int $id 默认选择
+     * @param string $str 属性
+     * @param string $default_option 默认选项
      * @return boolean|string 
      */
     public static function select($array = array(), $id = 0, $str = '', $default_option = '') {
@@ -280,11 +284,13 @@ class Form {
 
     /**
      * 复选框
-     * @param $array 选项 二维数组
-     * @param $id 默认选中值，多个用 '逗号'分割
-     * @param $str 属性
-     * @param $defaultvalue 是否增加默认值 默认值为 -99
-     * @param $width 宽度
+     * @param array $array 选项 二维数组
+     * @param string $id 默认选中值，多个用 '逗号'分割
+     * @param string $str 属性
+     * @param string $defaultvalue 是否增加默认值 默认值为 -99
+     * @param int $width 宽度
+     * @param string $field
+     * @return string
      */
     public static function checkbox($array = array(), $id = '', $str = '', $defaultvalue = '', $width = 0, $field = '') {
         $string = '';
@@ -309,9 +315,12 @@ class Form {
 
     /**
      * 单选框
-     * @param $array 选项 二维数组
-     * @param $id 默认选中值
-     * @param $str 属性
+     * @param array $array 选项 二维数组
+     * @param int $id 默认选中值
+     * @param string $str 属性
+     * @param int $width
+     * @param string $field
+     * @return string
      */
     public static function radio($array = array(), $id = 0, $str = '', $width = 0, $field = '') {
         $string = '';
@@ -328,11 +337,12 @@ class Form {
 
     /**
      * 模板选择
-     * @param $style  风格
-     * @param $module 模块
-     * @param $id 默认选中值
-     * @param $str 属性
-     * @param $pre 模板前缀
+     * @param string $style  风格
+     * @param string $module 模块
+     * @param string $id 默认选中值
+     * @param string $str 属性
+     * @param string $pre 模板前缀
+     * @return string
      */
     public static function select_template($style, $module, $id = '', $str = '', $pre = '') {
         $config = cache("Config");
@@ -350,12 +360,13 @@ class Form {
 
     /**
      * url  规则调用
-     * @param $module 模块
-     * @param $file 文件名
-     * @param $ishtml 是否为静态规则
-     * @param $id 选中值
-     * @param $str 表单属性
-     * @param $default_option 默认选项
+     * @param string $module 模块
+     * @param string $file 文件名
+     * @param string $ishtml 是否为静态规则
+     * @param string $id 选中值
+     * @param string $str 表单属性
+     * @param string $default_option 默认选项
+     * @return string
      */
     public static function urlrule($module, $file, $ishtml, $id, $str = '', $default_option = '') {
         if (!$module)

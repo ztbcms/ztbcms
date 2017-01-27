@@ -25,17 +25,10 @@
 class Image {
 
     /**
-      +----------------------------------------------------------
      * 取得图像信息
      *
-      +----------------------------------------------------------
-     * @static
-     * @access public
-      +----------------------------------------------------------
-     * @param string $image 图像文件名
-      +----------------------------------------------------------
+     * @param $img
      * @return mixed
-      +----------------------------------------------------------
      */
     static function getImageInfo($img) {
         $imageInfo = getimagesize($img);
@@ -56,22 +49,17 @@ class Image {
     }
 
     /**
-      +----------------------------------------------------------
      * 为图片添加水印
-      +----------------------------------------------------------
-     * @static public
-      +----------------------------------------------------------
-     * @param string $source 原文件名
-     * @param string $water  水印图片
-     * @param string $$savename  添加水印后的图片名
-     * @param string $alpha  水印的透明度
-     * @param string $waterPos  水印位置
-     * @param string $quality  JPEG图片质量
-      +----------------------------------------------------------
+     *
+     * @static   public
+     * @param string $source   原文件名
+     * @param string $water    水印图片
+     * @param null   $savename
+     * @param int    $alpha    水印的透明度
+     * @param int    $waterPos 水印位置
+     * @param int    $quality  JPEG图片质量
      * @return string
-      +----------------------------------------------------------
-     * @throws ThinkExecption
-      +----------------------------------------------------------
+     * @internal param $string $$savename  添加水印后的图片名
      */
     static public function water($source, $water, $savename = null, $alpha = 80, $waterPos = 9, $quality = 90) {
         //检查文件是否存在
@@ -175,6 +163,13 @@ class Image {
         imagedestroy($sImage);
     }
 
+    /**
+     * @param mixed $imgFile
+     * @param string $text
+     * @param string $x
+     * @param string $y
+     * @param string $alpha
+     */
     function showImg($imgFile, $text = '', $x = '10', $y = '10', $alpha = '50') {
         //获取图像文件信息
         //2007/6/26 增加图片水印输出，$text为图片的完整路径即可
@@ -229,22 +224,16 @@ class Image {
     }
 
     /**
-      +----------------------------------------------------------
      * 生成缩略图
-      +----------------------------------------------------------
      * @static
      * @access public
-      +----------------------------------------------------------
      * @param string $image  原图
      * @param string $type 图像格式
      * @param string $thumbname 缩略图文件名
-     * @param string $maxWidth  宽度
-     * @param string $maxHeight  高度
-     * @param string $position 缩略图保存目录
+     * @param int $maxWidth  宽度
+     * @param int $maxHeight  高度
      * @param boolean $interlace 启用隔行扫描
-      +----------------------------------------------------------
-     * @return void
-      +----------------------------------------------------------
+     * @return string|boolean
      */
     static function thumb($image, $thumbname, $type = '', $maxWidth = 200, $maxHeight = 50, $interlace = true) {
         // 获取原图信息
@@ -319,10 +308,10 @@ class Image {
      * @param string $image  原图
      * @param string $type 图像格式
      * @param string $thumbname 缩略图文件名
-     * @param string $maxWidth  宽度
-     * @param string $maxHeight  高度
+     * @param int $maxWidth  宽度
+     * @param int $maxHeight  高度
      * @param boolean $interlace 启用隔行扫描
-     * @return void
+     * @return boolean|string
      */
     static function thumb2($image, $thumbname, $type = '', $maxWidth = 200, $maxHeight = 50, $interlace = true) {
         // 获取原图信息
@@ -400,6 +389,8 @@ class Image {
      * @param string $string  字符串
      * @param string $size  图像大小 width,height 或者 array(width,height)
      * @param string $font  字体信息 fontface,fontsize 或者 array(fontface,fontsize)
+     * @param array $rgb
+     * @param string $filename
      * @param string $type 图像格式 默认PNG
      * @param integer $disturb 是否干扰 1 点干扰 2 线干扰 3 复合干扰 0 无干扰
      * @param bool $border  是否加边框 array(color)
@@ -407,7 +398,7 @@ class Image {
      * @return string
       +----------------------------------------------------------
      */
-    static function buildString($string, $rgb = array(), $filename = '', $type = 'png', $disturb = 1, $border = true) {
+    static function buildString($string, $size, $font, $rgb = array(), $filename = '', $type = 'png', $disturb = 1, $border = true) {
         if (is_string($size))
             $size = explode(',', $size);
         $width = $size[0];
@@ -458,11 +449,11 @@ class Image {
      * @static
      * @access public
       +----------------------------------------------------------
-     * @param string $length  位数
-     * @param string $mode  类型
+     * @param int $length  位数
+     * @param int $mode  类型
      * @param string $type 图像格式
-     * @param string $width  宽度
-     * @param string $height  高度
+     * @param int $width  宽度
+     * @param int $height  高度
       +----------------------------------------------------------
      * @return string
       +----------------------------------------------------------
@@ -581,8 +572,8 @@ class Image {
      * @access public
       +----------------------------------------------------------
      * @param string $type 图像格式
-     * @param string $width  宽度
-     * @param string $height  高度
+     * @param int $width  宽度
+     * @param int $height  高度
       +----------------------------------------------------------
      * @return string
       +----------------------------------------------------------
@@ -627,8 +618,8 @@ class Image {
       +----------------------------------------------------------
      * @param string $type 图像格式
      * @param string $type 图像格式
-     * @param string $lw  单元宽度
-     * @param string $hi   条码高度
+     * @param int $lw  单元宽度
+     * @param int $hi   条码高度
       +----------------------------------------------------------
      * @return string
       +----------------------------------------------------------
