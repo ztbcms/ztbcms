@@ -428,7 +428,7 @@ class CmsTag extends TagLib {
 	 * 	独有参数：
 	 * 		@num		返回信息数
 	+----------------------------------------------------------
-	 * @param string $attr 标签属性
+	 * @param string $tag 标签名
 	 * @param string $content  标签内容
      * @return boolean|string
 	 */

@@ -26,7 +26,7 @@ class CustomlistModel extends Model {
 
 	/**
 	 * 添加自定义列表
-	 * @param type $post 表单提交数据
+	 * @param array $post 表单提交数据
 	 * @return boolean
 	 */
 	public function addCustomlist($post) {
@@ -70,7 +70,7 @@ class CustomlistModel extends Model {
 
 	/**
 	 * 编辑自定义列表
-	 * @param type $post 表单提交数据
+	 * @param array $post 表单提交数据
 	 * @return boolean
 	 */
 	public function editCustomlist($post) {
@@ -125,7 +125,7 @@ class CustomlistModel extends Model {
 
 	/**
 	 * 删除自定义列表
-	 * @param type $id 自定义列表ID
+	 * @param string $id 自定义列表ID
 	 * @return boolean
 	 */
 	public function deleteCustomlist($id) {

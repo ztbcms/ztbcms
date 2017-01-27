@@ -20,9 +20,9 @@ class CategoryPrivModel extends Model {
 
 	/**
 	 * 更新权限
-	 * @param  $catid 栏目ID
-	 * @param  $priv_datas
-	 * @param  $is_admin 1为管理员
+	 * @param string  $catid 栏目ID
+	 * @param array $priv_datas
+	 * @param int $is_admin 1为管理员
 	 */
 	public function update_priv($catid, $priv_datas, $is_admin = 1) {
 		//删除旧的
@@ -41,10 +41,11 @@ class CategoryPrivModel extends Model {
 
 	/**
 	 * 检查栏目权限
-	 * @param $privs 权限数据
-	 * @param $action 动作
-	 * @param $roleid 角色
-	 * @param $is_admin 是否为管理组
+	 * @param array $privs 权限数据
+	 * @param string $action 动作
+	 * @param string $roleid 角色
+	 * @param int $is_admin 是否为管理组
+	 * @return string
 	 */
 	public function check_category_priv($privs, $action, $roleid, $is_admin = 1) {
 		$checked = '';

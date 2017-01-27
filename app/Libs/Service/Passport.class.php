@@ -22,9 +22,9 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 连接会员系统
-	 * @param type $name 服务名
-	 * @param type $options 参数
-	 * @return \Libs\Service\class
+	 * @param string $name 服务名
+	 * @param array $options 参数
+	 * @return Passport
 	 */
 	public static function connect($name = '', $options = array()) {
 		if (false == isModuleInstall('Member')) {
@@ -46,6 +46,7 @@ class Passport extends \Libs\System\Service {
 		if (class_exists($class)) {
 			$connect = new $class($options);
 		} else {
+            $connect = null;
 			E("通行证驱动 {$class} 不存在！");
 		}
 		return $connect;
@@ -53,7 +54,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 魔术方法
-	 * @param type $name
+	 * @param string $name
 	 * @return null
 	 */
 	public function __get($name) {
@@ -71,7 +72,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 获取错误信息
-	 * @return type
+	 * @return string
 	 */
 	public function getError() {
 		return $this->error;
@@ -90,7 +91,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 获取cookie中记录的用户ID
-	 * @return type 成功返回用户ID，失败返回false
+	 * @return string 成功返回用户ID，失败返回false
 	 */
 	public function getCookieUid() {
 		$userId = \Libs\Util\Encrypt::authcode(cookie(self::userUidKey), 'DECODE');
@@ -99,8 +100,8 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 获取用户信息
-	 * @param type $identifier 用户/UID
-	 * @param type $password 明文密码，填写表示验证密码
+	 * @param string $identifier 用户/UID
+	 * @param string $password 明文密码，填写表示验证密码
 	 * @return array|boolean
 	 */
 	public function getLocalUser($identifier, $password = null) {
@@ -109,10 +110,10 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 获取用户头像
-	 * @param type $uid 用户ID
+	 * @param string $uid 用户ID
 	 * @param int $format 头像规格，默认参数90，支持 180,90,45,30
-	 * @param type $dbs 该参数为true时，表示使用查询数据库的方式，取得完整的头像地址。默认false
-	 * @return type 返回头像地址
+	 * @param boolean $dbs 该参数为true时，表示使用查询数据库的方式，取得完整的头像地址。默认false
+	 * @return string 返回头像地址
 	 */
 	public function getUserAvatar($uid, $format = 90, $dbs = false) {
 		$config = cache('Config');
@@ -121,8 +122,8 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 用户积分变更
-	 * @param type $uid 数字为用户ID，其他为用户名
-	 * @param type $integral 正数增加积分，负数扣除积分
+	 * @param string $uid 数字为用户ID，其他为用户名
+	 * @param int $integral 正数增加积分，负数扣除积分
 	 * @return int 成功返回当前积分数，失败返回false，-1 表示当前积分不够扣除
 	 */
 	public function userIntegration($uid, $integral) {
@@ -175,8 +176,8 @@ class Passport extends \Libs\System\Service {
 	/**
 	 * 注册用户的登录状态 (即: 注册cookie + 注册session + 记录登录信息)
 	 * @param array $user 用户相信信息 uid , username
-	 * @param type $is_remeber_me 有效期
-	 * @return type 成功返回布尔值
+	 * @param int $is_remeber_me 有效期
+	 * @return boolean 成功返回布尔值
 	 */
 	public function registerLogin(array $user, $is_remeber_me = 604800) {
 		$key = \Libs\Util\Encrypt::authcode((int) $user['userid'], '');
@@ -196,9 +197,9 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 会员登录
-	 * @param type $identifier 用户/UID
-	 * @param type $password 明文密码，填写表示验证密码
-	 * @param type $is_remember_me cookie有效期
+	 * @param string $identifier 用户/UID
+	 * @param string $password 明文密码，填写表示验证密码
+	 * @param int $is_remember_me cookie有效期
 	 * @return boolean
 	 */
 	public function loginLocal($identifier, $password = null, $is_remember_me = 3600) {
@@ -207,7 +208,8 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 记录登录信息
-	 * @param type $uid 用户ID
+	 * @param string $uid 用户ID
+     * @return boolean
 	 */
 	public function recordLogin($uid) {
 		return true;
@@ -215,9 +217,9 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 注册会员
-	 * @param type $username 用户名
-	 * @param type $password 明文密码
-	 * @param type $email 邮箱
+	 * @param string $username 用户名
+	 * @param string $password 明文密码
+	 * @param string $email 邮箱
 	 * @return boolean
 	 */
 	public function userRegister($username, $password, $email, $_data = array()) {
@@ -226,12 +228,12 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 更新用户基本资料
-	 * @param type $username 用户名
-	 * @param type $oldpw 旧密码
-	 * @param type $newpw 新密码，如不修改为空
-	 * @param type $email Email，如不修改为空
-	 * @param type $ignoreoldpw 是否忽略旧密码
-	 * @param type $data 其他信息
+	 * @param string $username 用户名
+	 * @param string $oldpw 旧密码
+	 * @param string $newpw 新密码，如不修改为空
+	 * @param string $email Email，如不修改为空
+	 * @param int $ignoreoldpw 是否忽略旧密码
+	 * @param array $data 其他信息
 	 * @return boolean
 	 */
 	public function userEdit($username, $oldpw, $newpw = '', $email = '', $ignoreoldpw = 0, $data = array()) {
@@ -240,7 +242,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 删除用户
-	 * @param type $uid 用户UID
+	 * @param string $uid 用户UID
 	 * @return boolean
 	 */
 	public function userDelete($uid) {
@@ -249,7 +251,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 删除用户头像
-	 * @param type $uid 用户名UID
+	 * @param string $uid 用户名UID
 	 * @return boolean
 	 */
 	public function userDeleteAvatar($uid) {
@@ -258,7 +260,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 检查 Email 地址
-	 * @param type $email 邮箱地址
+	 * @param string $email 邮箱地址
 	 * @return boolean
 	 */
 	public function userCheckeMail($email) {
@@ -267,7 +269,7 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 检查用户名
-	 * @param type $username 用户名
+	 * @param string $username 用户名
 	 * @return boolean|int
 	 */
 	public function userCheckUsername($username) {
@@ -276,11 +278,11 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 修改头像
-	 * @param type $uid 用户 ID
-	 * @param type $type 头像类型
+	 * @param string $uid 用户 ID
+	 * @param string $type 头像类型
 	 *                                       real:真实头像
 	 *                                       virtual:(默认值) 虚拟头像
-	 * @param type $returnhtml 是否返回 HTML 代码
+	 * @param int $returnhtml 是否返回 HTML 代码
 	 *                                                     1:(默认值) 是，返回设置头像的 HTML 代码
 	 *                                                     0:否，返回设置头像的 Flash 调用数组
 	 * @return string:返回设置头像的 HTML 代码
@@ -292,8 +294,8 @@ class Passport extends \Libs\System\Service {
 
 	/**
 	 * 获取头像存储路径
-	 * @param type $uid 会员UID
-	 * @return type
+	 * @param string $uid 会员UID
+	 * @return string
 	 */
 	public function getAvatarPath($uid) {
 		$uid = abs(intval($uid)); //UID取整数绝对值

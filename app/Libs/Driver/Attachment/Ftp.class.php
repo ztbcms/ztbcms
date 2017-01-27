@@ -86,8 +86,8 @@ class Ftp extends Attachment {
 
 	/**
 	 * 把一个文件上传到FTP附件服务器上
-	 * @param type $upfile 本地存放地址，需要上传的文件
-	 * @param type $file FTP存放地址
+	 * @param string $upfile 本地存放地址，需要上传的文件
+	 * @param string $file FTP存放地址
 	 * @return boolean
 	 */
 	public function FTPuplode($upfile, $file) {
@@ -108,8 +108,8 @@ class Ftp extends Attachment {
 
 	/**
 	 * 删除文件夹
-	 * @param type $dirname 文件夹地址
-	 * @param type $enforce 是否强制删除
+	 * @param string $dirname 文件夹地址
+	 * @param boolean $enforce 是否强制删除
 	 * @return boolean
 	 */
 	public function FTPrmdir($dirname, $enforce = false) {
@@ -124,7 +124,7 @@ class Ftp extends Attachment {
 
 	/**
 	 * 上传全部文件
-	 * @param array $Callback 上传回调，数组
+	 * @param array|boolean $Callback 上传回调，数组
 	 * @return boolean|array
 	 */
 	public function upload($Callback = false) {
@@ -175,7 +175,7 @@ class Ftp extends Attachment {
 						if ($this->options['isupftpdel']) {
 							try {
 								unlink($info[$i]['savepath'] . $info[$i]['savename']);
-							} catch (Exception $exc) {
+							} catch (\Exception $exc) {
 
 							}
 						}
@@ -202,13 +202,12 @@ class Ftp extends Attachment {
 			$this->error = $this->handlerLocal->getErrorMsg();
 			return false;
 		}
-		return true;
 	}
 
 	/**
 	 * 把一个文件移动到另外一个位置
-	 * @param type $originalFilesPath 原文件地址
-	 * @param type $movingFilesPath 移动目标地址 SITE_PATH
+	 * @param string $originalFilesPath 原文件地址
+	 * @param string $movingFilesPath 移动目标地址 SITE_PATH
 	 * @return boolean
 	 */
 	public function movingFiles($originalFilesPath, $movingFilesPath) {
@@ -222,7 +221,7 @@ class Ftp extends Attachment {
 
 	/**
 	 * 删除文件
-	 * @param type $file 如果为数字，表示根据aid删除，其他为文件路径
+	 * @param string $file 如果为数字，表示根据aid删除，其他为文件路径
 	 * @return boolean
 	 */
 	public function delFile($file) {
@@ -239,7 +238,7 @@ class Ftp extends Attachment {
 				try {
 					//FTP删除
 					return $this->handler->f_delete($this->options['ftpuppat'] . $filepath);
-				} catch (Exception $exc) {
+				} catch (\Exception $exc) {
 					$this->error = '文件[' . $filepath . ']删除失败！';
 					return false;
 				}
@@ -266,7 +265,7 @@ class Ftp extends Attachment {
 					try {
 						//FTP删除
 						return $this->handler->f_delete($this->options['ftpuppat'] . $filepath);
-					} catch (Exception $exc) {
+					} catch (\Exception $exc) {
 						$this->error = '文件[' . $this->options['uploadfilepath'] . $newFile . ']删除失败！';
 						return false;
 					}
@@ -282,18 +281,17 @@ class Ftp extends Attachment {
 					}
 					//FTP删除
 					return $this->handler->f_delete($this->options['ftpuppat'] . $uploadfilepath . $newFile);
-				} catch (Exception $exc) {
+				} catch (\Exception $exc) {
 					$this->error = '文件[' . $this->options['uploadfilepath'] . $newFile . ']删除失败！';
 					return false;
 				}
 			}
 		}
-		return true;
 	}
 
 	/**
 	 * 删除文件夹（包括下面的文件）
-	 * @param type $file 如果为数字，表示根据aid删除，其他为文件路径
+	 * @param string|int $dirPath 如果为数字，表示根据aid删除，其他为文件路径
 	 * @return boolean
 	 */
 	public function delDir($dirPath) {
@@ -306,9 +304,10 @@ class Ftp extends Attachment {
 
 	/**
 	 * 远程保存
-	 * @param $value 传入下载内容
-	 * @param $watermark 是否加入水印
-	 * @param $ext 下载扩展名
+	 * @param string $value 传入下载内容
+	 * @param int $watermark 是否加入水印
+	 * @param string $ext 下载扩展名
+     * @return string
 	 */
 	public function download($value, $watermark = null, $ext = 'gif|jpg|jpeg|bmp|png') {
 		//检查是否有开启CURL
@@ -398,7 +397,7 @@ class Ftp extends Attachment {
 					if ($this->options['isupftpdel']) {
 						try {
 							unlink($info[$i]['savepath'] . $info[$i]['savename']);
-						} catch (Exception $exc) {
+						} catch (\Exception $exc) {
 
 						}
 					}
@@ -406,7 +405,7 @@ class Ftp extends Attachment {
 					$this->error = $this->handler->get_error();
 					try {
 						unlink($info[$i]['savepath'] . $info[$i]['savename']);
-					} catch (Exception $exc) {
+					} catch (\Exception $exc) {
 
 					}
 				}
@@ -422,7 +421,7 @@ class Ftp extends Attachment {
 
 	/**
 	 * 获取上传错误信息
-	 * @return type
+	 * @return string
 	 */
 	public function getErrorMsg() {
 		return $this->error;

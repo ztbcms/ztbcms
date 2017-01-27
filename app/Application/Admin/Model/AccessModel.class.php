@@ -103,7 +103,7 @@ class AccessModel extends Model {
     /**
      * 角色授权
      * @param array $addauthorize 授权数据
-     * @param string $roleid 角色id
+     * @param string|int $roleid 角色id
      * @return boolean
      */
     public function batchAuthorize($addauthorize, $roleid = 0) {

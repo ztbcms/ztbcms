@@ -93,7 +93,7 @@ class Model extends \Think\Model {
 
 	/**
 	 *  读取全部表名
-	 * @return type
+	 * @return array
 	 */
 	public function list_tables() {
 		$tables = array();

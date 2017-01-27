@@ -156,7 +156,7 @@ class AdvModel extends Model {
 	/**
 	 * 检查乐观锁
 	 * @access protected
-	 * @param inteter $id  当前主键
+	 * @param string $id  当前主键
 	 * @param array $data  当前数据
 	 * @return mixed
 	 */
@@ -303,7 +303,7 @@ class AdvModel extends Model {
 	/**
 	 * 写入数据的时候过滤数据字段
 	 * @access protected
-	 * @param mixed $result 查询的数据
+	 * @param array $data 查询的数据
 	 * @return array
 	 */
 	protected function setFilterFields($data) {
@@ -331,7 +331,7 @@ class AdvModel extends Model {
 	 * @access protected
 	 * @param array $resultSet 数据
 	 * @param string $type 返回类型 默认为数组
-	 * @return void
+	 * @return array
 	 */
 	protected function returnResultSet(&$resultSet, $type = '') {
 		foreach ($resultSet as $key => $data) {
@@ -364,7 +364,7 @@ class AdvModel extends Model {
 	 * @access protected
 	 * @param mixed $resultSet 查询的数据
 	 * @param string $field 查询的字段
-	 * @return void
+	 * @return array
 	 */
 	protected function getListBlobFields(&$resultSet, $field = '') {
 		if (!empty($this->blobFields)) {
@@ -381,7 +381,7 @@ class AdvModel extends Model {
 	 * @access protected
 	 * @param mixed $data 查询的数据
 	 * @param string $field 查询的字段
-	 * @return void
+	 * @return array
 	 */
 	protected function getBlobFields(&$data, $field = '') {
 		if (!empty($this->blobFields)) {
@@ -482,7 +482,7 @@ class AdvModel extends Model {
 			return false;
 		}
 		if ($lazyTime > 0) {
-// 延迟写入
+            // 延迟写入
 			$guid = md5($this->name . '_' . $field . '_' . serialize($condition));
 			$step = $this->lazyWrite($guid, $step, $lazyTime);
 			if (false === $step) {

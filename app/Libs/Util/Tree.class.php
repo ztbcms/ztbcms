@@ -35,6 +35,7 @@ class Tree {
      *      6 => array('id'=>'6','parentid'=>3,'name'=>'三级栏目一'),
      *      7 => array('id'=>'7','parentid'=>3,'name'=>'三级栏目二')
      *      )
+     * @return boolean
      */
     public function init($arr = array()) {
         $this->arr = $arr;
@@ -44,8 +45,8 @@ class Tree {
 
     /**
      * 得到父级数组
-     * @param int
-     * @return array
+     * @param int $myid
+     * @return array|boolean
      */
     public function get_parent($myid) {
         $newarr = array();
@@ -64,8 +65,8 @@ class Tree {
 
     /**
      * 得到子级数组
-     * @param int
-     * @return array
+     * @param int $myid
+     * @return array|boolean
      */
     public function get_child($myid) {
         $a = $newarr = array();
@@ -80,8 +81,8 @@ class Tree {
 
     /**
      * 得到当前位置数组
-     * @param int
-     * @return array
+     * @param int $myid
+     * @return array|boolean $newarr
      */
     public function get_pos($myid, &$newarr) {
         $a = array();
@@ -103,9 +104,11 @@ class Tree {
 
     /**
      * 得到树型结构
-     * @param int ID，表示获得这个ID下的所有子级
-     * @param string 生成树型结构的基本代码，例如："<option value=\$id \$selected>\$spacer\$name</option>"
-     * @param int 被选中的ID，比如在做树型下拉框的时候需要用到
+     * @param int $myid ID，表示获得这个ID下的所有子级
+     * @param string $str 生成树型结构的基本代码，例如："<option value=\$id \$selected>\$spacer\$name</option>"
+     * @param int $sid 被选中的ID，比如在做树型下拉框的时候需要用到
+     * @param string $adds
+     * @param string $str_group
      * @return string
      */
     public function get_tree($myid, $str, $sid = 0, $adds = '', $str_group = '') {
@@ -137,9 +140,11 @@ class Tree {
 
     /**
      * 得到树型结构数组
-     * @param int ID，表示获得这个ID下的所有子级
-     * @param string 生成树型结构的基本代码，例如："<option value=\$id \$selected>\$spacer\$name</option>"
-     * @param int 被选中的ID，比如在做树型下拉框的时候需要用到
+     * @param int $myid ID，表示获得这个ID下的所有子级
+     * @param string $str 生成树型结构的基本代码，例如："<option value=\$id \$selected>\$spacer\$name</option>"
+     * @param int $sid 被选中的ID，比如在做树型下拉框的时候需要用到
+     * @param string $adds
+     * @param string $str_group
      * @return string
      */
     public function get_tree_array($myid, $str, $sid = 0, $adds = '', $str_group = '') {
@@ -192,7 +197,8 @@ class Tree {
      * @param string $str   第一种HTML代码方式
      * @param string $str2  第二种HTML代码方式
      * @param integer $sid  默认选中
-     * @param integer $adds 前缀
+     * @param string $adds 前缀
+     * @return string
      */
     public function get_tree_category($myid, $str, $str2, $sid = 0, $adds = '') {
         $number = 1;
@@ -226,14 +232,15 @@ class Tree {
 
     /**
      * 同上一类方法，jquery treeview 风格，可伸缩样式（需要treeview插件支持）
-     * @param $myid 表示获得这个ID下的所有子级
-     * @param $effected_id 需要生成treeview目录数的id
-     * @param $str 末级样式
-     * @param $str2 目录级别样式
-     * @param $showlevel 直接显示层级数，其余为异步显示，0为全部限制
-     * @param $style 目录样式 默认 filetree 可增加其他样式如'filetree treeview-famfamfam'
-     * @param $currentlevel 计算当前层级，递归使用 适用改函数时不需要用该参数
-     * @param $recursion 递归使用 外部调用时为FALSE
+     * @param string $myid 表示获得这个ID下的所有子级
+     * @param string $effected_id 需要生成treeview目录数的id
+     * @param string $str 末级样式
+     * @param string $str2 目录级别样式
+     * @param int $showlevel 直接显示层级数，其余为异步显示，0为全部限制
+     * @param string $style 目录样式 默认 filetree 可增加其他样式如'filetree treeview-famfamfam'
+     * @param int $currentlevel 计算当前层级，递归使用 适用改函数时不需要用该参数
+     * @param boolean $recursion 递归使用 外部调用时为FALSE
+     * @return string
      */
     function get_treeview($myid, $effected_id = 'example', $str = "<span class='file'>\$name</span>", $str2 = "<span class='folder'>\$name</span>", $showlevel = 0, $style = 'filetree ', $currentlevel = 1, $recursion = FALSE) {
         $child = $this->get_child($myid);
@@ -276,8 +283,9 @@ class Tree {
 
     /**
      * 获取子栏目json
-     * Enter description here ...
-     * @param unknown_type $myid
+     * @param string $myid
+     * @param string $str
+     * @return string
      */
     public function creat_sub_json($myid, $str = '') {
         $sub_cats = $this->get_child($myid);

@@ -51,7 +51,7 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 验证字段名是否已经存在
-	 * @param type $fieldName
+	 * @param string $fieldName
 	 * @return boolean false已经存在，true不存在
 	 */
 	public function isFieldUnique($fieldName) {
@@ -76,8 +76,8 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 根据模型ID读取全部字段信息
-	 * @param type $modelid 模型ID
-	 * @return type
+	 * @param string $modelid 模型ID
+	 * @return null|array
 	 */
 	public function getModelField($modelid) {
 		return $this->where(array("modelid" => $modelid))->order(array("listorder" => "ASC"))->select();
@@ -85,9 +85,9 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 检查该字段是否允许添加
-	 * @param type $field 字段名称
-	 * @param type $field_type 字段类型
-	 * @param type $modelid 模型
+	 * @param string $field 字段名称
+	 * @param string $field_type 字段类型
+	 * @param string $modelid 模型
 	 * @return boolean
 	 */
 	public function isAddField($field, $field_type, $modelid) {
@@ -113,7 +113,7 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 判断字段是否允许被编辑
-	 * @param type $field 字段名称
+	 * @param string $field 字段名称
 	 * @return boolean
 	 */
 	public function isEditField($field) {
@@ -134,7 +134,7 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 判断字段是否允许删除
-	 * @param type $field 字段名称
+	 * @param string $field 字段名称
 	 * @return boolean
 	 */
 	public function isDelField($field) {
@@ -147,8 +147,8 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 根据模型ID，返回表名
-	 * @param type $modelid
-	 * @param type $modelid
+	 * @param string $modelid
+	 * @param string|int $issystem
 	 * @return string
 	 */
 	protected function getModelTableName($modelid, $issystem = 1) {
@@ -163,7 +163,7 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 添加字段
-	 * @param type $data 字段相关数据
+	 * @param array $data 字段相关数据
 	 * @return boolean
 	 */
 	public function addField($data) {
@@ -252,8 +252,8 @@ class ModelFieldModel extends Model {
 
 	/**
 	 *  编辑字段
-	 * @param type $data 编辑字段数据
-	 * @param type $fieldid 字段id
+	 * @param array $data 编辑字段数据
+	 * @param int $fieldid 字段id
 	 * @return boolean
 	 */
 	public function editField($data, $fieldid = 0) {
@@ -357,7 +357,7 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 删除字段
-	 * @param type $fieldid 字段id
+	 * @param string $fieldid 字段id
 	 * @return boolean
 	 */
 	public function deleteField($fieldid) {
@@ -391,8 +391,8 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 根据字段类型，增加对应的字段到相应表里面
-	 * @param type $field_type 字段类型
-	 * @param type $field 相关配置
+	 * @param string $field_type 字段类型
+	 * @param array $field 相关配置
 	 * $field = array(
 	 *      'tablename' 表名(完整表名)
 	 *      'fieldname' 字段名
@@ -403,6 +403,7 @@ class ModelFieldModel extends Model {
 	 *      'decimaldigits' 小数位数
      *      'comment' 字段注释
 	 * )
+     * @return boolean
 	 */
 	protected function addFieldSql($field_type, $field) {
 		//表名
@@ -580,8 +581,8 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 执行数据库表结构更改
-	 * @param type $field_type 字段类型
-	 * @param type $field 相关配置
+	 * @param string $field_type 字段类型
+	 * @param array $field 相关配置
 	 * $field = array(
 	 *      'tablename' 表名(完整表名)
 	 *      'newfilename' 新字段名
@@ -593,6 +594,7 @@ class ModelFieldModel extends Model {
 	 *      'decimaldigits' 小数位数
      *      'comment' 字段注释
 	 * )
+     * @return boolean
 	 */
 	protected function editFieldSql($field_type, $field) {
 		//表名
@@ -771,8 +773,9 @@ class ModelFieldModel extends Model {
 
 	/**
 	 * 根据字段类型，删除对应的字段到相应表里面
-	 * @param type $filename 字段名称
-	 * @param type $tablename 完整表名
+	 * @param string $filename 字段名称
+	 * @param string $tablename 完整表名
+     * @return boolean
 	 */
 	protected function deleteFieldSql($filename, $tablename) {
 		//不带表前缀的表名

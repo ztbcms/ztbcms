@@ -56,14 +56,14 @@ class Page {
 
     /**
      * 构造函数
-     * @param type $Total_Size 信息总数
-     * @param type $Page_Size 每页显示信息数量
-     * @param type $Current_Page 当前分页号
-     * @param type $List_Page 每次显示几个分页导航链接
-     * @param type $PageParam 接收分页号参数的标识符
-     * @param type $pageRule 分页规则
-     * @param type $static 是否开启静态
-     * @param type $static_size 生成静态页面数量，0为不限制
+     * @param int $Total_Size 信息总数
+     * @param int $Page_Size 每页显示信息数量
+     * @param int $Current_Page 当前分页号
+     * @param int $List_Page 每次显示几个分页导航链接
+     * @param string $PageParam 接收分页号参数的标识符
+     * @param string $pageRule 分页规则
+     * @param boolean $static 是否开启静态
+     * @param int $static_size 生成静态页面数量，0为不限制
      */
     function __construct($Total_Size = 1, $Page_Size = 20, $Current_Page = 1, $List_Page = 6, $PageParam = 'page', $pageRule = '', $static = FALSE, $static_size = 0) {
         //默认模板配置
@@ -101,21 +101,21 @@ class Page {
 
     /**
      * 显示分页导航html代码
-     * @param type $Tpl_Name 分页模板名称
-     * @return type
+     * @param string $Tpl_Name 分页模板名称
+     * @return string
      */
     public function show($Tpl_Name = 'default') {
         //当分页数只有1的时候，不显示
         if ($this->Total_Pages <= 1) {
-            return;
+            return '';
         }
         return $this->Pager($this->Page_tpl[$Tpl_Name]);
     }
 
     /**
      * 组合地址
-     * @param type $url
-     * @return type
+     * @param array $url
+     * @return string
      */
     private function urlParameters($url = array()) {
         foreach ($url as $key => $val) {
@@ -142,7 +142,7 @@ class Page {
 
     /**
      * 处理分页
-     * @param type $Page_tpl 分页模板和配置
+     * @param string $Page_tpl 分页模板和配置
      * @return string
      */
     protected function Pager($Page_tpl = '') {
@@ -354,9 +354,9 @@ class Page {
 
     /**
      * 设置分页模板
-     * @param type $Tpl_Name 模板名称
-     * @param type $Tpl 模板内容
-     * @param type $Config 模板配置
+     * @param string $Tpl_Name 模板名称
+     * @param string $Tpl 模板内容
+     * @param array $Config 模板配置
      */
     public function SetPager($Tpl_Name = 'default', $Tpl = '', $Config = array()) {
         $this->Page_tpl[$Tpl_Name] = array(

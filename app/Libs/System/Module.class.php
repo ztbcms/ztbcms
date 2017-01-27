@@ -32,7 +32,7 @@ class Module {
 	/**
 	 * 连接
 	 * @access public
-	 * @return void
+	 * @return Module
 	 */
 	static public function getInstance() {
 		return \Think\Think::instance('\\Libs\\System\\Module');
@@ -48,7 +48,7 @@ class Module {
 
 	/**
 	 * 设置当前模块名称
-	 * @param type $name 模块名
+	 * @param string $name 模块名
 	 * @return \Libs\System\Module
 	 */
 	public function setName($name) {
@@ -58,8 +58,8 @@ class Module {
 
 	/**
 	 * 获取模块基本配置信息
-	 * @param type $moduleName 模块名(目录名)
-	 * @return boolean
+	 * @param string $moduleName 模块名(目录名)
+	 * @return boolean|array
 	 */
 	public function config($moduleName = '') {
 		if (!empty($this->config) && empty($moduleName)) {
@@ -110,7 +110,7 @@ class Module {
 			try {
 				$moduleConfig = include $this->appPath . $moduleName . '/Config.inc.php';
 				$config = array_merge($config, $moduleConfig);
-			} catch (Exception $exc) {
+			} catch (\Exception $exc) {
 
 			}
 		}
@@ -125,7 +125,7 @@ class Module {
 
 	/**
 	 * 是否已经安装
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	public function isInstall($moduleName = '') {
@@ -146,7 +146,7 @@ class Module {
 
 	/**
 	 * 执行模块安装
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	public function install($moduleName = '') {
@@ -246,7 +246,7 @@ class Module {
 
 	/**
 	 * 模块卸载
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	public function uninstall($moduleName = '') {
@@ -314,7 +314,7 @@ class Module {
 
 	/**
 	 * 模块升级
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	public function upgrade($moduleName = '') {
@@ -360,7 +360,7 @@ class Module {
 
 	/**
 	 * 目录权限检查
-	 * @param type $moduleName 模块名称
+	 * @param string $moduleName 模块名称
 	 * @return boolean
 	 */
 	public function competence($moduleName = '') {
@@ -393,7 +393,7 @@ class Module {
 
 	/**
 	 * 检查对应目录是否有相应的权限
-	 * @param type $path 目录地址
+	 * @param string $path 目录地址
 	 * @return boolean
 	 */
 	protected function chechmod($path) {
@@ -413,7 +413,7 @@ class Module {
 
 	/**
 	 * 卸载菜单项项
-	 * @param type $moduleName
+	 * @param string $moduleName
 	 * @return boolean
 	 */
 	private function uninstallMenu($moduleName = '') {
@@ -431,8 +431,8 @@ class Module {
 
 	/**
 	 * 安装菜单项
-	 * @param type $moduleName 模块名称
-	 * @param type $file 文件
+	 * @param string $moduleName 模块名称
+	 * @param string $file 文件
 	 * @return boolean
 	 */
 	private function installMenu($moduleName = '', $file = 'Menu') {
@@ -464,7 +464,7 @@ class Module {
 
 	/**
 	 * 执行安装脚本
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	private function runInstallScript($moduleName = '', $Dir = 'Install') {
@@ -492,7 +492,7 @@ class Module {
 
 	/**
 	 * 执行安装脚本
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	private function runInstallScriptEnd($moduleName = '', $Dir = 'Install') {
@@ -520,7 +520,7 @@ class Module {
 
 	/**
 	 * 执行安装数据库脚本
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
 	 * @return boolean
 	 */
 	private function runSQL($moduleName = '', $Dir = 'Install') {
@@ -548,7 +548,8 @@ class Module {
 
 	/**
 	 * 安装回滚
-	 * @param type $moduleName 模块名(目录名)
+	 * @param string $moduleName 模块名(目录名)
+     * @return boolean
 	 */
 	private function installRollback($moduleName = '') {
 		if (empty($moduleName)) {
@@ -569,6 +570,7 @@ class Module {
 	 * 分析处理sql语句，执行替换前缀都功能。
 	 * @param string $sql 原始的sql
 	 * @param string $tablepre 表前缀
+     * @return array
 	 */
 	private function resolveSQL($sql, $tablepre) {
 		if ($tablepre != "cms_") {

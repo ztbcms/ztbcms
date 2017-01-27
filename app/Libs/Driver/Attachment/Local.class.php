@@ -67,7 +67,7 @@ class Local extends Attachment {
 
 	/**
 	 * 上传全部文件
-	 * @param array $Callback 上传回调，数组
+	 * @param boolean $Callback 上传回调，数组
 	 * @return boolean|array
 	 */
 	public function upload($Callback = false) {
@@ -119,12 +119,11 @@ class Local extends Attachment {
 			$this->error = $this->handler->getErrorMsg();
 			return false;
 		}
-		return true;
 	}
 
 	/**
 	 * 删除文件
-	 * @param type $file 如果为数字，表示根据aid删除，其他为文件路径
+	 * @param string|int $file 如果为数字，表示根据aid删除，其他为文件路径
 	 * @return boolean
 	 */
 	public function delFile($file) {
@@ -140,7 +139,7 @@ class Local extends Attachment {
 				}
 				try {
 					return unlink($filepath);
-				} catch (Exception $exc) {
+				} catch (\Exception $exc) {
 					$this->error = '文件[' . $filepath . ']删除失败！';
 					return false;
 				}
@@ -164,7 +163,7 @@ class Local extends Attachment {
 				if (D('Attachment/Attachment')->where(array("authcode" => $authcode))->delete()) {
 					try {
 						return unlink($this->options['uploadfilepath'] . $newFile);
-					} catch (Exception $exc) {
+					} catch (\Exception $exc) {
 						$this->error = '文件[' . $this->options['uploadfilepath'] . $newFile . ']删除失败！';
 						return false;
 					}
@@ -179,20 +178,20 @@ class Local extends Attachment {
 						return false;
 					}
 					return unlink($this->options['uploadfilepath'] . $newFile);
-				} catch (Exception $exc) {
+				} catch (\Exception $exc) {
 					$this->error = '文件[' . $this->options['uploadfilepath'] . $newFile . ']删除失败！';
 					return false;
 				}
 			}
 		}
-		return true;
 	}
 
 	/**
 	 * 远程保存
-	 * @param $value 传入下载内容
-	 * @param $watermark 是否加入水印
-	 * @param $ext 下载扩展名
+	 * @param string $value 传入下载内容
+	 * @param boolean|null $watermark 是否加入水印
+	 * @param string $ext 下载扩展名
+     * @return string
 	 */
 	public function download($value, $watermark = null, $ext = 'gif|jpg|jpeg|bmp|png') {
 		//检查是否有开启CURL
@@ -286,7 +285,7 @@ class Local extends Attachment {
 
 	/**
 	 * 获取上传错误信息
-	 * @return type
+	 * @return string
 	 */
 	public function getErrorMsg() {
 		return $this->error;

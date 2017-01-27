@@ -10,7 +10,7 @@
     </ul>
   </div>
   <div class="mb10">
-		<a href="javascript:void(0)" onClick="javascript:openwinx('{:U("Content/add",array("catid"=>$catid))}','')" class="btn" title="添加内容"><span class="add"></span>添加内容</a>
+		<a href="javascript:void(0)" onClick="javascript:openwinx('{:U("Content/add",array("catid"=>$catid))}','')" class="btn btn-default" title="添加内容"><span class="add"></span>添加内容</a>
          栏目列表生成：<select class="select_2" onChange="window.location.href=''+this.value+''">
        <option value="{:U('Createhtml/categoryhtml',array('catid'=>$catid))}" >列表生成</option>
        <option value="{:U('Createhtml/categoryhtml',array('catid'=>$catid))}">生成当前栏目列表</option>
@@ -18,7 +18,7 @@
        <option value="{:U('Createhtml/categoryhtml',array('catid'=>$parentid))}">生成父栏目列表</option>
        </if>
     </select>
-    <a href="{$url}" target="_blank"  class="btn" title="访问该栏目">访问该栏目</a>
+    <a href="{$url}" target="_blank"  class="btn btn-default" title="访问该栏目">访问该栏目</a>
 
     <if condition="isModuleInstall('Transport')">
       <a class="btn btn-primary" href="{:U('Transport/Export/classlist', I('get.'))}" target="_blank">导出到Excel</a>
@@ -133,13 +133,13 @@
     <div class="btn_wrap">
       <div class="btn_wrap_pd">
         <label class="mr20"><input type="checkbox" class="J_check_all" data-direction="y" data-checklist="J_check_y">全选</label>                
-        <button class="btn J_ajax_submit_btn" type="submit" data-action="{:U('Content/listorder',array('catid'=>$catid))}">排序</button>
-        <button class="btn J_ajax_submit_btn" type="submit" data-action="{:U('Content/public_check',array('catid'=>$catid))}">审核</button>
-        <button class="btn J_ajax_submit_btn" type="submit" data-action="{:U('Content/public_nocheck',array('catid'=>$catid))}">取消审核</button>
-        <button class="btn J_ajax_submit_btn" type="submit" data-action="{:U('Content/delete',array('catid'=>$catid))}">删除</button>
-        <button class="btn" type="button" onClick="pushs()">推送</button>
-        <button class="btn" type="button" id="J_Content_remove">批量移动</button>
-        <button class="btn J_ajax_submit_btn" type="submit" data-action="{:U('Createhtml/batch_show',array('catid'=>$catid,'steps'=>0))}">批量生成HTML</button>
+        <button class="btn btn-primary J_ajax_submit_btn" type="submit" data-action="{:U('Content/listorder',array('catid'=>$catid))}">排序</button>
+        <button class="btn btn-primary J_ajax_submit_btn" type="submit" data-action="{:U('Content/public_check',array('catid'=>$catid))}">审核</button>
+        <button class="btn btn-danger J_ajax_submit_btn" type="submit" data-action="{:U('Content/public_nocheck',array('catid'=>$catid))}">取消审核</button>
+        <button class="btn btn-danger J_ajax_submit_btn" type="submit" data-action="{:U('Content/delete',array('catid'=>$catid))}">删除</button>
+        <button class="btn btn-primary " type="button" onClick="pushs()">推送</button>
+        <button class="btn btn-primary " type="button" id="J_Content_remove">批量移动</button>
+        <button class="btn btn-primary J_ajax_submit_btn" type="submit" data-action="{:U('Createhtml/batch_show',array('catid'=>$catid,'steps'=>0))}">批量生成HTML</button>
       </div>
     </div>
   </form>

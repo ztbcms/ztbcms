@@ -29,7 +29,7 @@ class ModuleModel extends Model {
 
 	/**
 	 * 检查是否已经安装
-	 * @param type $moduleName
+	 * @param string $moduleName
 	 * @return boolean 有安装false，没安装true
 	 */
 	public function isInstall($moduleName) {
@@ -42,7 +42,7 @@ class ModuleModel extends Model {
 
 	/**
 	 * 模块状态转换
-	 * @param type $module 模块
+	 * @param string $module 模块
 	 * @return boolean
 	 */
 	public function disabled($module) {
@@ -73,7 +73,7 @@ class ModuleModel extends Model {
 
 	/**
 	 * 更新缓存
-	 * @return type
+	 * @return array|boolean
 	 */
 	public function module_cache() {
 		$data = $this->select();

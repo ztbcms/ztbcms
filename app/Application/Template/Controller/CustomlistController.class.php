@@ -98,7 +98,7 @@ class CustomlistController extends AdminBase {
 	}
 	/**
 	 * 初始模板和URL规则信息
-	 * @param type $info
+	 * @param array $info
 	 */
 	private function templateAndRule($info = array('urlruleid' => '')) {
 		$filepath = TEMPLATE_PATH . (empty(self::$Cache["Config"]['theme']) ? "Default" : self::$Cache["Config"]['theme']) . "/Content/";

@@ -10,10 +10,10 @@ class Encrypt {
 
 	/**
 	 * 加密解密
-	 * @param type $string 明文 或 密文
-	 * @param type $operation DECODE表示解密,其它表示加密
-	 * @param type $key 密匙
-	 * @param type $expiry 密文有效期
+	 * @param string $string 明文 或 密文
+	 * @param string $operation DECODE表示解密,其它表示加密
+	 * @param string $key 密匙
+	 * @param int $expiry 密文有效期
 	 * @return string
 	 */
 	public static function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {

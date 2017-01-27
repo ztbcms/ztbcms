@@ -6,7 +6,9 @@
 
 namespace Libs\Service;
 
-class Attachment extends \Libs\System\Service {
+use Libs\System\Service;
+
+class Attachment extends Service {
 
 	/**
 	 * 操作句柄
@@ -28,8 +30,8 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 魔术方法，获取配置
-	 * @param type $name
-	 * @return type
+	 * @param string $name
+	 * @return string
 	 */
 	public function __get($name) {
 		return isset($this->options[$name]) ? $this->options[$name] : NULL;
@@ -37,8 +39,8 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 *  魔术方法，设置options参数
-	 * @param type $name
-	 * @param type $value
+	 * @param string $name
+	 * @param string $value
 	 */
 	public function __set($name, $value) {
 		$this->options[$name] = $value;
@@ -46,9 +48,9 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 连接附件系统
-	 * @param type $name 服务名
-	 * @param type $options 参数
-	 * @return \Libs\Service\class
+	 * @param string $name 服务名
+	 * @param array $options 参数
+	 * @return Attachment
 	 */
 	public static function connect($name = '', $options = array()) {
 		if (empty($options['type'])) {
@@ -67,6 +69,7 @@ class Attachment extends \Libs\System\Service {
 		if (class_exists($class)) {
 			$connect = new $class($options);
 		} else {
+            $connect = null;
 			E("附件驱动 {$class} 不存在！");
 		}
 		return $connect;
@@ -74,7 +77,7 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 返回最近一条错误信息
-	 * @return type
+	 * @return string
 	 */
 	public function getError() {
 		return $this->error;
@@ -89,8 +92,8 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 把一个文件移动到另外一个位置
-	 * @param type $originalFilesPath 原文件地址
-	 * @param type $movingFilesPath 移动目标地址 SITE_PATH
+	 * @param string $originalFilesPath 原文件地址
+	 * @param string $movingFilesPath 移动目标地址 SITE_PATH
 	 * @return boolean
 	 */
 	public function movingFiles($originalFilesPath, $movingFilesPath) {
@@ -110,7 +113,7 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 删除文件
-	 * @param type $file 如果为数字，表示根据aid删除，其他为文件路径
+	 * @param string $file 如果为数字，表示根据aid删除，其他为文件路径
 	 * @return boolean
 	 */
 	public function delFile($file) {
@@ -119,7 +122,7 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 删除文件夹（包括下面的文件）
-	 * @param type $file 如果为数字，表示根据aid删除，其他为文件路径
+	 * @param string $file 如果为数字，表示根据aid删除，其他为文件路径
 	 * @return boolean
 	 */
 	public function delDir($dirPath) {
@@ -134,12 +137,13 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 图片加水印
-	 * @param type $source 原图文件名。
-	 * @param type $water 水印图片文件名
-	 * @param type $savename 要保存的图片名，如果留空则用source
-	 * @param type $alpha  水印图片的alpha值，默认为80，范围为0~100
-	 * @param type $waterPos 水印位置。
-	 * @param type $quality jpg图片质量
+	 * @param string $source 原图文件名。
+	 * @param string $water 水印图片文件名
+	 * @param string $savename 要保存的图片名，如果留空则用source
+	 * @param string $alpha  水印图片的alpha值，默认为80，范围为0~100
+	 * @param string $waterPos 水印位置。
+	 * @param string $quality jpg图片质量
+     * @return  string
 	 */
 	public function water($source, $water = null, $savename = null, $alpha = null, $waterPos = null, $quality = null) {
 		//设置默认水印
@@ -169,9 +173,10 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 远程保存
-	 * @param $value 传入下载内容
-	 * @param $watermark 是否加入水印
-	 * @param $ext 下载扩展名
+	 * @param string $value 传入下载内容
+	 * @param string $watermark 是否加入水印
+	 * @param string $ext 下载扩展名
+     * @return string
 	 */
 	public function download($value, $watermark = null, $ext = 'gif|jpg|jpeg|bmp|png') {
 		return $value;
@@ -179,8 +184,8 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 生成文件
-	 * @param type $file 需要写入的文件或者二进制流
-	 * @param type $filename 需要生成的文件名的绝对路径
+	 * @param string $file 需要写入的文件或者二进制流
+	 * @param string $filename 需要生成的文件名的绝对路径
 	 * @return boolean
 	 */
 	protected function build_file($file, $filename) {
@@ -199,7 +204,7 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 通过附件关系删除附件
-	 * @param type $keyid 关联ID
+	 * @param string $keyid 关联ID
 	 * @return boolean 布尔值
 	 */
 	public function api_delete($keyid) {
@@ -231,8 +236,9 @@ class Attachment extends \Libs\System\Service {
 	/**
 	 * 附件更新接口.
 	 * @param string $content 可传入空，html，数组形式url，url地址，传入空时，以cookie方式记录。
-	 * @param string 传入附件关系表中的组装id
-	 * @isurl intval 为本地地址时设为1,以cookie形式管理时设置为2
+	 * @param string $keyid 传入附件关系表中的组装id
+	 * @isurl int $isurl 为本地地址时设为1,以cookie形式管理时设置为2
+     * @return boolean
 	 */
 	public function api_update($content, $keyid, $isurl = 0) {
 		$keyid = trim($keyid);
@@ -255,7 +261,7 @@ class Attachment extends \Libs\System\Service {
 				$dir_name = $upload_url;
 			}
 			if ($isurl == 0) {
-//分析$content中的附件地址
+                //分析$content中的附件地址
 				$pattern = '/(href|src)=\"(.*)\"/isU';
 				preg_match_all($pattern, $content, $matches);
 				if (is_array($matches) && !empty($matches)) {
@@ -267,7 +273,7 @@ class Attachment extends \Libs\System\Service {
 					}
 				}
 			} elseif ($isurl == 1) {
-//不用分析$content中的地址，$content本身就是一个地址，或者是一个一个数组的情况
+                //不用分析$content中的地址，$content本身就是一个地址，或者是一个一个数组的情况
 				//如果传入的是数组
 				if (is_array($content)) {
 					$att_arr = array_unique($content);
@@ -320,9 +326,9 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 设置upload上传的json格式cookie
-	 * @param type $aid 附件ID
-	 * @param type $src 附件地址
-	 * @param type $filename 附件名称
+	 * @param string $aid 附件ID
+	 * @param string $src 附件地址
+	 * @param string $filename 附件名称
 	 * @return boolean 返回布尔值
 	 */
 	public function upload_json($aid, $src, $filename) {
@@ -343,7 +349,7 @@ class Attachment extends \Libs\System\Service {
 
 	/**
 	 * 获取上传错误信息
-	 * @return type
+	 * @return string
 	 */
 	public function getErrorMsg() {
 		return $this->error;

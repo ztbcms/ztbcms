@@ -13,7 +13,6 @@ abstract class Behavior {
 
 	/**
 	 * 模板输出变量
-	 * @var tVar
 	 * @access protected
 	 */
 	protected $tVar = array();
