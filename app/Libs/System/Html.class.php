@@ -24,7 +24,7 @@ class Html extends Base {
 
 	/**
 	 * 获取错误提示
-	 * @return type
+	 * @return string
 	 */
 	public function getError() {
 		return $this->error;
@@ -34,7 +34,7 @@ class Html extends Base {
 	 * 设置数据对象值
 	 * @access public
 	 * @param mixed $data 数据
-	 * @return Model
+	 * @return Html
 	 */
 	public function data($data = '') {
 		if ('' === $data && !empty($this->data)) {
@@ -53,8 +53,9 @@ class Html extends Base {
 
 	/**
 	 * 生成内容页
-	 * @param  $data 数据
-	 * @param  $array_merge 是否合并
+	 * @param array $data 数据
+	 * @param int $array_merge 是否合并
+     * @return boolean
 	 */
 	public function show($data = '', $array_merge = 1) {
 		if (empty($data)) {
@@ -179,7 +180,8 @@ class Html extends Base {
 
 	/**
 	 * 根据页码生成栏目
-	 * @param $catid 栏目id
+	 * @param string $catid 栏目id
+     * @return boolean
 	 */
 	public function category($catid) {
 		//获取栏目数据
@@ -214,7 +216,7 @@ class Html extends Base {
 			//模板文件路径
 			$template = parseTemplateFile($template);
 		} else if ($category['type'] == 1) {
-//单页
+            //单页
 			$db = D('Content/Page');
 			$template = $setting['page_template'] ? $setting['page_template'] : 'page';
 			//判断使用模板类型，如果有子栏目使用频道页模板，终极栏目使用的是列表模板
@@ -305,7 +307,8 @@ class Html extends Base {
 
 	/**
 	 * 生成父栏目列表
-	 * @param $catid
+	 * @param string $catid
+     * @return boolean
 	 */
 	public function createRelationHtml($catid) {
 		if (empty($catid)) {
@@ -326,7 +329,7 @@ class Html extends Base {
 
 	/**
 	 * 生成自定义页面
-	 * @param type $data
+	 * @param array|string|int $data
 	 * @return boolean
 	 */
 	public function createHtml($data = '') {
@@ -377,7 +380,7 @@ class Html extends Base {
 
 	/**
 	 * 生成自定义列表页面
-	 * @param type $data
+	 * @param  $data
 	 * @return boolean
 	 */
 	public function createListHtml($data = '') {
@@ -466,9 +469,8 @@ class Html extends Base {
 
 	/**
 	 * 获取首页页URL规则处理后的
-	 * @param type $data 数据
-	 * @param type $page 分页号
-	 * @return type
+	 * @param int|string $page 分页号
+	 * @return string
 	 */
 	protected function generateIndexUrl($page = 1) {
 		return $this->Url->index($page);
@@ -476,9 +478,9 @@ class Html extends Base {
 
 	/**
 	 * 获取内容页URL规则处理后的
-	 * @param type $data 数据
-	 * @param type $page 分页号
-	 * @return type
+	 * @param array $data 数据
+	 * @param int $page 分页号
+	 * @return string
 	 */
 	protected function generateShowUrl($data, $page = 1) {
 		return $this->Url->show($data, $page);
@@ -486,9 +488,9 @@ class Html extends Base {
 
 	/**
 	 * 获取栏目页URL规则处理后的
-	 * @param type $catid 栏目ID
-	 * @param type $page 分页号
-	 * @return type
+	 * @param string $catid 栏目ID
+	 * @param string $page 分页号
+	 * @return string
 	 */
 	protected function generateCategoryUrl($catid, $page = 1) {
 		return $this->Url->category_url($catid, $page);

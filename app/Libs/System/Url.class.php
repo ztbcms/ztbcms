@@ -22,7 +22,7 @@ class Url {
 
 	/**
 	 * 获取错误提示
-	 * @return type
+	 * @return string
 	 */
 	public function getError() {
 		return $this->error;
@@ -32,7 +32,7 @@ class Url {
 	 * 设置数据对象值
 	 * @access public
 	 * @param mixed $data 数据
-	 * @return Model
+	 * @return Url|array
 	 */
 	public function data($data = '') {
 		if ('' === $data && !empty($this->data)) {
@@ -51,7 +51,7 @@ class Url {
 
 	/**
 	 * 首页链接
-	 * @param type $page 页码
+	 * @param int $page 页码
 	 * @return array Array (
 	 *    [url] => / 访问地址
 	 *    [path] => /index.html 生存路径
@@ -102,8 +102,8 @@ class Url {
 
 	/**
 	 * 生成内容页相关地址
-	 * @param type $data 文章数据
-	 * @param type $page 当前分页号
+	 * @param array $data 文章数据
+	 * @param int $page 当前分页号
 	 * @return boolean
 	 * Array
 	 * (
@@ -301,9 +301,9 @@ class Url {
 
 	/**
 	 * 获取栏目的访问路径
-	 * @param type $catid 栏目id
-	 * @param type $page 当前分页码
-	 * @return array Array
+	 * @param string $catid 栏目id
+	 * @param int $page 当前分页码
+	 * @return array|boolean
 	 * (
 	 *   [url] => http://news.abc.com/ 访问地址
 	 *   [path] => record/index.html 生成路径 动态木有
@@ -455,10 +455,10 @@ class Url {
 
 	/**
 	 * 获取Tags标签访问路径
-	 * @param type $data Tags数据，可以是数组，tagsname或者id
-	 * @param type $page 分页
-	 * @param type $ruleid 规则ID
-	 * @return type
+	 * @param string|array $data Tags数据，可以是数组，tagsname或者id
+	 * @param int $page 分页
+	 * @param int $ruleid 规则ID
+	 * @return boolean|array
 	 */
 	public function tags($data = '', $page = 1, $ruleid = 0) {
 		static $_tags = array();
@@ -480,7 +480,7 @@ class Url {
 			if (is_string($data)) {
 				$data = M('Tags')->where(array('tag' => $data))->find();
 			} else if (is_numeric($data)) {
-//tagsid
+                //tagsid
 				$data = M('Tags')->where(array('tagid' => $data))->find();
 			}
 			if (empty($data)) {
@@ -528,9 +528,9 @@ class Url {
 	/**
 	 * 生成自定义列表相关地址
 	 * @staticvar array $_createListUrl
-	 * @param type $data
-	 * @param type $page
-	 * @return boolean
+	 * @param string $data
+	 * @param int $page
+	 * @return boolean|array
 	 * Array
 	 * (
 	 *     [url] => http://news.abc.com/1970/web_01/2.html 访问路径
@@ -646,8 +646,9 @@ class Url {
 
 	/**
 	 * 根据栏目ID获取父栏目路径
-	 * @param $catid
-	 * @param $dir
+	 * @param string $catid
+	 * @param string $dir
+     * @return string
 	 */
 	public function get_categorydir($catid, $dir = '') {
 		//检查这个栏目是否有父栏目ID
