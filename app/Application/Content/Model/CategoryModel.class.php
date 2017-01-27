@@ -27,7 +27,7 @@ class CategoryModel extends Model {
 
 	/**
 	 * 验证setting配置信息
-	 * @param type $setting
+	 * @param string $setting
 	 * @return boolean
 	 */
 	public function checkSetting($setting, $type = "") {
@@ -47,11 +47,11 @@ class CategoryModel extends Model {
 
 	/**
 	 * 检查目录是否存在
-	 * @param type $catdir 栏目目录
-	 * @param type $catid 栏目ID
-	 * @param type $parentid 父栏目ID
-	 * @param type $old_catdir 原来的栏目目录
-	 * @param type $type 栏目类型
+	 * @param string $catdir 栏目目录
+	 * @param int $catid 栏目ID
+	 * @param int $parentid 父栏目ID
+	 * @param boolean $old_catdir 原来的栏目目录
+	 * @param int|boolean $type 栏目类型
 	 * @return boolean
 	 */
 	public function checkCatdir($catdir, $catid = 0, $parentid = 0, $old_catdir = false, $type = false) {
@@ -60,7 +60,7 @@ class CategoryModel extends Model {
 
 	/**
 	 * 添加栏目
-	 * @param type $data 页面提交数据
+	 * @param array $post 页面提交数据
 	 * @return boolean]
 	 */
 	public function addCategory($post) {
@@ -94,7 +94,7 @@ class CategoryModel extends Model {
 		}
 		//判断URL规则是否有设置
 		if ((int) $data['type'] == 0) {
-//内部栏目
+            //内部栏目
 			if (empty($data['setting']['category_ruleid'])) {
 				$this->error = '栏目URL规则没有设置！';
 				return false;
@@ -106,7 +106,7 @@ class CategoryModel extends Model {
 			//添加modelid自动验证规则
 			array_unshift($this->_validate, array('modelid', 'require', '所属模型不能为空！', 1, 'regex', 3));
 		} else if ((int) $data['type'] == 1) {
-//单页栏目
+            //单页栏目
 			if (empty($data['setting']['category_ruleid'])) {
 				$this->error = '栏目URL规则没有设置！';
 				return false;
@@ -151,7 +151,7 @@ class CategoryModel extends Model {
 
 	/**
 	 * 编辑栏目
-	 * @param type $post 页面提交过来的数据
+	 * @param array $post 页面提交过来的数据
 	 * @return boolean
 	 */
 	public function editCategory($post) {
@@ -196,7 +196,7 @@ class CategoryModel extends Model {
 		$data['sethtml'] = $data['setting']['ishtml'] ? 1 : 0;
 		//判断URL规则是否有设置
 		if ((int) $info['type'] == 0) {
-//内部栏目
+            //内部栏目
 			if (empty($data['setting']['category_ruleid'])) {
 				$this->error = '栏目URL规则没有设置！';
 				return false;
@@ -208,7 +208,7 @@ class CategoryModel extends Model {
 			//添加modelid自动验证规则
 			array_unshift($this->_validate, array('modelid', 'require', '所属模型不能为空！', 1, 'regex', 3));
 		} else if ((int) $info['type'] == 1) {
-//单页栏目
+            //单页栏目
 			if (empty($data['setting']['category_ruleid'])) {
 				$this->error = '栏目URL规则没有设置！';
 				return false;
@@ -252,7 +252,7 @@ class CategoryModel extends Model {
 
 	/**
 	 * 删除栏目，如果有子栏目，会删除对应的子目录
-	 * @param type $catid 可以是数组，可以是栏目id
+	 * @param array|string $catid 可以是数组，可以是栏目id
 	 * @return boolean
 	 */
 	public function deleteCatid($catid) {
@@ -336,7 +336,7 @@ class CategoryModel extends Model {
 	/**
 	 * 获取子栏目ID列表
 	 * @staticvar type $categorys 静态变量 栏目数据
-	 * @param type $catid 栏目id
+	 * @param string $catid 栏目id
 	 * @return string 返回栏目子列表，以逗号隔开
 	 */
 	public function getArrchildid($catid) {
@@ -357,8 +357,9 @@ class CategoryModel extends Model {
 	/**
 	 * 获取父栏目ID列表
 	 * @param integer $catid 栏目ID
-	 * @param array $arrparentid 父目录ID
+	 * @param string $arrparentid 父目录ID
 	 * @param integer $n 查找的层次
+     * @return string
 	 */
 	public function getArrparentid($catid, $arrparentid = '', $n = 1) {
 		if (empty($this->categorys)) {
@@ -381,7 +382,7 @@ class CategoryModel extends Model {
 
 	/**
 	 * 获取扩展字段
-	 * @param type $catid 栏目ID
+	 * @param string $catid 栏目ID
 	 * @return boolean
 	 */
 	public function getExtendField($catid) {
@@ -397,7 +398,7 @@ class CategoryModel extends Model {
 
 	/**
 	 * 删除某栏目下的扩展字段
-	 * @param type $where 删除条件
+	 * @param array $where 删除条件
 	 * @return boolean
 	 */
 	protected function extendFieldDel($where) {
@@ -409,8 +410,8 @@ class CategoryModel extends Model {
 
 	/**
 	 * 扩展字段处理
-	 * @param type $catid 栏目ID
-	 * @param type $post 数据
+	 * @param string $catid 栏目ID
+	 * @param array $post 数据
 	 * @return boolean
 	 */
 	public function extendField($catid, $post) {

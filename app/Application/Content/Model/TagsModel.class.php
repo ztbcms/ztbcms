@@ -19,11 +19,11 @@ class TagsModel extends Model {
 
 	/**
 	 * 添加tags
-	 * @param type $tagname tags名称 可以是数组
-	 * @param type $id 信息id
-	 * @param type $catid 栏目Id
-	 * @param type $modelid 模型id
-	 * @param type $data 附加数据
+	 * @param string $tagname tags名称 可以是数组
+	 * @param string $id 信息id
+	 * @param string $catid 栏目Id
+	 * @param string $modelid 模型id
+	 * @param array $data 附加数据
 	 * @return boolean
 	 */
 	public function addTag($tagname, $id, $catid, $modelid, $data = array()) {
@@ -86,11 +86,11 @@ class TagsModel extends Model {
 
 	/**
 	 * 根据指定的条件更新tags数据
-	 * @param type $tagname
-	 * @param type $id
-	 * @param type $catid
-	 * @param type $modelid
-	 * @param type $data
+	 * @param string $tagname
+	 * @param string $id
+	 * @param string $catid
+	 * @param string $modelid
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function updata($tagname, $id, $catid, $modelid, $data = array()) {
@@ -126,9 +126,9 @@ class TagsModel extends Model {
 
 	/**
 	 * 根据信息id删除全部的tags记录
-	 * @param type $id
-	 * @param type $catid
-	 * @param type $modelid
+	 * @param string $id
+	 * @param string $catid
+	 * @param string $modelid
 	 * @return boolean
 	 */
 	public function deleteAll($id, $catid, $modelid) {
@@ -153,10 +153,10 @@ class TagsModel extends Model {
 
 	/**
 	 * 删除tag
-	 * @param type $tagname
-	 * @param type $id
-	 * @param type $catid
-	 * @param type $modelid
+	 * @param string $tagname
+	 * @param string $id
+	 * @param string $catid
+	 * @param string $modelid
 	 * @return boolean
 	 */
 	public function deleteTagName($tagname, $id, $catid, $modelid) {

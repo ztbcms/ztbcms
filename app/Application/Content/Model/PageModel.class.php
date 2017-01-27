@@ -24,7 +24,7 @@ class PageModel extends Model {
 
 	/**
 	 * 根据栏目ID获取内容
-	 * @param type $catid 栏目ID
+	 * @param string $catid 栏目ID
 	 * @return boolean
 	 */
 	public function getPage($catid) {
@@ -36,7 +36,7 @@ class PageModel extends Model {
 
 	/**
 	 * 更新单页内容
-	 * @param type $post 表单数据
+	 * @param array $post 表单数据
 	 * @return boolean
 	 */
 	public function savePage($post) {
