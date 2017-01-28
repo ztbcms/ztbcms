@@ -366,10 +366,8 @@
 
 .article_con {
     border: 1px solid #CCC;
-    border-top: none;
     width: 972px;
     box-sizing: border-box;
-    background: url(../images/top_h2.gif) repeat-x top left;
     padding-top: 25px;
 }
 
