@@ -72,7 +72,7 @@
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar">
+    <aside class="main-sidebar" style="height: 300px;overflow: scroll">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
             <!-- search form 搜索框 -->
