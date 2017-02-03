@@ -66,7 +66,7 @@ var GV = {
           <!-- 将此标记放在您希望显示like按钮的位置 -->
           <div class="bdlikebutton"></div>
           <!-- 将此代码放在适当的位置，建议在body结束前 --> 
-          <script id="bdlike_shell"></script> 
+          
           <script>
 			var bdShare_config = {
 				"type":"medium",
@@ -75,7 +75,6 @@ var GV = {
 				"likeText":"喜欢,顶一个",
 				"likedText":"亲.您已顶过"
 			};
-			document.getElementById("bdlike_shell").src="http://bdimg.share.baidu.com/static/js/like_shell.js?t=" + new Date().getHours();
 		  </script> 
         </div>
         <!-- JiaThis Button BEGIN -->
@@ -141,9 +140,7 @@ var GV = {
       </ul>
       <div style="clear:both"></div>
     </div>
-    <div class="ad250" style="width:250px;height:250px;margin-bottom:8px;border:1px solid #ccc;"> 
-      <img src="http://placekitten.com/250/250" />
-    </div>
+
     <div class="hot_tj">
       <h2><span class="h2_txt">热点推荐</span></h2>
       <ul>

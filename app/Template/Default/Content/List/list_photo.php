@@ -203,13 +203,7 @@
   <div class="wp-pagenavi" style="display:none;">{$pages}</div>
 </div>
 <template file="Content/footer.php"/> 
-<!--[if lte IE 6]>
-<script src="http://letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
-<![endif]--> 
-<script type="text/javascript">
-var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F6a7ac600fcf5ef3f164732dcea2e2ba5' type='text/javascript'%3E%3C/script%3E"));
-</script> 
+
 <script type="text/tmpl" id="photo-template">
 <div id="post-<%=id%>" class="post-home">
     <div class="post-thumbnail">

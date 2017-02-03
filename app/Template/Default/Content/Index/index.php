@@ -202,16 +202,6 @@ jQuery(".focusBox").slide({ titCell:".num li", mainCell:".pic",effect:"fold", au
       </content>
       </ul>
     </div>
-    <div class="right_tag">
-      <h2><span class="h2_txt">网站云标签</span></h2>
-      <div class="right_tag_con"> 
-      <tags action="top"  num="12"  order="hits DESC">
-      <volist name="data" id="vo">
-          <a title="{$vo.tag}" href="{$vo.url}">{$vo.tag}</a> 
-      </volist>
-      </tags> 
-      </div>
-    </div>
   </div>
   <div style="clear:both"></div>
   <!--top part end--> 
@@ -280,9 +270,7 @@ jQuery(".focusBox").slide({ titCell:".num li", mainCell:".pic",effect:"fold", au
   </div>
   <div style="clear:both"></div>
 </div>
-<div class="big_ad1 margin8" style="padding: 0;"> 
-  <img src="http://placekitten.com/970/102" />
-</div>
+
 <div class="w972s margin8">
   <div class="web_jc">
     <h2><span class="more right"><a href="{:getCategory(6,'url')}" target="_blank">更多>></a></span><span class="h2_txt">SEO优化</span></h2>
@@ -346,9 +334,7 @@ jQuery(".focusBox").slide({ titCell:".num li", mainCell:".pic",effect:"fold", au
   </div>
   <div style="clear:both"></div>
 </div>
-<div class="big_ad1" style="padding: 0;"> 
-  <img src="http://lorempixel.com/970/102" />
-</div>
+
 <div class="art_pic">
   <h2><span class="more right"><a href="{:getCategory(8,'url')}">更多>></a></span><span class="h2_txt">设计欣赏/artist</span></h2>
   <ul>

@@ -28,8 +28,8 @@ var GV = {
   <p style="float:right;padding-right:15px;"></p>
 </div>
 <div class="w972" style="margin-top:8px;">
-  <div class="article_article_left left">
-    <div class="article_con">
+  <div class="article_article_left left w972">
+    <div class="article_con w972">
       <h1 title="{$title}">{$title}</h1>
       <p class="info"> 出处:本站原创&nbsp;&nbsp;&nbsp;发布时间:{$updatetime}&nbsp;&nbsp;&nbsp;   您是第<span id="hits">0</span>位浏览者 </p>
       <div class="tool_con">
@@ -69,7 +69,6 @@ var GV = {
           <!-- 将此标记放在您希望显示like按钮的位置 -->
           <div class="bdlikebutton"></div>
           <!-- 将此代码放在适当的位置，建议在body结束前 --> 
-          <script id="bdlike_shell"></script> 
           <script>
 			var bdShare_config = {
 				"type":"medium",
@@ -78,7 +77,6 @@ var GV = {
 				"likeText":"喜欢,顶一个",
 				"likedText":"亲.您已顶过"
 			};
-			document.getElementById("bdlike_shell").src="http://bdimg.share.baidu.com/static/js/like_shell.js?t=" + new Date().getHours();
 		  </script> 
         </div>
         <!-- JiaThis Button BEGIN -->
@@ -119,47 +117,7 @@ var GV = {
       <div id="ds-reset" style="margin: 8px;"></div>
     </div>
   </div>
-  <!--article_list_left end-->
-  <div class="article_list_right right">
-    <div class="fenlei">
-      <h2><span class="h2_txt">分类栏目</span></h2>
-      <ul>
-      <content action="category" catid="getCategory($catid,'parentid')"  order="listorder ASC" >
-      <volist name="data" id="vo">
-        <li><a href='{$vo.url}' <if condition=" $catid eq $vo['catid'] "> class='thisclass'</if>  title="{$vo.catname}">{$vo.catname}</a></li>
-      </volist>
-      </content>
-      </ul>
-      <div style="clear:both"></div>
-    </div>
-    <!--分类栏目end-->
-    <div class="rand_pic">
-      <h2><span class="h2_txt">推荐图文</span></h2>
-      <ul>
-      <content action="lists" catid="$catid"  order="id DESC" num="4" thumb="1">
-       <volist name="data" id="vo">
-        <li><a href="{$vo.url}" title="{$vo.title}"><img src='<if condition="$vo['thumb']">{$vo.thumb}<else />{$config_siteurl}statics/default/images/defaultpic.gif</if>' border='0' width='140' height='100' alt='{$vo.title}'><span title="{$vo.title}">{$vo.title|str_cut=###,50}</span></a></li>
-       </volist>
-      </content>
-      </ul>
-      <div style="clear:both"></div>
-    </div>
-    <div class="ad250" style="width:250px;height:250px;margin-bottom:8px;border:1px solid #ccc;"> 
-      <img src="http://placekitten.com/250/250" />
-    </div>
-    <div class="hot_tj">
-      <h2><span class="h2_txt">热点推荐</span></h2>
-      <ul>
-      <content action="hits" catid="$catid"  order="weekviews DESC" num="10">
-       <volist name="data" id="vo">
-        <li><a href="{$vo.url}" title="{$vo.title}">{$vo.title|str_cut=###,42}</a></li>
-      </volist>
-      </content>
-      </ul>
-      <div style="clear:both"></div>
-    </div>
-    <!--热门推荐 end-->
-  </div>
+
   <div style="clear:both"></div>
 </div>
 <template file="Content/footer.php"/>

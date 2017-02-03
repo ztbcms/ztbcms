@@ -25,6 +25,11 @@ class ModuleController extends AdminBase {
     }
 
     //本地模块列表
+    public function local(){
+        $this->redirect('index');
+    }
+
+    //本地模块列表
     public function index() {
         //取得模块目录名称
         $dirs = glob($this->appPath . '*');
