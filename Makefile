@@ -37,4 +37,4 @@ clean-install:
 	@echo '清除安装目录完毕!'	
 	
 	
-.PHONY: main serve setup-env setup-ubuntu-env clean-runtime
+.PHONY: main serve setup-env setup-ubuntu-env clean-runtime clean-install
