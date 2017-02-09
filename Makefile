@@ -9,7 +9,9 @@ serve:
 
 # 初始化ubuntu运行环境
 setup-ubuntu-env:
-	sudo apt-get update && sudo apt-get install mysql-client apache2 php5 php5-curl php5-gd
+	sudo apt-get update && sudo apt-get install apache2 php5 php5-curl php5-gd php5-mysql
+	# 可选安装mysql
+	# sudo apt-get mysql-client
 
 # 初始化环境	 	
 setup-env:
