@@ -332,9 +332,10 @@ class ContentController extends AdminBase {
 			$this->error($model->getError());
 		}
 		if (IS_POST) {
-			if (trim($_POST['info']['title']) == '') {
-				$this->error("标题不能为空！");
-			}
+			// 标题可以为空
+			// if (trim($_POST['info']['title']) == '') {
+			// 	$this->error("标题不能为空！");
+			// }
 			$id = $id ?: $_POST['info']['id'];
 			//取得原有文章信息
 			$data = $model->where(array("id" => $id))->find();
