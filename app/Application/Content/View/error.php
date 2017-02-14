@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <!doctype html>
 <html>
 <head>

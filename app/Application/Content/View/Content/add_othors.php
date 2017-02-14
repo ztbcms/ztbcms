@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <Admintemplate file="Common/Head"/>
 <body class="body_none" style="width:690px; height:500px;">
 <style>
