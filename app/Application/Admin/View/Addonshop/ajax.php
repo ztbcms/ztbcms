@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+
   <div class="table_list">
     <table width="100%">
       <thead>
