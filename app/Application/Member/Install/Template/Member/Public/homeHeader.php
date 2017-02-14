@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <div class="header">
   <div class="h_main">
     <ul class="menus">

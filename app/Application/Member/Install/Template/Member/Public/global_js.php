@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <script type="text/javascript">
 //全局变量
 var GV = {

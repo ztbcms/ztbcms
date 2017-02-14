@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <div class="header">
   <div class="header_con">
     <div class="logo">{:cache('Config.sitename')}</div>
