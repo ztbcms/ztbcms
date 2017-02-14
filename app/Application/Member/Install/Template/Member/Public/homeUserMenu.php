@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <?php
 switch (CONTROLLER_NAME) {
 	case 'Index':

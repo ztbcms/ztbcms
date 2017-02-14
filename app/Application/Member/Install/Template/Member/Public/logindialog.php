@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+ 
 <form>
   <div class="user_dialog_login">
     <input type="hidden" id="refer" value="{$forward}"/>
