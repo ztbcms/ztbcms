@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+
 <Admintemplate file="Common/Head"/>
 <style>
 .logs li { line-height:25px;}

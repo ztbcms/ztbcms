@@ -12,6 +12,7 @@
 * PHP版本需要5.4+ 推荐5.6(未支持PHP 7)
     * php5-curl 
     * php5-gd
+    * php5-mysql
 * Mysql 5.5+
     * mysql-client
 * Apache 2.2(推荐2.4) 

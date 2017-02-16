@@ -1,4 +1,4 @@
-<?php if (!defined('CMS_VERSION')) exit(); ?>
+
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
 <div class="wrap jj">
