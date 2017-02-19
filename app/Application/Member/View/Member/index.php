@@ -35,6 +35,19 @@
           </section>
 
           <section style="display: inline;">
+              审核:
+              <input class="input length_2" type="hidden" name="_filter[2]" value="checked">
+              <input class="input length_2" type="hidden" name="_operater[2]" value="EQ">
+
+              <select name="_value[2]" class="select_2">
+                  <option value='' <if condition=" $_value[2] == '' "> selected</if>>全部</option>
+                  <option value='1' <if condition=" $_value[2] == '1' "> selected</if>>审核通过</option>
+                  <option value='0' <if condition=" $_value[2] == '0' "> selected</if>>待审核</option>
+              </select>
+          </section>
+
+
+          <section style="display: inline;">
             <!-- 搜索字段 -->
             <select name="_filter[1]" class="select_2">
               <option value="username" <if condition=" $_filter[1] == 'username' "> selected</if>>用户名</option>
