@@ -1,5 +1,5 @@
 main:
-	echo "hello ZtbCMS"
+	echo "Hello ZTBCMS"
 
 # 使用PHP内置服务器运行	
 serve:
