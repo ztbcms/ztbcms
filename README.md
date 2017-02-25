@@ -16,6 +16,7 @@
 * Mysql 5.5+
     * mysql-client
 * Apache 2.2(推荐2.4) 
+* 可选的配置URL重写，参考[ThinkPHP - URL重写](http://document.thinkphp.cn/manual_3_2.html#url_rewrite)
 
 ## 下载安装
 

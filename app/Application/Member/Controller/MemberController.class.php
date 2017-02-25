@@ -29,7 +29,6 @@ class MemberController extends AdminBase {
     public function index() {
         $search = I("get.search", null);
         $where = [];
-        $where['checked'] = ['EQ', 1];
         if ($search) {
             //注册时间段
             $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
@@ -327,80 +326,7 @@ class MemberController extends AdminBase {
 			$this->member->where(array("userid" => array('IN', $userid)))->save(array("checked" => 1));
 			$this->success("审核成功！");
 		} else {
-			$where = array();
-			$search = I("get.search", null);
-			$where['checked'] = array("EQ", 0);
-			if ($search) {
-				//注册时间段
-				$start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
-				$end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d', time());
-				//开始时间
-				$where_start_time = strtotime($start_time) ? strtotime($start_time) : 0;
-				//结束时间
-				$where_end_time = strtotime($end_time) + 86400;
-				//开始时间大于结束时间，置换变量
-				if ($where_start_time > $where_end_time) {
-					$tmp = $where_start_time;
-					$where_start_time = $where_end_time;
-					$where_end_time = $tmp;
-					$tmptime = $start_time;
-
-					$start_time = $end_time;
-					$end_time = $tmptime;
-					unset($tmp, $tmptime);
-				}
-				$where['regdate'] = array('between', array($where_start_time, $where_end_time));
-				//会员模型
-				$modelid = I('get.modelid', 0, 'intval');
-				if ($modelid > 0) {
-					$where['modelid'] = array("EQ", $modelid);
-				}
-				//会员组
-				$groupid = I('get.groupid', 0, 'intval');
-				if ($groupid > 0) {
-					$where['groupid'] = array("EQ", $groupid);
-				}
-				//关键字
-				$keyword = I('get.keyword');
-				if ($keyword) {
-					$type = I('get.type', 0, 'intval');
-					switch ($type) {
-						case 1:
-							$where['username'] = array("LIKE", '%' . $keyword . '%');
-							break;
-						case 2:
-							$where['userid'] = array("EQ", $keyword);
-							break;
-						case 3:
-							$where['email'] = array("LIKE", '%' . $keyword . '%');
-							break;
-						case 4:
-							$where['regip'] = array("EQ", $keyword);
-							break;
-						case 5:
-							$where['nickname'] = array("LIKE", '%' . $keyword . '%');
-							break;
-						default:
-							$where['username'] = array("LIKE", '%' . $keyword . '%');
-							break;
-					}
-				}
-			}
-
-			$count = $this->member->where($where)->count();
-			$page = $this->page($count, 20);
-			$data = $this->member->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("userid" => "DESC"))->select();
-			foreach ($this->groupCache as $g) {
-				$groupCache[$g['groupid']] = $g['name'];
-			}
-			foreach ($this->groupsModel as $m) {
-				$groupsModel[$m['modelid']] = $m['name'];
-			}
-			$this->assign('groupCache', $groupCache);
-			$this->assign('groupsModel', $groupsModel);
-			$this->assign("Page", $page->show('Admin'));
-			$this->assign("data", $data);
-			$this->display();
+			$this->redirect('Member/Member/index', ['search' => 1, '_filter[2]' => 'checked' , '_operator[2]' => 'EQ', '_value[2]' => 0]);
 		}
 	}
 

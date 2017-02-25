@@ -16,7 +16,6 @@ class AdminController extends AdminBase {
 	const isadmin = 1; //是否后台
 
 	//初始化
-
 	protected function _initialize() {
 		//除了swfupload不验证，其他都验证
 		if (ACTION_NAME != 'swfupload') {
