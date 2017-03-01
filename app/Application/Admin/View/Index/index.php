@@ -95,10 +95,23 @@
                     <?php $first_items = $top_menu['items'];?>
                     <volist name="first_items" id="first_menu" key="first_menu_index">
                         <li class="active treeview">
-                            <a href="{$first_menu['url']}">
+                            <?php
+                                $_href = $first_menu['url'];
+                                if(count($first_menu['items']) != 0){
+                                    $_href = '#';
+                                }
+                            ?>
+                            <a href="javascript:void(0);" data-url="{$_href}">
                                 <i class="fa fa-dashboard"></i>
                                 <span>{$first_menu['name']}</span>
-<!--                                <i class="fa fa-angle-left pull-right"></i>-->
+                                <if condition="count($first_menu['items']) == 0">
+                                        <!-- 没有子项则直接当该一级栏目是一个页面 -->
+                                        <i class="fa fa-angle-right pull-right" style="right: 3px;"></i>
+                                    <else/>
+                                        <!-- 有子项则展开 -->
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                </if>
+
                             </a>
 
                             <ul class="treeview-menu">
@@ -189,7 +202,12 @@
             $('.main-sidebar').on('click', 'ul li a', function(e){
                 e.preventDefault();
                 e.stopPropagation();
-                iframeJudge({'url' : $(this).prop('href')})
+                var redirect_url = $(this).data('url');
+                if(redirect_url != '' && redirect_url != '#'){
+                    iframeJudge({'url' : redirect_url})
+                }else{
+                    $(this).parent().toggleClass('active');
+                }
             });
 
             //点击登陆用户
