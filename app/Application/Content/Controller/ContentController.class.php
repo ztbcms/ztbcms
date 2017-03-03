@@ -347,7 +347,7 @@ class ContentController extends AdminBase {
 			$status = $this->Content->data($_POST['info'])->edit();
 			if ($status) {
 				//解除信息锁定
-				M("Locking")->where(array("userid" => User::getInstance()->id, "catid" => $catid, "id" => $id))->delete();
+				M("Locking")->where(array("userid" => User::getInstance()->id, "catid" => $this->catid, "id" => $id))->delete();
 				$this->success("修改成功！");
 			} else {
 				$this->error($this->Content->getError());
