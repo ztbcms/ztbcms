@@ -135,8 +135,12 @@ class PdoSessionHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testReadConvertsStreamToString()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('PHPUnit_MockObject cannot mock the PDOStatement class on HHVM. See https://github.com/sebastianbergmann/phpunit-mock-objects/pull/289');
+        }
+
         $pdo = new MockPdo('pgsql');
-        $pdo->prepareResult = $this->getMock('PDOStatement');
+        $pdo->prepareResult = $this->getMockBuilder('PDOStatement')->getMock();
 
         $content = 'foobar';
         $stream = $this->createStream($content);
@@ -152,9 +156,13 @@ class PdoSessionHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testReadLockedConvertsStreamToString()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('PHPUnit_MockObject cannot mock the PDOStatement class on HHVM. See https://github.com/sebastianbergmann/phpunit-mock-objects/pull/289');
+        }
+
         $pdo = new MockPdo('pgsql');
-        $selectStmt = $this->getMock('PDOStatement');
-        $insertStmt = $this->getMock('PDOStatement');
+        $selectStmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $insertStmt = $this->getMockBuilder('PDOStatement')->getMock();
 
         $pdo->prepareResult = function ($statement) use ($selectStmt, $insertStmt) {
             return 0 === strpos($statement, 'INSERT') ? $insertStmt : $selectStmt;
@@ -352,6 +360,10 @@ class MockPdo extends \PDO
     }
 
     public function beginTransaction()
+    {
+    }
+
+    public function rollBack()
     {
     }
 }

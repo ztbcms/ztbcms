@@ -15,9 +15,10 @@
  * @author    AC <alexever@gmail.com>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Payment\MerchantPay;
 
 use EasyWeChat\Core\AbstractAPI;
@@ -75,8 +76,7 @@ class API extends AbstractAPI
     /**
      * Send MerchantPay.
      *
-     * @param array  $params
-     * @param string $type
+     * @param array $params
      *
      * @return \EasyWeChat\Support\Collection
      */
@@ -137,7 +137,7 @@ class API extends AbstractAPI
     /**
      * Parse Response XML to array.
      *
-     * @param \Psr\Http\Message\ResponseInterface|string $response
+     * @param ResponseInterface $response
      *
      * @return \EasyWeChat\Support\Collection
      */

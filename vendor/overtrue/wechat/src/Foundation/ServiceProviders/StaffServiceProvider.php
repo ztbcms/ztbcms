@@ -19,8 +19,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+
 namespace EasyWeChat\Foundation\ServiceProviders;
 
+use EasyWeChat\Staff\Session;
 use EasyWeChat\Staff\Staff;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -42,6 +44,10 @@ class StaffServiceProvider implements ServiceProviderInterface
     {
         $pimple['staff'] = function ($pimple) {
             return new Staff($pimple['access_token']);
+        };
+
+        $pimple['staff_session'] = $pimple['staff.session'] = function ($pimple) {
+            return new Session($pimple['access_token']);
         };
     }
 }

@@ -20,14 +20,18 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015
  *
- * @link      https://github.com/overtrue/wechat
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Foundation;
 
+use Doctrine\Common\Cache\Cache as CacheInterface;
 use Doctrine\Common\Cache\FilesystemCache;
 use EasyWeChat\Core\AccessToken;
+use EasyWeChat\Core\Http;
 use EasyWeChat\Support\Log;
+use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -37,8 +41,10 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class Application.
  *
+ * @property \EasyWeChat\Core\AccessToken                $access_token
  * @property \EasyWeChat\Server\Guard                    $server
  * @property \EasyWeChat\User\User                       $user
+ * @property \EasyWeChat\User\Tag                        $user_tag
  * @property \EasyWeChat\User\Group                      $user_group
  * @property \EasyWeChat\Js\Js                           $js
  * @property \Overtrue\Socialite\SocialiteManager        $oauth
@@ -57,6 +63,11 @@ use Symfony\Component\HttpFoundation\Request;
  * @property \EasyWeChat\Payment\MerchantPay\MerchantPay $merchant_pay
  * @property \EasyWeChat\Reply\Reply                     $reply
  * @property \EasyWeChat\Broadcast\Broadcast             $broadcast
+ * @property \EasyWeChat\Card\Card                       $card
+ * @property \EasyWeChat\Device\Device                   $device
+ * @property \EasyWeChat\ShakeAround\ShakeAround         $shakearound
+ * @property \EasyWeChat\OpenPlatform\OpenPlatform       $open_platform
+ * @property \EasyWeChat\MiniProgram\MiniProgram         $mini_program
  */
 class Application extends Container
 {
@@ -82,6 +93,11 @@ class Application extends Container
         ServiceProviders\POIServiceProvider::class,
         ServiceProviders\ReplyServiceProvider::class,
         ServiceProviders\BroadcastServiceProvider::class,
+        ServiceProviders\CardServiceProvider::class,
+        ServiceProviders\DeviceServiceProvider::class,
+        ServiceProviders\ShakeAroundServiceProvider::class,
+        ServiceProviders\OpenPlatformServiceProvider::class,
+        ServiceProviders\MiniProgramServiceProvider::class,
     ];
 
     /**
@@ -105,7 +121,13 @@ class Application extends Container
         $this->registerBase();
         $this->initializeLogger();
 
-        Log::debug('Current configuration:', $config);
+        Http::setDefaultOptions($this['config']->get('guzzle', ['timeout' => 5.0]));
+
+        foreach (['app_id', 'secret'] as $key) {
+            !isset($config[$key]) || $config[$key] = '***'.substr($config[$key], -5);
+        }
+
+        Log::debug('Current config:', $config);
     }
 
     /**
@@ -188,16 +210,20 @@ class Application extends Container
             return Request::createFromGlobals();
         };
 
-        $this['cache'] = function () {
-            return new FilesystemCache(sys_get_temp_dir());
-        };
+        if (!empty($this['config']['cache']) && $this['config']['cache'] instanceof CacheInterface) {
+            $this['cache'] = $this['config']['cache'];
+        } else {
+            $this['cache'] = function () {
+                return new FilesystemCache(sys_get_temp_dir());
+            };
+        }
 
         $this['access_token'] = function () {
-           return new AccessToken(
-               $this['config']['app_id'],
-               $this['config']['secret'],
-               $this['cache']
-           );
+            return new AccessToken(
+                $this['config']['app_id'],
+                $this['config']['secret'],
+                $this['cache']
+            );
         };
     }
 
@@ -214,8 +240,15 @@ class Application extends Container
 
         if (!$this['config']['debug'] || defined('PHPUNIT_RUNNING')) {
             $logger->pushHandler(new NullHandler());
+        } elseif ($this['config']['log.handler'] instanceof HandlerInterface) {
+            $logger->pushHandler($this['config']['log.handler']);
         } elseif ($logFile = $this['config']['log.file']) {
-            $logger->pushHandler(new StreamHandler($logFile, $this['config']->get('log.level', Logger::WARNING)));
+            $logger->pushHandler(new StreamHandler(
+                $logFile,
+                $this['config']->get('log.level', Logger::WARNING),
+                true,
+                $this['config']->get('log.permission', null))
+            );
         }
 
         Log::setLogger($logger);

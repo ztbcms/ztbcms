@@ -15,9 +15,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Support;
 
 use EasyWeChat\Core\Exceptions\RuntimeException;
@@ -191,5 +192,15 @@ class Str
         $value = ucwords(str_replace(['-', '_'], ' ', $value));
 
         return static::$studlyCache[$key] = str_replace(' ', '', $value);
+    }
+
+    public static function isJson($value)
+    {
+        return json_decode($value) !== null;
+    }
+
+    public static function json2Array($value)
+    {
+        return json_decode($value, true);
     }
 }

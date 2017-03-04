@@ -15,9 +15,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Core;
 
 use Doctrine\Common\Cache\Cache;
@@ -51,6 +52,13 @@ class AccessToken
     protected $cache;
 
     /**
+     * Cache Key.
+     *
+     * @var string
+     */
+    protected $cacheKey;
+
+    /**
      * Http instance.
      *
      * @var Http
@@ -63,6 +71,13 @@ class AccessToken
      * @var string
      */
     protected $queryName = 'access_token';
+
+    /**
+     * Response Json key name.
+     *
+     * @var string
+     */
+    protected $tokenJsonKey = 'access_token';
 
     /**
      * Cache key prefix.
@@ -97,20 +112,34 @@ class AccessToken
      */
     public function getToken($forceRefresh = false)
     {
-        $cacheKey = $this->prefix.$this->appId;
-
+        $cacheKey = $this->getCacheKey();
         $cached = $this->getCache()->fetch($cacheKey);
 
         if ($forceRefresh || empty($cached)) {
             $token = $this->getTokenFromServer();
 
             // XXX: T_T... 7200 - 1500
-            $this->getCache()->save($cacheKey, $token['access_token'], $token['expires_in'] - 1500);
+            $this->getCache()->save($cacheKey, $token[$this->tokenJsonKey], $token['expires_in'] - 1500);
 
-            return $token['access_token'];
+            return $token[$this->tokenJsonKey];
         }
 
         return $cached;
+    }
+
+    /**
+     * 设置自定义 token.
+     *
+     * @param string $token
+     * @param int    $expires
+     *
+     * @return $this
+     */
+    public function setToken($token, $expires = 7200)
+    {
+        $this->getCache()->save($this->getCacheKey(), $token, $expires - 1500);
+
+        return $this;
     }
 
     /**
@@ -196,7 +225,7 @@ class AccessToken
      *
      * @throws \EasyWeChat\Core\Exceptions\HttpException
      *
-     * @return array|bool
+     * @return string
      */
     public function getTokenFromServer()
     {
@@ -210,7 +239,7 @@ class AccessToken
 
         $token = $http->parseJSON($http->get(self::API_TOKEN_GET, $params));
 
-        if (empty($token['access_token'])) {
+        if (empty($token[$this->tokenJsonKey])) {
             throw new HttpException('Request AccessToken fail. response: '.json_encode($token, JSON_UNESCAPED_UNICODE));
         }
 
@@ -239,5 +268,47 @@ class AccessToken
         $this->http = $http;
 
         return $this;
+    }
+
+    /**
+     * Set the access token prefix.
+     *
+     * @param string $prefix
+     *
+     * @return $this
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * Set access token cache key.
+     *
+     * @param string $cacheKey
+     *
+     * @return $this
+     */
+    public function setCacheKey($cacheKey)
+    {
+        $this->cacheKey = $cacheKey;
+
+        return $this;
+    }
+
+    /**
+     * Get access token cache key.
+     *
+     * @return string $this->cacheKey
+     */
+    public function getCacheKey()
+    {
+        if (is_null($this->cacheKey)) {
+            return $this->prefix.$this->appId;
+        }
+
+        return $this->cacheKey;
     }
 }

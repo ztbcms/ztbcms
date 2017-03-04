@@ -15,9 +15,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Payment;
 
 use EasyWeChat\Core\AbstractAPI;
@@ -94,6 +95,9 @@ class API extends AbstractAPI
     public function prepare(Order $order)
     {
         $order->notify_url = $order->get('notify_url', $this->merchant->notify_url);
+        if (is_null($order->spbill_create_ip)) {
+            $order->spbill_create_ip = ($order->trade_type === Order::NATIVE) ? get_server_ip() : get_client_ip();
+        }
 
         return $this->request(self::API_PREPARE_ORDER, $order->all());
     }
@@ -180,6 +184,7 @@ class API extends AbstractAPI
      * @param float  $refundFee
      * @param string $opUserId
      * @param string $type
+     * @param string $refundAccount
      *
      * @return \EasyWeChat\Support\Collection
      */
@@ -189,7 +194,8 @@ class API extends AbstractAPI
         $totalFee,
         $refundFee = null,
         $opUserId = null,
-        $type = self::OUT_TRADE_NO
+        $type = self::OUT_TRADE_NO,
+        $refundAccount = 'REFUND_SOURCE_UNSETTLED_FUNDS'
         ) {
         $params = [
             $type => $orderNo,
@@ -197,6 +203,7 @@ class API extends AbstractAPI
             'total_fee' => $totalFee,
             'refund_fee' => $refundFee ?: $totalFee,
             'refund_fee_type' => $this->merchant->fee_type,
+            'refund_account' => $refundAccount,
             'op_user_id' => $opUserId ?: $this->merchant->merchant_id,
         ];
 
@@ -210,6 +217,7 @@ class API extends AbstractAPI
      * @param float  $totalFee
      * @param float  $refundFee
      * @param string $opUserId
+     * @param string $refundAccount
      *
      * @return \EasyWeChat\Support\Collection
      */
@@ -218,9 +226,10 @@ class API extends AbstractAPI
         $refundNo,
         $totalFee,
         $refundFee = null,
-        $opUserId = null
+        $opUserId = null,
+        $refundAccount = 'REFUND_SOURCE_UNSETTLED_FUNDS'
         ) {
-        return $this->refund($orderNo, $refundNo, $totalFee, $refundFee, $opUserId, self::TRANSCATION_ID);
+        return $this->refund($orderNo, $refundNo, $totalFee, $refundFee, $opUserId, self::TRANSACTION_ID, $refundAccount);
     }
 
     /**
@@ -291,7 +300,7 @@ class API extends AbstractAPI
             'bill_type' => $type,
         ];
 
-        return $this->request(self::API_DOWNLOAD_BILL, $params, 'post', [], true)->getBody();
+        return $this->request(self::API_DOWNLOAD_BILL, $params, 'post', [\GuzzleHttp\RequestOptions::STREAM => true], true)->getBody();
     }
 
     /**
@@ -373,12 +382,14 @@ class API extends AbstractAPI
      * @param array  $params
      * @param string $method
      * @param array  $options
-     * @param bool   $options
+     * @param bool   $returnResponse
      *
      * @return \EasyWeChat\Support\Collection|\Psr\Http\Message\ResponseInterface
      */
     protected function request($api, array $params, $method = 'post', array $options = [], $returnResponse = false)
     {
+        $params = array_merge($params, $this->merchant->only(['sub_appid', 'sub_mch_id']));
+
         $params['appid'] = $this->merchant->app_id;
         $params['mch_id'] = $this->merchant->merchant_id;
         $params['device_info'] = $this->merchant->device_info;
@@ -417,7 +428,7 @@ class API extends AbstractAPI
     /**
      * Parse Response XML to array.
      *
-     * @param string|\Psr\Http\Message\ResponseInterface $response
+     * @param ResponseInterface $response
      *
      * @return \EasyWeChat\Support\Collection
      */

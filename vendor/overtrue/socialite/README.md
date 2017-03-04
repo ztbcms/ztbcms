@@ -91,7 +91,7 @@ $response = $socialite->driver('github')
 
 ### Redirect URL
 
-You may alse want to dynamic set `redirect`，you can use the following methods to change the `redirect` URL:
+You may also want to dynamic set `redirect`，you can use the following methods to change the `redirect` URL:
 
 ```php
 $socialite->redirect($url);
@@ -178,6 +178,14 @@ The `$user->getOriginal()` method will return an array of the API raw response.
 You can get the access token instance of current session by call `$user->getToken()` or `$user->getAccessToken()` or `$user['token']` .
 
 
+### Get user with access token
+
+```php
+$accessToken = new AccessToken(['access_token' => $accessToken]);
+$user = $socialite->user($accessToken);
+```
+
+
 ### Custom Session or Request instance.
 
 You can set the request with your custom `Request` instance which instanceof `Symfony\Component\HttpFoundation\Request`.
@@ -207,11 +215,11 @@ $request = $socialite->getRequest();
 By default, the `SocialiteManager` use `Symfony\Component\HttpFoundation\Session\Session` instance as session manager, you can change it as following lines:
 
 ```php
-$session = new YouCustomSessionManager();
+$session = new YourCustomSessionManager();
 $socialite->getRequest()->setSession($session);
 ```
 
-> Your custom session manager must be implement the `[Symfony\Component\HttpFoundation\Session\SessionInterface](http://api.symfony.com/3.0/Symfony/Component/HttpFoundation/Session/SessionInterface.html)`.
+> Your custom session manager must be implement the [`Symfony\Component\HttpFoundation\Session\SessionInterface`](http://api.symfony.com/3.0/Symfony/Component/HttpFoundation/Session/SessionInterface.html).
 
 Enjoy it! :heart:
 

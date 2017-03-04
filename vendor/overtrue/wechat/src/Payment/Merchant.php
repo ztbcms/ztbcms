@@ -15,9 +15,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Payment;
 
 use EasyWeChat\Support\Attribute;
@@ -61,6 +62,8 @@ class Merchant extends Attribute
         'app_id' => 'appid',
         'key' => 'mch_key',
         'merchant_id' => 'mch_id',
+        'sub_app_id' => 'sub_appid',
+        'sub_merchant_id' => 'sub_mch_id',
         'cert_path' => 'sslcert_path',
         'key_path' => 'sslkey_path',
     ];
