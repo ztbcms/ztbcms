@@ -117,7 +117,7 @@
                             <ul class="treeview-menu">
                                 <?php $second_items = $first_menu['items'];?>
                                 <volist name="second_items" id="second_menu" key="second_menu_index">
-                                    <li class=""><a data-url="{$second_menu['url']}">{$second_menu['name']}</a></li>
+                                    <li class=""><a href="javascript:void(0);" data-url="{$second_menu['url']}">{$second_menu['name']}</a></li>
                                 </volist>
                             </ul>
                         </li>
