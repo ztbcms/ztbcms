@@ -20,9 +20,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015
  *
- * @link      https://github.com/overtrue/wechat
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue/wechat
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Foundation\ServiceProviders;
 
 use EasyWeChat\Semantic\Semantic;
@@ -45,7 +46,7 @@ class SemanticServiceProvider implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['semantic'] = function ($pimple) {
-           return new Semantic($pimple['access_token']);
+            return new Semantic($pimple['access_token']);
         };
     }
 }

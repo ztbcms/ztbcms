@@ -15,9 +15,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Encryption;
 
 use EasyWeChat\Core\Exceptions\InvalidConfigException;
@@ -57,6 +58,13 @@ class Encryptor
      * @var int
      */
     protected $blockSize;
+
+    /**
+     * Aes key length.
+     *
+     * @var int
+     */
+    protected $aesKeyLength = 43;
 
     /**
      * Constructor.
@@ -210,8 +218,12 @@ class Encryptor
      */
     protected function getAESKey()
     {
-        if (empty($this->AESKey) || strlen($this->AESKey) !== 43) {
+        if (empty($this->AESKey)) {
             throw new InvalidConfigException("Configuration mission, 'aes_key' is required.");
+        }
+
+        if (strlen($this->AESKey) !== $this->aesKeyLength) {
+            throw new InvalidConfigException("The length of 'aes_key' must be {$this->aesKeyLength}.");
         }
 
         return base64_decode($this->AESKey.'=', true);

@@ -13,6 +13,7 @@ namespace Overtrue\Socialite\Providers;
 
 use Overtrue\Socialite\AccessToken;
 use Overtrue\Socialite\AccessTokenInterface;
+use Overtrue\Socialite\InvalidArgumentException;
 use Overtrue\Socialite\ProviderInterface;
 use Overtrue\Socialite\User;
 
@@ -40,6 +41,45 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
      * {@inheritdoc}.
      */
     protected $scopes = ['snsapi_login'];
+
+    /**
+     * Indicates if the session state should be utilized.
+     *
+     * @var bool
+     */
+    protected $stateless = true;
+
+    /**
+     * Return country code instead of country name.
+     *
+     * @var bool
+     */
+    protected $withCountryCode = false;
+
+    /**
+     * Return country code instead of country name.
+     *
+     * @return $this
+     */
+    public function withCountryCode()
+    {
+        $this->withCountryCode = true;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}.
+     */
+    public function getAccessToken($code)
+    {
+        $response = $this->getHttpClient()->get($this->getTokenUrl(), [
+            'headers' => ['Accept' => 'application/json'],
+            'query' => $this->getTokenFields($code),
+        ]);
+
+        return $this->parseAccessToken($response->getBody());
+    }
 
     /**
      * {@inheritdoc}.
@@ -70,13 +110,13 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getCodeFields($state = null)
     {
-        return [
-            'appid'         => $this->clientId,
-            'redirect_uri'  => $this->redirectUrl,
+        return array_merge([
+            'appid' => $this->clientId,
+            'redirect_uri' => $this->redirectUrl,
             'response_type' => 'code',
-            'scope'         => $this->formatScopes($this->scopes, $this->scopeSeparator),
-            'state'         => $state,
-        ];
+            'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
+            'state' => $state ?: md5(time()),
+        ], $this->parameters);
     }
 
     /**
@@ -84,6 +124,10 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getTokenUrl()
     {
+        if ($this->isOpenPlatform()) {
+            return $this->baseUrl.'/oauth2/component/access_token';
+        }
+
         return $this->baseUrl.'/oauth2/access_token';
     }
 
@@ -98,12 +142,18 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
             return $token->toArray();
         }
 
+        if (empty($token['openid'])) {
+            throw new InvalidArgumentException('openid of AccessToken is required.');
+        }
+
+        $language = $this->withCountryCode ? null : (isset($this->parameters['lang']) ? $this->parameters['lang'] : 'zh_CN');
+
         $response = $this->getHttpClient()->get($this->baseUrl.'/userinfo', [
-            'query' => [
+            'query' => array_filter([
                 'access_token' => $token->getToken(),
-                'openid'       => $token['openid'],
-                'lang'         => 'zh_CN',
-            ],
+                'openid' => $token['openid'],
+                'lang' => $language,
+            ]),
         ]);
 
         return json_decode($response->getBody(), true);
@@ -115,11 +165,11 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user)
     {
         return new User([
-            'id'       => $this->arrayItem($user, 'openid'),
-            'name'     => $this->arrayItem($user, 'nickname'),
+            'id' => $this->arrayItem($user, 'openid'),
+            'name' => $this->arrayItem($user, 'nickname'),
             'nickname' => $this->arrayItem($user, 'nickname'),
-            'avatar'   => $this->arrayItem($user, 'headimgurl'),
-            'email'    => null,
+            'avatar' => $this->arrayItem($user, 'headimgurl'),
+            'email' => null,
         ]);
     }
 
@@ -128,32 +178,32 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getTokenFields($code)
     {
-        return [
-            'appid'      => $this->clientId,
-            'secret'     => $this->clientSecret,
-            'code'       => $code,
+        $base = [
+            'appid' => $this->clientId,
+            'code' => $code,
             'grant_type' => 'authorization_code',
         ];
-    }
 
-    /**
-     * {@inheritdoc}.
-     */
-    public function getAccessToken($code)
-    {
-        $response = $this->getHttpClient()->get($this->getTokenUrl(), [
-            'query' => $this->getTokenFields($code),
+        if ($this->isOpenPlatform()) {
+            return array_merge($base, [
+                'component_appid' => $this->config->get('wechat.open_platform.app_id'),
+                'component_access_token' => $this->config->get('wechat.open_platform.access_token'),
+            ]);
+        }
+
+        return array_merge($base, [
+            'secret' => $this->clientSecret,
         ]);
-
-        return $this->parseAccessToken($response->getBody()->getContents());
     }
 
     /**
-     * {@inheritdoc}.
+     * Detect wechat open platform.
+     *
+     * @return bool
      */
-    protected function parseAccessToken($body)
+    protected function isOpenPlatform()
     {
-        return new AccessToken(json_decode($body, true));
+        return (bool) $this->config->get('wechat.open_platform');
     }
 
     /**
@@ -166,8 +216,8 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
     protected function removeCallback($response)
     {
         if (strpos($response, 'callback') !== false) {
-            $lpos     = strpos($response, '(');
-            $rpos     = strrpos($response, ')');
+            $lpos = strpos($response, '(');
+            $rpos = strrpos($response, ')');
             $response = substr($response, $lpos + 1, $rpos - $lpos - 1);
         }
 

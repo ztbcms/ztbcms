@@ -20,9 +20,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015
  *
- * @link      https://github.com/overtrue/wechat
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue/wechat
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Foundation\ServiceProviders;
 
 use EasyWeChat\Encryption\Encryptor;
@@ -54,7 +55,7 @@ class ServerServiceProvider implements ServiceProviderInterface
         };
 
         $pimple['server'] = function ($pimple) {
-            $server = new Guard();
+            $server = new Guard($pimple['config']['token']);
 
             $server->debug($pimple['config']['debug']);
 

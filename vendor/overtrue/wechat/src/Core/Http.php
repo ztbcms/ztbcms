@@ -19,6 +19,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+
 namespace EasyWeChat\Core;
 
 use EasyWeChat\Core\Exceptions\HttpException;
@@ -32,6 +33,12 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Http
 {
+    /**
+     * Used to identify handler defined by client code
+     * Maybe useful in the future.
+     */
+    const USER_DEFINED_HANDLER = 'userDefined';
+
     /**
      * Http client.
      *
@@ -47,12 +54,43 @@ class Http
     protected $middlewares = [];
 
     /**
+     * Guzzle client default settings.
+     *
+     * @var array
+     */
+    protected static $defaults = [
+        'curl' => [
+            CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+        ],
+    ];
+
+    /**
+     * Set guzzle default settings.
+     *
+     * @param array $defaults
+     */
+    public static function setDefaultOptions($defaults = [])
+    {
+        self::$defaults = $defaults;
+    }
+
+    /**
+     * Return current guzzle default settings.
+     *
+     * @return array
+     */
+    public static function getDefaultOptions()
+    {
+        return self::$defaults;
+    }
+
+    /**
      * GET request.
      *
      * @param string $url
      * @param array  $options
      *
-     * @return array|bool
+     * @return ResponseInterface
      *
      * @throws HttpException
      */
@@ -67,7 +105,7 @@ class Http
      * @param string       $url
      * @param array|string $options
      *
-     * @return array|bool
+     * @return ResponseInterface
      *
      * @throws HttpException
      */
@@ -78,23 +116,24 @@ class Http
         return $this->request($url, 'POST', [$key => $options]);
     }
 
-    /**
-     * JSON request.
-     *
-     * @param string       $url
-     * @param string|array $options
-     * @param int          $encodeOption
-     *
-     * @return array|bool
-     *
-     * @throws HttpException
-     */
-    public function json($url, $options = [], $encodeOption = JSON_UNESCAPED_UNICODE)
-    {
-        is_array($options) && $options = json_encode($options, $encodeOption);
+     /**
+      * JSON request.
+      *
+      * @param string       $url
+      * @param string|array $options
+      * @param array $queries
+      * @param int          $encodeOption
+      *
+      * @return ResponseInterface
+      *
+      * @throws HttpException
+      */
+     public function json($url, $options = [], $encodeOption = JSON_UNESCAPED_UNICODE, $queries = [])
+     {
+         is_array($options) && $options = json_encode($options, $encodeOption);
 
-        return $this->request($url, 'POST', ['body' => $options, 'headers' => ['content-type' => 'application/json']]);
-    }
+         return $this->request($url, 'POST', ['query' => $queries, 'body' => $options, 'headers' => ['content-type' => 'application/json']]);
+     }
 
     /**
      * Upload file.
@@ -103,7 +142,7 @@ class Http
      * @param array  $files
      * @param array  $form
      *
-     * @return array|bool
+     * @return ResponseInterface
      *
      * @throws HttpException
      */
@@ -142,7 +181,7 @@ class Http
     /**
      * Return GuzzleHttp\Client instance.
      *
-     * @return \GuzzleHttp\Client.
+     * @return \GuzzleHttp\Client
      */
     public function getClient()
     {
@@ -184,13 +223,15 @@ class Http
      * @param string $method
      * @param array  $options
      *
-     * @return array|bool
+     * @return ResponseInterface
      *
      * @throws HttpException
      */
     public function request($url, $method = 'GET', $options = [])
     {
         $method = strtoupper($method);
+
+        $options = array_merge(self::$defaults, $options);
 
         Log::debug('Client Request:', compact('url', 'method', 'options'));
 
@@ -248,7 +289,7 @@ class Http
      */
     protected function fuckTheWeChatInvalidJSON($invalidJSON)
     {
-        return preg_replace("/\p{Cc}/u", '', trim($invalidJSON));
+        return preg_replace('/[\x00-\x1F\x80-\x9F]/u', '', trim($invalidJSON));
     }
 
     /**
@@ -262,6 +303,10 @@ class Http
 
         foreach ($this->middlewares as $middleware) {
             $stack->push($middleware);
+        }
+
+        if (isset(static::$defaults['handler']) && is_callable(static::$defaults['handler'])) {
+            $stack->push(static::$defaults['handler'], self::USER_DEFINED_HANDLER);
         }
 
         return $stack;

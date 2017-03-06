@@ -9,17 +9,6 @@
  * with this source code in the file LICENSE.
  */
 
-/**
- * DoubanProvider.php.
- *
- * This file is part of the socialite.
- *
- * (c) overtrue <i@overtrue.me>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Overtrue\Socialite\Providers;
 
 use Overtrue\Socialite\AccessTokenInterface;
@@ -69,11 +58,11 @@ class DoubanProvider extends AbstractProvider implements ProviderInterface
     protected function mapUserToObject(array $user)
     {
         return new User([
-            'id'       => $this->arrayItem($user, 'id'),
+            'id' => $this->arrayItem($user, 'id'),
             'nickname' => $this->arrayItem($user, 'name'),
-            'name'     => $this->arrayItem($user, 'name'),
-            'avatar'   => $this->arrayItem($user, 'large_avatar'),
-            'email'    => null,
+            'name' => $this->arrayItem($user, 'name'),
+            'avatar' => $this->arrayItem($user, 'large_avatar'),
+            'email' => null,
         ]);
     }
 

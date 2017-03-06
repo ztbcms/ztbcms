@@ -171,6 +171,17 @@ if (window.parent !== window.self) {
 	}, 0);
 }
 </script>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?123929b4d143a8384864a99fd4199190";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
 </head>
 <body>
 <div class="wrap">

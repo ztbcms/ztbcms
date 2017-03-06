@@ -11,6 +11,7 @@
 
 use Mockery as m;
 use Overtrue\Socialite\AccessTokenInterface;
+use Overtrue\Socialite\Config;
 use Overtrue\Socialite\Providers\AbstractProvider;
 use Overtrue\Socialite\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $response = $provider->redirect();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertEquals('http://auth.url', $response->getTargetUrl());
+        $this->assertSame('http://auth.url', $response->getTargetUrl());
     }
 
     public function testRedirectUrl()
@@ -39,24 +40,25 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $request = Request::create('foo', 'GET', ['state' => str_repeat('A', 40), 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
 
-        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret');
+        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret');
         $this->assertNull($provider->getRedirectUrl());
 
-        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect_uri');
-        $this->assertEquals('redirect_uri', $provider->getRedirectUrl());
+        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret', 'redirect_uri');
+        $this->assertSame('redirect_uri', $provider->getRedirectUrl());
         $provider->setRedirectUrl('overtrue.me');
-        $this->assertEquals('overtrue.me', $provider->getRedirectUrl());
+        $this->assertSame('overtrue.me', $provider->getRedirectUrl());
 
         $provider->withRedirectUrl('http://overtrue.me');
-        $this->assertEquals('http://overtrue.me', $provider->getRedirectUrl());
+        $this->assertSame('http://overtrue.me', $provider->getRedirectUrl());
     }
 
     public function testUserReturnsAUserInstanceForTheAuthenticatedRequest()
     {
         $request = Request::create('foo', 'GET', ['state' => str_repeat('A', 40), 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
+
         $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
-        $provider       = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect_uri');
+        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret', 'redirect_uri');
         $provider->http = m::mock('StdClass');
         $provider->http->shouldReceive('post')->once()->with('http://token.url', [
             'headers' => ['Accept' => 'application/json'], 'form_params' => ['client_id' => 'client_id', 'client_secret' => 'client_secret', 'code' => 'code', 'redirect_uri' => 'redirect_uri'],
@@ -65,7 +67,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $user = $provider->user();
 
         $this->assertInstanceOf('Overtrue\Socialite\User', $user);
-        $this->assertEquals('foo', $user->getId());
+        $this->assertSame('foo', $user->getId());
     }
 
     /**
@@ -77,7 +79,25 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
         $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
         $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect');
-        $user     = $provider->user();
+        $user = $provider->user();
+    }
+
+    /**
+     * @expectedException Overtrue\Socialite\AuthorizeFailedException
+     * @expectedExceptionMessage Authorize Failed: {"error":"scope is invalid"}
+     */
+    public function testExceptionisThrownIfAuthorizeFailed()
+    {
+        $request = Request::create('foo', 'GET', ['state' => str_repeat('A', 40), 'code' => 'code']);
+        $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
+        $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
+        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret', 'redirect_uri');
+        $provider->http = m::mock('StdClass');
+        $provider->http->shouldReceive('post')->once()->with('http://token.url', [
+            'headers' => ['Accept' => 'application/json'], 'form_params' => ['client_id' => 'client_id', 'client_secret' => 'client_secret', 'code' => 'code', 'redirect_uri' => 'redirect_uri'],
+        ])->andReturn($response = m::mock('StdClass'));
+        $response->shouldReceive('getBody')->once()->andReturn('{"error":"scope is invalid"}');
+        $user = $provider->user();
     }
 
     /**
@@ -89,7 +109,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
         $session->shouldReceive('get')->once()->with('state');
         $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect');
-        $user     = $provider->user();
+        $user = $provider->user();
     }
 }
 

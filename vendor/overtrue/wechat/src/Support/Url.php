@@ -15,9 +15,10 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Support;
 
 /**
@@ -34,8 +35,20 @@ class Url
     {
         $protocol = (!empty($_SERVER['HTTPS'])
                         && $_SERVER['HTTPS'] !== 'off'
-                        || $_SERVER['SERVER_PORT'] === 443) ? 'https://' : 'http://';
+                        || (int) $_SERVER['SERVER_PORT'] === 443) ? 'https://' : 'http://';
 
         return $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    }
+
+    /**
+     * URL-encodes string.
+     *
+     * @param $url
+     *
+     * @return string
+     */
+    public static function encode($url)
+    {
+        return urlencode($url);
     }
 }

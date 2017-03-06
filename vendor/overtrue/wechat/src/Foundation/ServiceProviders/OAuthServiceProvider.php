@@ -19,6 +19,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+
 namespace EasyWeChat\Foundation\ServiceProviders;
 
 use Overtrue\Socialite\SocialiteManager as Socialite;
@@ -46,6 +47,7 @@ class OAuthServiceProvider implements ServiceProviderInterface
             $socialite = (new Socialite(
                 [
                     'wechat' => [
+                        'open_platform' => $pimple['config']['open_platform'],
                         'client_id' => $pimple['config']['app_id'],
                         'client_secret' => $pimple['config']['secret'],
                         'redirect' => $callback,
@@ -71,9 +73,11 @@ class OAuthServiceProvider implements ServiceProviderInterface
     private function prepareCallbackUrl($pimple)
     {
         $callback = $pimple['config']->get('oauth.callback');
+        if (0 === stripos($callback, 'http')) {
+            return $callback;
+        }
         $baseUrl = $pimple['request']->getSchemeAndHttpHost();
-        $callback = stripos($callback, 'http') === 0 ? $callback : $baseUrl.'/'.ltrim($callback, '/');
 
-        return $callback;
+        return $baseUrl.'/'.ltrim($callback, '/');
     }
 }

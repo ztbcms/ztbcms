@@ -15,10 +15,13 @@
  * @author    overtrue <i@overtrue.me>
  * @copyright 2015 overtrue <i@overtrue.me>
  *
- * @link      https://github.com/overtrue
- * @link      http://overtrue.me
+ * @see      https://github.com/overtrue
+ * @see      http://overtrue.me
  */
+
 namespace EasyWeChat\Support;
+
+use SimpleXMLElement;
 
 /**
  * Class XML.
@@ -34,13 +37,7 @@ class XML
      */
     public static function parse($xml)
     {
-        $data = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NOBLANKS);
-
-        if (is_object($data) && get_class($data) === 'SimpleXMLElement') {
-            $data = self::arrarval($data);
-        }
-
-        return $data;
+        return self::normalize(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NOBLANKS));
     }
 
     /**
@@ -74,8 +71,8 @@ class XML
         $attr = trim($attr);
         $attr = empty($attr) ? '' : " {$attr}";
         $xml = "<{$root}{$attr}>";
-        $xml  .= self::data2Xml($data, $item, $id);
-        $xml  .= "</{$root}>";
+        $xml .= self::data2Xml($data, $item, $id);
+        $xml .= "</{$root}>";
 
         return $xml;
     }
@@ -95,23 +92,33 @@ class XML
     /**
      * Object to array.
      *
-     * @param string $data
+     *
+     * @param SimpleXMLElement $obj
      *
      * @return array
      */
-    private static function arrarval($data)
+    protected static function normalize($obj)
     {
-        if (is_object($data) && get_class($data) === 'SimpleXMLElement') {
-            $data = (array) $data;
+        $result = null;
+
+        if (is_object($obj)) {
+            $obj = (array) $obj;
         }
 
-        if (is_array($data)) {
-            foreach ($data as $index => $value) {
-                $data[$index] = self::arrarval($value);
+        if (is_array($obj)) {
+            foreach ($obj as $key => $value) {
+                $res = self::normalize($value);
+                if (($key === '@attributes') && ($key)) {
+                    $result = $res;
+                } else {
+                    $result[$key] = $res;
+                }
             }
+        } else {
+            $result = $obj;
         }
 
-        return $data;
+        return $result;
     }
 
     /**
@@ -123,7 +130,7 @@ class XML
      *
      * @return string
      */
-    private static function data2Xml($data, $item = 'item', $id = 'id')
+    protected static function data2Xml($data, $item = 'item', $id = 'id')
     {
         $xml = $attr = '';
 
