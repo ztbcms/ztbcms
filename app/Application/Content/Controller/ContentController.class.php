@@ -502,7 +502,7 @@ class ContentController extends AdminBase {
 			foreach ($listorders as $id => $v) {
 				$db->where(array('id' => $id))->save(array('listorder' => $v));
 			}
-			$this->success('更新成功！', U('classlist', array('catid' => $this->catid)));
+			$this->success('更新成功！');
 		} else {
 			$this->error('参数错误！');
 		}
