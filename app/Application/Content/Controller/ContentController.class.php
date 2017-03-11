@@ -171,7 +171,7 @@ class ContentController extends AdminBase {
 			$count = $model->where($where)->count();
 		}
 		$page = $this->page($count, 20);
-		$data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("id" => "DESC"))->select();
+		$data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("listorder " => "DESC", "id" => "DESC"))->select();
 
 		//模板处理
 		$template = '';
@@ -502,7 +502,7 @@ class ContentController extends AdminBase {
 			foreach ($listorders as $id => $v) {
 				$db->where(array('id' => $id))->save(array('listorder' => $v));
 			}
-			$this->success('更新成功！', U('classlist', array('catid' => $this->catid)));
+			$this->success('更新成功！');
 		} else {
 			$this->error('参数错误！');
 		}

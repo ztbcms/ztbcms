@@ -14,7 +14,10 @@ define('IN_ADMIN', true);
 
 class AdminBase extends CMS {
 
-	//初始化
+    protected $uid;
+    protected $userInfo;
+
+    //初始化
 	protected function _initialize() {
 		C(array(
 			"USER_AUTH_ON" => true, //是否开启权限认证
@@ -49,13 +52,15 @@ class AdminBase extends CMS {
 		if (empty($uid)) {
 			return false;
 		}
-		//获取当前登录用户信息
+        $this->uid = $uid;
+        //获取当前登录用户信息
 		$userInfo = User::getInstance()->getInfo();
 		if (empty($userInfo)) {
 			User::getInstance()->logout();
 			return false;
 		}
-		//是否锁定
+        $this->userInfo = $userInfo;
+        //是否锁定
 		if (!$userInfo['status']) {
 			User::getInstance()->logout();
 			$this->error('您的帐号已经被锁定！', U('Public/login'));

@@ -11,18 +11,11 @@
   </div>
   <div class="mb10">
 		<a href="javascript:void(0)" onClick="javascript:openwinx('{:U("Content/add",array("catid"=>$catid))}','')" class="btn btn-default" title="添加内容"><span class="add"></span>添加内容</a>
-         栏目列表生成：<select class="select_2" onChange="window.location.href=''+this.value+''">
-       <option value="{:U('Createhtml/categoryhtml',array('catid'=>$catid))}" >列表生成</option>
-       <option value="{:U('Createhtml/categoryhtml',array('catid'=>$catid))}">生成当前栏目列表</option>
-       <if condition=" $parentid "> 
-       <option value="{:U('Createhtml/categoryhtml',array('catid'=>$parentid))}">生成父栏目列表</option>
-       </if>
-    </select>
-    <a href="{$url}" target="_blank"  class="btn btn-default" title="访问该栏目">访问该栏目</a>
+        <a href="{$url}" target="_blank"  class="btn btn-default" title="访问该栏目">访问该栏目</a>
 
-    <if condition="isModuleInstall('Transport')">
-      <a class="btn btn-primary" href="{:U('Transport/Export/classlist', I('get.'))}" target="_blank">导出到Excel</a>
-    </if>
+        <if condition="isModuleInstall('Transport')">
+          <a class="btn btn-primary" href="{:U('Transport/Export/classlist', I('get.'))}" target="_blank">导出到Excel</a>
+        </if>
 
   </div>
   <div class="h_a">搜索</div>
