@@ -139,7 +139,38 @@
         <!-- 内容页 -->
         <section class="content" style="padding: 0;">
             <div id="B_frame">
-                <iframe id="iframe_default" src="{:U('Main/index')}" style="height: 100%; width: 100%;display:none;" data-id="default" frameborder="0" scrolling="auto"></iframe>
+                <?php
+                //获取当前登录用户信息
+                $userInfo = \Admin\Service\User::getInstance()->getInfo();
+                //根据不同的角色，修改不同的默认页面
+                $default_page = U('Main/index');
+                //非超级管理员，显示首页默认为 其权限下的第一个页面(检索顺序为: 一级菜单 -> 二级菜单 -> 三级菜单)
+                if($userInfo['role_id'] != 1){
+                    //一级目录
+                    foreach ($submenu_config as $first_index => $first_menu){
+                        if(!empty($first_menu['items'])){
+                            //二级目录
+                            foreach ($first_menu['items'] as $second_index => $second_menu){
+                                if(!empty($second_menu['items'])){
+                                    //三级目录
+                                    foreach ($second_menu['items'] as $third_index => $third_menu){
+                                        $default_page = $third_menu['url'];
+                                        break;
+                                    }
+                                }else{
+                                    $default_page = $second_menu['url'];
+                                }
+                                break;
+                            }
+                        }else{
+                            $default_page = $first_menu['url'];
+                        }
+                        break;
+                    }
+                }
+                ?>
+                <iframe id="iframe_default" src="{$default_page}" style="height: 100%; width: 100%;display:none;" data-id="default" frameborder="0" scrolling="auto"></iframe>
+
             </div>
         </section>
         <!-- /.content -->
