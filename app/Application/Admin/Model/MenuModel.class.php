@@ -26,33 +26,34 @@ class MenuModel extends Model {
      * @return array
      */
     public function getMenuList() {
-        $items['0changyong'] = array(
-            "id" => "",
-            "name" => "常用菜单",
-            "parent" => "changyong",
-            "url" => U("Public/changyong"),
-        );
-        foreach (D('Admin/AdminPanel')->getAllPanel(\Admin\Service\User::getInstance()->id) as $r) {
-            $items[$r['mid'] . '0changyong'] = array(
-                "icon" => "",
-                "id" => $r['mid'] . '0changyong',
-                "name" => $r['name'],
-                "parent" => "changyong",
-                "url" => U($r['url']),
-            );
-        }
-        $changyong = array(
-            "changyong" => array(
-                "icon" => "",
-                "id" => "changyong",
-                "name" => "常用",
-                "parent" => "",
-                "url" => "",
-                "items" => $items
-            )
-        );
+//        $items['0changyong'] = array(
+//            "id" => "",
+//            "name" => "常用菜单",
+//            "parent" => "changyong",
+//            "url" => U("Public/changyong"),
+//        );
+//        foreach (D('Admin/AdminPanel')->getAllPanel(\Admin\Service\User::getInstance()->id) as $r) {
+//            $items[$r['mid'] . '0changyong'] = array(
+//                "icon" => "",
+//                "id" => $r['mid'] . '0changyong',
+//                "name" => $r['name'],
+//                "parent" => "changyong",
+//                "url" => U($r['url']),
+//            );
+//        }
+//        $changyong = array(
+//            "changyong" => array(
+//                "icon" => "",
+//                "id" => "changyong",
+//                "name" => "常用",
+//                "parent" => "",
+//                "url" => "",
+//                "items" => $items
+//            )
+//        );
         $data = $this->getTree(0);
-        return array_merge($changyong, $data ? $data : array());
+//        return array_merge($changyong, $data ? $data : array());
+        return empty($data) ? array() : $data;
     }
 
     /**
