@@ -47,10 +47,16 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    {:tag("view_admin_top_menu")}
-                    <li>
-                        <a href="{$Config.siteurl}" class="home" target="_blank">前台首页</a>
-                    </li>
+                    <?php
+                    //获取当前登录用户信息
+                    $userInfo = \Admin\Service\User::getInstance()->getInfo();
+                    ?>
+                    <if condition="$userInfo['role_id'] EQ 1">
+                        {:tag("view_admin_top_menu")}
+                        <li>
+                            <a href="{$Config.siteurl}" class="home" target="_blank">前台首页</a>
+                        </li>
+                    </if>
                     <?php if(\Libs\System\RBAC::authenticate('Admin/Index/cache')){ ?>
                         <li><a href="javascript:;;" id="deletecache" data-url="{:U('Admin/Index/cache')}">缓存更新</a></li>
                     <?php } ?>
