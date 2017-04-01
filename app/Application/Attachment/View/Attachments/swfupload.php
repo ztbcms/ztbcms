@@ -304,7 +304,6 @@ function album_cancel(obj,id,source){
 <script src="{$config_siteurl}statics/js/common.js"></script> 
 <script>
 $(function(){
-    //擦，ie8 ie9,会莫名奇妙的在div#att-status里面多一个 http:// 我太囧了。。。
     $("#att-status").html("");
     $("#att-status-del").html("");
     $("#att-name").html("");
