@@ -180,7 +180,7 @@
 <!-- ./wrapper -->
 
 <!-- jQuery 2.2.0 -->
-<script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jQuery-2.2.0.min.js"></script>
+<script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jQuery-2.2.3.min.js"></script>
 
 <!-- Bootstrap 3.3.6 -->
 <script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
