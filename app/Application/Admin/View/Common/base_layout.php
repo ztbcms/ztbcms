@@ -15,14 +15,48 @@
     <!-- AdminLTE 皮肤. 可以从/statics/admin/theme/adminlte/dist/css/skins/目录中选择其中一个 -->
     <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/dist/css/skins/skin-blue.css">
 
+
+
     <!-- jQuery 2.2.0 -->
     <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jQuery-2.2.3.min.js"></script>
 
     <!-- Bootstrap 3.3.6 -->
     <script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
 
+    <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
+
     <!-- vue.js -->
     <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
+    <script>
+        /**
+         * js资源加载完后进行全局初始化
+         */
+
+        ;(function () {
+
+            $(document).ready(function () {
+                //注册 ajax加载时 显示加载框
+                $(document).ajaxStart(function () {
+                    if (layer) {
+                        window.__layer_loading_index = layer.load(1);
+                    }
+                });
+                $(document).ajaxComplete(function () {
+                    if (layer) {
+                        layer.close(window.__layer_loading_index);
+                    }
+                });
+                $(document).ajaxError(function () {
+                    if (layer) {
+                        layer.msg('网络繁忙，请稍后再试..');
+                    }
+                })
+
+            });
+
+        })(jQuery);
+
+    </script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;">
 
