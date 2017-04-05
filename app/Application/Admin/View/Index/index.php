@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/dist/css/AdminLTE.min.css">
     <!-- AdminLTE 皮肤. 可以从/statics/admin/theme/adminlte/dist/css/skins/目录中选择其中一个 -->
     <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/dist/css/skins/skin-blue.css">
+
+    <!-- jQuery 2.2.0 -->
+    <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jQuery-2.2.3.min.js"></script>
+
+    <!-- Bootstrap 3.3.6 -->
+    <script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;">
 <div class="wrapper">
@@ -178,12 +184,6 @@
     <!-- /.content-wrapper -->
 </div>
 <!-- ./wrapper -->
-
-<!-- jQuery 2.2.0 -->
-<script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jQuery-2.2.0.min.js"></script>
-
-<!-- Bootstrap 3.3.6 -->
-<script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
 
 </body>
 <literal>

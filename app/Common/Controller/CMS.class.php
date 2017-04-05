@@ -36,6 +36,24 @@ class CMS extends Controller {
 		$this->assign("waitSecond", 3000);
 	}
 
+    /**
+     * 构建返回对象
+     * 
+     * @param bool   $status
+     * @param array  $data
+     * @param string $msg
+     * @param string $url
+     * @return array
+     */
+    static function createReturn($status = true, $data = [], $msg = '', $url = ''){
+        return [
+            'status' => $status,
+            'data' => $data,
+            'msg' => $msg,
+            'url' => $url
+        ];
+    }
+
 	/**
 	 * 获取CMS 对象
 	 * @return \Common\Controller\CMS

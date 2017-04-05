@@ -23,13 +23,20 @@ class RbacController extends AdminBase {
             } else {
                 $operating = '<a href="' . U("Rbac/authorize", array("id" => $rs["id"])) . '">权限设置</a> | <a href="' . U("Rbac/setting_cat_priv", array("roleid" => $rs["id"])) . '">栏目权限</a> | <a href="' . U('Management/manager', array('role_id' => $rs['id'])) . '">成员管理</a> | <a href="' . U('Rbac/roleedit', array('id' => $rs['id'])) . '">修改</a> | <a class="J_ajax_del" href="' . U('Rbac/roledelete', array('id' => $rs['id'])) . '">删除</a>';
             }
+            if ($rs['status'] == 1) {
+                $status = "<font color='red'>√</font>";
+            } else {
+                $status = "<font color='red'>×</font>";
+            }
+
             $roleList[$k]['operating'] = $operating;
+            $roleList[$k]['status'] = $status;
         }
         $str = "<tr>
           <td>\$id</td>
           <td>\$spacer\$name</td>
           <td>\$remark</td>
-          <td align='center'><font color='red'>√</font></td>
+          <td align='center'>\$status</td>
           <td align='center'>\$operating</td>
         </tr>";
         $tree->init($roleList);

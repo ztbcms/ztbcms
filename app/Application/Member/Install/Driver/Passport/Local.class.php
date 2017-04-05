@@ -50,7 +50,7 @@ class Local extends Passport {
 				)
 			);
 			//记录登录日志
-			$this->recordLogin($user['userid']);
+			$this->recordLogin($userinfo['userid']);
 			//登录成功
 			return $userinfo['userid'];
 		}
