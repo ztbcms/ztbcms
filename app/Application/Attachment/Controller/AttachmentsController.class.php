@@ -40,8 +40,8 @@ class AttachmentsController extends Base {
 	//检查是否有上传权限，json
 	public function competence() {
 		//上传个数,允许上传的文件类型,是否允许从已上传中选择,图片高度,图片高度,是否添加水印1是
-		$args = I('get.args');
-		//参数验证码
+        $args = I('get.args', '1,jpg|jpeg|gif|png|bmp,1,,,0');
+        //参数验证码
 		$authkey = I('get.authkey');
 		//模块
 		$module = I('get.module', 'content');
