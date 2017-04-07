@@ -47,7 +47,7 @@
 }
 .edit_uping .num {
     color: #999999;
-    float: right;
+    /*float: right;*/
     margin-top: 5px;
 }
 .edit_uping .num em {
@@ -266,7 +266,7 @@ function album_cancel(obj,id,source){
         <div class="edit_uping"> 
              <!--选择按钮-->
             <div class="addnew"><span  id="buttonPlaceHolder"></span></div>
-            <span class="num"><input type="checkbox" id="watermark_enable" value="1" <if condition=" $watermark_enable ">checked</if>  onclick="change_params()"><em>是否添加水印</em> 最多上传<em> {$file_upload_limit}</em> 个附件,单文件最大 <em>{$file_size_limit} KB</em>，<em style="cursor: help;" title="可上传格式：{$file_types}">支持格式？</em></span>
+            <span class="num"><input type="checkbox" id="watermark_enable" value="1" <if condition=" $watermark_enable ">checked</if>  onclick="change_params()"><em>是否添加水印</em> 最多上传<em> {$file_upload_limit}</em> 个附件,单文件最大 <em>{$file_size_limit} KB</em>，<em style="cursor: help;" title="可上传格式：{$file_types}">支持格式：{$file_types}</em></span>
         </div>
         <div class="eidt_uphoto">
           <ul id="fsUploadProgress" class="cc">
@@ -304,6 +304,9 @@ function album_cancel(obj,id,source){
 <script src="{$config_siteurl}statics/js/common.js"></script> 
 <script>
 $(function(){
+    //注入
+    window.$ = $;
+
     $("#att-status").html("");
     $("#att-status-del").html("");
     $("#att-name").html("");
