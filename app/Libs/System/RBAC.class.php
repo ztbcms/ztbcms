@@ -117,12 +117,12 @@ class RBAC {
 				if (!isset($accessList[strtoupper($appName)][strtoupper($controller)][strtoupper(ACTION_NAME)])) {
 
 				    if($accessList[strtoupper($appName)][strtoupper($controller)]['%']){
-                        //如果控制下有 % 则该控制权限都拥有
+                        //如果控制器下有 % 则该控制器下方法权限都拥有
                         return true;
                     }
 
                     if($accessList[strtoupper($appName)]['%']){
-                        //如果模块下有 % 则该控制权限都拥有
+                        //如果模块下有 % 则该模块的控制器权限都拥有
                         return true;
                     }
 
