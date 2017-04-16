@@ -115,7 +115,18 @@ class RBAC {
 				//判断是否为组件化模式，如果是，验证其全模块名
 				$controller = defined('P_CONTROLLER_NAME') ? P_CONTROLLER_NAME : CONTROLLER_NAME;
 				if (!isset($accessList[strtoupper($appName)][strtoupper($controller)][strtoupper(ACTION_NAME)])) {
-					//验证登录
+
+				    if($accessList[strtoupper($appName)][strtoupper($controller)]['%']){
+                        //如果控制器下有 % 则该控制器下方法权限都拥有
+                        return true;
+                    }
+
+                    if($accessList[strtoupper($appName)]['%']){
+                        //如果模块下有 % 则该模块的控制器权限都拥有
+                        return true;
+                    }
+
+				    //验证登录
 					if (self::checkLogin() == true) {
 						//做例外处理，只要有管理员帐号，都有该项权限
 						if ($appName == "Admin" && in_array(CONTROLLER_NAME, array("Index", "Main")) && in_array(ACTION_NAME, array("index"))) {

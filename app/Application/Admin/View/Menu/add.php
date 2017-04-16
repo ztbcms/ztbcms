@@ -26,11 +26,13 @@
             </tr>
             <tr>
               <td>控制器:</td>
-              <td><input type="text" class="input" name="controller" id="controller" value=""></td>
+              <td><input type="text" class="input" name="controller" id="controller" value="">
+                  如果填 % 作为权限分配的时候就匹配模块下所有控制器</td>
             </tr>
             <tr>
               <td>方法:</td>
               <td><input type="text" class="input" name="action" id="action" value=""></td>
+                  如果填 % 作为权限分配的时候就匹配控制器下所有的方法
             </tr>
             <tr>
               <td>参数:</td>

@@ -110,7 +110,7 @@ class AdminController extends AdminBase {
 		$where = array();
 		$db = M("Attachment");
 		$filename = I('get.filename', '', '');
-		$args = I('get.args', '', '');
+		$args = I('get.args', '1,jpg|jpeg|gif|png|bmp,1,,,0', '');
 		$args = explode(",", $args);
 		empty($filename) ?: $where['filename'] = array('like', '%' . $filename . '%');
 		$uploadtime = I('get.uploadtime', '', '');
