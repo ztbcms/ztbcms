@@ -161,9 +161,8 @@ class RbacController extends AdminBase {
             foreach ($result as $rs) {
                 $data = array(
                     'id' => $rs['id'],
-                    'checked' => $rs['id'],
                     'parentid' => $rs['parentid'],
-                    'name' => $rs['name'] . ($rs['type'] == 0 ? "(菜单项)" : ""),
+                    'name' => $rs['name'] . ($rs['type'] == 0 ? "(菜单项)" : "") . ' ' . $rs['app'] . '/' . $rs['controller'] . '/' . $rs['action'],
                     'checked' => D("Admin/Role")->isCompetence($rs, $roleid, $priv_data) ? true : false,
                 );
                 $json[] = $data;
