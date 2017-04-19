@@ -10,7 +10,8 @@
           <tr>
             <td align="center">排序</td>
             <td align="center">ID</td>
-            <td >菜单英文名称</td>
+            <td >菜单名称</td>
+            <td width="140">备注</td>
             <td align="center">状态</td>
             <td align="center">管理操作</td>
           </tr>
