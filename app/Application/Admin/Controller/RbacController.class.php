@@ -162,7 +162,7 @@ class RbacController extends AdminBase {
                 $data = array(
                     'id' => $rs['id'],
                     'parentid' => $rs['parentid'],
-                    'name' => $rs['name'] . ($rs['type'] == 0 ? "(菜单项)" : "") . ' ' . $rs['app'] . '/' . $rs['controller'] . '/' . $rs['action'],
+                    'name' => $rs['name'] . ($rs['type'] == 0 ? "(菜单项)" : ""),
                     'checked' => D("Admin/Role")->isCompetence($rs, $roleid, $priv_data) ? true : false,
                 );
                 $json[] = $data;
