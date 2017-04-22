@@ -108,12 +108,15 @@ class Content extends Components {
 				}
 			}
 			//添加用户名
-			$data['username'] = service('Passport')->username;
-			$data['sysadd'] = 0;
+            if(empty($data['username'])){
+                $data['username'] = service('Passport')->username;
+                $data['sysadd'] = 0;
+            }
 		} else {
-			//添加用户名
-			$data['username'] = \Admin\Service\User::getInstance()->username;
-			$data['sysadd'] = 1;
+            if(empty($data['username'])){
+                $data['username'] = \Admin\Service\User::getInstance()->username;
+                $data['sysadd'] = 1;
+            }
 		}
 		//检查真实发表时间，如果有时间转换为时间戳
 		if ($data['inputtime'] && !is_numeric($data['inputtime'])) {
