@@ -28,6 +28,7 @@ class MenuController extends AdminBase {
         $tree = new \Tree();
         $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ', '&nbsp;&nbsp;&nbsp;├─ ', '&nbsp;&nbsp;&nbsp;└─ ');
         $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
+        $array = [];
         foreach ($result as $r) {
             $r['str_manage'] = '<a href="' . U("Menu/add", array("parentid" => $r['id'])) . '">添加子菜单</a> | <a href="' . U("Menu/edit", array("id" => $r['id'])) . '">修改</a> | <a class="J_ajax_del" href="' . U("Menu/delete", array("id" => $r['id'])) . '">删除</a> ';
             $r['status'] = $r['status'] ? '<span style="color:green;">显示</span>' : '<span style="color:red;">不显示</span>';
@@ -37,8 +38,9 @@ class MenuController extends AdminBase {
         $str = "<tr>
 	<td align='center'><input name='listorders[\$id]' type='text' size='3' value='\$listorder' class='input'></td>
 	<td align='center'>\$id</td>
-	<td >\$spacer\$name</td>
-                    <td align='center'>\$status</td>
+	<td >\$spacer\$name(\$app/\$controller/\$action)</td>
+	<td align='center' style='text-align: left'>\$remark</td>
+    <td align='center'>\$status</td>
 	<td align='center'>\$str_manage</td>
 	</tr>";
         $categorys = $tree->get_tree(0, $str);

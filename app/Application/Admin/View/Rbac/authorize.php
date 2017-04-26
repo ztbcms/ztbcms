@@ -51,7 +51,7 @@ var setting = {
     }
 };
 //节点数据
-var zNodes ={$json};
+var zNodes = JSON.parse('{$json}');
 //zTree对象
 var zTree = null;
 Wind.css('zTree');
