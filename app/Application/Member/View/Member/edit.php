@@ -16,7 +16,7 @@
 		</tr>
 		<tr>
 			<th>头像</th> 
-			<td><img src="{:getavatar($data['userid'])}" onerror="this.src='{$config_siteurl}statics/images/member/nophoto.gif'" height=90 width=90><input type="checkbox" name="delavatar" id="delavatar" value="1" ><label for="delavatar">删除头像</label></td>
+			<td><img src="{$data.userpic}" onerror="this.src='{$config_siteurl}statics/images/member/nophoto.gif'" height=90 width=90><input type="checkbox" name="delavatar" id="delavatar" value="1" ><label for="delavatar">删除头像</label></td>
 		</tr>
 		<tr>
 			<th>是否审核</th> 
