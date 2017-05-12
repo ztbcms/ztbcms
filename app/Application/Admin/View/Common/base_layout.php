@@ -26,6 +26,11 @@
         <!-- Bootstrap 3.3.6 -->
         <script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
 
+        <!-- Date picker -->
+        <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/plugins/datepicker/datepicker3.css">
+        <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+        <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
+
         <!-- layer.js -->
         <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
 
@@ -55,7 +60,6 @@
                             layer.msg('网络繁忙，请稍后再试..');
                         }
                     })
-
                 });
 
             })(jQuery);
@@ -72,6 +76,25 @@
     </block>
 
     <block name="footer"></block>
+
+    <script>
+        /**
+         * 资源加载完后进行全局初始化
+         */
+        ;(function () {
+
+            $(document).ready(function () {
+                //Date picker 默认配置【必须在content 之后初始化】
+                if($('.datepicker') && $('.datepicker').datepicker){
+                    $('.datepicker').datepicker({
+                        autoclose: true,
+                        language: 'zh-CN',
+                        format: 'yyyy-mm-dd'
+                    });
+                }
+            });
+        })(jQuery);
+    </script>
 
 </body>
 

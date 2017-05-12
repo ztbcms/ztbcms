@@ -106,7 +106,7 @@
                     <!-- 一级菜单   -->
                     <?php $first_items = $top_menu['items'];?>
                     <volist name="first_items" id="first_menu" key="first_menu_index">
-                        <li class="active treeview">
+                        <li class="treeview">
                             <?php
                                 $_href = $first_menu['url'];
                                 if(count($first_menu['items']) != 0){
@@ -129,7 +129,7 @@
                             <ul class="treeview-menu">
                                 <?php $second_items = $first_menu['items'];?>
                                 <volist name="second_items" id="second_menu" key="second_menu_index">
-                                    <li class=""><a href="javascript:void(0);" data-url="{$second_menu['url']}">{$second_menu['name']}</a></li>
+                                    <li class="treeview"><a href="javascript:void(0);" data-url="{$second_menu['url']}">{$second_menu['name']}</a></li>
                                 </volist>
                             </ul>
                         </li>
@@ -239,9 +239,11 @@
             $('.main-sidebar').on('click', 'ul li a', function(e){
                 e.preventDefault();
                 e.stopPropagation();
+                $('.treeview').removeClass('active');
                 var redirect_url = $(this).data('url');
                 if(redirect_url != '' && redirect_url != '#'){
-                    iframeJudge({'url' : redirect_url})
+                    iframeJudge({'url' : redirect_url});
+                    $(this).parents('li').addClass('active');
                 }else{
                     $(this).parent().toggleClass('active');
                 }

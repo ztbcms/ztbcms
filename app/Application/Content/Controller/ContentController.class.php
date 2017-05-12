@@ -170,7 +170,8 @@ class ContentController extends AdminBase {
 		} else {
 			$count = $model->where($where)->count();
 		}
-		$page = $this->page($count, 20);
+		$limit = I('get.limit', 20);
+		$page = $this->page($count, $limit);
 		$data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("listorder " => "DESC", "id" => "DESC"))->select();
 
 		//模板处理
