@@ -7,16 +7,20 @@
 namespace Admin\Controller;
 
 use Common\Controller\AdminBase;
+use Think\Model;
 
 class MainController extends AdminBase {
 
     public function index() {
+        $db = new Model();
+        $db_version = $db->query('select version()');
+        $db_version = $db_version && count($db_version) > 0 ? $db_version[0]['version()']: '未知';
         //服务器信息
         $info = array(
             '操作系统' => PHP_OS,
             '运行环境' => $_SERVER["SERVER_SOFTWARE"],
             'PHP运行方式' => php_sapi_name(),
-            'MYSQL版本' => mysql_get_server_info(),
+            'MySQL版本' => $db_version,
             '产品名称' => CMS_APPNAME,
             '内核版本' => CMS_VERSION,
             '内核流水号' => CMS_BUILD,
