@@ -3,6 +3,7 @@
 namespace Install\Controller;
 
 use Think\Controller;
+use Think\Model;
 
 class IndexController extends Controller {
 
@@ -30,12 +31,7 @@ class IndexController extends Controller {
 		//错误
 		$err = 0;
 		//mysql检测
-		if (function_exists('mysql_connect')) {
-			$mysql = '<span class="correct_span">&radic;</span> 已安装';
-		} else {
-			$mysql = '<span class="correct_span error_span">&radic;</span> 出现错误';
-			$err++;
-		}
+        $mysql = '<span class="correct_span">&radic;</span> 已安装';
 		//上传检测
 		if (ini_get('file_uploads')) {
 			$uploadSize = '<span class="correct_span">&radic;</span> ' . ini_get('upload_max_filesize');
@@ -278,13 +274,22 @@ class IndexController extends Controller {
 
 	//测试数据库
 	public function testdbpwd() {
-		$dbHost = $_POST['dbHost'] . ':' . $_POST['dbPort'];
-		$conn = @mysql_connect($dbHost, $_POST['dbUser'], $_POST['dbPwd']);
-		if ($conn) {
-			exit("1");
-		} else {
-			exit("");
-		}
+        $db = new Model('', '', [
+            'DB_TYPE' => 'mysql', // 数据库类型
+            'DB_HOST' => $_POST['dbHost'], // 服务器地址
+            'DB_NAME' => $_POST['dbName'], // 数据库名
+            'DB_USER' => $_POST['dbUser'], // 用户名
+            'DB_PWD' => $_POST['dbPwd'], // 密码
+            'DB_PORT' => $_POST['dbPort'], // 端口
+//            'DB_PREFIX' => '', // 数据库表前缀
+        ]);
+
+        try{
+            $db->execute('show databases');
+        }catch (\Exception $exception){
+            exit('0');
+        }
+        exit('1');
 	}
 
 }
