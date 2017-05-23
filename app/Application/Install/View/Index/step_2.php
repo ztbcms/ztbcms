@@ -90,7 +90,7 @@
 <include file="footer" /> 
 <script>
 $(function(){
-	var errSum = {$err};
+	var errSum = parseInt('{$err}');
 	if(errSum){
 		$('a.next').addClass('btn_old').click(function(){
 			alert('环境检测不通过，无法进行下一步！');

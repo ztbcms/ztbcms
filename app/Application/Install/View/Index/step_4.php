@@ -25,7 +25,8 @@
   </section>
   <script type="text/javascript">
 var n=0;
-    var data = {$data};
+    var data = JSON.parse('{$data}');
+
     $.ajaxSetup ({ cache: false });
     function reloads(n) {
         var url =  "./install.php?g=Install&m=Index&a=mysql&n="+n;
