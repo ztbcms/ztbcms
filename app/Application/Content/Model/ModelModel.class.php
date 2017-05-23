@@ -387,7 +387,7 @@ class ModelModel extends Model {
 	 * @return array
 	 */
 	public function sql_split($sql) {
-		if (mysql_get_server_info() > '4.1' && C('DB_CHARSET')) {
+		if (C('DB_CHARSET')) {
 			$sql = preg_replace("/TYPE=(InnoDB|MyISAM|MEMORY)( DEFAULT CHARSET=[^; ]+)?/", "ENGINE=\\1 DEFAULT CHARSET=" . C('DB_CHARSET'), $sql);
 		}
 		if (C("DB_PREFIX") != "cms_") {

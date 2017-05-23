@@ -173,12 +173,6 @@ class IndexController extends Controller {
 			exit;
 		}
 		mysql_query("SET NAMES 'utf8'"); //,character_set_client=binary,sql_mode='';
-		$version = mysql_get_server_info($conn);
-		if ($version < 5.0) {
-			$arr['msg'] = '数据库版本太低!';
-			echo json_encode($arr);
-			exit;
-		}
 
 		if (!mysql_select_db($dbName, $conn)) {
 			//创建数据时同时设置编码

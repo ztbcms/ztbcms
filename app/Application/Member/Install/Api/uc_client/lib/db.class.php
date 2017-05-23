@@ -140,7 +140,7 @@ class ucclient_db {
 	}
 
 	function version() {
-		return mysql_get_server_info($this->link);
+		return '';
 	}
 
 	function close() {
