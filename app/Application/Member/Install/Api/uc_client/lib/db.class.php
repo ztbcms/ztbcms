@@ -10,12 +10,16 @@
 
 class ucclient_db {
 	var $querynum = 0;
+    /**
+     * @var PDO
+     */
 	var $link;
 	var $histories;
 
 	var $dbhost;
 	var $dbuser;
 	var $dbpw;
+    var $dbname;
 	var $dbcharset;
 	var $pconnect;
 	var $tablepre;
@@ -33,34 +37,16 @@ class ucclient_db {
 		$this->tablepre = $tablepre;
 		$this->time = $time;
 
-		if($pconnect) {
-			if(!$this->link = mysql_pconnect($dbhost, $dbuser, $dbpw)) {
-				$this->halt('Can not connect to MySQL server');
-			}
-		} else {
-			if(!$this->link = mysql_connect($dbhost, $dbuser, $dbpw)) {
-				$this->halt('Can not connect to MySQL server');
-			}
-		}
-
-		if($this->version() > '4.1') {
-			if($dbcharset) {
-				mysql_query("SET character_set_connection=".$dbcharset.", character_set_results=".$dbcharset.", character_set_client=binary", $this->link);
-			}
-
-			if($this->version() > '5.0.1') {
-				mysql_query("SET sql_mode=''", $this->link);
-			}
-		}
-
-		if($dbname) {
-			mysql_select_db($dbname, $this->link);
-		}
+        $dsn = 'mysql:dbname='.$dbname.';host='.$dbhost;
+        if(!$this->link =  new PDO($dsn, $dbuser, $dbpw)) {
+            $this->halt('Can not connect to MySQL server');
+        }
 
 	}
 
-	function fetch_array($query, $result_type = MYSQL_ASSOC) {
-		return mysql_fetch_array($query, $result_type);
+	function fetch_array($query) {
+	    $query = $this->link->query($query);
+		return $query->fetchAll();
 	}
 
 	function result_first($sql) {
@@ -87,56 +73,53 @@ class ucclient_db {
 	}
 
 	function query($sql, $type = '', $cachetime = FALSE) {
-		$func = $type == 'UNBUFFERED' && @function_exists('mysql_unbuffered_query') ? 'mysql_unbuffered_query' : 'mysql_query';
-		if(!($query = $func($sql, $this->link)) && $type != 'SILENT') {
-			$this->halt('MySQL Query Error', $sql);
-		}
-		$this->querynum++;
-		$this->histories[] = $sql;
-		return $query;
+        return $this->link->exec($sql);
 	}
 
 	function affected_rows() {
-		return mysql_affected_rows($this->link);
+        return 0;
 	}
 
 	function error() {
-		return (($this->link) ? mysql_error($this->link) : mysql_error());
+		return $this->link->errorInfo();
 	}
 
 	function errno() {
-		return intval(($this->link) ? mysql_errno($this->link) : mysql_errno());
+        return $this->link->errorCode();
 	}
 
 	function result($query, $row) {
-		$query = @mysql_result($query, $row);
-		return $query;
+		$query = $this->link->query($query);
+		return $query->fetchColumn($row);
 	}
 
 	function num_rows($query) {
-		$query = mysql_num_rows($query);
-		return $query;
+		$query = $this->link->query($query);
+		return $query->fetchAll();
 	}
 
 	function num_fields($query) {
-		return mysql_num_fields($query);
+        $query = $this->link->exec($query);
+		return $query;
 	}
 
 	function free_result($query) {
-		return mysql_free_result($query);
+        $query = $this->link->query($query);
+        return $query->fetchAll();
 	}
 
 	function insert_id() {
-		return ($id = mysql_insert_id($this->link)) >= 0 ? $id : $this->result($this->query("SELECT last_insert_id()"), 0);
+		return ($id = $this->link->lastInsertId()) >= 0 ? $id : $this->result($this->query("SELECT last_insert_id()"), 0);
 	}
 
 	function fetch_row($query) {
-		$query = mysql_fetch_row($query);
+        $query = $this->link->exec($query);
 		return $query;
 	}
 
 	function fetch_fields($query) {
-		return mysql_fetch_field($query);
+        $query = $this->link->exec($query);
+        return $query;
 	}
 
 	function version() {
@@ -144,12 +127,12 @@ class ucclient_db {
 	}
 
 	function close() {
-		return mysql_close($this->link);
+		return '';
 	}
 
 	function halt($message = '', $sql = '') {
-		$error = mysql_error();
-		$errorno = mysql_errno();
+		$error = $this->link->errorInfo();
+		$errorno = $this->link->errorCode();
 		if($errorno == 2006 && $this->goneaway-- > 0) {
 			$this->connect($this->dbhost, $this->dbuser, $this->dbpw, $this->dbname, $this->dbcharset, $this->pconnect, $this->tablepre, $this->time);
 			$this->query($sql);
