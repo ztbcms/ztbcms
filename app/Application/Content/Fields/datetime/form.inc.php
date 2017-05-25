@@ -29,7 +29,7 @@ function datetime($field, $value, $fieldinfo) {
         if ($setting['format'] == 'Y-m-d Ah:i:s') {
             $format_txt = 'Y-m-d h:i:s';
         }
-        $value = $value ? date($format_txt, $value) : '';
+        $value = $value ? date($format_txt, $value) : 0;
         $isdatetime = strlen($setting['format']) > 6 ? 1 : 0;
         if ($setting['format'] == 'Y-m-d Ah:i:s') {
             $timesystem = 0;
