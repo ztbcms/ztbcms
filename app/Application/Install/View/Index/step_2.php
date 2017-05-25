@@ -33,15 +33,15 @@
         </tr>
         <tr>
           <td>PHP版本</td>
-          <td>>5.3.x</td>
+          <td>>5.5.x</td>
           <td><span class="correct_span">&radic;</span> {$phpv}</td>
-          <td>5.3.0</td>
+          <td>5.5.0</td>
         </tr>
         <tr>
-          <td>MySQL版本（client）</td>
+          <td>MySQL版本</td>
           <td>>5.x.x</td>
           <td>{$mysql}</td>
-          <td>5.2</td>
+          <td>5.5</td>
         </tr>
         <tr>
           <td>附件上传</td>
