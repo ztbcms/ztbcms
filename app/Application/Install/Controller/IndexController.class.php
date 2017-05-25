@@ -3,6 +3,7 @@
 namespace Install\Controller;
 
 use Think\Controller;
+use Think\Model;
 
 class IndexController extends Controller {
 
@@ -30,12 +31,7 @@ class IndexController extends Controller {
 		//错误
 		$err = 0;
 		//mysql检测
-		if (function_exists('mysql_connect')) {
-			$mysql = '<span class="correct_span">&radic;</span> 已安装';
-		} else {
-			$mysql = '<span class="correct_span error_span">&radic;</span> 出现错误';
-			$err++;
-		}
+        $mysql = '<span class="correct_span">&radic;</span> 已安装';
 		//上传检测
 		if (ini_get('file_uploads')) {
 			$uploadSize = '<span class="correct_span">&radic;</span> ' . ini_get('upload_max_filesize');
@@ -166,35 +162,23 @@ class IndexController extends Controller {
 		//邮箱地址
 		$siteemail = trim($_POST['manager_email']);
 
-		$conn = @mysql_connect($dbHost, $dbUser, $dbPwd);
-		if (!$conn) {
-			$arr['msg'] = "连接数据库失败!";
-			echo json_encode($arr);
-			exit;
-		}
-		mysql_query("SET NAMES 'utf8'"); //,character_set_client=binary,sql_mode='';
-		$version = mysql_get_server_info($conn);
-		if ($version < 5.0) {
-			$arr['msg'] = '数据库版本太低!';
-			echo json_encode($arr);
-			exit;
-		}
+        $conn = new Model('', '', [
+            'DB_TYPE' => 'mysql', // 数据库类型
+            'DB_HOST' => $dbHost, // 服务器地址
+            'DB_NAME' => $dbName, // 数据库名
+            'DB_USER' => $dbUser, // 用户名
+            'DB_PWD' => $dbPwd, // 密码
+            'DB_PORT' => $dbPort, // 端口
+            'DB_PREFIX' => $dbPrefix, // 数据库表前缀
+        ]);
 
-		if (!mysql_select_db($dbName, $conn)) {
-			//创建数据时同时设置编码
-			if (!mysql_query("CREATE DATABASE IF NOT EXISTS `" . $dbName . "` DEFAULT CHARACTER SET utf8;", $conn)) {
-				$arr['msg'] = '数据库 ' . $dbName . ' 不存在，也没权限创建新的数据库！';
-				echo json_encode($arr);
-				exit;
-			}
-			if (empty($n)) {
-				$arr['n'] = 1;
-				$arr['msg'] = "成功创建数据库:{$dbName}<br>";
-				echo json_encode($arr);
-				exit;
-			}
-			mysql_select_db($dbName, $conn);
-		}
+        try{
+            $conn->execute('show databases');
+        }catch (\Exception $exception){
+            $arr['msg'] = "连接数据库失败!";
+            echo json_encode($arr);
+            exit;
+        }
 
 		//读取数据文件
 		$sqldata = file_get_contents(MODULE_PATH . 'Data/cms.sql');
@@ -223,9 +207,10 @@ class IndexController extends Controller {
 
 			if (strstr($sql, 'CREATE TABLE')) {
 				preg_match('/CREATE TABLE `([^ ]*)`/', $sql, $matches);
-				mysql_query("DROP TABLE IF EXISTS `$matches[1]");
-				$ret = mysql_query($sql);
-				if ($ret) {
+                $conn->execute("DROP TABLE IF EXISTS `$matches[1]`");
+				$ret = $conn->execute($sql);
+
+				if ($ret === 0) {
 					$message = '<li><span class="correct_span">&radic;</span>创建数据表' . $matches[1] . '，完成</li> ';
 				} else {
 					$message = '<li><span class="correct_span error_span">&radic;</span>创建数据表' . $matches[1] . '，失败</li>';
@@ -235,7 +220,7 @@ class IndexController extends Controller {
 				echo json_encode($arr);
 				exit;
 			} else {
-				$ret = mysql_query($sql);
+				$ret = $conn->execute($sql);
 				$message = '';
 				$arr = array('n' => $i, 'msg' => $message);
 				//echo json_encode($arr); exit;
@@ -247,12 +232,12 @@ class IndexController extends Controller {
 		}
 
 		//更新配置信息
-		mysql_query("UPDATE `{$dbPrefix}config` SET  `value` = '$site_name' WHERE varname='sitename'");
-		mysql_query("UPDATE `{$dbPrefix}config` SET  `value` = '$site_url' WHERE varname='siteurl' ");
-		mysql_query("UPDATE `{$dbPrefix}config` SET  `value` = '$sitefileurl' WHERE varname='sitefileurl' ");
-		mysql_query("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_description' WHERE varname='siteinfo'");
-		mysql_query("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_keywords' WHERE varname='sitekeywords'");
-		mysql_query("UPDATE `{$dbPrefix}config` SET  `value` = '$siteemail' WHERE varname='siteemail'");
+        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_name' WHERE varname='sitename'");
+        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_url' WHERE varname='siteurl' ");
+        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$sitefileurl' WHERE varname='sitefileurl' ");
+        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_description' WHERE varname='siteinfo'");
+        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_keywords' WHERE varname='sitekeywords'");
+        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$siteemail' WHERE varname='siteemail'");
 
 		//读取配置文件，并替换真实配置数据
 		$strConfig = file_get_contents(MODULE_PATH . 'Data/config.php');
@@ -274,7 +259,7 @@ class IndexController extends Controller {
 		$ip = get_client_ip();
 		$password = md5($password . md5($verify));
 		$query = "INSERT INTO `{$dbPrefix}user` VALUES ('1', '{$username}', '超级管理员', '{$password}', '', '{$time}', '0.0.0.0', '{$verify}', 'admin@ztbcms.com', '备注信息', '{$time}', '{$time}', '1', '1', '');";
-		mysql_query($query);
+        $conn->execute($query);
 
 		$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
 		$arr = array('n' => 999999, 'msg' => $message);
@@ -284,13 +269,22 @@ class IndexController extends Controller {
 
 	//测试数据库
 	public function testdbpwd() {
-		$dbHost = $_POST['dbHost'] . ':' . $_POST['dbPort'];
-		$conn = @mysql_connect($dbHost, $_POST['dbUser'], $_POST['dbPwd']);
-		if ($conn) {
-			exit("1");
-		} else {
-			exit("");
-		}
-	}
+        $db = new Model('', '', [
+            'DB_TYPE' => 'mysql', // 数据库类型
+            'DB_HOST' => $_POST['dbHost'], // 服务器地址
+            'DB_NAME' => $_POST['dbName'], // 数据库名
+            'DB_USER' => $_POST['dbUser'], // 用户名
+            'DB_PWD' => $_POST['dbPwd'], // 密码
+            'DB_PORT' => $_POST['dbPort'], // 端口
+//            'DB_PREFIX' => '', // 数据库表前缀
+        ]);
+
+        try{
+            $db->execute('show databases');
+        }catch (\Exception $exception){
+            exit('0');
+        }
+        exit('1');
+    }
 
 }

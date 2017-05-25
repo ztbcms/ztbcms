@@ -7,6 +7,7 @@
 namespace Member\Controller;
 
 use Common\Controller\AdminBase;
+use Think\Model;
 
 class SettingController extends AdminBase {
 
@@ -78,11 +79,22 @@ class SettingController extends AdminBase {
 		$host = isset($_GET['host']) && trim($_GET['host']) ? trim($_GET['host']) : exit('0');
 		$password = isset($_GET['password']) && trim($_GET['password']) ? trim($_GET['password']) : exit('0');
 		$username = isset($_GET['username']) && trim($_GET['username']) ? trim($_GET['username']) : exit('0');
-		if (@mysql_connect($host, $username, $password)) {
-			exit('1');
-		} else {
-			exit('0');
-		}
+        $db = new Model('', '', [
+            'DB_TYPE' => 'mysql', // 数据库类型
+            'DB_HOST' => $host, // 服务器地址
+            'DB_NAME' => '', // 数据库名
+            'DB_USER' => $username, // 用户名
+            'DB_PWD' => $password, // 密码
+            'DB_PORT' => '', // 端口
+//            'DB_PREFIX' => '', // 数据库表前缀
+        ]);
+
+        try{
+            $db->execute('show databases');
+        }catch (\Exception $exception){
+            exit('0');
+        }
+        exit('1');
 	}
 
 }
