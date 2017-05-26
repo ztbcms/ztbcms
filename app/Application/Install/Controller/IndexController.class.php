@@ -2,6 +2,7 @@
 
 namespace Install\Controller;
 
+use Libs\Helper\MysqlHelper;
 use Think\Controller;
 use Think\Model;
 
@@ -31,7 +32,13 @@ class IndexController extends Controller {
 		//错误
 		$err = 0;
 		//mysql检测
-        $mysql = '<span class="correct_span">&radic;</span> 已安装';
+        $db_version = MysqlHelper::getVersion();
+        if(!empty($db_version)){
+            $mysql = '<span class="correct_span">&radic;</span> ' . $db_version;
+        }else{
+            $mysql = '<span class="correct_span error_span">&radic;</span> 链接错误' ;
+        }
+
 		//上传检测
 		if (ini_get('file_uploads')) {
 			$uploadSize = '<span class="correct_span">&radic;</span> ' . ini_get('upload_max_filesize');

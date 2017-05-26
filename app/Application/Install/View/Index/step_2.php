@@ -39,7 +39,7 @@
         </tr>
         <tr>
           <td>MySQL版本</td>
-          <td>>5.x.x</td>
+          <td>>5.5.x</td>
           <td>{$mysql}</td>
           <td>5.5</td>
         </tr>
