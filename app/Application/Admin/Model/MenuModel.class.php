@@ -163,8 +163,10 @@ class MenuModel extends Model {
         } else {
             $find = $info;
         }
-        foreach ($find as $k => $v) {
-            $find[$k]['parameter'] = "menuid={$menuid}&{$find[$k]['parameter']}";
+        if($find){
+            foreach ($find as $k => $v) {
+                $find[$k]['parameter'] = "menuid={$menuid}&{$find[$k]['parameter']}";
+            }
         }
         return $find;
     }
