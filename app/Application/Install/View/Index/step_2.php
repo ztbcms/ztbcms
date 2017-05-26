@@ -33,15 +33,15 @@
         </tr>
         <tr>
           <td>PHP版本</td>
-          <td>>5.3.x</td>
+          <td>>5.5.x</td>
           <td><span class="correct_span">&radic;</span> {$phpv}</td>
-          <td>5.3.0</td>
+          <td>5.5.0</td>
         </tr>
         <tr>
-          <td>MySQL版本（client）</td>
-          <td>>5.x.x</td>
+          <td>MySQL版本</td>
+          <td>>5.5.x</td>
           <td>{$mysql}</td>
-          <td>5.2</td>
+          <td>5.5</td>
         </tr>
         <tr>
           <td>附件上传</td>
@@ -90,7 +90,7 @@
 <include file="footer" /> 
 <script>
 $(function(){
-	var errSum = {$err};
+	var errSum = parseInt('{$err}');
 	if(errSum){
 		$('a.next').addClass('btn_old').click(function(){
 			alert('环境检测不通过，无法进行下一步！');

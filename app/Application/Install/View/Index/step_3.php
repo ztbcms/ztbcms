@@ -144,8 +144,8 @@
             beforeSend:function(){				 
             },
             success: function(msg){
-                if(msg){
-                    
+                if(msg == 1){
+                    $('#J_install_tip_dbpw').html('<span for="dbname" generated="true" class="tips_success" style="">数据库链接成功</span>');
                 }else{
 				    $('#dbpw').val("");
                     $('#J_install_tip_dbpw').html('<span for="dbname" generated="true" class="tips_error" style="">数据库链接配置失败</span>');	

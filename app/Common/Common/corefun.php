@@ -949,7 +949,7 @@ function U($url = '', $vars = '', $suffix = true, $domain = true) {
 		$domain = $host . (strpos($host, '.') ? '' : strstr($_SERVER['HTTP_HOST'], '.'));
 	} elseif ($domain === true) {
 		$siteurl = parse_url($config['siteurl']);
-		$domain = $siteurl['host'] ?: $_SERVER['HTTP_HOST'];
+		$domain = isset($siteurl['host']) ? $siteurl['host']: $_SERVER['HTTP_HOST'];
 		// 开启子域名部署
 		if (isModuleInstall('Domains')) {
 			$path_list = explode('/', $url);
@@ -1094,13 +1094,13 @@ function U($url = '', $vars = '', $suffix = true, $domain = true) {
 	if (C('URL_MODEL') == 0) {
 		// 普通模式URL转换
 		//去除默认参数
-		if ($var[C('VAR_MODULE')] == C('DEFAULT_MODULE')) {
+		if (isset($var[C('VAR_MODULE')]) && $var[C('VAR_MODULE')] == C('DEFAULT_MODULE')) {
 			unset($var[C('VAR_MODULE')]);
 		}
-		if ($var[C('VAR_CONTROLLER')] == C('DEFAULT_CONTROLLER')) {
+		if (isset($var[C('VAR_CONTROLLER')]) && $var[C('VAR_CONTROLLER')] == C('DEFAULT_CONTROLLER')) {
 			unset($var[C('VAR_CONTROLLER')]);
 		}
-		if ($var[C('VAR_ACTION')] == C('DEFAULT_ACTION')) {
+		if (isset($var[C('VAR_ACTION')]) && $var[C('VAR_ACTION')] == C('DEFAULT_ACTION')) {
 			unset($var[C('VAR_ACTION')]);
 		}
 		$url = $appUrl;
