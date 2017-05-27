@@ -223,6 +223,8 @@ function get_avatar($id_or_email, $size = '96', $default = '', $alt = false) {
 function page($total, $size = 0, $number = 0, $config = array()) {
 	//配置
 	$defaultConfig = array(
+        //每次显示几个分页导航链接
+        'listlong' => 6,
 		//当前分页号
 		'number' => $number,
 		//接收分页号参数的标识符
@@ -297,7 +299,7 @@ function page($total, $size = 0, $number = 0, $config = array()) {
 		$PageLink['list'] = $URLRULE[1];
 		$defaultConfig['rule'] = $PageLink;
 	}
-	$Page = new \Libs\Util\Page($total, $defaultConfig['size'], $defaultConfig['number'], $defaultConfig['list'], $defaultConfig['param'], $defaultConfig['rule'], $defaultConfig['isrule']);
+	$Page = new \Libs\Util\Page($total, $defaultConfig['size'], $defaultConfig['number'], $defaultConfig['listlong'], $defaultConfig['param'], $defaultConfig['rule'], $defaultConfig['isrule']);
 	$Page->SetPager('default', $defaultConfig['tpl'], $defaultConfig['tplconfig']);
 	return $Page;
 }
