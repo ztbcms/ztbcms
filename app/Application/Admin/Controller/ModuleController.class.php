@@ -33,6 +33,7 @@ class ModuleController extends AdminBase {
     public function index() {
         //取得模块目录名称
         $dirs = glob($this->appPath . '*');
+        $dirs_arr = [];
         foreach ($dirs as $path) {
             if (is_dir($path)) {
                 //目录名称
