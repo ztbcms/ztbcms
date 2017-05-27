@@ -68,7 +68,7 @@ class ModuleController extends AdminBase {
             $moduleList[$module] = $this->Module->config($module);
         }
         //进行分页
-        $Page = $this->page($count, 10);
+        $Page = $this->page($count, 10, I('get.page', 1));
 
         $this->assign("Page", $Page->show());
         $this->assign("data", $moduleList);
