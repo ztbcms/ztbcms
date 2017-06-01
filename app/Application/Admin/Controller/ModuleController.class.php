@@ -24,6 +24,12 @@ class ModuleController extends AdminBase {
         $this->moduleList = M('Module')->select();
     }
 
+    //远程模块仓库
+    public function remote(){
+        $this->display('remote');
+    }
+
+
     //本地模块列表
     public function local(){
         $this->redirect('index');
