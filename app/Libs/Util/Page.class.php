@@ -83,7 +83,7 @@ class Page {
         //是否开启静态
         $this->Static = $static;
         //生成静态页数，超过的使用另一只分页规则
-        $this->Static_Size = $GLOBALS['Rule_Static_Size'] ? $GLOBALS['Rule_Static_Size'] : $static_size;
+        $this->Static_Size = isset($GLOBALS['Rule_Static_Size']) ? $GLOBALS['Rule_Static_Size'] : $static_size;
         //初始当前分页号
         if ((int) $Current_Page < 1 || empty($Current_Page)) {
             $this->GetCurrentPage();
@@ -369,7 +369,9 @@ class Page {
      * 获取当前分页号
      */
     public function GetCurrentPage() {
-        $this->Current_page = ($_GET[$this->PageParam] <= intval($this->Total_Pages) ? ($_GET[$this->PageParam] < 1 ? 1 : intval($_GET[$this->PageParam])) : intval($this->Total_Pages));
+        $this->Current_page = isset($_GET[$this->PageParam]) && ($_GET[$this->PageParam] <= intval($this->Total_Pages) ?
+            ($_GET[$this->PageParam] < 1 ? 1 : intval($_GET[$this->PageParam])) : intval($this->Total_Pages));
+        return $this->Current_page;
     }
 
     public function __set($Param, $value) {

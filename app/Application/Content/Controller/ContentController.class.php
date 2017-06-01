@@ -146,7 +146,7 @@ class ContentController extends AdminBase {
                     if( $value[$index] != '' ){
                         $filter[$index] = trim($filter[$index]);
                         $operator[$index] = trim($operator[$index]);
-                        $value[$index] = trim($value[$index]);
+                        $value[$index] = trim(urldecode($value[$index]));
 
                         if(empty($where[$filter[$index]])){
                             $where[$filter[$index]] = [];

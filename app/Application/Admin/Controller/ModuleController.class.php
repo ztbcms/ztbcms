@@ -24,6 +24,12 @@ class ModuleController extends AdminBase {
         $this->moduleList = M('Module')->select();
     }
 
+    //远程模块仓库
+    public function remote(){
+        $this->display('remote');
+    }
+
+
     //本地模块列表
     public function local(){
         $this->redirect('index');
@@ -33,6 +39,7 @@ class ModuleController extends AdminBase {
     public function index() {
         //取得模块目录名称
         $dirs = glob($this->appPath . '*');
+        $dirs_arr = [];
         foreach ($dirs as $path) {
             if (is_dir($path)) {
                 //目录名称
@@ -67,7 +74,7 @@ class ModuleController extends AdminBase {
             $moduleList[$module] = $this->Module->config($module);
         }
         //进行分页
-        $Page = $this->page($count, 10);
+        $Page = $this->page($count, 10, I('get.page', 1));
 
         $this->assign("Page", $Page->show());
         $this->assign("data", $moduleList);
