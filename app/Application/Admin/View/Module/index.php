@@ -2,8 +2,6 @@
 <Admintemplate file="Common/Head"/>
 <body>
 <div class="wrap J_check_wrap">
-  <Admintemplate file="Common/Nav"/>
-
   <div class="table_list">
     <table width="100%">
       <thead>
