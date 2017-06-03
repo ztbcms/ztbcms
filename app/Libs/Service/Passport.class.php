@@ -285,8 +285,8 @@ class Passport extends \Libs\System\Service {
 	 * @param int $returnhtml 是否返回 HTML 代码
 	 *                                                     1:(默认值) 是，返回设置头像的 HTML 代码
 	 *                                                     0:否，返回设置头像的 Flash 调用数组
-	 * @return string:返回设置头像的 HTML 代码
-	 *                array:返回设置头像的 Flash 调用数组
+	 * @return string 返回设置头像的 HTML 代码
+	 *                array 返回设置头像的 Flash 调用数组
 	 */
 	public function userAvatarEdit($uid, $type = 'virtual', $returnhtml = 1) {
 		return false;

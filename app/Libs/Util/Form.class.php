@@ -188,7 +188,7 @@ class Form {
 
     /**
      * 栏目选择
-     * @param intval/array $catid 别选中的ID，多选是可以是数组
+     * @param int | array $catid 别选中的ID，多选是可以是数组
      * @param string $str 属性
      * @param string $default_option 默认选项
      * @param int $modelid 按所属模型筛选
