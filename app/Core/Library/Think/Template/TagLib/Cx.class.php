@@ -421,8 +421,8 @@ class Cx extends TagLib {
     /**
      * 判断是否已经定义了该常量
      * <defined name='TXT'>已定义</defined>
-     * @param <type> $attr
-     * @param <type> $content
+     * @param string $tag 常量名
+     * @param string $content 提示信息
      * @return string
      */
     public function _defined($tag,$content) {

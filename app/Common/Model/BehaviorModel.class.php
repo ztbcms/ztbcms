@@ -410,7 +410,7 @@ class BehaviorModel extends Model {
 	 *              max->单个周期内的最大执行次数（$cycle和$max必须同时定义，否则无效）
 	 * 单个行为后可加 ； 连接其他规则
 	 * @param string $action 行为id或者name
-	 * @return boolean|array: false解析出错 ， 成功返回规则数组
+	 * @return boolean | array: false解析出错 ， 成功返回规则数组
 	 */
 	protected function parseBehavior($action = null) {
 		if (empty($action)) {
