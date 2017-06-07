@@ -16,9 +16,9 @@
         <td >{$config.version}</td>
       </tr>
       <tr>
-        <th>ZtbCMS最低版本：</th>
+        <th>ZTBCMS最低版本：</th>
         <td ><if condition=" $config['adaptation'] ">{$config.adaptation}<else /><font color="#FF0000">没有标注，存在风险</font></if>
-        <if condition=" $version == false && isset($version) "><br/><font color="#FF0000">该模板最低只支持ZtbCMS {$config.adaptation} 版本，请升级后再安装，避免不必要是损失！</font></if>
+        <if condition=" $version == false && isset($version) "><br/><font color="#FF0000">该模板最低只支持ZTBCMS {$config.adaptation} 版本，请升级后再安装，避免不必要是损失！</font></if>
         </td>
       </tr>
       <if condition=" !empty($config['depend']) ">

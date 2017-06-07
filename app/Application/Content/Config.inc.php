@@ -12,14 +12,14 @@ return array(
 	//模块介绍地址
 	'address' => 'http://www.ztbcms.com',
 	//模块作者
-	'author' => 'ZtbCMS',
+	'author' => 'ZTBCMS',
 	//作者地址
 	'authorsite' => 'http://www.ztbcms.com',
 	//作者邮箱
 	'authoremail' => 'admin@ztbcms.com',
 	//版本号，请不要带除数字外的其他字符
 	'version' => '1.0.0',
-	//适配最低ZtbCMS版本，
+	//适配最低ZTBCMS版本，
 	'adaptation' => '2.0.0',
 	//签名
 	'sign' => '53aca6c9973b327a6b6de720b45940f4',

@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="edge" />
 <meta charset="utf-8" />
-<title>系统后台 - {$Config.sitename} - by ZtbCMS</title>
+<title>系统后台 - {$Config.sitename} - by ZTBCMS</title>
 <meta name="generator" content="ThinkPHP" />
 <admintemplate file="Admin/Common/Js"/>
 <style type="text/css">
@@ -220,8 +220,8 @@ if (window.parent !== window.self) {
 				<div class="inner" style="text-align: center;color: white !important;">
 						<div class="copyright clearfix">
 							<p>当前版本 v{:C('APPLIATION_VERSION')}</p>
-							<p class="copyright_en">Copyright © 2016 - 2016 , ZtbCMS All Rights Reserved.</p>
-							<p class="copyright_ch"><a href="http://www.ztbcms.com" target="_blank" style="color: white;	">http://www.ztbcms.com</a></p>
+							<p class="copyright_en">Copyright © 2016 - 2016 , ZTBCMS All Rights Reserved.</p>
+							<p class="copyright_ch"><a href="http://www.ZTBCMS.com" target="_blank" style="color: white;	">http://www.ZTBCMS.com</a></p>
 						</div>
 					</div>
 		</div>
