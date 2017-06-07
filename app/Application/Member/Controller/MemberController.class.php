@@ -108,6 +108,8 @@ class MemberController extends AdminBase {
 					$info['password'] = $memberinfo['password'];
 					$info['email'] = $memberinfo['email'];
 					if (false !== $this->member->where(array('userid' => $memberinfo['userid']))->save($info)) {
+					    //添加附表信息
+					    $this->addMemberData($memberinfo['userid'], $post['modelid'], $post['info']);
 						$this->success("添加会员成功！", U("Member/index"));
 					} else {
 						service("Passport")->userDelete($memberinfo['userid']);
@@ -365,4 +367,27 @@ class MemberController extends AdminBase {
 		}
 	}
 
+	//获取表单信息
+	public function api_getForminfos(){
+        $modelid = I('modelid', 0, 'intval');
+
+        if (!$this->groupsModel[$modelid]) {
+            $this->ajaxReturn(self::createReturn(false, null, '该模型不存在'));
+        }
+
+        $content_form = new \content_form($modelid);
+        //字段内容
+        $forminfos = $content_form->get();
+
+        $this->ajaxReturn(self::createReturn(true, $forminfos, '获取表单信息成功'));
+    }
+
+    //添加附表信息
+    protected function addMemberData($userid, $modelid, $info){
+        if($modelid){
+            $tablename = getModel($modelid, 'tablename');
+            $info['userid'] = $userid;
+            M($tablename)->data($info)->add();
+        }
+    }
 }
