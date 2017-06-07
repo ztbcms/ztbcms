@@ -108,6 +108,7 @@ class MemberController extends AdminBase {
 					$info['password'] = $memberinfo['password'];
 					$info['email'] = $memberinfo['email'];
 					if (false !== $this->member->where(array('userid' => $memberinfo['userid']))->save($info)) {
+					    //添加附表信息
 					    $this->addMemberData($memberinfo['userid'], $post['modelid'], $post['info']);
 						$this->success("添加会员成功！", U("Member/index"));
 					} else {

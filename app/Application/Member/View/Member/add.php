@@ -62,9 +62,9 @@
 <script src="{$config_siteurl}statics/js/common.js"></script>
 <if condition="$groupsModel">
 <script>
+	//ajax获取表单字段信息
 	function getForminfos(modelid){
 		$('.table_form_data').text('');
-		console.log(modelid);
 		layer.load(1);
 		$.ajax({
 			url: '{:U("Member/Member/api_getForminfos")}',
