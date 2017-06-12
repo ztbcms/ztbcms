@@ -39,20 +39,20 @@ CREATE TABLE `cms_admin_panel` (
 DROP TABLE IF EXISTS `cms_attachment`;
 CREATE TABLE `cms_attachment` (
   `aid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件ID',
-  `module` char(15) NOT NULL DEFAULT '' COMMENT '模块名称',
+  `module` varchar(64) NOT NULL DEFAULT '' COMMENT '模块名称',
   `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `filename` char(50) NOT NULL DEFAULT '' COMMENT '上传附件名称',
-  `filepath` char(200) NOT NULL DEFAULT '' COMMENT '附件路径',
+  `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
+  `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
   `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
-  `fileext` char(10) NOT NULL DEFAULT '' COMMENT '附件扩展名',
+  `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
   `isimage` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为图片 1为图片',
   `isthumb` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为缩略图 1为缩略图',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '上传用户ID',
   `isadmin` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否后台用户上传',
   `uploadtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
-  `uploadip` char(15) NOT NULL DEFAULT '' COMMENT '上传ip',
+  `uploadip` varchar(16) NOT NULL DEFAULT '' COMMENT '上传ip',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '附件使用状态',
-  `authcode` char(32) NOT NULL DEFAULT '' COMMENT '附件路径MD5值',
+  `authcode` varchar(32) NOT NULL DEFAULT '' COMMENT '附件路径MD5值',
   PRIMARY KEY (`aid`),
   KEY `authcode` (`authcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
