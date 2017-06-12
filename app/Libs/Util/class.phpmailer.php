@@ -2207,7 +2207,9 @@ class PHPMailer {
   /**
    * Evaluates the message and returns modifications for inline images and backgrounds
    * @access public
-   * @return $message
+   * @param mixed $message
+   * @param mixed $basedir
+   * @return mixed $message
    */
   public function MsgHTML($message, $basedir = '') {
     preg_match_all("/(src|background)=[\"'](.*)[\"']/Ui", $message, $images);

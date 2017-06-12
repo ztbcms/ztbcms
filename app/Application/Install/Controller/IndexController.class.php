@@ -19,7 +19,7 @@ class IndexController extends Controller {
 			exit('你已经安装过该系统，如果想重新安装，请先删除站点' . MODULE_PATH . '目录下的 install.lock 文件，然后再安装。');
 		}
 		$this->assign('Title', C('CMS_APPNAME'))
-			->assign('Powered', 'Powered by ZtbCMS');
+			->assign('Powered', 'Powered by ZTBCMS');
 	}
 
 	//安装首页

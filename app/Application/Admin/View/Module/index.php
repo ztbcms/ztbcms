@@ -15,7 +15,7 @@
       <tr>
         <td valign="top">
             <h3 style="font-size: 16px;" class="mb5 f16">{$vo.modulename}</h3>
-            <div class="mb5"> <span class="mr15">版本：<b>{$vo.version}</b></span> <span>开发者：<if condition=" $vo['author'] "><a target="_blank" href="{$vo.authorsite}">{$vo.author}</a><else />匿名开发者</if></span> <span>适配 ZtbCMS 最低版本：<if condition=" $vo['adaptation'] ">{$vo.adaptation}<else /><font color="#FF0000">没有标注，可能存在兼容风险</font></if></span> </div>
+            <div class="mb5"> <span class="mr15">版本：<b>{$vo.version}</b></span> <span>开发者：<if condition=" $vo['author'] "><a target="_blank" href="{$vo.authorsite}">{$vo.author}</a><else />匿名开发者</if></span> <span>适配 ZTBCMS 最低版本：<if condition=" $vo['adaptation'] ">{$vo.adaptation}<else /><font color="#FF0000">没有标注，可能存在兼容风险</font></if></span> </div>
             <div class="gray"><if condition=" $vo['introduce'] ">{$vo.introduce}<else />没有任何介绍</if></div>
             <div> <span class="mr20"><a href="{$vo.address}" target="_blank">{$vo.address}</a></span> </div>
         </td>

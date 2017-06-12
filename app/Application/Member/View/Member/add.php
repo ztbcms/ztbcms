@@ -1,5 +1,6 @@
  
 <Admintemplate file="Common/Head"/>
+<script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
 <body class="J_scroll_fixed">
 <div class="wrap J_check_wrap">
   <Admintemplate file="Common/Nav"/>
@@ -43,9 +44,13 @@
 		</tr>
 		<tr>
 			<th>会员模型</th>
-			<td><?php echo \Form::select($groupsModel, 0, 'name="modelid"', ''); ?></td>
+			<td><?php echo \Form::select($groupsModel, 0, 'name="modelid" onchange="getForminfos(this.value)"', ''); ?></td>
 		</tr>
 	</table>
+	<if condition="$groupsModel">
+		<div class="h_a">详细信息</div>
+		<table width="100%" class="table_form_data"></table>
+	</if>
   </div>
    <div class="">
       <div class="btn_wrap_pd">             
@@ -55,5 +60,38 @@
   </form>
 </div>
 <script src="{$config_siteurl}statics/js/common.js"></script>
+<if condition="$groupsModel">
+<script>
+	//ajax获取表单字段信息
+	function getForminfos(modelid){
+		$('.table_form_data').text('');
+		layer.load(1);
+		$.ajax({
+			url: '{:U("Member/Member/api_getForminfos")}',
+			data: {modelid: modelid},
+			type: 'post',
+			dataType: 'json',
+			success: function(res){
+				layer.closeAll();
+				if(res.status){
+					var base = res.data.base;
+					var form = '';
+					for(var i in base){
+						form += '<tr><th width="80">';
+						form += res.data.base[i]['name'];
+						form += '</th><td>';
+						form += res.data.base[i]['form'];
+						form += '</td></tr>';
+					}
+					$('.table_form_data').append(form);
+				}else{
+					layer.alert(res.msg);
+				}
+			}
+		});
+	}
+	$('select[name="modelid"]').trigger('change');
+</script>
+</if>
 </body>
 </html>

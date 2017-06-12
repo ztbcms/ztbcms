@@ -13,7 +13,7 @@ return array(
     //模块介绍地址
     'address' => 'http://www.ztbcms.com',
     //模块作者
-    'author' => 'ZtbCMS',
+    'author' => 'ZTBCMS',
     //作者地址
     'authorsite' => 'http://www.ztbcms.com',
     //作者邮箱

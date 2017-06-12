@@ -61,7 +61,7 @@ class CategoryModel extends Model {
 	/**
 	 * 添加栏目
 	 * @param array $post 页面提交数据
-	 * @return boolean]
+	 * @return boolean
 	 */
 	public function addCategory($post) {
 		if (empty($post)) {

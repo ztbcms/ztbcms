@@ -53,7 +53,7 @@ if (C('LAYOUT_ON')) {
         </div>
         <div class="copyright">
             <p>
-                <a title="官方网站" href="http://www.ztbcms.com" target="_blank">ZtbCMS</a>
+                <a title="官方网站" href="http://www.ztbcms.com" target="_blank">ZTBCMS</a>
                 <sup><?php echo CMS_VERSION ?> - <?php echo CMS_BUILD ?></sup>
             </p>
         </div>
