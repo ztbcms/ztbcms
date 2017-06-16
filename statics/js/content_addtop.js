@@ -222,17 +222,15 @@ function remove_relation(sid, id) {
     var relation_ids = $('#relation').val();
     if (relation_ids != '') {
         $('#' + sid).remove();
-        var r_arr = relation_ids.split('|');
-        var newrelation_ids = '';
-        $.each(r_arr, function (i, n) {
-            if (n != id) {
-                if (i == 0) {
-                    newrelation_ids = n;
-                } else {
-                    newrelation_ids = newrelation_ids + '|' + n;
-                }
-            }
-        });
+        var arr = $('#relation_text li')
+        var newrelation_ids = ''
+        for (var i = 0; i < arr.length; i++) {
+            var id_str = $(arr[i]).attr('id')
+            var id = id_str.split('_')[1]
+            var modelid = id_str.split('_')[0].split('v')[1]
+            console.log(modelid + ',' + id)
+            newrelation_ids = newrelation_ids + '|' + modelid + "," + id
+        }
         $('#relation').val(newrelation_ids);
     }
 }
