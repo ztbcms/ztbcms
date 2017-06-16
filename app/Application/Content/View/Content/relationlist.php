@@ -70,30 +70,21 @@ function select_list(obj, title,modelid, id) {
     if ($(obj).attr('class') == 'line_ff9966' || $(obj).attr('class') == null) {
         $(obj).attr('class', 'line_fbffe4');
         window.top.$('#' + sid).remove();
-        if (relation_ids != '') {
-            var r_arr = relation_ids.split('|');
-            var newrelation_ids = '';
-            $.each(r_arr, function (i, n) {
-                if (n != id) {
-                    if (i == 0) {
-                        newrelation_ids = n;
-                    } else {
-                        newrelation_ids = newrelation_ids + '|' + n;
-                    }
-                }
-            });
-            window.top.$('#relation').val(newrelation_ids);
+        var arr =  window.top.$('#relation_text li')
+        var newrelation_ids = ''
+        for (var i = 0; i < arr.length; i++) {
+            var id_str =  window.top.$(arr[i]).attr('id')
+            var id = id_str.split('_')[1]
+            var modelid = id_str.split('_')[0].split('v')[1]
+            newrelation_ids = newrelation_ids + '|' + modelid + "," + id
         }
+        window.top.$('#relation').val(newrelation_ids);
     } else {
         $(obj).attr('class', 'line_ff9966');
         var str = "<li id='" + sid + "'>·<span>" + title + "</span><a href='javascript:;' class='close' onclick=\"remove_relation('" + sid + "'," + id + ")\"></a></li>";
         window.top.$('#relation_text').append(str);
-        if (relation_ids == '') {
-            window.top.$('#relation').val(id);
-        } else {
-            relation_ids = relation_ids + '|' + modelid+','+id;
-            window.top.$('#relation').val(relation_ids);
-        }
+        relation_ids = relation_ids + '|' + modelid+','+id;
+        window.top.$('#relation').val(relation_ids);
     }
 }
 </script>
