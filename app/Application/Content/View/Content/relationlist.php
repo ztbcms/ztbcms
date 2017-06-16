@@ -76,7 +76,6 @@ function select_list(obj, title,modelid, id) {
             var id_str =  window.top.$(arr[i]).attr('id')
             var id = id_str.split('_')[1]
             var modelid = id_str.split('_')[0].split('v')[1]
-            console.log(modelid + ',' + id)
             newrelation_ids = newrelation_ids + '|' + modelid + "," + id
         }
         window.top.$('#relation').val(newrelation_ids);

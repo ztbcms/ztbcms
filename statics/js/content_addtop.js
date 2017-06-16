@@ -228,7 +228,6 @@ function remove_relation(sid, id) {
             var id_str = $(arr[i]).attr('id')
             var id = id_str.split('_')[1]
             var modelid = id_str.split('_')[0].split('v')[1]
-            console.log(modelid + ',' + id)
             newrelation_ids = newrelation_ids + '|' + modelid + "," + id
         }
         $('#relation').val(newrelation_ids);
