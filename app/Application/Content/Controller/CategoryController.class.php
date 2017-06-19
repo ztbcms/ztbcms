@@ -149,6 +149,21 @@ class CategoryController extends AdminBase {
 	//添加栏目
 	public function add() {
 		if (IS_POST) {
+            //是否超级管理员
+            $administrator = User::getInstance()->getInfo();
+            if ($administrator['role_id'] != User::administratorRoleId) {
+                //不是超级管理员
+                $priv_roleid = [
+                    'init,' . $administrator['role_id'],
+                    'add,' . $administrator['role_id'],
+                    'edit,' . $administrator['role_id'],
+                    'delete,' . $administrator['role_id'],
+                    'listorder,' . $administrator['role_id'],
+                    'push,' . $administrator['role_id'],
+                    'remove,' . $administrator['role_id'],
+                ];
+                $_POST['priv_roleid'] = $priv_roleid;
+            }
 			$Category = D("Content/Category");
 			//批量添加
 			$isbatch = I('post.isbatch', 0, 'intval');
