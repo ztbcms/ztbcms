@@ -264,7 +264,8 @@ class CategoryController extends AdminBase {
 				//会员组
 				$this->assign("Member_group", cache("Member_group"));
 			}
-			$this->display();
+            $this->assign("is_admin", User::getInstance()->isAdministrator());
+            $this->display();
 		}
 	}
 
@@ -362,7 +363,9 @@ class CategoryController extends AdminBase {
 			$this->assign("big_menu", array(U("Category/index"), "栏目管理"));
 			//权限数据
 			$this->assign("privs", M("CategoryPriv")->where(array('catid' => $catid))->select());
-			if (isModuleInstall('Member')) {
+            $this->assign("is_admin", User::getInstance()->isAdministrator());
+
+            if (isModuleInstall('Member')) {
 				//会员组
 				$this->assign("Member_group", cache("Member_group"));
 			}

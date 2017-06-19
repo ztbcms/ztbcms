@@ -1,4 +1,4 @@
- 
+
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
 <style>
@@ -29,10 +29,18 @@
     <ul class="J_tabs_nav">
       <li class="current"><a href="javascript:;;">基本属性</a></li>
       <li class=""><a href="javascript:;;">选项设置</a></li>
-      <li class=""><a href="javascript:;;">模板设置</a></li>
-      <li class=""><a href="javascript:;;">生成设置</a></li>
-      <li class=""><a href="javascript:;;">权限设置</a></li>
-      <li class=""><a href="javascript:;;">扩展字段</a></li>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">模板设置</a></li>
+        </if>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">生成设置</a></li>
+        </if>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">权限设置</a></li>
+        </if>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">扩展字段</a></li>
+        </if>
     </ul>
   </div>
   <form class="J_ajaxForms" name="myform" id="myform" action="{:U("Category/add")}" method="post">
@@ -454,7 +462,7 @@ $(function(){
 		setting.tips = $('input[name="extend_add[setting][tips]"]').val();
 		setting.style = $('input[name="extend_add[setting][style]"]').val();
 		setting.option = $('textarea[name="extend_add[setting][option]"]').val();
-		
+
 		if(fieldname == ''){
 			alert("键名不能为空！");
 			return false;
@@ -472,7 +480,7 @@ $(function(){
 			alert("名称不能为空！");
 			return false;
 		}
-		
+
 		//单选框
 		if(type == 'input'){
 			$('.extend_list').append('<tr>\
@@ -585,7 +593,7 @@ $(function(){
 			$(this).parent('th').parent('tr').remove();
 		});
 	});
-	
+
 	$("#child").click(function(){
 		if($(this).prop("checked")){
 			$('#fmmb').hide();
@@ -664,7 +672,7 @@ $(function(){
                     url: form.prop('action'), //按钮上是否自定义提交地址(多按钮情况)
                     dataType: 'json',
                     beforeSubmit: function (arr, $form, options) {
-                        
+
                     },
                     success: function (data, statusText, xhr, $form) {
                         if(data.status){
