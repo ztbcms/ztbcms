@@ -171,7 +171,8 @@ class ContentController extends AdminBase {
 			$count = $model->where($where)->count();
 		}
 		$limit = I('get.limit', 20);
-		$page = $this->page($count, $limit);
+        $page = I('get.page', 1);
+		$page = $this->page($count, $limit, $page);
 		//排序
 		$order = I('get._order', 'listorder DESC,id DESC', 'urldecode');
 
