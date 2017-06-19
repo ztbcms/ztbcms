@@ -6,6 +6,7 @@
 
 namespace Content\Controller;
 
+use Admin\Service\User;
 use Common\Controller\AdminBase;
 use Libs\System\Url;
 
@@ -61,8 +62,24 @@ class CategoryController extends AdminBase {
 		$result = cache('Category');
 		$siteurl = parse_url(self::$Cache['Config']['siteurl']);
 		$types = array(0 => '内部栏目', 1 => '<font color="blue">单网页</font>', 2 => '<font color="red">外部链接</font>');
+
+		//是否超级管理员
+        $isAdministrator = User::getInstance()->isAdministrator();
+        $priv_catids = array();
+        //栏目权限 超级管理员例外
+        if ($isAdministrator !== true) {
+            $role_id = User::getInstance()->role_id;
+            $priv_result = M('CategoryPriv')->where(array('roleid' => $role_id, 'action' => 'init'))->select();
+            foreach ($priv_result as $_v) {
+                $priv_catids[$_v['catid']] = true;
+            }
+        }
 		if (!empty($result)) {
 			foreach ($result as $r) {
+                if ($isAdministrator !== true && $priv_catids[$r['catid']] !== true) {
+                    //如果用户不是管理员，又没有栏目权限，则不显示该栏
+                    continue;
+                }
 				$r = getCategory($r['catid']);
 				$r['modelname'] = $models[$r['modelid']]['name'];
 				$r['str_manage'] = '';
