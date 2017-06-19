@@ -172,7 +172,10 @@ class ContentController extends AdminBase {
 		}
 		$limit = I('get.limit', 20);
 		$page = $this->page($count, $limit);
-		$data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("listorder " => "DESC", "id" => "DESC"))->select();
+		//排序
+		$order = I('get._order', 'listorder DESC,id DESC', 'urldecode');
+
+		$data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order($order)->select();
 
 		//模板处理
 		$template = '';
