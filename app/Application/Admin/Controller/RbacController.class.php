@@ -169,8 +169,21 @@ class RbacController extends AdminBase {
             $result = cache("Menu");
             //获取已权限表数据
             $priv_data = D("Admin/Role")->getAccessList($roleid);
+
+            //获取登录管理员的授权信息
+            $isadmin=User::getInstance()->isAdministrator();
+            $userInfo=User::getInstance()->getInfo();
+            $login_priv_data = D("Admin/Role")->getAccessList($userInfo['role_id']);
+
             $json = array();
             foreach ($result as $rs) {
+                if(!$isadmin){
+                    //如果不是超级管理员，筛选出他没有授权的功能。
+                    if(!D("Admin/Role")->isCompetence($rs, $userInfo['role_id'], $login_priv_data)){
+                        continue;
+                    }
+                }
+
                 $data = array(
                     'id' => $rs['id'],
                     'parentid' => $rs['parentid'],
