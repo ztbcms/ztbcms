@@ -22,6 +22,16 @@ class ManagementController extends AdminBase {
                 'name' => '返回角色管理',
             );
             $this->assign('menuReturn', $menuReturn);
+        } else {
+            if (!User::getInstance()->isAdministrator()) {
+                //如果非超级管理员，只能管理下级角色的成员
+                $res = D('Admin/Role')->field('id')->where(['parentid' => User::getInstance()->role_id])->select();
+                $role_ids = [];
+                foreach ($res as $val) {
+                    $role_ids[] = $val['id'];
+                }
+                $where['role_id']=['in',$role_ids];
+            }
         }
         $count = D('Admin/User')->where($where)->count();
         $page = $this->page($count, 20);
@@ -56,7 +66,8 @@ class ManagementController extends AdminBase {
             if (empty($data)) {
                 $this->error('该信息不存在！');
             }
-            $this->assign("role", D('Admin/Role')->selectHtmlOption($data['role_id'], 'name="role_id"'));
+            $myid=User::getInstance()->isAdministrator() ? 0 : User::getInstance()->role_id;
+            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid,$data['role_id'], 'name="role_id"'));
             $this->assign("data", $data);
             $this->display();
         }
@@ -72,7 +83,8 @@ class ManagementController extends AdminBase {
                 $this->error($error ? $error : '添加失败！');
             }
         } else {
-            $this->assign("role", D('Admin/Role')->selectHtmlOption(0, 'name="role_id"'));
+            $myid=User::getInstance()->isAdministrator()?0:User::getInstance()->role_id;
+            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid,0, 'name="role_id"'));
             $this->display();
         }
     }
