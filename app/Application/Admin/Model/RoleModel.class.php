@@ -6,6 +6,7 @@
 
 namespace Admin\Model;
 
+use Admin\Service\User;
 use Common\Model\Model;
 
 class RoleModel extends Model {
@@ -208,7 +209,8 @@ class RoleModel extends Model {
         $str = "'<option value='\$id' \$selected>\$spacer\$name</option>";
         $tree->init($this->getTreeArray());
         if ($selectStr) {
-            $html = '<select ' . $selectStr . '>';
+            //$parentid 不是超级管理员，禁止选择其他角色
+            $html = '<select '.($parentid != User::getInstance()->isAdministrator() ? 'disabled' : '' ).' ' . $selectStr . '>';
             $html.=$tree->get_tree(0, $str, $parentid);
             $html.='</select>';
             return $html;

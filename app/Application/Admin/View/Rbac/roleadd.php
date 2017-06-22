@@ -9,7 +9,7 @@
       <table width="100%">
         <tr>
           <th width="100">父角色</th>
-          <td><?php echo D('Admin/Role')->selectHtmlOption(0,'name="parentid"') ?></td>
+            <td><?php echo D('Admin/Role')->selectHtmlOption($userInfo['role_id'],'name="parentid"') ?></td>
         </tr>
         <tr>
           <th width="100">角色名称</th>
