@@ -231,6 +231,13 @@ class RbacController extends AdminBase {
                 $this->error('请指定需要授权的角色！');
             }
             $categorys = cache("Category");
+            $isAdministrator=User::getInstance()->isAdministrator();
+            if ($isAdministrator !== true) {
+                $priv_result = M('CategoryPriv')->where(array('roleid' => User::getInstance()->role_id, 'action' => 'init'))->select();
+                foreach ($priv_result as $_v) {
+                    $priv_catids[$_v['catid']] = true;
+                }
+            }
             $tree = new \Tree();
             $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ', '&nbsp;&nbsp;&nbsp;├─ ', '&nbsp;&nbsp;&nbsp;└─ ');
             $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
@@ -242,6 +249,10 @@ class RbacController extends AdminBase {
 
             foreach ($categorys as $k => $v) {
                 $v = getCategory($v['catid']);
+                if(!$isAdministrator && !$priv_catids[$v['catid']]){
+                    unset($categorys[$k]);
+                    continue;
+                }
                 if ($v['type'] == 1 || $v['child']) {
                     $v['disabled'] = 'disabled';
                     $v['init_check'] = '';
