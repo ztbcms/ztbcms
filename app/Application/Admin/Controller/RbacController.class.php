@@ -6,6 +6,7 @@
 
 namespace Admin\Controller;
 
+use Admin\Service\User;
 use Common\Controller\AdminBase;
 
 class RbacController extends AdminBase {
@@ -16,6 +17,7 @@ class RbacController extends AdminBase {
         $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ', '&nbsp;&nbsp;&nbsp;├─ ', '&nbsp;&nbsp;&nbsp;└─ ');
         $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
         $roleList = D("Admin/Role")->getTreeArray();
+        $userInfo=User::getInstance()->getInfo();
         foreach ($roleList as $k => $rs) {
             $operating = '';
             if ($rs['id'] == 1) {
@@ -39,16 +41,24 @@ class RbacController extends AdminBase {
           <td align='center'>\$status</td>
           <td align='center'>\$operating</td>
         </tr>";
+        //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
+        $myid=User::getInstance()->isAdministrator() ? 0 : $userInfo['role_id'];
         $tree->init($roleList);
-        $this->assign("role", $tree->get_tree(0, $str));
+        $this->assign("role", $tree->get_tree($myid, $str));
         $this->assign("data", D("Admin/Role")->order(array("listorder" => "asc", "id" => "desc"))->select())
                 ->display();
     }
 
     //添加角色
     public function roleadd() {
+        $userInfo = User::getInstance()->getInfo();
         if (IS_POST) {
-            if (D("Admin/Role")->create()) {
+            $data = I('post.');
+            if(!User::getInstance()->isAdministrator()){
+                //如果不是超级管理员，所添加的角色只能是该角色的下级。
+                $data['parentid']=$userInfo['role_id'];
+            }
+            if (D("Admin/Role")->create($data)) {
                 if (D("Admin/Role")->add()) {
                     $this->success("添加角色成功！", U("Rbac/rolemanage"));
                 } else {
@@ -59,6 +69,8 @@ class RbacController extends AdminBase {
                 $this->error($error ? $error : '添加失败！');
             }
         } else {
+            //向前端渲染登录信息
+            $this->assign('userInfo',$userInfo);
             $this->display();
         }
     }
@@ -157,8 +169,21 @@ class RbacController extends AdminBase {
             $result = cache("Menu");
             //获取已权限表数据
             $priv_data = D("Admin/Role")->getAccessList($roleid);
+
+            //获取登录管理员的授权信息
+            $isadmin=User::getInstance()->isAdministrator();
+            $userInfo=User::getInstance()->getInfo();
+            $login_priv_data = D("Admin/Role")->getAccessList($userInfo['role_id']);
+
             $json = array();
             foreach ($result as $rs) {
+                if(!$isadmin){
+                    //如果不是超级管理员，筛选出他没有授权的功能。
+                    if(!D("Admin/Role")->isCompetence($rs, $userInfo['role_id'], $login_priv_data)){
+                        continue;
+                    }
+                }
+
                 $data = array(
                     'id' => $rs['id'],
                     'parentid' => $rs['parentid'],
@@ -206,6 +231,13 @@ class RbacController extends AdminBase {
                 $this->error('请指定需要授权的角色！');
             }
             $categorys = cache("Category");
+            $isAdministrator=User::getInstance()->isAdministrator();
+            if ($isAdministrator !== true) {
+                $priv_result = M('CategoryPriv')->where(array('roleid' => User::getInstance()->role_id, 'action' => 'init'))->select();
+                foreach ($priv_result as $_v) {
+                    $priv_catids[$_v['catid']] = true;
+                }
+            }
             $tree = new \Tree();
             $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ', '&nbsp;&nbsp;&nbsp;├─ ', '&nbsp;&nbsp;&nbsp;└─ ');
             $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
@@ -217,6 +249,10 @@ class RbacController extends AdminBase {
 
             foreach ($categorys as $k => $v) {
                 $v = getCategory($v['catid']);
+                if(!$isAdministrator && !$priv_catids[$v['catid']]){
+                    unset($categorys[$k]);
+                    continue;
+                }
                 if ($v['type'] == 1 || $v['child']) {
                     $v['disabled'] = 'disabled';
                     $v['init_check'] = '';

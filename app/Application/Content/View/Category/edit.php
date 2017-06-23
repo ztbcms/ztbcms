@@ -29,10 +29,18 @@
     <ul class="J_tabs_nav">
       <li class="current"><a href="javascript:;;">基本属性</a></li>
       <li class=""><a href="javascript:;;">选项设置</a></li>
-      <li class=""><a href="javascript:;;">模板设置</a></li>
-      <li class=""><a href="javascript:;;">生成设置</a></li>
-      <li class=""><a href="javascript:;;">权限设置</a></li>
-      <li class=""><a href="javascript:;;">扩展字段</a></li>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">模板设置</a></li>
+        </if>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">生成设置</a></li>
+        </if>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">权限设置</a></li>
+        </if>
+        <if condition="$is_admin">
+            <li class=""><a href="javascript:;;">扩展字段</a></li>
+        </if>
     </ul>
   </div>
   <form class="J_ajaxForms" name="myform" id="myform" action="{:U("Category/edit")}" method="post">

@@ -6,6 +6,7 @@
 
 namespace Content\Controller;
 
+use Admin\Service\User;
 use Common\Controller\AdminBase;
 use Libs\System\Url;
 
@@ -61,8 +62,24 @@ class CategoryController extends AdminBase {
 		$result = cache('Category');
 		$siteurl = parse_url(self::$Cache['Config']['siteurl']);
 		$types = array(0 => '内部栏目', 1 => '<font color="blue">单网页</font>', 2 => '<font color="red">外部链接</font>');
+
+		//是否超级管理员
+        $isAdministrator = User::getInstance()->isAdministrator();
+        $priv_catids = array();
+        //栏目权限 超级管理员例外
+        if ($isAdministrator !== true) {
+            $role_id = User::getInstance()->role_id;
+            $priv_result = M('CategoryPriv')->where(array('roleid' => $role_id, 'action' => 'init'))->select();
+            foreach ($priv_result as $_v) {
+                $priv_catids[$_v['catid']] = true;
+            }
+        }
 		if (!empty($result)) {
 			foreach ($result as $r) {
+                if ($isAdministrator !== true && $priv_catids[$r['catid']] !== true) {
+                    //如果用户不是管理员，又没有栏目权限，则不显示该栏
+                    continue;
+                }
 				$r = getCategory($r['catid']);
 				$r['modelname'] = $models[$r['modelid']]['name'];
 				$r['str_manage'] = '';
@@ -132,6 +149,21 @@ class CategoryController extends AdminBase {
 	//添加栏目
 	public function add() {
 		if (IS_POST) {
+            //是否超级管理员
+            $administrator = User::getInstance()->getInfo();
+            if ($administrator['role_id'] != User::administratorRoleId) {
+                //不是超级管理员
+                $priv_roleid = [
+                    'init,' . $administrator['role_id'],
+                    'add,' . $administrator['role_id'],
+                    'edit,' . $administrator['role_id'],
+                    'delete,' . $administrator['role_id'],
+                    'listorder,' . $administrator['role_id'],
+                    'push,' . $administrator['role_id'],
+                    'remove,' . $administrator['role_id'],
+                ];
+                $_POST['priv_roleid'] = $priv_roleid;
+            }
 			$Category = D("Content/Category");
 			//批量添加
 			$isbatch = I('post.isbatch', 0, 'intval');
@@ -232,7 +264,8 @@ class CategoryController extends AdminBase {
 				//会员组
 				$this->assign("Member_group", cache("Member_group"));
 			}
-			$this->display();
+            $this->assign("is_admin", User::getInstance()->isAdministrator());
+            $this->display();
 		}
 	}
 
@@ -330,7 +363,9 @@ class CategoryController extends AdminBase {
 			$this->assign("big_menu", array(U("Category/index"), "栏目管理"));
 			//权限数据
 			$this->assign("privs", M("CategoryPriv")->where(array('catid' => $catid))->select());
-			if (isModuleInstall('Member')) {
+            $this->assign("is_admin", User::getInstance()->isAdministrator());
+
+            if (isModuleInstall('Member')) {
 				//会员组
 				$this->assign("Member_group", cache("Member_group"));
 			}
