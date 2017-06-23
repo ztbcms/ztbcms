@@ -6,6 +6,7 @@
 
 namespace Admin\Model;
 
+use Admin\Service\User;
 use Common\Model\Model;
 
 class RoleModel extends Model {
@@ -208,12 +209,35 @@ class RoleModel extends Model {
         $str = "'<option value='\$id' \$selected>\$spacer\$name</option>";
         $tree->init($this->getTreeArray());
         if ($selectStr) {
-            $html = '<select ' . $selectStr . '>';
+            //$parentid 不是超级管理员，禁止选择其他角色
+            $html = '<select '.($parentid <= User::administratorRoleId ? '' : 'disabled' ).' ' . $selectStr . '>';
             $html.=$tree->get_tree(0, $str, $parentid);
             $html.='</select>';
             return $html;
         }
         return $tree->get_tree(0, $str, $parentid);
+    }
+
+    /**
+     * 返回select选择列表
+     * @param int $parentid 父节点ID
+     * @param int $selectid 所选ID
+     * @param string $selectStr 是否要 <select></select>
+     * @return string
+     */
+    public function selectChildHtmlOption($parentid = 0,$selectid = 0, $selectStr = '') {
+        $tree = new \Tree();
+        $tree->icon = array('&nbsp;&nbsp;&nbsp;│ ', '&nbsp;&nbsp;&nbsp;├─ ', '&nbsp;&nbsp;&nbsp;└─ ');
+        $tree->nbsp = '&nbsp;&nbsp;&nbsp;';
+        $str = "'<option  value='\$id' \$selected>\$spacer\$name</option>";
+        $tree->init($this->getTreeArray());
+        if ($selectStr) {
+            $html = '<select ' . $selectStr . '>';
+            $html.=$tree->get_tree($parentid, $str, $selectid);
+            $html.='</select>';
+            return $html;
+        }
+        return $tree->get_tree($parentid, $str, $selectid);
     }
 
     /**
