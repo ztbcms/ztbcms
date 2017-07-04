@@ -231,7 +231,7 @@ if (window.parent !== window.self) {
 <script>
 //刷新二维码
 function refreshs(){
-	document.getElementById('code_img').src='{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=&refresh=1')}&time='+Math.random();void(0);
+	document.getElementById('code_img').src="{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=&refresh=1')}&time="+Math.random();void(0);
 }
 $(function(){
 	$('#verifycode').focus(function(){
