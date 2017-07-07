@@ -214,7 +214,10 @@ class MemberController extends AdminBase {
 			//会员模型数据表名
 			$tablename = $this->groupsModel[$modelid]['tablename'];
 			//相应会员模型数据
-			$modeldata = M(ucwords($tablename))->where(array("userid" => $userid))->find();
+            $modeldata = null;
+            if(!empty($tablename)){
+                $modeldata = M(ucwords($tablename))->where(array("userid" => $userid))->find();
+            }
 			if (!is_array($modeldata)) {
 				$modeldata = array();
 			}

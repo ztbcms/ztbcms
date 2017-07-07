@@ -220,7 +220,7 @@ if (window.parent !== window.self) {
 				<div class="inner" style="text-align: center;color: white !important;">
 						<div class="copyright clearfix">
 							<p>当前版本 v{:C('APPLIATION_VERSION')}</p>
-							<p class="copyright_en">Copyright © 2016 - 2016 , ZTBCMS All Rights Reserved.</p>
+							<p class="copyright_en">Copyright © 2016 - {:date('Y')} , ZTBCMS All Rights Reserved.</p>
 							<p class="copyright_ch"><a href="http://www.ZTBCMS.com" target="_blank" style="color: white;	">http://www.ZTBCMS.com</a></p>
 						</div>
 					</div>
@@ -231,7 +231,7 @@ if (window.parent !== window.self) {
 <script>
 //刷新二维码
 function refreshs(){
-	document.getElementById('code_img').src='{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=&refresh=1')}&time='+Math.random();void(0);
+	document.getElementById('code_img').src="{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=&refresh=1')}&time="+Math.random();void(0);
 }
 $(function(){
 	$('#verifycode').focus(function(){
