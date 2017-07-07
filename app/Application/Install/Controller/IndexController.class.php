@@ -32,12 +32,13 @@ class IndexController extends Controller {
 		//错误
 		$err = 0;
 		//mysql检测
-        $db_version = MysqlHelper::getVersion();
-        if(!empty($db_version)){
-            $mysql = '<span class="correct_span">&radic;</span> ' . $db_version;
-        }else{
-            $mysql = '<span class="correct_span error_span">&radic;</span> 链接错误' ;
-        }
+//        $db_version = MysqlHelper::getVersion();
+//        if(!empty($db_version)){
+//            $mysql = '<span class="correct_span">&radic;</span> ' . $db_version;
+//        }else{
+//            $mysql = '<span class="correct_span error_span">&radic;</span> 链接错误' ;
+//        }
+        $mysql = '';
 
 		//上传检测
 		if (ini_get('file_uploads')) {
@@ -277,7 +278,7 @@ class IndexController extends Controller {
 	//测试数据库
 	public function testdbpwd() {
         $db = new Model('', '', [
-            'DB_TYPE' => 'mysql', // 数据库类型
+            'DB_TYPE' => 'Mysql', // 数据库类型
             'DB_HOST' => $_POST['dbHost'], // 服务器地址
             'DB_NAME' => $_POST['dbName'], // 数据库名
             'DB_USER' => $_POST['dbUser'], // 用户名
