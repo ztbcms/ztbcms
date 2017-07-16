@@ -22,7 +22,7 @@
     <script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;">
-<div class="wrapper">
+<div class="wrapper" style="position: absolute;">
 
     <header class="main-header">
         <!-- Logo -->
@@ -84,7 +84,7 @@
         </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar" style="height: 300px;overflow: scroll">
+    <aside class="main-sidebar" style="overflow: auto;">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
             <!-- search form 搜索框 -->
@@ -141,7 +141,7 @@
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper" style="position: fixed;left: 0;right: 0;">
         <!-- 内容页 -->
         <section class="content" style="padding: 0;">
             <div id="B_frame">

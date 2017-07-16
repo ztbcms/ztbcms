@@ -6,6 +6,10 @@
 <style>
     html,body {
         height: 100% !important;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
     }
 </style>
 

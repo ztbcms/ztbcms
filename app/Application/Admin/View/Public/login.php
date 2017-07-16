@@ -220,8 +220,8 @@ if (window.parent !== window.self) {
 				<div class="inner" style="text-align: center;color: white !important;">
 						<div class="copyright clearfix">
 							<p>当前版本 v{:C('APPLIATION_VERSION')}</p>
-							<p class="copyright_en">Copyright © 2016 - {:date('Y')} , ZTBCMS All Rights Reserved.</p>
-							<p class="copyright_ch"><a href="http://www.ZTBCMS.com" target="_blank" style="color: white;	">http://www.ZTBCMS.com</a></p>
+							<p class="copyright_en">Copyright © 2015 - {:date('Y')} , ZTBCMS All Rights Reserved.</p>
+							<p class="copyright_ch"><a href="http://www.ZTBCMS.com" target="_blank" style="color: white;	">http://www.ztbcms.com</a></p>
 						</div>
 					</div>
 		</div>
