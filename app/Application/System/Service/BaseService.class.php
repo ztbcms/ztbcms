@@ -25,6 +25,31 @@ class BaseService {
     }
 
     /**
+     * 返回列表信息
+     *
+     * @param $status
+     * @param $items
+     * @param $page
+     * @param $limit
+     * @param $total_items
+     * @param $total_pages
+     * @return array
+     */
+    protected static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages){
+        return [
+            'status' => $status,
+            'data' => [
+                'items' => $items,
+                'page' => $page,
+                'limit' => $limit,
+                'total_items' => $total_items,
+                'total_pages' => $total_pages,
+            ],
+            'msg' => ''
+        ];
+    }
+
+    /**
      * 获取
      *
      * @param string $tablename
