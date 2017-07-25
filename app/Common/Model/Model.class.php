@@ -95,6 +95,7 @@ class Model extends \Think\Model {
             if (strlen($default) > 0) {
                 $data[$field] = $default;
             } else {
+                //没有默认值，检查类型
                 $realType = strtoupper(explode('(', $structure[$field]['type'])[0]);
                 switch ($realType) {
                     //数字类型的设置默认值为0
@@ -113,6 +114,8 @@ class Model extends \Think\Model {
                     case 'NUMERIC':
                         $data[$field] = 0;
                         break;
+                    //todo 时间类型字段支持
+                    //其它类型插入空字符串
                     default:
                         $data[$field] = '';
                         break;
