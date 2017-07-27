@@ -1403,6 +1403,7 @@ function session($name = '', $value = '') {
 
 		if (isset($name['expire'])) {
 			ini_set('session.gc_maxlifetime', $name['expire']);
+            ini_set('session.cookie_lifetime', $name['expire']);
 		}
 
 		if (isset($name['use_trans_sid'])) {
