@@ -118,5 +118,11 @@ return array(
             'type' => 1,
             'phpfile:ContentDeleteEndBehavior|module:Member',
         ),
+        'member_register' => array(
+            'title' => '会员注册后行为调用',
+            'remark' => '会员注册后行为调用',
+            'type' => 1,
+            'phpfile:MemberRegisterBehavior|module:Member',
+        ),
     ),
 );

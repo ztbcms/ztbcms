@@ -1,14 +1,13 @@
 <?php 
  return array (
-  'CLOUD_USERNAME' => '',
-  'CLOUD_PASSWORD' => '',
-  'COOKIE_EXPIRE' => '3600',
+  'COOKIE_EXPIRE' => '604800',
   'COOKIE_DOMAIN' => '',
   'COOKIE_PATH' => '/',
   'SESSION_PREFIX' => '',
   'SESSION_OPTIONS' => 
   array (
     'domain' => '',
+    'expire' => '604800',
   ),
   'SHOW_ERROR_MSG' => '0',
   'ERROR_MESSAGE' => '您浏览的页面暂时发生了错误！请稍后再试～',

@@ -7,6 +7,8 @@
 namespace Libs\Driver\Passport;
 
 use Libs\Service\Passport;
+use Member\BehaviorParam\MemberRegisterBehaviorParam;
+use Think\Hook;
 
 class Local extends Passport {
 
@@ -243,6 +245,7 @@ swfobject.addDomLoadEvent(function () {
 		);
 		$userid = $Member->add($data);
 		if ($userid) {
+            Hook::listen('member_register', MemberRegisterBehaviorParam::create(['userid' => $userid]));
 			return $userid;
 		}
 		$this->error = $Member->getError() ?: '注册失败！';
