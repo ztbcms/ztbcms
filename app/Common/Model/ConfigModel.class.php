@@ -194,7 +194,7 @@ class ConfigModel extends Model {
 		$data['DATA_CACHE_TYPE'] = $data['DATA_CACHE_TYPE'] ? $data['DATA_CACHE_TYPE'] : "File";
 		$data['DEFAULT_LANG'] = $data['DEFAULT_LANG'] ? $data['DEFAULT_LANG'] : "zh-cn";
 		$data['DEFAULT_AJAX_RETURN'] = $data['DEFAULT_AJAX_RETURN'] ? $data['DEFAULT_AJAX_RETURN'] : "JSON";
-		$data['SESSION_OPTIONS'] = $data['SESSION_OPTIONS'] ? $data['SESSION_OPTIONS'] : array();
+        $data['SESSION_OPTIONS'] = $data['SESSION_OPTIONS'] ? $data['SESSION_OPTIONS'] : array('expire' => 7 * 24 * 60 * 60);
 		$data['URL_PATHINFO_DEPR'] = $data['URL_PATHINFO_DEPR'] ? $data['URL_PATHINFO_DEPR'] : "/";
 		//URL区分大小写设置
 		$data['URL_CASE_INSENSITIVE'] = (int) $data['URL_CASE_INSENSITIVE'] ? true : false;

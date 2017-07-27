@@ -35,6 +35,11 @@
                         <td><input type="text" class="input"  name="SESSION_OPTIONS[domain]" value="{$addition.SESSION_OPTIONS.domain}" size="40">
                             <span class="gray"> 一般是“.ztbcms.com”</span></td>
                     </tr>
+                    <tr>
+                        <th width="140">Session有效时间:</th>
+                        <td><input type="text" class="input"  name="SESSION_OPTIONS[expire]" value="{$addition.SESSION_OPTIONS.expire}" size="40">
+                            <span class="gray"> 单位：秒</span></td>
+                    </tr>
                 </table>
                 <div class="h_a">错误设置</div>
                 <table cellpadding=0 cellspacing=0 width="100%" class="table_form" >
