@@ -7,3 +7,9 @@
 <title>系统后台 - {$Config.sitename} - by ZTBCMS</title>
 <Admintemplate file="Admin/Common/Cssjs"/>
 </head>
+<style>
+    /* vue相关   */
+    [v-cloak] {
+        display: none;
+    }
+</style>
