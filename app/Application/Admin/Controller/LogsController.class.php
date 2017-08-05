@@ -37,7 +37,7 @@ class LogsController extends AdminBase {
         }
         $model = D("Admin/Loginlog");
         $count = $model->where($where)->count();
-        $page = $this->page($count, 20);
+        $page = $this->page($count, 20, I('get.page', 1));
         $data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
         $this->assign("Page", $page->show())
                 ->assign("data", $data)
@@ -80,7 +80,7 @@ class LogsController extends AdminBase {
             $where['status'] = (int) $status;
         }
         $count = M("Operationlog")->where($where)->count();
-        $page = $this->page($count, 20);
+        $page = $this->page($count, 20, I('get.page', 1));
         $Logs = M("Operationlog")->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("id" => "desc"))->select();
         $this->assign("Page", $page->show());
         $this->assign("logs", $Logs);

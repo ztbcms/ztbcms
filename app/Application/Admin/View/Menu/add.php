@@ -3,7 +3,7 @@
 <body class="J_scroll_fixed">
 <div class="wrap jj">
   <Admintemplate file="Common/Nav"/>
-  <div class="common-form">
+  <div class="common-form" id="app">
     <form method="post" class="J_ajaxForm" action="{:U('Menu/add')}">
       <div class="h_a">菜单信息</div>
       <div class="table_list">
@@ -22,17 +22,30 @@
             </tr>
             <tr>
               <td>模块:</td>
-              <td><input type="text" class="input" name="app" id="app" value="Admin"></td>
+              <td>
+                <select name="app" id="app" @change="getControllerList()" v-model="module">
+                  <option value="">请选择模块</option>
+                  <option v-for="item in moduleList" :value="item">{{item}}</option>
+                </select>
+              </td>
             </tr>
             <tr>
               <td>控制器:</td>
-              <td><input type="text" class="input" name="controller" id="controller" value="">
+              <td>
+                <select name="controller" id="controller" @change="getActionList()" v-model="controller">
+                  <option value="%">%</option>
+                  <option v-for="item in controllerList" :value="item">{{item}}</option>
+                </select>
                   如果填 % 作为权限分配的时候就匹配模块下所有控制器</td>
             </tr>
             <tr>
               <td>方法:</td>
-              <td><input type="text" class="input" name="action" id="action" value=""></td>
-                  如果填 % 作为权限分配的时候就匹配控制器下所有的方法
+              <td>
+                <select name="action" id="action" v-model="action">
+                  <option value="%">%</option>
+                  <option v-for="item in actionList" :value="item">{{item}}</option>
+                </select>
+                  如果填 % 作为权限分配的时候就匹配控制器下所有的方法</td>
             </tr>
             <tr>
               <td>参数:</td>
@@ -70,5 +83,39 @@
   </div>
 </div>
 <script src="{$config_siteurl}statics/js/common.js"></script>
+<script src="{$config_siteurl}statics/js/vue/vue.js"></script>
+<script>
+  var vm = new Vue({
+    el: '#app',
+    data: {
+      module: '',
+      moduleList: {},
+      controller: '%',
+      controllerList: {},
+      action: '%',
+      actionList: {},
+    },
+    methods: {
+      getModuleList: function(){
+        $.post('Admin/Menu/public_getModule', {}, function(res){
+          vm.moduleList = res.data;
+        }, 'json');
+      },
+      getControllerList: function(){
+        $.post('Admin/Menu/public_getController', {module: vm.module}, function(res){
+          vm.controllerList = res.data;
+        }, 'json');
+      },
+      getActionList: function(){
+        $.post('Admin/Menu/public_getAction', {controller: vm.module+'/'+vm.controller}, function(res){
+          vm.actionList = res.data;
+        }, 'json');
+      }
+    },
+    mounted: function(){
+      this.getModuleList();
+    }
+  });
+</script>
 </body>
 </html>
