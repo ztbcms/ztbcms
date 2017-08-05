@@ -132,7 +132,7 @@ class MenuController extends AdminBase {
                 $all_module[] = $path;
             }
         }
-        $this->ajaxReturn(self::createReturn(true, $all_module, '取得模块名称'));
+        $this->ajaxReturn(self::createReturn(true, $all_module));
     }
 
     //取得控制器名称
@@ -150,7 +150,7 @@ class MenuController extends AdminBase {
                 $data[]  =  basename($file,  C('DEFAULT_C_LAYER').'.class.php');
             }
         }
-        $this->ajaxReturn(self::createReturn(true, $data, '取得控制器名称'));
+        $this->ajaxReturn(self::createReturn(true, $data));
     }
 
     //取得方法名称
@@ -167,7 +167,7 @@ class MenuController extends AdminBase {
                 $data[] = $func;
             }
         }
-        $this->ajaxReturn(self::createReturn(true, $data, '取得方法名称'));
+        $this->ajaxReturn(self::createReturn(true, $data));
     }
 
 }
