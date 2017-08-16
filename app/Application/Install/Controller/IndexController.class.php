@@ -287,12 +287,15 @@ class IndexController extends Controller {
 //            'DB_PREFIX' => '', // 数据库表前缀
         ]);
 
+		$return = '1';
         try{
-            $db->execute('show databases');
+			$res = $db->execute('show databases');
+			$return = $res ? '1' : '0';
         }catch (\Exception $exception){
-            exit('0');
-        }
-        exit('1');
+            $return = '0';
+		}
+		echo $return;
+        exit();
     }
 
 }
