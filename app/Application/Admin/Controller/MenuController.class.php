@@ -120,4 +120,54 @@ class MenuController extends AdminBase {
         }
     }
 
+    //取得模块名称
+    public function public_getModule(){
+        //取得模块目录名称
+        $dirs = glob(APP_PATH . '*');
+        $all_module = [];
+        foreach ($dirs as $path) {
+            if (is_dir($path)) {
+                //目录名称
+                $path = basename($path);
+                $all_module[] = $path;
+            }
+        }
+        $this->ajaxReturn(self::createReturn(true, $all_module));
+    }
+
+    //取得控制器名称
+    public function public_getController($module){
+        if(empty($module)) return null;
+        $module_path = APP_PATH . '/' . $module . '/Controller/';  //控制器路径
+        if(!is_dir($module_path)) return null;
+        $module_path .= '/*.class.php';
+        $ary_files = glob($module_path);
+        $data = [];
+        foreach ($ary_files as $file) {
+            if (is_dir($file)) {
+                continue;
+            } else {
+                $data[]  =  basename($file,  C('DEFAULT_C_LAYER').'.class.php');
+            }
+        }
+        $this->ajaxReturn(self::createReturn(true, $data));
+    }
+
+    //取得方法名称
+    public function public_getAction($controller){
+        if(empty($controller)) return null;
+        $con = A($controller);
+        $functions = get_class_methods($con);
+        //排除部分方法
+        $inherents  =  array('_initialize','__construct','getActionName','isAjax','display','show','fetch','buildHtml','assign','__set','get','__get','__isset','__call','error','success','ajaxReturn','redirect','__destruct', '_empty', 'logo', 'page', 'createReturn', 'app', 'initSite', 'getModelObject', 'basePage', 'baseAdd', 'baseEdit', 'baseDelete', 'verify', 'theme');
+
+        $data = [];
+        foreach ($functions as $func){
+            if(!in_array($func, $inherents)){
+                $data[] = $func;
+            }
+        }
+        $this->ajaxReturn(self::createReturn(true, $data));
+    }
+
 }
