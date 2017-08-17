@@ -890,9 +890,10 @@ CREATE TABLE `cms_user` (
 
 CREATE TABLE `cms_access_group` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL DEFAULT '',
-  `parentid` int(11) NOT NULL,
-  `status` tinyint(2) NOT NULL,
+  `name` varchar(64) NOT NULL DEFAULT '' COMMENT '名称',
+  `parentid` int(11) NOT NULL COMMENT '父组别ID',
+  `status` tinyint(2) NOT NULL COMMENT '启用状态：0禁用1启用',
+  `description` varchar(32) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组';
 
