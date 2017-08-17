@@ -12,6 +12,11 @@ use Shop\Service\BaseService;
 
 class RbacService extends BaseService {
 
+    static function getAccessGroupById($id){
+        $accessGroup = D('Admin/AccessGroup')->where(['id' => $id])->find();
+        return self::createReturn(true, $accessGroup);
+    }
+
     /**
      * @param        $name
      * @param        $parentid

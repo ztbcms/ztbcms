@@ -51,21 +51,47 @@
                     <button class="btn btn-primary" type="button" @click="doSubmit">提交</button>
                 </div>
             </div>
-
         </form>
+
+        <h4>权限列表</h4>
+        <hr>
     </div>
     <script>
         $(document).ready(function(){
             var App = new Vue({
                 el: '#app',
                 data: {
-                    id: "<?php echo ($accessGroup ? $accessGroup['id'] : '');?>",
-                    name: "<?php echo ($accessGroup ? $accessGroup['name'] : '0');?>",
-                    parentid: "<?php echo ($accessGroup ? $accessGroup['parentid'] : '0');?>",
-                    description: "<?php echo ($accessGroup ? $accessGroup['description'] : '0');?>",
-                    status: "<?php echo ($accessGroup ? $accessGroup['status'] : '0');?>"
+                    id: "{:I('get.id', '')}",
+                    name: "",
+                    parentid: "0",
+                    description: "",
+                    status: "1",
+                    accessGroupItems: []
                 },
                 methods: {
+                    fetchData: function(){
+                        var that = this;
+                        if(that.id){
+                            $.ajax({
+                                url: "{:U('Admin/AccessGroup/getAccessGroupById')}&id=" + that.id,
+                                type: "get",
+                                dataType: "json",
+                                success: function(res){
+                                    if(res.status){
+                                        that.id = res.data.id;
+                                        that.name = res.data.name;
+                                        that.parentid = res.data.parentid;
+                                        that.description = res.data.description;
+                                        that.status = res.data.status;
+                                        that.accessGroupItems = res.data.accessGroupItems;
+                                    }else{
+                                        layer.msg('操作繁忙，请稍后再试')
+                                    }
+                                }
+                            })
+                        }
+
+                    },
                     doSubmit: function(){
                         var that = this;
                         var data = {
@@ -98,7 +124,7 @@
                     }
                 },
                 mounted: function(){
-
+                    this.fetchData();
                 }
             })
         });
