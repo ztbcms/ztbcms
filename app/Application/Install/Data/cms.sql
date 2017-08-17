@@ -887,3 +887,29 @@ CREATE TABLE `cms_user` (
 -- ----------------------------
 -- Records of cms_user
 -- ----------------------------
+
+CREATE TABLE `cms_access_group` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL DEFAULT '',
+  `parentid` int(11) NOT NULL,
+  `status` tinyint(2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组';
+
+
+CREATE TABLE `cms_access_group_role` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `group_name` varchar(32) NOT NULL DEFAULT '',
+  `role_id` int(11) NOT NULL COMMENT '角色ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色的权限组';
+
+CREATE TABLE `cms_access_group_items` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `app` varchar(32) NOT NULL DEFAULT '',
+  `controller` varchar(32) NOT NULL DEFAULT '',
+  `action` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组的权限';
