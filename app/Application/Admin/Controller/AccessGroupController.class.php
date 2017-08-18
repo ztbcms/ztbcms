@@ -6,9 +6,9 @@
 
 namespace Admin\Controller;
 
+use Admin\Service\MenuService;
 use Admin\Service\RbacService;
 use Common\Controller\AdminBase;
-use Libs\System\RBAC;
 
 class AccessGroupController extends AdminBase {
 
@@ -17,6 +17,18 @@ class AccessGroupController extends AdminBase {
      */
     function accessGroupList(){
         $this->display();
+    }
+
+    function accessList(){
+        $this->display();
+    }
+
+    /**
+     *
+     */
+    function getAccessList(){
+        $menuTreeArray = MenuService::getMenuTreeArray();
+        $this->ajaxReturn(self::createReturn(true, $menuTreeArray));
     }
 
     function getAccessGroupById(){
@@ -36,8 +48,7 @@ class AccessGroupController extends AdminBase {
 
     function editAccessGroup(){
         $id = I('get.id');
-        $accessGroup = RbacService::getAccessGroupById($id)['data'];
-        $this->assign('accessGroup', $accessGroup);
+        $this->assign('id' , $id);
         $accessGroupTreeArray = RbacService::getAccessGroupTreeArray(0);
         $this->assign('accessGroupTreeArray', $accessGroupTreeArray);
         $this->display('createOrEditAccessGroup');

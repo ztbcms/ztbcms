@@ -8,39 +8,46 @@
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">名称</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-5">
                     <input type="text" class="form-control" v-model="name">
+                </div>
+                <div class="col-sm-5">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">父权限组</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-5">
                     <select v-model="parentid" class="form-control" >
                         <volist name="accessGroupTreeArray" id="item">
                             <option value="{$item['id']}" selected="">{:str_repeat('&nbsp;', $item['level']*4);}|—{$item['name']}</option>
                         </volist>
                     </select>
                 </div>
+                <div class="col-sm-5">
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">描述</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-5">
                     <input type="text" class="form-control"  placeholder="" v-model="description">
+                </div>
+                <div class="col-sm-5">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">是否启用</label>
 
-                <div class="col-sm-10"  style="padding-top: 8px;">
+                <div class="col-sm-5"  style="padding-top: 8px;">
                     <input type="radio" name="status" v-bind:value="1" v-model="status" checked> 启用
                     <label> &nbsp;&nbsp;&nbsp;&nbsp;
                         <input type="radio" name="status" v-bind:value="0" v-model="status"> 禁止</label>
-
+                </div>
+                <div class="col-sm-5">
                 </div>
             </div>
 
@@ -55,6 +62,42 @@
 
         <h4>权限列表</h4>
         <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>模块</th>
+                            <th>控制器</th>
+                            <th>方法</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="item in accessGroupItems">
+                            <tr>
+                                <th scope="row">{{ item.id }}</th>
+                                <td>{{ item.app }}</td>
+                                <td>{{ item.controller }}</td>
+                                <td>{{ item.action }}</td>
+                                <td>{{ item.action }}</td>
+                                <td>
+                                    <button class="btn btn-danger">删除</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                <hr>
+                <p>
+                    <button class="btn btn-primary">添加权限</button>
+                    <button class="btn btn-primary">保存</button>
+                </p>
+
+            </div>
+        </div>
+
     </div>
     <script>
         $(document).ready(function(){

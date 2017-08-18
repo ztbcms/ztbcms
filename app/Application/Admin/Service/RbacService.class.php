@@ -13,7 +13,11 @@ use Shop\Service\BaseService;
 class RbacService extends BaseService {
 
     static function getAccessGroupById($id){
-        $accessGroup = D('Admin/AccessGroup')->where(['id' => $id])->find();
+        $accessGroup = D('Admin/AccessGroup')->where(['id' => $id])->relation(true)->find();
+
+        if(!$accessGroup['accessGroupItems']){
+            $accessGroup['accessGroupItems'] = [];
+        }
         return self::createReturn(true, $accessGroup);
     }
 
@@ -140,20 +144,22 @@ class RbacService extends BaseService {
 
     /**
      * 获取含有层次(level)树状
+     *
      * @param int   $parentid
-     * @param int   $leve
+     * @param int   $level
      * @param array $ret
      * @return array
      */
-    static function getAccessGroupTreeArray($parentid = 0, $leve = 0, $ret = []){
+    static function getAccessGroupTreeArray($parentid = 0, $level = 0, $ret = []){
         $groups = D('Admin/AccessGroup')->where(['parentid' => $parentid])->select();
+
         foreach ($groups as $index => $group){
-            $group['level'] = $leve;
+            $group['level'] = $level;
 
             $ret[] = $group;
-            $children = D('Admin/AccessGroup')->where(['parentid' => $parentid])->select();
+            $children = D('Admin/AccessGroup')->where(['parentid' => $group['id']])->select();
             if($children){
-                $ret = self::getAccessGroupTreeArray($group['id'], $leve + 1, $ret);
+                $ret = self::getAccessGroupTreeArray($group['id'], $level + 1, $ret);
             }
         }
 
