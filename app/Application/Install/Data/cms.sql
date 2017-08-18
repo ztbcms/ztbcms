@@ -909,6 +909,7 @@ CREATE TABLE `cms_access_group_role` (
 CREATE TABLE `cms_access_group_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
   `app` varchar(32) NOT NULL DEFAULT '',
   `controller` varchar(32) NOT NULL DEFAULT '',
   `action` varchar(32) NOT NULL DEFAULT '',

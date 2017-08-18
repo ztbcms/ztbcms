@@ -7,7 +7,6 @@
 namespace Admin\Model;
 
 use Common\Model\RelationModel;
-use Think\Model;
 
 /**
  * 权限组
@@ -28,15 +27,15 @@ class AccessGroupModel extends RelationModel {
      * @var array
      */
     protected $_link = array(
-        //订单商品列表
+        //关联权限列表
         'accessGroupItems' => array(
             "mapping_type" => self::HAS_MANY,
             "class_name" => 'Admin/AccessGroupItems',
-            "foreign_key" => "id",
-            "mapping_key" => "group_id",
+            "foreign_key" => "group_id",
+            "mapping_key" => "id",
 //            "mapping_order" => "filter_order ASC",
 //            "mapping_fields" => "id,username,nickname,store_id"
-            "relation_deep" => true
+            "relation_deep" => false
         ),
 
 

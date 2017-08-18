@@ -80,9 +80,9 @@
                     confirmSelect: function(){
                         console.log(this.selectedItems);
                         if(parent.window.selectAccessListCallback){
-                            console.log(11);
                             parent.window.selectAccessListCallback(this.selectedItems)
                         }
+                        parent.window.layer.closeAll();
                     },
                     selectAll: function(){
                         var that = this;

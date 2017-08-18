@@ -67,7 +67,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>名称</th>
                             <th>模块</th>
                             <th>控制器</th>
                             <th>方法</th>
@@ -75,15 +75,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="item in accessGroupItems">
+                        <template v-for="(item, index) in accessGroupItems">
                             <tr>
-                                <th scope="row">{{ item.id }}</th>
+                                <td>{{ item.name }}</td>
                                 <td>{{ item.app }}</td>
                                 <td>{{ item.controller }}</td>
                                 <td>{{ item.action }}</td>
-                                <td>{{ item.action }}</td>
                                 <td>
-                                    <button class="btn btn-danger">删除</button>
+                                    <button class="btn btn-danger" @click="deleteItem(index, item)">删除</button>
                                 </td>
                             </tr>
                         </template>
@@ -91,8 +90,8 @@
                 </table>
                 <hr>
                 <p>
-                    <button class="btn btn-primary">添加权限</button>
-                    <button class="btn btn-primary">保存</button>
+                    <button class="btn btn-primary" @click="clickAddAccess">添加权限</button>
+                    <button class="btn btn-primary" @click="clickSave">保存</button>
                 </p>
 
             </div>
@@ -101,10 +100,10 @@
     </div>
     <script>
         $(document).ready(function(){
-            var App = new Vue({
+            window.App = new Vue({
                 el: '#app',
                 data: {
-                    id: "{:I('get.id', '')}",
+                    id: "{:I('get.id', '')}", //access group id
                     name: "",
                     parentid: "0",
                     description: "",
@@ -164,6 +163,55 @@
                                 }
                             }
                         })
+                    },
+                    clickAddAccess: function(){
+                        layer.open({
+                            type: 2,
+                            title: '权限列表',
+                            shadeClose: true,
+                            shade: 0.8,
+                            area: ['80%', '60%'],
+                            content: "{:U('Admin/AccessGroup/accessList')}" //iframe的url
+                        });
+                    },
+                    addAccess: function(accessList){
+                        var that = this;
+                        if(accessList){
+                            accessList.forEach(function(item){
+                                that.accessGroupItems.push({
+                                    group_id: that.id,
+                                    app: item.app,
+                                    controller: item.controller,
+                                    action: item.action,
+                                    name: item.name
+                                });
+                            })
+                        }
+                    },
+                    clickSave: function(){
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('Admin/AccessGroup/doSaveAccessGroupItem')}",
+                            type: "post",
+                            dataType: "json",
+                            data: {
+                                group_id: that.id,
+                                accessGroupItems: that.accessGroupItems,
+                            },
+                            success: function(res){
+                                if(res.status){
+                                    layer.msg('操作成功！');
+                                    setTimeout(function(){
+                                        window.location.reload();
+                                    }, 700)
+                                }else{
+                                    layer.msg('操作繁忙，请稍后再试')
+                                }
+                            }
+                        });
+                    },
+                    deleteItem: function(index, item){
+                        this.accessGroupItems.splice(index, 1);
                     }
                 },
                 mounted: function(){
@@ -171,6 +219,13 @@
                 }
             })
         });
+
+        //选择权限回调
+        function selectAccessListCallback(accessList){
+            if(accessList){
+                window.App.addAccess(accessList)
+            }
+        }
     </script>
 </block>
 

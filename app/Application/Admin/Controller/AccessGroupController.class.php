@@ -73,4 +73,13 @@ class AccessGroupController extends AdminBase {
         $this->ajaxReturn($res);
     }
 
+    function doSaveAccessGroupItem(){
+        $group_id = I('post.group_id');
+        $accessGroupItems = I('post.accessGroupItems');
+
+        $res = RbacService::updateAccessGroupItems($group_id, $accessGroupItems);
+        $this->ajaxReturn($res);
+
+    }
+
 }
