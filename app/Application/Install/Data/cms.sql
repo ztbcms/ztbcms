@@ -903,6 +903,7 @@ CREATE TABLE `cms_access_group_role` (
   `group_id` int(11) NOT NULL,
   `group_name` varchar(32) NOT NULL DEFAULT '',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
+  `group_parentid` int(11) NOT NULL DEFAULT '0' COMMENT '父组别ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色的权限组';
 

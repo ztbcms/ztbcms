@@ -12,6 +12,12 @@ use Shop\Service\BaseService;
 
 class RbacService extends BaseService {
 
+    /**
+     * 获取一权限组的信息
+     *
+     * @param $id
+     * @return array
+     */
     static function getAccessGroupById($id){
         $accessGroup = D('Admin/AccessGroup')->where(['id' => $id])->relation(true)->find();
 
@@ -19,6 +25,19 @@ class RbacService extends BaseService {
             $accessGroup['accessGroupItems'] = [];
         }
         return self::createReturn(true, $accessGroup);
+    }
+
+    /**
+     * @param $role_id
+     * @return array
+     */
+    static function getRoleAccessGroup($role_id){
+        $list = D('Admin/AccessGroupRole')->where(['role_id' => $role_id])->select();
+
+        if(!$list){
+            $list = [];
+        }
+        return self::createReturn(true, $list);
     }
 
     /**
@@ -44,6 +63,7 @@ class RbacService extends BaseService {
     }
 
     /**
+     * @param        $id
      * @param        $name
      * @param        $parentid
      * @param string $description
@@ -79,27 +99,26 @@ class RbacService extends BaseService {
     }
 
 
-    static function updateUserAccessGroup($role_id, array $access_groups = []){
+    static function updateRoleAccessGroup($role_id, array $access_groups = []){
         //删除用户组
-        M('AccessGroupUser')->where(['role_id' => $role_id])->delete();
+        M('AccessGroupRole')->where(['role_id' => $role_id])->delete();
 
         $instert_items = [];
         $accessGroupItems = [];
         foreach ($access_groups as $index => $access_group){
             $instert_items[] = [
                 'role_id' => $role_id,
-                'group_id' => $access_group['id'],
-                'group_name' => $access_group['name'],
-                'parentid' => $access_group['parentid'],
+                'group_id' => $access_group['group_id'],
+                'group_name' => $access_group['group_name'],
+                'group_parentid' => $access_group['group_parentid'],
             ];
 
-            $accessGroupItems = array_merge($accessGroupItems, self::getAccessItemsByAccessGroupId($access_group['id']));
+            $accessGroupItems = array_merge($accessGroupItems, self::getAccessItemsByAccessGroupId($access_group['group_id']));
         }
 
-        M('AccessGroupUser')->addAll($instert_items);
+        M('AccessGroupRole')->addAll($instert_items);
 
         M('Access')->where(['role_id' => $role_id])->delete();
-
         foreach ($accessGroupItems as $index => $accessGroupItem){
             $item = [
                 'role_id' => $role_id,
@@ -112,6 +131,7 @@ class RbacService extends BaseService {
             M('Access')->add($item);
         }
 
+        return self::createReturn(true, null);
     }
 
     static function getAccessItemsByAccessGroupId($access_group_id){

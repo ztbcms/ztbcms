@@ -9,8 +9,16 @@ namespace Admin\Controller;
 use Admin\Service\MenuService;
 use Admin\Service\RbacService;
 use Common\Controller\AdminBase;
+use Libs\System\RBAC;
 
 class AccessGroupController extends AdminBase {
+
+    function accessGroupSetting(){
+        $role_id = I('get.role_id');
+        $role = M("role")->where(['id' => $role_id])->find();
+        $this->assign('role', $role);
+        $this->display();
+    }
 
     /**
      * 权限组列表
@@ -19,6 +27,24 @@ class AccessGroupController extends AdminBase {
         $this->display();
     }
 
+    /**
+     * 获取权限组列表
+     */
+    function getAccessGroupList(){
+        $accessGroupTreeArray = RbacService::getAccessGroupTreeArray();
+        $this->ajaxReturn(self::createReturn(true, $accessGroupTreeArray));
+    }
+
+    function getRoleAccessGroup(){
+        $role_id = I('get.role_id');
+
+        $res = RbacService::getRoleAccessGroup($role_id);
+        $this->ajaxReturn($res);
+    }
+
+    /**
+     * 权限列表
+     */
     function accessList(){
         $this->display();
     }
@@ -80,6 +106,15 @@ class AccessGroupController extends AdminBase {
         $res = RbacService::updateAccessGroupItems($group_id, $accessGroupItems);
         $this->ajaxReturn($res);
 
+    }
+
+    function doSaveAccessGroupRole(){
+        $role_id = I('post.role_id');
+        $accessGroupList = I('post.accessGroupList');
+
+        $res = RbacService::updateRoleAccessGroup($role_id, $accessGroupList);
+
+        $this->ajaxReturn($res);
     }
 
 }
