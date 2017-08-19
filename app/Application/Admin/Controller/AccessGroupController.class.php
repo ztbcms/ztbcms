@@ -13,7 +13,10 @@ use Libs\System\RBAC;
 
 class AccessGroupController extends AdminBase {
 
-    function accessGroupSetting(){
+    /**
+     * 设置角色权限组
+     */
+    function accessGroupRoleSetting(){
         $role_id = I('get.role_id');
         $role = M("role")->where(['id' => $role_id])->find();
         $this->assign('role', $role);
@@ -27,6 +30,9 @@ class AccessGroupController extends AdminBase {
         $this->display();
     }
 
+    /**
+     * 选择权限组
+     */
     function selectAccessGroupList(){
         $this->display();
     }
@@ -115,6 +121,9 @@ class AccessGroupController extends AdminBase {
         $this->ajaxReturn($res);
     }
 
+    /**
+     * 保存权限组的权限项列表信息
+     */
     function doSaveAccessGroupItem(){
         $group_id = I('post.group_id');
         $accessGroupItems = I('post.accessGroupItems');
@@ -124,6 +133,9 @@ class AccessGroupController extends AdminBase {
 
     }
 
+    /**
+     * 保存角色的用户权限组信息
+     */
     function doSaveAccessGroupRole(){
         $role_id = I('post.role_id');
         $accessGroupList = I('post.accessGroupList');

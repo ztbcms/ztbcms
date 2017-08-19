@@ -6,31 +6,31 @@
             <h4>角色</h4>
             <hr>
             <div class="form-group">
-                <label for="inputEmail3" class="col-sm-2 control-label">角色</label>
+                <label class="col-sm-1 control-label">角色</label>
 
                 <div class="col-sm-5">
                     <input type="text" class="form-control" value="{$role['name']}" disabled>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="inputEmail3" class="col-sm-2 control-label">备注</label>
+                <label class="col-sm-1 control-label">备注</label>
 
                 <div class="col-sm-5">
                     <input type="text" class="form-control"  placeholder="" value="{$role['remark']}" disabled>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                 </div>
             </div>
         </form>
 
-        <h4>权限</h4>
+        <h4>权限组</h4>
         <hr>
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-striped">
+                <table class="table table-striped table-bordered">
                     <thead>
                     <tr>
                         <th>名称</th>
@@ -50,7 +50,7 @@
                 </table>
                 <hr>
                 <p>
-                    <button class="btn btn-primary" @click="clickAddAccess">添加权限</button>
+                    <button class="btn btn-primary" @click="clickAddAccess">添加权限组</button>
                     <button class="btn btn-primary" @click="clickSave">保存</button>
                 </p>
 
@@ -126,7 +126,7 @@
                             shadeClose: true,
                             shade: 0.8,
                             area: ['80%', '60%'],
-                            content: "{:U('Admin/AccessGroup/accessGroupList')}" //iframe的url
+                            content: "{:U('Admin/AccessGroup/selectAccessGroupList')}" //iframe的url
                         });
                     },
                     addAccessGroup: function(accessList){

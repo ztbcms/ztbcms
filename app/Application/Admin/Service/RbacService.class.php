@@ -114,7 +114,7 @@ class RbacService extends BaseService {
                 'group_parentid' => $access_group['group_parentid'],
             ];
 
-            $accessGroupItems = array_merge($accessGroupItems, self::getAccessItemsByAccessGroupId($access_group['group_id']));
+            $accessGroupItems = array_merge($accessGroupItems, self::getAccessItemsByAccessGroupId($access_group['group_id'])['data']);
         }
 
         M('AccessGroupRole')->addAll($instert_items);
