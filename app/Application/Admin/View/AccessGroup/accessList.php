@@ -69,11 +69,7 @@
                             success: function(res){
                                 if(res.status){
                                     res.data.forEach(function(item,index){
-                                        if(that.initSelectIds.indexOf('' + item['id']) === -1){
-                                            res.data[index]['checked'] = false;
-                                        }else{
-                                            res.data[index]['checked'] = true;
-                                        }
+                                        res.data[index]['checked'] = that.initSelectIds.indexOf('' + item['id']) !== -1;
 
                                     });
                                     that.accessList = res.data;

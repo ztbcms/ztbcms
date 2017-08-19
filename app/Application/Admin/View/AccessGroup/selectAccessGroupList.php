@@ -42,7 +42,8 @@
             var App = new Vue({
                 el: '#app',
                 data: {
-                    accessGroupList: []
+                    accessGroupList: [],
+                    initSelectIds: []
                 },
                 computed: {
                     selectedItems: function(){
@@ -67,9 +68,10 @@
                             success: function(res){
                                 if(res.status){
                                     res.data.forEach(function(item,index){
-                                        res.data[index]['checked'] = false;
+                                        res.data[index]['checked'] = that.initSelectIds.indexOf('' + item['id']) !== -1;
                                     });
                                     that.accessGroupList = res.data;
+                                    that.initSelectIds = [];
                                 }else{
                                     layer.msg('操作繁忙，请稍后再试')
                                 }
@@ -94,8 +96,46 @@
                             that.accessGroupList[index]['checked'] = false;
                         });
                     },
+                    init: function(){
+                        var urlObj = this.urlParser(location.href);
+                        if(urlObj.search.selected_ids){
+                            this.initSelectIds = urlObj.search.selected_ids.split(',')
+                        }
+                    },
+                    urlParser: function(url) {
+                        var a = document.createElement('a');
+                        a.href = url;
+
+                        var search = function(search) {
+                            if(!search) return {};
+
+                            var ret = {};
+                            search = search.slice(1).split('&');
+                            for(var i = 0, arr; i < search.length; i++) {
+                                arr = search[i].split('=');
+                                var key = arr[0], value = arr[1];
+                                if(/\[\]$/.test(key)) {
+                                    ret[key] = ret[key] || [];
+                                    ret[key].push(value);
+                                } else {
+                                    ret[key] = value;
+                                }
+                            }
+                            return ret;
+                        };
+
+                        return {
+                            protocol: a.protocol,
+                            host: a.host,
+                            hostname: a.hostname,
+                            pathname: a.pathname,
+                            search: search(a.search),
+                            hash: a.hash
+                        }
+                    }
                 },
                 mounted: function(){
+                    this.init();
                     this.fetchData();
                 }
             })

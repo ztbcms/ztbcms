@@ -50,7 +50,7 @@
                 </table>
                 <hr>
                 <p>
-                    <button class="btn btn-primary" @click="clickAddAccess">添加权限组</button>
+                    <button class="btn btn-primary" @click="clickSelectAccessList">添加权限组</button>
                     <button class="btn btn-primary" @click="clickSave">保存</button>
                 </p>
 
@@ -69,6 +69,19 @@
                     description: "",
                     status: "1",
                     accessGroupList: []
+                },
+                computed:{
+                    selectedItemIds: function(){
+                        var that = this;
+                        var ids = [];
+                        if(that.accessGroupList){
+                            that.accessGroupList.forEach(function(item){
+                                ids.push(item['group_id'])
+                            })
+                        }
+
+                        return ids;
+                    }
                 },
                 methods: {
                     fetchData: function(){
@@ -126,18 +139,19 @@
                             shadeClose: true,
                             shade: 0.8,
                             area: ['80%', '60%'],
-                            content: "{:U('Admin/AccessGroup/selectAccessGroupList')}" //iframe的url
+                            content: "{:U('Admin/AccessGroup/selectAccessGroupList')}"+'&selected_ids=' + this.selectedItemIds
                         });
                     },
                     addAccessGroup: function(accessList){
                         var that = this;
                         if(accessList){
+                            that.accessGroupList = [];
                             accessList.forEach(function(item){
                                 that.accessGroupList.push({
                                     group_id: item.id,
                                     group_name: item.name,
                                     role_id: that.role_id,
-                                    group_parentid: item.parentid,
+                                    group_parentid: item.parentid
                                 });
                             })
                         }
