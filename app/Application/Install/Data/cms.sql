@@ -555,6 +555,13 @@ INSERT INTO `cms_menu` VALUES ('110', '安装插件', '40', 'Admin', 'Addonshop'
 INSERT INTO `cms_menu` VALUES ('111', '升级插件', '40', 'Admin', 'Addonshop', 'upgrade', '', '1', '0', '', '0');
 INSERT INTO `cms_menu` VALUES ('112', '栏目授权', '26', 'Admin', 'Rbac', 'setting_cat_priv', '', '1', '0', '', '0');
 
+-- 权限组
+INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`)
+VALUES
+	(113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0),
+	(114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0);
+
+
 -- ----------------------------
 -- Table structure for cms_model
 -- ----------------------------
