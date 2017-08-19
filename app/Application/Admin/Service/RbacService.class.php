@@ -189,13 +189,20 @@ class RbacService extends BaseService {
         return self::createReturn(true, $items);
     }
 
+    /**
+     * 获取含有层次(level)树状的权限组
+     *
+     * @param int $parentid
+     * @param int $leve
+     * @return array
+     */
     static function getAccessGroupTree($parentid = 0, $leve = 1){
         $ret = [];
-        $groups = D('Admin/AccessGroup')->where(['parentid' => $parentid])->select();
+        $groups = D('Admin/AccessGroup')->where(['parentid' => $parentid, 'status' => AccessGroupModel::STATUS_ENABLE])->select();
         foreach ($groups as $index => $group){
             $group['leve'] = $leve;
 
-            $children = D('Admin/AccessGroup')->where(['parentid' => $parentid])->select();
+            $children = D('Admin/AccessGroup')->where(['parentid' => $parentid, 'status' => AccessGroupModel::STATUS_ENABLE])->select();
             if($children){
                 $group['children'] = self::getAccessGroupTree($group['id'], $leve + 1);
             }else{
@@ -209,7 +216,9 @@ class RbacService extends BaseService {
     }
 
     /**
-     * 获取含有层次(level)树状
+     * 获取含有层次(level)树状的权限组
+     *
+     * 常用于前端列表页显示
      *
      * @param int   $parentid
      * @param int   $level
@@ -217,15 +226,19 @@ class RbacService extends BaseService {
      * @return array
      */
     static function getAccessGroupTreeArray($parentid = 0, $level = 0, $ret = []){
-        $groups = D('Admin/AccessGroup')->where(['parentid' => $parentid])->select();
+        $groups = D('Admin/AccessGroup')->where(['parentid' => $parentid, 'status' => AccessGroupModel::STATUS_ENABLE])->select();
 
         foreach ($groups as $index => $group){
             $group['level'] = $level;
 
-            $ret[] = $group;
-            $children = D('Admin/AccessGroup')->where(['parentid' => $group['id']])->select();
+            $children = D('Admin/AccessGroup')->where(['parentid' => $group['id'], 'status' => AccessGroupModel::STATUS_ENABLE])->select();
             if($children){
+                $group['hasChildren'] = true;
+                $ret[] = $group;
                 $ret = self::getAccessGroupTreeArray($group['id'], $level + 1, $ret);
+            }else{
+                $group['hasChildren'] = false;
+                $ret[] = $group;
             }
         }
 

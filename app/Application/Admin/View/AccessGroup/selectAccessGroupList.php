@@ -18,7 +18,11 @@
                     <template v-for="(item, index) in accessGroupList">
                         <tr>
                             <th scope="row">{{ item['id'] }}</th>
-                            <td><input type="checkbox"  v-model="item.checked"></td>
+                            <td>
+                                <template v-if="!item.hasChildren">
+                                    <input type="checkbox"  v-model="item.checked">
+                                </template>
+                            </td>
                             <td>
                                 <template v-for="i in item['level']*4"><span>&nbsp;</span></template>
                                 |—{{ item['name'] }}
