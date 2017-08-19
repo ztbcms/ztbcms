@@ -138,7 +138,7 @@ class AccessGroupController extends AdminBase {
      */
     function doSaveAccessGroupRole(){
         $role_id = I('post.role_id');
-        $accessGroupList = I('post.accessGroupList');
+        $accessGroupList = I('post.accessGroupList', []);
 
         $res = RbacService::updateRoleAccessGroup($role_id, $accessGroupList);
 

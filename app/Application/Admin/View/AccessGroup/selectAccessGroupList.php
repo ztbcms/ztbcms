@@ -9,8 +9,8 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>选择</th>
+                        <th style="width: 60px;">ID</th>
+                        <th style="width: 60px;">选择</th>
                         <th>名称</th>
                     </tr>
                     </thead>

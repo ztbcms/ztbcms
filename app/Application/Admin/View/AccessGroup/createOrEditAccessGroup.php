@@ -186,7 +186,7 @@
                             title: '操作',
                             shadeClose: true,
                             shade: 0.8,
-                            area: ['80%', '60%'],
+                            area: ['70%', '70%'],
                             content: "{:U('Admin/AccessGroup/accessList')}"+'&selected_ids=' + this.selectedItemIds.join(',')
                         });
                     },

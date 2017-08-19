@@ -6,11 +6,11 @@
         <hr>
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-striped">
+                <table class="table table-striped" style="margin-bottom: 70px;">
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>选择</th>
+                        <th style="width: 60px;">ID</th>
+                        <th style="width: 60px;">选择</th>
                         <th>名称</th>
                     </tr>
                     </thead>
@@ -29,7 +29,7 @@
                     </tbody>
                 </table>
 
-                <div style="position: fixed; bottom: 0;left: 0;right: 0;background: white;padding: 10px 40px;border-top: 1px solid gainsboro;">
+                <div style="height: 60px;position: fixed; bottom: 0;left: 0;right: 0;background: white;padding: 10px 40px;border-top: 1px solid gainsboro;">
                     <button class="btn btn-primary" @click="selectAll">全选</button>
                     <button class="btn btn-primary" @click="unSelectAll">全不选</button>
                     <button class="btn btn-success" @click="confirmSelect">确认选择</button>
