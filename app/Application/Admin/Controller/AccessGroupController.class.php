@@ -27,14 +27,21 @@ class AccessGroupController extends AdminBase {
         $this->display();
     }
 
+    function selectAccessGroupList(){
+        $this->display();
+    }
+
     /**
-     * 获取权限组列表
+     * 获取权限组列表操作
      */
     function getAccessGroupList(){
         $accessGroupTreeArray = RbacService::getAccessGroupTreeArray();
         $this->ajaxReturn(self::createReturn(true, $accessGroupTreeArray));
     }
 
+    /**
+     * 获取角色的权限组
+     */
     function getRoleAccessGroup(){
         $role_id = I('get.role_id');
 
@@ -64,7 +71,7 @@ class AccessGroupController extends AdminBase {
     }
 
     /**
-     * 
+     * 创建权限组页
      */
     function createAccessGroup(){
         $accessGroupTreeArray = RbacService::getAccessGroupTreeArray(0);
@@ -72,6 +79,9 @@ class AccessGroupController extends AdminBase {
         $this->display('createOrEditAccessGroup');
     }
 
+    /**
+     * 编辑权限组信息页
+     */
     function editAccessGroup(){
         $id = I('get.id');
         $this->assign('id' , $id);
@@ -80,6 +90,9 @@ class AccessGroupController extends AdminBase {
         $this->display('createOrEditAccessGroup');
     }
 
+    /**
+     * 创建权限组操作
+     */
     function doCreateAccessGroup(){
         $name = I('post.name');
         $parentid = I('post.parentid');
@@ -89,6 +102,9 @@ class AccessGroupController extends AdminBase {
         $this->ajaxReturn($res);
     }
 
+    /**
+     * 更新权限组信息操作
+     */
     function doEditAccessGroup(){
         $id = I('post.id');
         $name = I('post.name');
@@ -114,6 +130,15 @@ class AccessGroupController extends AdminBase {
 
         $res = RbacService::updateRoleAccessGroup($role_id, $accessGroupList);
 
+        $this->ajaxReturn($res);
+    }
+
+    /**
+     * 删除权限组操作
+     */
+    function deleteAccessGroup(){
+        $group_id = I('post.group_id');
+        $res = RbacService::deleteAccessGroup([$group_id]);
         $this->ajaxReturn($res);
     }
 

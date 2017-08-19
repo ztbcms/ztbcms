@@ -24,6 +24,7 @@ class RbacService extends BaseService {
         if(!$accessGroup['accessGroupItems']){
             $accessGroup['accessGroupItems'] = [];
         }
+
         return self::createReturn(true, $accessGroup);
     }
 
@@ -134,6 +135,36 @@ class RbacService extends BaseService {
         return self::createReturn(true, null);
     }
 
+    /**
+     * 删除指定的权限组
+     *
+     * @param array $access_group_ids
+     * @return array
+     */
+    static function deleteAccessGroup($access_group_ids = []){
+        $delete_items = D('Admin/AccessGroup')->where(['id' => ['IN', $access_group_ids]])->select();
+        foreach ($delete_items as $index => $item){
+            $children = D('Admin/AccessGroup')->where(['parentid' => $item['id']])->select();
+            if($children){
+                $ids = array_map(function($c){
+                    return $c['id'];
+                }, $children);
+
+                self::deleteAccessGroup($ids);
+            }
+
+            D('Admin/AccessGroup')->where(['id' => $item['id']])->delete();
+        }
+
+        return self::createReturn(true, null, '操作成功');
+    }
+
+    /**
+     * 获取权限组下权限列表
+     *
+     * @param $access_group_id
+     * @return array
+     */
     static function getAccessItemsByAccessGroupId($access_group_id){
         $items = M('AccessGroupItems')->where(['group_id' => $access_group_id])->select();
         if(!$items){

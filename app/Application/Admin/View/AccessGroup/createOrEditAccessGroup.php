@@ -20,8 +20,9 @@
 
                 <div class="col-sm-5">
                     <select v-model="parentid" class="form-control" >
+                        <option value="0">无</option>
                         <volist name="accessGroupTreeArray" id="item">
-                            <option value="{$item['id']}" selected="">{:str_repeat('&nbsp;', $item['level']*4);}|—{$item['name']}</option>
+                            <option value="{$item['id']}">{:str_repeat('&nbsp;', $item['level']*4);}|—{$item['name']}</option>
                         </volist>
                     </select>
                 </div>
@@ -60,12 +61,13 @@
             </div>
         </form>
 
-        <h4>权限列表</h4>
-        <hr>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-striped">
-                    <thead>
+        <template v-if="id != ''">
+            <h4>权限列表</h4>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped">
+                        <thead>
                         <tr>
                             <th>名称</th>
                             <th>模块</th>
@@ -73,8 +75,8 @@
                             <th>方法</th>
                             <th>操作</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <template v-for="(item, index) in accessGroupItems">
                             <tr>
                                 <td>{{ item.name }}</td>
@@ -86,16 +88,17 @@
                                 </td>
                             </tr>
                         </template>
-                    </tbody>
-                </table>
-                <hr>
-                <p>
-                    <button class="btn btn-primary" @click="clickAddAccess">添加权限</button>
-                    <button class="btn btn-primary" @click="clickSave">保存</button>
-                </p>
+                        </tbody>
+                    </table>
+                    <hr>
+                    <p>
+                        <button class="btn btn-primary" @click="clickAddAccess">添加权限</button>
+                        <button class="btn btn-primary" @click="clickSave">保存</button>
+                    </p>
 
+                </div>
             </div>
-        </div>
+        </template>
 
     </div>
     <script>
@@ -108,7 +111,7 @@
                     parentid: "0",
                     description: "",
                     status: "1",
-                    accessGroupItems: []
+                    accessGroupItems: [],
                 },
                 methods: {
                     fetchData: function(){
@@ -156,7 +159,7 @@
                                 if(res.status){
                                     layer.msg('操作成功！');
                                     setTimeout(function(){
-                                        window.location.reload();
+                                        window.location.href = "{:U('Admin/AccessGroup/editAccessGroup')}" + '&id=' + (that.id || res.data);
                                     }, 700)
                                 }else{
                                     layer.msg('操作繁忙，请稍后再试')
