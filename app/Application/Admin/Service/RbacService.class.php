@@ -86,11 +86,19 @@ class RbacService extends BaseService {
         return self::createReturn(true, $id, '操作成功');
     }
 
-
+    /**
+     * 更新权限组下的权限列表
+     *
+     * @param       $group_id
+     * @param array $accessGroupItems
+     * @return array
+     */
     static function updateAccessGroupItems($group_id, array $accessGroupItems = []){
         foreach ($accessGroupItems as $index => $item){
             $accessGroupItems[$index]['group_id'] = $group_id;
         }
+
+        M('AccessGroupItems')->where(['group_id' => $group_id])->delete();
         $result = M('AccessGroupItems')->addAll($accessGroupItems);
         if(!$result){
             return self::createReturn(false, null, '操作失败');
@@ -100,6 +108,13 @@ class RbacService extends BaseService {
     }
 
 
+    /**
+     * 更新角色的权限组
+     *
+     * @param       $role_id
+     * @param array $access_groups
+     * @return array
+     */
     static function updateRoleAccessGroup($role_id, array $access_groups = []){
         //删除用户组
         M('AccessGroupRole')->where(['role_id' => $role_id])->delete();

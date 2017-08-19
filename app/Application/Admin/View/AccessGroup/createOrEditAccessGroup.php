@@ -3,7 +3,7 @@
 <block name="content">
     <div id="app" style="padding-left: 20px;padding-top: 20px;" v-cloak>
         <form class="form-horizontal" action="{:U('Admin/AccessGroup/doCreateAccessGroup')}" method="post">
-            <h4>权限信息</h4>
+            <h4>权限组</h4>
             <hr>
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">名称</label>
@@ -92,7 +92,7 @@
                     </table>
                     <hr>
                     <p>
-                        <button class="btn btn-primary" @click="clickAddAccess">添加权限</button>
+                        <button class="btn btn-primary" @click="clickSelectAccessList">添加权限</button>
                         <button class="btn btn-primary" @click="clickSave">保存</button>
                     </p>
 
@@ -112,6 +112,19 @@
                     description: "",
                     status: "1",
                     accessGroupItems: [],
+                },
+                computed:{
+                    selectedItemIds: function(){
+                        var that = this;
+                        var ids = [];
+                        if(that.accessGroupItems){
+                            that.accessGroupItems.forEach(function(item){
+                                ids.push(item['access_id'])
+                            })
+                        }
+
+                        return ids;
+                    }
                 },
                 methods: {
                     fetchData: function(){
@@ -167,26 +180,28 @@
                             }
                         })
                     },
-                    clickAddAccess: function(){
+                    clickSelectAccessList: function(){
                         layer.open({
                             type: 2,
-                            title: '权限列表',
+                            title: '操作',
                             shadeClose: true,
                             shade: 0.8,
                             area: ['80%', '60%'],
-                            content: "{:U('Admin/AccessGroup/accessList')}" //iframe的url
+                            content: "{:U('Admin/AccessGroup/accessList')}"+'&selected_ids=' + this.selectedItemIds.join(',')
                         });
                     },
-                    addAccess: function(accessList){
+                    updateSelectAccessList: function(accessList){
                         var that = this;
                         if(accessList){
+                            that.accessGroupItems = [];
                             accessList.forEach(function(item){
                                 that.accessGroupItems.push({
                                     group_id: that.id,
                                     app: item.app,
                                     controller: item.controller,
                                     action: item.action,
-                                    name: item.name
+                                    name: item.name,
+                                    access_id: item.id
                                 });
                             })
                         }
@@ -226,7 +241,7 @@
         //选择权限回调
         function selectAccessListCallback(accessList){
             if(accessList){
-                window.App.addAccess(accessList)
+                window.App.updateSelectAccessList(accessList)
             }
         }
     </script>

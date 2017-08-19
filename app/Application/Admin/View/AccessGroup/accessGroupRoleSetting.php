@@ -119,7 +119,7 @@
                             }
                         })
                     },
-                    clickAddAccess: function(){
+                    clickSelectAccessList: function(){
                         layer.open({
                             type: 2,
                             title: '权限',
