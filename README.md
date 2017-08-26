@@ -9,7 +9,7 @@
 
 ## 环境要求
 
-* PHP版本需要5.4+ 推荐5.6(未支持PHP 7)
+* PHP版本需要5.4+ 推荐5.6
     * php5-curl 
     * php5-gd
     * php5-mysql
