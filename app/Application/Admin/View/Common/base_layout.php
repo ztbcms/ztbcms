@@ -37,6 +37,12 @@
         <!-- vue.js -->
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
 
+        <style>
+            /* vue相关  */
+            [v-cloak] {
+                display: none;
+            }
+        </style>
         <script>
             /**
              * js资源加载完后进行全局初始化

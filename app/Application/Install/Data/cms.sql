@@ -555,6 +555,13 @@ INSERT INTO `cms_menu` VALUES ('110', '安装插件', '40', 'Admin', 'Addonshop'
 INSERT INTO `cms_menu` VALUES ('111', '升级插件', '40', 'Admin', 'Addonshop', 'upgrade', '', '1', '0', '', '0');
 INSERT INTO `cms_menu` VALUES ('112', '栏目授权', '26', 'Admin', 'Rbac', 'setting_cat_priv', '', '1', '0', '', '0');
 
+-- 权限组
+INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`)
+VALUES
+	(113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0),
+	(114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0);
+
+
 -- ----------------------------
 -- Table structure for cms_model
 -- ----------------------------
@@ -887,3 +894,33 @@ CREATE TABLE `cms_user` (
 -- ----------------------------
 -- Records of cms_user
 -- ----------------------------
+
+CREATE TABLE `cms_access_group` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL DEFAULT '' COMMENT '名称',
+  `parentid` int(11) NOT NULL COMMENT '父组别ID',
+  `status` tinyint(2) NOT NULL COMMENT '启用状态：0禁用1启用',
+  `description` varchar(32) NOT NULL DEFAULT '' COMMENT '描述',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组';
+
+
+CREATE TABLE `cms_access_group_role` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `group_name` varchar(32) NOT NULL DEFAULT '',
+  `role_id` int(11) NOT NULL COMMENT '角色ID',
+  `group_parentid` int(11) NOT NULL DEFAULT '0' COMMENT '父组别ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色的权限组';
+
+CREATE TABLE `cms_access_group_items` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL DEFAULT '' COMMENT '名称',
+  `app` varchar(32) NOT NULL DEFAULT '',
+  `controller` varchar(32) NOT NULL DEFAULT '',
+  `action` varchar(32) NOT NULL DEFAULT '',
+  `access_id` int(11) NOT NULL COMMENT '所属权限表ID',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组的权限';
