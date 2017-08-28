@@ -888,6 +888,7 @@ CREATE TABLE `cms_user` (
   `role_id` tinyint(4) unsigned NOT NULL DEFAULT '0' COMMENT '对应角色ID',
   `info` text COMMENT '信息',
   `avatar` varchar(256) NOT NULL DEFAULT '' COMMENT '头像链接',
+  `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
