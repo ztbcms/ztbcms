@@ -30,7 +30,8 @@ class ManagementController extends AdminBase {
                 foreach ($res as $val) {
                     $role_ids[] = $val['id'];
                 }
-                $where['role_id']=['in',$role_ids];
+                //如果没有找到下级role_ids 则默认为0
+                $where['role_id'] = ['in', $role_ids ? $role_ids : '0'];
             }
         }
         $count = D('Admin/User')->where($where)->count();
@@ -66,8 +67,8 @@ class ManagementController extends AdminBase {
             if (empty($data)) {
                 $this->error('该信息不存在！');
             }
-            $myid=User::getInstance()->isAdministrator() ? 0 : User::getInstance()->role_id;
-            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid,$data['role_id'], 'name="role_id"'));
+            $myid = User::getInstance()->isAdministrator() ? 0 : User::getInstance()->role_id;
+            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid, $data['role_id'], 'name="role_id"'));
             $this->assign("data", $data);
             $this->display();
         }
@@ -83,8 +84,8 @@ class ManagementController extends AdminBase {
                 $this->error($error ? $error : '添加失败！');
             }
         } else {
-            $myid=User::getInstance()->isAdministrator()?0:User::getInstance()->role_id;
-            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid,0, 'name="role_id"'));
+            $myid = User::getInstance()->isAdministrator() ? 0 : User::getInstance()->role_id;
+            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid, 0, 'name="role_id"'));
             $this->display();
         }
     }
@@ -95,14 +96,14 @@ class ManagementController extends AdminBase {
         if (empty($id)) {
             $this->error("没有指定删除对象！");
         }
-        if ((int) $id == User::getInstance()->id) {
+        if ((int)$id == User::getInstance()->id) {
             $this->error("你不能删除你自己！");
         }
         //执行删除
         if (D('Admin/User')->deleteUser($id)) {
             $this->success("删除成功！");
         } else {
-            $this->error(D('Admin/User')->getError()? : '删除失败！');
+            $this->error(D('Admin/User')->getError() ?: '删除失败！');
         }
     }
 
