@@ -335,6 +335,20 @@ class MemberController extends AdminBase {
 		}
 	}
 
+    //取消审核会员
+    public function userunverify() {
+        if (IS_POST) {
+            $userid = $_POST['userid'];
+            if (!$userid) {
+                $this->error("请选择需要取消审核的会员！");
+            }
+            $this->member->where(array("userid" => array('IN', $userid)))->save(array("checked" => 0));
+            $this->success("取消审核成功！");
+        } else {
+            $this->redirect('Member/Member/index', ['search' => 1, '_filter[2]' => 'checked' , '_operator[2]' => 'EQ', '_value[2]' => 0]);
+        }
+    }
+
 	//用户授权管理
 	public function connect() {
 		$db = D("Member/Connect");
