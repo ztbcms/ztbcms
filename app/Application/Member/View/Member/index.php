@@ -1,4 +1,4 @@
- 
+
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
 <div class="wrap J_check_wrap">
@@ -37,7 +37,7 @@
           <section style="display: inline;">
               审核:
               <input class="input length_2" type="hidden" name="_filter[2]" value="checked">
-              <input class="input length_2" type="hidden" name="_operater[2]" value="EQ">
+              <input class="input length_2" type="hidden" name="_operator[2]" value="EQ">
 
               <select name="_value[2]" class="select_2">
                   <option value='' <if condition=" $_value[2] == '' "> selected</if>>全部</option>
@@ -120,6 +120,11 @@
     </div>
     <div class="">
       <div class="btn_wrap_pd">
+          <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/userverify')}" type="submit">审核
+          </button>
+          <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/userunverify')}" type="submit">
+              取消审核
+          </button>
         <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/lock')}" type="submit">锁定</button>
         <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/unlock')}" type="submit">解锁</button>
         <button class="btn  mr10 J_ajax_submit_btn" type="submit">删除</button>
