@@ -26,7 +26,7 @@ class AdminBase extends CMS {
 			"NOT_AUTH_CONTROLLER" => "Public", //无需认证控制器
             "REQUIRE_AUTH_ACTION" => "", //需要认证的操作
             "NOT_AUTH_ACTION" => "", //无需认证的操作
-			"USER_AUTH_GATEWAY" => U("Admin/Public/login"), //登录地址
+			"USER_AUTH_GATEWAY" => C('USER_AUTH_GATEWAY', null , U("Admin/Public/login")) , //登录地址
 		));
 		if (false == RBAC::AccessDecision(MODULE_NAME)) {
 			//检查是否登录
