@@ -571,7 +571,7 @@ class PublicController extends MemberbaseController {
 			));
 		}
 		//验证KEY
-		$email1key = \Libs\Util\Encrypt::authcode(implode('|', $userInfo), '', '', 3600);
+		$email1key = \Libs\Util\Encrypt::authcode(implode('|', $userInfo), \Libs\Util\Encrypt::OPERATION_ENCODE, '', C('MEMBER_RESET_PASSWORD_EXPIRE_SECOND'));
 		$userInfo['email1key'] = $email1key;
 		//邮件地址处理
 		$n = strpos($userInfo['email'], '@');
@@ -601,7 +601,7 @@ class PublicController extends MemberbaseController {
 		if (empty($forgetpassword)) {
 			$forgetpassword = 'Hi，{$username}:
 
-你申请了重设密码，请在24小时内点击下面的链接，然后根据页面提示完成密码重设：
+你申请了重设密码，请在 24 小时内点击下面的链接，然后根据页面提示完成密码重设：
 
 <a href="{$url}" target="_blank">{$url}</a>
 
@@ -610,7 +610,7 @@ class PublicController extends MemberbaseController {
 邮件服务器自动发送邮件请勿回信 {$date}';
 		}
 		C("URL_MODEL", 0);
-		$LostPassUrl = U('Member/Index/resetpassword', array('key' => urlencode(\Libs\Util\Encrypt::authcode(implode('|', $userInfo), '', '', 86400))));
+		$LostPassUrl = U('Member/Index/resetpassword', array('key' => urlencode(\Libs\Util\Encrypt::authcode(implode('|', $userInfo), '', '', C('MEMBER_RESET_PASSWORD_EXPIRE_SECOND')))));
 
 		$forgetpassword = str_replace(array(
 			'{$username}',
