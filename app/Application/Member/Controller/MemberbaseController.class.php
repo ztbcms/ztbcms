@@ -7,6 +7,7 @@
 namespace Member\Controller;
 
 use Common\Controller\Base;
+use Member\Model\MemberModel;
 
 class MemberbaseController extends Base {
 
@@ -17,6 +18,9 @@ class MemberbaseController extends Base {
 	//会有组缓存
 	protected $memberGroup = array();
 	//会员数据库对象
+    /**
+     * @var MemberModel
+     */
 	protected $memberDb = NULL;
 	//用户id
 	protected $userid = 0;
