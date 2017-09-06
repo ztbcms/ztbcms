@@ -215,7 +215,7 @@ class PublicController extends MemberbaseController {
 							$verifyEmailUrl,
 							date('Y-m-d H:i:s'),
 						), \Input::nl2Br($message));
-						SendMail($info['email'], "注册会员验证邮件", $message);
+						sendMail($info['email'], "注册会员验证邮件", $message);
 						$this->success("邮件已经发送到你注册邮箱，根据邮件内容完成验证操作！", U('Member/Index/index'));
 						exit;
 					} else {
@@ -626,7 +626,7 @@ class PublicController extends MemberbaseController {
 			date('Y-m-d H:i:s'),
 		), \Input::nl2Br($forgetpassword));
 
-		if (SendMail($userInfo[2], '找回“' . $userInfo[1] . '”在 ' . self::$Cache['Config']['sitename'] . ' 的密码', $forgetpassword)) {
+		if (sendMail($userInfo[2], '找回“' . $userInfo[1] . '”在 ' . self::$Cache['Config']['sitename'] . ' 的密码', $forgetpassword)) {
 			$this->message(10000);
 		} else {
 			$this->error('邮件发送失败！');

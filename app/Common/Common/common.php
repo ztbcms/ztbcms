@@ -918,12 +918,12 @@ function getavatar($uid, $format = 90, $dbs = false) {
 
 /**
  * 邮件发送
- * @param string $address 接收人 单个直接邮箱地址，多个可以使用数组
+ * @param string | string[] $address 接收人 单个直接邮箱地址，多个可以使用数组
  * @param string $title 邮件标题
  * @param string $message 邮件内容
  * @return string|boolean
  */
-function SendMail($address, $title, $message) {
+function sendMail($address, $title, $message) {
 	$config = cache('Config');
 	import('PHPMailer');
 	try {
