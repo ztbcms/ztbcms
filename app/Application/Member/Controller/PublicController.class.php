@@ -309,7 +309,7 @@ class PublicController extends MemberbaseController {
 					$this->error('旧密码不正确！');
 					break;
 				case -4:
-					$this->error(':Email 格式有误！');
+					$this->error('Email 格式有误！');
 					break;
 				case -5:
 					$this->error('Email 不允许注册！');
