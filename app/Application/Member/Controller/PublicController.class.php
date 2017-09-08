@@ -215,7 +215,7 @@ class PublicController extends MemberbaseController {
 							$verifyEmailUrl,
 							date('Y-m-d H:i:s'),
 						), \Input::nl2Br($message));
-						SendMail($info['email'], "注册会员验证邮件", $message);
+						sendMail($info['email'], "注册会员验证邮件", $message);
 						$this->success("邮件已经发送到你注册邮箱，根据邮件内容完成验证操作！", U('Member/Index/index'));
 						exit;
 					} else {
@@ -309,7 +309,7 @@ class PublicController extends MemberbaseController {
 					$this->error('旧密码不正确！');
 					break;
 				case -4:
-					$this->error(':Email 格式有误！');
+					$this->error('Email 格式有误！');
 					break;
 				case -5:
 					$this->error('Email 不允许注册！');
@@ -571,7 +571,7 @@ class PublicController extends MemberbaseController {
 			));
 		}
 		//验证KEY
-		$email1key = \Libs\Util\Encrypt::authcode(implode('|', $userInfo), '', '', 3600);
+		$email1key = \Libs\Util\Encrypt::authcode(implode('|', $userInfo), \Libs\Util\Encrypt::OPERATION_ENCODE, '', C('MEMBER_RESET_PASSWORD_EXPIRE_SECOND'));
 		$userInfo['email1key'] = $email1key;
 		//邮件地址处理
 		$n = strpos($userInfo['email'], '@');
@@ -601,7 +601,7 @@ class PublicController extends MemberbaseController {
 		if (empty($forgetpassword)) {
 			$forgetpassword = 'Hi，{$username}:
 
-你申请了重设密码，请在24小时内点击下面的链接，然后根据页面提示完成密码重设：
+你申请了重设密码，请在 24 小时内点击下面的链接，然后根据页面提示完成密码重设：
 
 <a href="{$url}" target="_blank">{$url}</a>
 
@@ -610,7 +610,7 @@ class PublicController extends MemberbaseController {
 邮件服务器自动发送邮件请勿回信 {$date}';
 		}
 		C("URL_MODEL", 0);
-		$LostPassUrl = U('Member/Index/resetpassword', array('key' => urlencode(\Libs\Util\Encrypt::authcode(implode('|', $userInfo), '', '', 86400))));
+		$LostPassUrl = U('Member/Index/resetpassword', array('key' => urlencode(\Libs\Util\Encrypt::authcode(implode('|', $userInfo), '', '', C('MEMBER_RESET_PASSWORD_EXPIRE_SECOND')))));
 
 		$forgetpassword = str_replace(array(
 			'{$username}',
@@ -626,7 +626,7 @@ class PublicController extends MemberbaseController {
 			date('Y-m-d H:i:s'),
 		), \Input::nl2Br($forgetpassword));
 
-		if (SendMail($userInfo[2], '找回“' . $userInfo[1] . '”在 ' . self::$Cache['Config']['sitename'] . ' 的密码', $forgetpassword)) {
+		if (sendMail($userInfo[2], '找回“' . $userInfo[1] . '”在 ' . self::$Cache['Config']['sitename'] . ' 的密码', $forgetpassword)) {
 			$this->message(10000);
 		} else {
 			$this->error('邮件发送失败！');

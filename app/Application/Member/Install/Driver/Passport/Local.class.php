@@ -14,9 +14,9 @@ class Local extends Passport {
 
 	/**
 	 * 会员登录
-	 * @param type $identifier 用户/UID
-	 * @param type $password 明文密码，填写表示验证密码
-	 * @param type $is_remember_me cookie有效期
+	 * @param string $identifier 用户/UID
+	 * @param string $password 明文密码，填写表示验证密码
+	 * @param int $is_remember_me cookie有效期
 	 * @return boolean
 	 */
 	public function loginLocal($identifier, $password = null, $is_remember_me = 604800) {
@@ -62,8 +62,8 @@ class Local extends Passport {
 
 	/**
 	 * 获取用户信息
-	 * @param type $identifier 用户/UID
-	 * @param type $password 明文密码，填写表示验证密码
+	 * @param string $identifier 用户/UID
+	 * @param string $password 明文密码，填写表示验证密码
 	 * @return array|boolean
 	 */
 	public function getLocalUser($identifier, $password = null) {
@@ -107,9 +107,9 @@ class Local extends Passport {
 
 	/**
 	 * 获取上传头像FLASH代码
-	 * @param type $uid 用户ID
-	 * @param type $type 类型
-	 * @param type $returnhtml
+	 * @param string $uid 用户ID
+	 * @param string $type 类型
+	 * @param int $returnhtml
 	 * @return string 头像代码
 	 */
 	public function getUploadPhotosHtml($uid, $type = 'virtual', $returnhtml = 1) {
@@ -133,12 +133,12 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 更新用户基本资料
-	 * @param type $username 用户名
-	 * @param type $oldpw 旧密码
-	 * @param type $newpw 新密码，如不修改为空
-	 * @param type $email Email，如不修改为空
-	 * @param type $ignoreoldpw 是否忽略旧密码
-	 * @param type $data 其他信息
+	 * @param string $username 用户名
+	 * @param string $oldpw 旧密码
+	 * @param string $newpw 新密码，如不修改为空
+	 * @param string $email Email，如不修改为空
+	 * @param int $ignoreoldpw 是否忽略旧密码
+	 * @param array $data 其他信息
 	 * @return boolean
 	 */
 	public function userEdit($username, $oldpw, $newpw = '', $email = '', $ignoreoldpw = 0, $data = array()) {
@@ -180,7 +180,7 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 检查用户名
-	 * @param type $username 用户名
+	 * @param string $username 用户名
 	 * @return boolean|int
 	 */
 	public function userCheckUsername($username) {
@@ -199,7 +199,7 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 检查 Email 地址
-	 * @param type $email 邮箱地址
+	 * @param string $email 邮箱地址
 	 * @return boolean
 	 */
 	public function userCheckeMail($email) {
@@ -217,9 +217,9 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 注册会员
-	 * @param type $username 用户名
-	 * @param type $password 明文密码
-	 * @param type $email 邮箱
+	 * @param string $username 用户名
+	 * @param string $password 明文密码
+	 * @param string $email 邮箱
 	 * @return boolean
 	 */
 	public function userRegister($username, $password, $email) {
@@ -254,10 +254,10 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 获取用户头像地址
-	 * @param type $uid 用户UID
-	 * @param type $format 头像规格
-	 * @param type $dbs 是否查库，不是有猜地址的方式获取
-	 * @return type
+	 * @param string $uid 用户UID
+	 * @param int $format 头像规格
+	 * @param boolean $dbs 是否查库，不是有猜地址的方式获取
+	 * @return string
 	 */
 	public function getUserAvatar($uid, $format = 90, $dbs = false) {
 		$config = cache('Config');
@@ -297,7 +297,7 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 删除用户
-	 * @param type $uid 用户UID
+	 * @param string $uid 用户UID
 	 * @return boolean
 	 */
 	public function userDelete($uid) {
@@ -321,7 +321,7 @@ swfobject.addDomLoadEvent(function () {
 
 	/**
 	 * 删除用户头像
-	 * @param type $uid 用户名UID
+	 * @param string $uid 用户名UID
 	 * @return boolean
 	 */
 	public function userDeleteAvatar($uid) {

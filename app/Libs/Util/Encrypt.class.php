@@ -8,12 +8,21 @@ namespace Libs\Util;
 
 class Encrypt {
 
+    /**
+     * 加密
+     */
+    const OPERATION_ENCODE = 'ENCODE';
+    /**
+     * 解密
+     */
+    const OPERATION_DECODE = 'DECODE';
+
 	/**
 	 * 加密解密
 	 * @param string $string 明文 或 密文
 	 * @param string $operation DECODE表示解密,其它表示加密
 	 * @param string $key 密匙
-	 * @param int $expiry 密文有效期
+	 * @param int $expiry 密文有效期,单位：秒
 	 * @return string
 	 */
 	public static function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
