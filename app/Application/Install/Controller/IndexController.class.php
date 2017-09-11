@@ -266,8 +266,31 @@ class IndexController extends Controller {
 		$time = time();
 		$ip = get_client_ip();
 		$password = md5($password . md5($verify));
-		$query = "INSERT INTO `{$dbPrefix}user` VALUES ('1', '{$username}', '超级管理员', '{$password}', '', '{$time}', '0.0.0.0', '{$verify}', 'admin@ztbcms.com', '备注信息', '{$time}', '{$time}', '1', '1', '');";
-        $conn->execute($query);
+        $admin_data = [
+            'username' => $username,
+            'nickname' => '超级管理员',
+            'password' => $password,
+            'pwdconfirm' => $password,
+            'bind_account' => '',
+            'last_login_time' => $time,
+            'last_login_ip' => $ip,
+            'verify' => $verify,
+            'email' => I('manager_email'),
+            'remark' => '备注信息',
+            'create_time' => $time,
+            'update_time' => $time,
+            'status' => '1',
+            'role_id' => '1',
+            'info' => '',
+        ];
+        $UserModel = D('Admin/User');
+        $UserModel->delete();
+        if($UserModel->create($admin_data)){
+            $UserModel->add();
+        }else{
+            $message = '<strong style="color: red;">添加管理员失败</strong><br/>';
+            echo $message;exit();
+        }
 
 		$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
 		$arr = array('n' => 999999, 'msg' => $message);
