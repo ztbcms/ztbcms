@@ -283,7 +283,7 @@ class IndexController extends Controller {
             'role_id' => '1',
             'info' => '',
         ];
-        $UserModel = D('Admin/User');
+        $UserModel = M('User');
         $UserModel->delete();
         if($UserModel->create($admin_data)){
             $UserModel->add();
