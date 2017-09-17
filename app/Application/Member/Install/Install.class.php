@@ -71,7 +71,7 @@ class Install extends InstallBase {
 
 	/**
 	 * 检查对应目录是否有相应的权限
-	 * @param type $path 目录地址
+	 * @param string $path 目录地址
 	 * @return boolean
 	 */
 	protected function chechmod($path) {

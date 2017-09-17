@@ -112,7 +112,18 @@ class Html extends Base {
 		}
 		$seo = seo($catid, $output_data['title'], $output_data['description'], $seo_keywords);
 		//内容页模板
-		$template = $output_data['template'] ? $output_data['template'] : $category['setting']['show_template'];
+
+        $model=M('Model')->find($category['modelid']);
+        //如果都没有设置，则默认使用show.php
+        $template = 'show.php';
+        //如果模型有设置，则template就是模型设置的模板
+        $model['show_template'] ? $template = $model['show_template']:'';
+        //栏目中有设置，则使用栏目的模板
+        $category['setting']['show_template'] ? $template = $category['setting']['show_template']:'';
+        //内容页模板有设置，则使用内容模板
+        $output_data['template'] ? $template = $output_data['template'] : '';
+
+
 		//去除模板文件后缀
 		$newstempid = explode('.', $template);
 		$template = "Show/{$newstempid[0]}";
@@ -203,10 +214,12 @@ class Html extends Base {
 		$catdir = $category['catdir'];
 		//生成类型为0的栏目
 		if ($category['type'] == 0) {
-			//栏目首页模板
-			$template = $setting['category_template'] ? $setting['category_template'] : 'category';
-			//栏目列表页模板
-			$template_list = $setting['list_template'] ? $setting['list_template'] : 'list';
+            //获取栏目的模型
+            $model=M('Model')->find($category['modelid']);
+            //栏目首页模板
+            $template = $setting['category_template'] ? $setting['category_template'] : ($model['category_template'] ? $model['category_template']:'category');
+            //栏目列表页模板
+            $template_list = $setting['list_template'] ? $setting['list_template'] : ($model['list_template'] ? $model['list_template']:'list');
 			//判断使用模板类型，如果有子栏目使用频道页模板，终极栏目使用的是列表模板
 			$template = $category['child'] ? "Category/{$template}" : "List/{$template_list}";
 			//去除后缀开始

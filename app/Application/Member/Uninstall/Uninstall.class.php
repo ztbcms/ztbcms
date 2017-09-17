@@ -72,7 +72,7 @@ class Uninstall extends UninstallBase {
 		CMS()->Dir->delDir(PROJECT_PATH . 'Libs/Driver/Passport/');
 		//删除uc api
 		CMS()->Dir->delDir(SITE_PATH . 'api/');
-		//删除文件UserAction.class.php
+		//删除文件UserController.class.php
 		@unlink(APP_PATH . 'Api/Controller/UserController.class.php');
 		return true;
 	}
