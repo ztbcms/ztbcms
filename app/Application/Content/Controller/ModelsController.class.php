@@ -159,7 +159,7 @@ class ModelsController extends AdminBase {
 		$status = D("Content/Model")->export($modelid);
 		if ($status) {
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=spf_model_" . $modelid . '.txt');
+			header("Content-Disposition: attachment; filename=ztb_model_" . $modelid . '.txt');
 			echo $status;
 		} else {
 			$this->error(D("Content/Model")->getError() ? D("Content/Model")->getError() : '模型导出失败！');
