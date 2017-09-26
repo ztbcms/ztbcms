@@ -8,7 +8,7 @@ namespace Admin\Service;
 
 
 use Admin\Model\AccessGroupModel;
-use Shop\Service\BaseService;
+use System\Service\BaseService;
 
 class RbacService extends BaseService {
 
