@@ -124,5 +124,17 @@ return array(
             'type' => 1,
             'phpfile:MemberRegisterBehavior|module:Member',
         ),
+        'member_verify' => array(
+            'title' => '会员审核通过行为调用',
+            'remark' => '会员审核通过行为调用',
+            'type' => 1,
+            'phpfile:MemberVerifyBehavior|module:Member',
+        ),
+        'member_unverify' => array(
+            'title' => '会员审核取消行为调用',
+            'remark' => '会员审核取消行为调用',
+            'type' => 1,
+            'phpfile:MemberUnverifyBehavior|module:Member',
+        )
     ),
 );
