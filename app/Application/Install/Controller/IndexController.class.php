@@ -283,17 +283,16 @@ class IndexController extends Controller {
             'role_id' => '1',
             'info' => '',
         ];
-        $UserModel = M('User');
-        $UserModel->delete();
-        if($UserModel->create($admin_data)){
-            $UserModel->add();
+		$UserModel = M('User');
+		$UserModel->delete();
+		$res = $UserModel->add($admin_data);
+        if($res){
+			$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
+			$arr = array('n' => 999999, 'msg' => $message);
         }else{
-            $message = '<strong style="color: red;">添加管理员失败</strong><br/>';
-            echo $message;exit();
+			$message = '<strong style="color: red;">添加管理员失败</strong><br/>';
+			$arr = array('n' => 999998, 'msg' => $message);
         }
-
-		$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
-		$arr = array('n' => 999999, 'msg' => $message);
 		echo json_encode($arr);
 		exit;
 	}
