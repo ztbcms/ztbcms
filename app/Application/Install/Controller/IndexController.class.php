@@ -270,7 +270,6 @@ class IndexController extends Controller {
             'username' => $username,
             'nickname' => '超级管理员',
             'password' => $password,
-            'pwdconfirm' => $password,
             'bind_account' => '',
             'last_login_time' => $time,
             'last_login_ip' => $ip,
@@ -284,7 +283,6 @@ class IndexController extends Controller {
             'info' => '',
         ];
 		$UserModel = M('User');
-		$UserModel->delete();
 		$res = $UserModel->add($admin_data);
         if($res){
 			$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
