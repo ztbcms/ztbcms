@@ -8,9 +8,13 @@
 namespace Common\Behavior;
 
 
+use Common\BehaviorParam\BaseBehaviorParam;
+
 class BaseBehavior {
 
-    //执行入口
+    /**
+     * @param BaseBehaviorParam $param
+     */
     public function run(&$param) {
 
     }
