@@ -29,7 +29,7 @@ class BaseBehaviorParam {
      * @return mixed
      */
     static function create(array $data) {
-        $class = __CLASS__;
+        $class = get_called_class();
         $param = new $class;
         foreach ($data as $key => $val){
             if(empty($param->$key)){
