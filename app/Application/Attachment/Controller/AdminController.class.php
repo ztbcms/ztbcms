@@ -128,7 +128,9 @@ class AdminController extends AdminBase {
 		$where['isimage'] = array("eq", 1);
 		$count = $db->where($where)->count();
 		//启用分页
-		$page = $this->page($count, 12);
+        $limit = I('get.limit', 12);
+        $page = I('get.page', 1);
+        $page = $this->page($count, $limit, $page);
 		$data = $db->where($where)->order(array("uploadtime" => "DESC"))->limit($page->firstRow . ',' . $page->listRows)->select();
 		foreach ($data as $k => $v) {
 			$data[$k]['filepath'] = $config['sitefileurl'] . $data[$k]['filepath'];
