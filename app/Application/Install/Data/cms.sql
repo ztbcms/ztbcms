@@ -728,7 +728,7 @@ CREATE TABLE `cms_position_data` (
   `module` char(20) NOT NULL DEFAULT '' COMMENT '模型',
   `modelid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
   `thumb` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有缩略图',
-  `data` mediumtext COMMENT '数据信息',
+  `data` text NOT NULL COMMENT '数据信息',
   `listorder` int(11) NOT NULL AUTO_INCREMENT COMMENT '排序',
   `expiration` int(10) NOT NULL,
   `extention` char(30) NOT NULL DEFAULT '',
