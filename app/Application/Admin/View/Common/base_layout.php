@@ -75,7 +75,7 @@
     <block name="header"></block>
 
 </head>
-<body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;">
+<body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;background-color: #F8F8F8">
 
     <block name="content">
 
