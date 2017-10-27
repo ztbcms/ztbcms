@@ -52,6 +52,26 @@ class BaseService {
     }
 
     /**
+     * 获取模型实例
+     *
+     * @param $tablename
+     * @return \Think\Model
+     */
+    protected static function getModelInstance($tablename){
+        if(strpos($tablename, '/') === false){
+            //没有自定义域名
+            if(self::isExistSystemModel($tablename)){
+                $db = D('System/' . $tablename);
+            }else{
+                $db = D($tablename);
+            }
+        }else{
+            $db = D($tablename);
+        }
+
+        return $db;
+    }
+    /**
      * 获取
      *
      * @param string $tablename
@@ -92,17 +112,8 @@ class BaseService {
      * @param bool   $isRelation
      * @return mixed
      */
-    public static function find($tablename = '', $where = [], $isRelation = false) {
-        if(strpos($tablename, '/') === false){
-            //没有自定义域名
-            if(self::isExistSystemModel($tablename)){
-                $db = D('System/' . $tablename);
-            }else{
-                $db = D($tablename);
-            }
-        }else{
-            $db = D($tablename);
-        }
+    protected static function find($tablename = '', $where = [], $isRelation = false) {
+        $db = self::getModelInstance($tablename);
 
         if($isRelation && $db instanceof RelationModel){
             $result = $db->where($where)->relation(true)->find();
@@ -124,17 +135,8 @@ class BaseService {
      * @param bool   $isRelation 是否开启关联查询
      * @return array
      */
-    public static function select($tablename = '', $where = [], $order = '', $page = 1, $limit = 20, $isRelation = false) {
-        if(strpos($tablename, '/') === false){
-            //没有自定义域名
-            if(self::isExistSystemModel($tablename)){
-                $db = D('System/' . $tablename);
-            }else{
-                $db = D($tablename);
-            }
-        }else{
-            $db = D($tablename);
-        }
+    protected static function select($tablename = '', $where = [], $order = '', $page = 1, $limit = 20, $isRelation = false) {
+        $db = self::getModelInstance($tablename);
 
         if($isRelation && $db instanceof RelationModel){
             $items = $db->where($where)->order($order)->page($page)->limit($limit)->relation(true)->select();
@@ -149,6 +151,35 @@ class BaseService {
         }
 
         return self::createReturnList(true, $items, $page, $limit, $total_items, $total_pages);
+    }
+
+    /**
+     * 删除
+     *
+     * @param string $tablename
+     * @param array  $where
+     * @return array
+     */
+    public static function delete($tablename = '', $where = []){
+        $db = self::getModelInstance($tablename);
+        $result = $db->where($where)->delete();
+
+        return self::createReturn(true, $result, '操作成功');
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param string $tablename
+     * @param array  $where
+     * @param array  $update_data
+     * @return array
+     */
+    public static function update($tablename = '', $where = [], $update_data = []){
+        $db = self::getModelInstance($tablename);
+        $result = $db->where($where)->save($update_data);
+
+        return self::createReturn(true, $result, '操作成功');
     }
 
     /**
