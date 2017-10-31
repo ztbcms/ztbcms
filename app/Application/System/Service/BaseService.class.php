@@ -121,6 +121,7 @@ class BaseService {
             $result = $db->where($where)->find();
         }
 
+
         return self::createReturn(true, $result);
     }
 
@@ -151,6 +152,25 @@ class BaseService {
         }
 
         return self::createReturnList(true, $items, $page, $limit, $total_items, $total_pages);
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param string $tablename
+     * @param array  $data
+     * @return array
+     */
+    public static function create($tablename = '', $data = []){
+        $db = self::getModelInstance($tablename);
+        $result = $db->add($data);
+
+        if($result){
+            return self::createReturn(true, $result, '操作成功');
+        }else{
+            return self::createReturn(true, null, '操作失败,错误信息：'. $db->getError());
+        }
+
     }
 
     /**
