@@ -8,6 +8,11 @@ namespace System\Service;
 
 use Common\Model\RelationModel;
 
+/**
+ * Service基类
+ *
+ * 如果你在写Service，你应该继承这个基类
+ */
 class BaseService {
 
     /**
