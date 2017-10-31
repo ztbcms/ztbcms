@@ -282,8 +282,11 @@ class IndexController extends Controller {
             'role_id' => '1',
             'info' => '',
         ];
-		$UserModel = M('User');
-		$res = $UserModel->add($admin_data);
+
+        $query = "INSERT INTO `{$dbPrefix}user` (username, nickname,password,verify,email,remark,create_time,update_time,status,role_id,info) 
+          VALUES ('{$admin_data['username']}','{$admin_data['nickname']}','{$admin_data['password']}','{$admin_data['verify']}','{$admin_data['email']}','{$admin_data['remark']}','{$admin_data['create_time']}','{$admin_data['update_time']}','{$admin_data['status']}','{$admin_data['role_id']}','{$admin_data['info']}');";
+        $res = $conn->execute($query);
+
         if($res){
 			$message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
 			$arr = array('n' => 999999, 'msg' => $message);
