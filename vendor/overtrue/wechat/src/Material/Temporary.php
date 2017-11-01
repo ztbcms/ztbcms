@@ -81,7 +81,17 @@ class Temporary extends AbstractAPI
     {
         $response = $this->getHttp()->get(self::API_GET, ['media_id' => $mediaId]);
 
-        return $response->getBody();
+        $response->getBody()->rewind();
+
+        $body = $response->getBody()->getContents();
+
+        $json = json_decode($body, true);
+
+        if (JSON_ERROR_NONE === json_last_error()) {
+            $this->checkAndThrow($json);
+        }
+
+        return $body;
     }
 
     /**
@@ -90,7 +100,7 @@ class Temporary extends AbstractAPI
      * @param string $type
      * @param string $path
      *
-     * @return string
+     * @return \EasyWeChat\Support\Collection
      *
      * @throws \EasyWeChat\Core\Exceptions\InvalidArgumentException
      */
@@ -112,7 +122,7 @@ class Temporary extends AbstractAPI
      *
      * @param $path
      *
-     * @return string
+     * @return \EasyWeChat\Support\Collection
      *
      * @throws \EasyWeChat\Core\Exceptions\InvalidArgumentException
      */
@@ -126,7 +136,7 @@ class Temporary extends AbstractAPI
      *
      * @param $path
      *
-     * @return string
+     * @return \EasyWeChat\Support\Collection
      *
      * @throws \EasyWeChat\Core\Exceptions\InvalidArgumentException
      */
@@ -140,7 +150,7 @@ class Temporary extends AbstractAPI
      *
      * @param $path
      *
-     * @return string
+     * @return \EasyWeChat\Support\Collection
      *
      * @throws \EasyWeChat\Core\Exceptions\InvalidArgumentException
      */
@@ -154,7 +164,7 @@ class Temporary extends AbstractAPI
      *
      * @param $path
      *
-     * @return string
+     * @return \EasyWeChat\Support\Collection
      *
      * @throws \EasyWeChat\Core\Exceptions\InvalidArgumentException
      */

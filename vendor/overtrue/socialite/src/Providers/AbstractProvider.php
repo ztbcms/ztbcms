@@ -27,18 +27,18 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
+     * Provider name.
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
      * The HTTP request instance.
      *
      * @var \Symfony\Component\HttpFoundation\Request
      */
     protected $request;
-
-    /**
-     * The configuration.
-     *
-     * @var \Overtrue\Socialite\Config
-     */
-    protected $config;
 
     /**
      * The client ID.
@@ -53,6 +53,11 @@ abstract class AbstractProvider implements ProviderInterface
      * @var string
      */
     protected $clientSecret;
+
+    /**
+     * @var \Overtrue\Socialite\AccessTokenInterface
+     */
+    protected $accessToken;
 
     /**
      * The redirect URL.
@@ -100,15 +105,13 @@ abstract class AbstractProvider implements ProviderInterface
      * Create a new provider instance.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Overtrue\Socialite\Config                $config
      * @param string                                    $clientId
      * @param string                                    $clientSecret
      * @param string|null                               $redirectUrl
      */
-    public function __construct(Request $request, $config, $clientId, $clientSecret, $redirectUrl = null)
+    public function __construct(Request $request, $clientId, $clientSecret, $redirectUrl = null)
     {
         $this->request = $request;
-        $this->config = $config;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->redirectUrl = $redirectUrl;
@@ -164,8 +167,7 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         if ($this->usesState()) {
-            $state = sha1(uniqid(mt_rand(1, 1000000), true));
-            $this->request->getSession()->set('state', $state);
+            $state = $this->makeState();
         }
 
         return new RedirectResponse($this->getAuthUrl($state));
@@ -186,7 +188,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $user = $this->mapUserToObject($user)->merge(['original' => $user]);
 
-        return $user->setToken($token);
+        return $user->setToken($token)->setProviderName($this->getName());
     }
 
     /**
@@ -228,14 +230,30 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * @param \Overtrue\Socialite\AccessTokenInterface $accessToken
+     *
+     * @return $this
+     */
+    public function setAccessToken(AccessTokenInterface $accessToken)
+    {
+        $this->accessToken = $accessToken;
+
+        return $this;
+    }
+
+    /**
      * Get the access token for the given code.
      *
      * @param string $code
      *
-     * @return \Overtrue\Socialite\AccessToken
+     * @return \Overtrue\Socialite\AccessTokenInterface
      */
     public function getAccessToken($code)
     {
+        if ($this->accessToken) {
+            return $this->accessToken;
+        }
+
         $postKey = (version_compare(ClientInterface::VERSION, '6') === 1) ? 'form_params' : 'body';
 
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
@@ -277,7 +295,7 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * Get the request instance.
      *
-     * @return Request
+     * @return \Symfony\Component\HttpFoundation\Request
      */
     public function getRequest()
     {
@@ -308,6 +326,18 @@ abstract class AbstractProvider implements ProviderInterface
         $this->parameters = $parameters;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        if (empty($this->name)) {
+            $this->name = strstr((new \ReflectionClass(get_class($this)))->getShortName(), 'Provider', true);
+        }
+
+        return $this->name;
     }
 
     /**
@@ -397,7 +427,7 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @param \Psr\Http\Message\StreamInterface|array $body
      *
-     * @return \Overtrue\Socialite\AccessToken
+     * @return \Overtrue\Socialite\AccessTokenInterface
      */
     protected function parseAccessToken($body)
     {
@@ -429,7 +459,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected function getHttpClient()
     {
-        return new Client();
+        return new Client(['http_errors' => false]);
     }
 
     /**
@@ -480,5 +510,26 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         return $array;
+    }
+
+    /**
+     * Put state to session storage and return it.
+     *
+     * @return string|bool
+     */
+    protected function makeState()
+    {
+        $state = sha1(uniqid(mt_rand(1, 1000000), true));
+        $session = $this->request->getSession();
+
+        if (is_callable([$session, 'put'])) {
+            $session->put('state', $state);
+        } elseif (is_callable([$session, 'set'])) {
+            $session->set('state', $state);
+        } else {
+            return false;
+        }
+
+        return $state;
     }
 }

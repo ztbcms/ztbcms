@@ -22,7 +22,6 @@
 namespace EasyWeChat\Encryption;
 
 use EasyWeChat\Core\Exceptions\InvalidConfigException;
-use EasyWeChat\Core\Exceptions\RuntimeException;
 use EasyWeChat\Support\XML;
 use Exception as BaseException;
 
@@ -60,27 +59,14 @@ class Encryptor
     protected $blockSize;
 
     /**
-     * Aes key length.
-     *
-     * @var int
-     */
-    protected $aesKeyLength = 43;
-
-    /**
      * Constructor.
      *
      * @param string $appId
      * @param string $token
      * @param string $AESKey
-     *
-     * @throws RuntimeException
      */
     public function __construct($appId, $token, $AESKey)
     {
-        if (!extension_loaded('openssl')) {
-            throw new RuntimeException("The ext 'openssl' is required.");
-        }
-
         $this->appId = $appId;
         $this->token = $token;
         $this->AESKey = $AESKey;
@@ -222,8 +208,8 @@ class Encryptor
             throw new InvalidConfigException("Configuration mission, 'aes_key' is required.");
         }
 
-        if (strlen($this->AESKey) !== $this->aesKeyLength) {
-            throw new InvalidConfigException("The length of 'aes_key' must be {$this->aesKeyLength}.");
+        if (strlen($this->AESKey) !== 43) {
+            throw new InvalidConfigException("The length of 'aes_key' must be 43.");
         }
 
         return base64_decode($this->AESKey.'=', true);
@@ -296,6 +282,13 @@ class Encryptor
 
         if ($fromAppId !== $appId) {
             throw new EncryptionException('Invalid appId.', EncryptionException::ERROR_INVALID_APPID);
+        }
+
+        $dataSet = json_decode($xml, true);
+        if ($dataSet && (JSON_ERROR_NONE === json_last_error())) {
+            // For mini-program JSON formats.
+            // Convert to XML if the given string can be decode into a data array.
+            $xml = XML::build($dataSet);
         }
 
         return $xml;

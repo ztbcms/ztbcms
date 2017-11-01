@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\HttpFoundation\Session\Storage;
 
+use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Proxy\AbstractProxy;
@@ -51,8 +52,6 @@ class NativeSessionStorage implements SessionStorageInterface
     protected $metadataBag;
 
     /**
-     * Constructor.
-     *
      * Depending on how you want the storage driver to behave you probably
      * want to override this constructor entirely.
      *
@@ -80,6 +79,7 @@ class NativeSessionStorage implements SessionStorageInterface
      * name, "PHPSESSID"
      * referer_check, ""
      * serialize_handler, "php"
+     * use_strict_mode, "0"
      * use_cookies, "1"
      * use_only_cookies, "1"
      * use_trans_sid, "0"
@@ -90,6 +90,10 @@ class NativeSessionStorage implements SessionStorageInterface
      * upload_progress.freq, "1%"
      * upload_progress.min-freq, "1"
      * url_rewriter.tags, "a=href,area=href,frame=src,form=,fieldset="
+     * sid_length, "32"
+     * sid_bits_per_character, "5"
+     * trans_sid_hosts, $_SERVER['HTTP_HOST']
+     * trans_sid_tags, "a=href,area=href,frame=src,form="
      *
      * @param array                                                            $options Session configuration options
      * @param AbstractProxy|NativeSessionHandler|\SessionHandlerInterface|null $handler
@@ -208,7 +212,25 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function save()
     {
-        session_write_close();
+        // Register custom error handler to catch a possible failure warning during session write
+        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
+            throw new ContextErrorException($errstr, $errno, E_WARNING, $errfile, $errline, $errcontext);
+        }, E_WARNING);
+
+        try {
+            session_write_close();
+            restore_error_handler();
+        } catch (ContextErrorException $e) {
+            // The default PHP error message is not very helpful, as it does not give any information on the current save handler.
+            // Therefore, we catch this error and trigger a warning with a better error message
+            $handler = $this->getSaveHandler();
+            if ($handler instanceof SessionHandlerProxy) {
+                $handler = $handler->getHandler();
+            }
+
+            restore_error_handler();
+            trigger_error(sprintf('session_write_close(): Failed to write session data with %s handler', get_class($handler)), E_USER_WARNING);
+        }
 
         $this->closed = true;
         $this->started = false;
@@ -311,10 +333,11 @@ class NativeSessionStorage implements SessionStorageInterface
             'entropy_file', 'entropy_length', 'gc_divisor',
             'gc_maxlifetime', 'gc_probability', 'hash_bits_per_character',
             'hash_function', 'name', 'referer_check',
-            'serialize_handler', 'use_cookies',
+            'serialize_handler', 'use_strict_mode', 'use_cookies',
             'use_only_cookies', 'use_trans_sid', 'upload_progress.enabled',
             'upload_progress.cleanup', 'upload_progress.prefix', 'upload_progress.name',
             'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags',
+            'sid_length', 'sid_bits_per_character', 'trans_sid_hosts', 'trans_sid_tags',
         ));
 
         foreach ($options as $key => $value) {

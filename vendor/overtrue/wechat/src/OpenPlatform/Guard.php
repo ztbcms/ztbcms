@@ -18,6 +18,7 @@
  * file that was distributed with this source code.
  *
  * @author    mingyoung <mingyoungcheung@gmail.com>
+ * @author    lixiao <leonlx126@gmail.com>
  * @copyright 2016
  *
  * @see      https://github.com/overtrue
@@ -26,86 +27,113 @@
 
 namespace EasyWeChat\OpenPlatform;
 
-use EasyWeChat\Core\Exceptions\InvalidArgumentException;
-use EasyWeChat\OpenPlatform\Traits\VerifyTicketTrait;
 use EasyWeChat\Server\Guard as ServerGuard;
-use EasyWeChat\Support\Arr;
+use EasyWeChat\Support\Collection;
+use EasyWeChat\Support\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class Guard extends ServerGuard
 {
-    use VerifyTicketTrait;
+    const EVENT_AUTHORIZED = 'authorized';
+    const EVENT_UNAUTHORIZED = 'unauthorized';
+    const EVENT_UPDATE_AUTHORIZED = 'updateauthorized';
+    const EVENT_COMPONENT_VERIFY_TICKET = 'component_verify_ticket';
 
     /**
-     * Wechat push event types.
+     * Event handlers.
      *
-     * @var array
+     * @var \EasyWeChat\Support\Collection
      */
-    protected $eventTypeMappings = [
-        'authorized' => EventHandlers\Authorized::class,
-        'unauthorized' => EventHandlers\Unauthorized::class,
-        'updateauthorized' => EventHandlers\UpdateAuthorized::class,
-        'component_verify_ticket' => EventHandlers\ComponentVerifyTicket::class,
-    ];
+    protected $handlers;
 
     /**
-     * Return for laravel-wechat.
+     * Set handlers.
      *
-     * @return array
+     * @param array $handlers
      */
-    public function listServe()
+    public function setHandlers(array $handlers)
     {
-        $class = $this->getHandleClass();
+        $this->handlers = new Collection($handlers);
 
-        $message = $this->getCollectedMessage();
-
-        call_user_func([new $class($this->verifyTicket), 'handle'], $message);
-
-        return [
-            $message->get('InfoType'), $message,
-        ];
+        return $this;
     }
 
     /**
-     * Listen for wechat push event.
+     * Get handlers.
      *
-     * @param callable|null $callback
-     *
-     * @return mixed
-     *
-     * @throws InvalidArgumentException
+     * @return \EasyWeChat\Support\Collection
      */
-    public function listen($callback = null)
+    public function getHandlers()
     {
-        $message = $this->getCollectedMessage();
-
-        $class = $this->getHandleClass();
-
-        if (is_callable($callback)) {
-            $callback(
-                call_user_func([new $class($this->verifyTicket), 'forward'], $message)
-            );
-        }
-
-        return call_user_func([new $class($this->verifyTicket), 'handle'], $message);
+        return $this->handlers;
     }
 
     /**
-     * Get handler class.
+     * Get handler.
      *
-     * @return \EasyWeChat\OpenPlatform\EventHandlers\EventHandler
+     * @param string $type
      *
-     * @throws InvalidArgumentException
+     * @return \EasyWeChat\OpenPlatform\EventHandlers\EventHandler|null
      */
-    private function getHandleClass()
+    public function getHandler($type)
     {
-        $message = $this->getCollectedMessage();
+        return $this->handlers->get($type);
+    }
 
-        $type = $message->get('InfoType');
+    /**
+     * {@inheritdoc}
+     */
+    public function serve()
+    {
+        $message = $this->getMessage();
 
-        if (!$class = Arr::get($this->eventTypeMappings, $type)) {
-            throw new InvalidArgumentException("Event Info Type \"$type\" does not exists.");
+        // Handle Messages.
+        if (isset($message['MsgType'])) {
+            return parent::serve();
         }
 
-        return $class;
+        Log::debug('OpenPlatform Request received:', [
+            'Method' => $this->request->getMethod(),
+            'URI' => $this->request->getRequestUri(),
+            'Query' => $this->request->getQueryString(),
+            'Protocal' => $this->request->server->get('SERVER_PROTOCOL'),
+            'Content' => $this->request->getContent(),
+        ]);
+
+        // If sees the `auth_code` query parameter in the url, that is,
+        // authorization is successful and it calls back, meanwhile, an
+        // `authorized` event, which also includes the auth code, is sent
+        // from WeChat, and that event will be handled.
+        if ($this->request->get('auth_code')) {
+            return new Response(self::SUCCESS_EMPTY_RESPONSE);
+        }
+
+        $this->handleEventMessage($message);
+
+        return new Response(self::SUCCESS_EMPTY_RESPONSE);
+    }
+
+    /**
+     * Handle event message.
+     *
+     * @param array $message
+     */
+    protected function handleEventMessage(array $message)
+    {
+        Log::debug('OpenPlatform Event Message detail:', $message);
+
+        $message = new Collection($message);
+
+        $infoType = $message->get('InfoType');
+
+        if ($handler = $this->getHandler($infoType)) {
+            $handler->handle($message);
+        } else {
+            Log::notice("No existing handler for '{$infoType}'.");
+        }
+
+        if ($messageHandler = $this->getMessageHandler()) {
+            call_user_func_array($messageHandler, [$message]);
+        }
     }
 }
