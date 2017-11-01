@@ -30,7 +30,6 @@ use EasyWeChat\Message\Raw as RawMessage;
 use EasyWeChat\Message\Text;
 use EasyWeChat\Support\Collection;
 use EasyWeChat\Support\Log;
-use EasyWeChat\Support\Str;
 use EasyWeChat\Support\XML;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +53,7 @@ class Guard
     const LINK_MSG = 128;
     const DEVICE_EVENT_MSG = 256;
     const DEVICE_TEXT_MSG = 512;
+    const FILE_MSG = 1024;
     const EVENT_MSG = 1048576;
     const ALL_MSG = 1049598;
 
@@ -95,6 +95,7 @@ class Guard
         'link' => 128,
         'device_event' => 256,
         'device_text' => 512,
+        'file' => 1024,
         'event' => 1048576,
     ];
 
@@ -290,6 +291,7 @@ class Guard
 
         if (!$this->isMessage($message)) {
             $messageType = gettype($message);
+
             throw new InvalidArgumentException("Invalid Message type .'{$messageType}'");
         }
 
@@ -348,16 +350,6 @@ class Guard
     }
 
     /**
-     * Get the collected request message.
-     *
-     * @return Collection
-     */
-    public function getCollectedMessage()
-    {
-        return new Collection($this->getMessage());
-    }
-
-    /**
      * Handle request.
      *
      * @return array
@@ -384,14 +376,14 @@ class Guard
      *
      * @return mixed
      */
-    protected function handleMessage($message)
+    protected function handleMessage(array $message)
     {
         $handler = $this->messageHandler;
 
         if (!is_callable($handler)) {
             Log::debug('No handler enabled.');
 
-            return;
+            return null;
         }
 
         Log::debug('Message detail:', $message);
@@ -460,8 +452,11 @@ class Guard
     {
         $content = strval($content);
 
-        if (Str::isJson($content)) {
-            return Str::json2Array($content);
+        $dataSet = json_decode($content, true);
+        if ($dataSet && (JSON_ERROR_NONE === json_last_error())) {
+            // For mini-program JSON formats.
+            // Convert to XML if the given string can be decode into a data array.
+            $content = XML::build($dataSet);
         }
 
         if ($this->isSafeMode()) {

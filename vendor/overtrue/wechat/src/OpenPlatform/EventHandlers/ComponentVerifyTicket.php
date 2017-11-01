@@ -18,6 +18,7 @@
  * file that was distributed with this source code.
  *
  * @author    mingyoung <mingyoungcheung@gmail.com>
+ * @author    lixiao <leonlx126@gmail.com>
  * @copyright 2016
  *
  * @see      https://github.com/overtrue
@@ -26,17 +27,32 @@
 
 namespace EasyWeChat\OpenPlatform\EventHandlers;
 
-use EasyWeChat\Support\Collection;
+use EasyWeChat\OpenPlatform\VerifyTicket;
 
 class ComponentVerifyTicket extends EventHandler
 {
     /**
+     * VerifyTicket.
+     *
+     * @var \EasyWeChat\OpenPlatform\VerifyTicket
+     */
+    protected $verifyTicket;
+
+    /**
+     * Constructor.
+     *
+     * @param \EasyWeChat\OpenPlatform\VerifyTicket $verifyTicket
+     */
+    public function __construct(VerifyTicket $verifyTicket)
+    {
+        $this->verifyTicket = $verifyTicket;
+    }
+
+    /**
      * {@inheritdoc}.
      */
-    public function handle(Collection $message)
+    public function handle($message)
     {
-        $this->verifyTicket->cache($message);
-
-        return 'success';
+        $this->verifyTicket->setTicket($message->get('ComponentVerifyTicket'));
     }
 }

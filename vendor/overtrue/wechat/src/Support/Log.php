@@ -29,6 +29,15 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class Log.
+ *
+ * @method static debug($message, $context = null)
+ * @method static info($message, $context = null)
+ * @method static notice($message, $context = null)
+ * @method static warning($message, $context = null)
+ * @method static error($message, $context = null)
+ * @method static critical($message, $context = null)
+ * @method static alert($message, $context = null)
+ * @method static emergency($message, $context = null)
  */
 class Log
 {
@@ -104,7 +113,7 @@ class Log
     {
         $log = new Logger('EasyWeChat');
 
-        if (defined('PHPUNIT_RUNNING')) {
+        if (defined('PHPUNIT_RUNNING') || php_sapi_name() === 'cli') {
             $log->pushHandler(new NullHandler());
         } else {
             $log->pushHandler(new ErrorLogHandler());

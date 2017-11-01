@@ -28,72 +28,34 @@ namespace EasyWeChat\MiniProgram\Encryption;
 
 use EasyWeChat\Encryption\EncryptionException;
 use EasyWeChat\Encryption\Encryptor as BaseEncryptor;
-use EasyWeChat\Support\Collection;
-use Exception as BaseException;
+use Exception;
 
 class Encryptor extends BaseEncryptor
 {
     /**
-     * {@inheritdoc}.
-     */
-    protected $aesKeyLength = 24;
-
-    /**
-     * A non-NULL Initialization Vector.
-     *
-     * @var string
-     */
-    protected $iv;
-
-    /**
-     * Encryptor constructor.
+     * Decrypt data.
      *
      * @param string $sessionKey
      * @param string $iv
-     */
-    public function __construct($sessionKey, $iv)
-    {
-        $this->iv = base64_decode($iv, true);
-
-        parent::__construct(null, null, $sessionKey);
-    }
-
-    /**
-     * Decrypt data.
-     *
-     * @param $encrypted
-     *
-     * @return string
-     */
-    public function decryptData($encrypted)
-    {
-        return $this->decrypt($encrypted);
-    }
-
-    /**
-     * Decrypt data.
-     *
      * @param string $encrypted
      *
-     * @return Collection
-     *
-     * @throws EncryptionException
+     * @return array
      */
-    private function decrypt($encrypted)
+    public function decryptData($sessionKey, $iv, $encrypted)
     {
         try {
-            $key = $this->getAESKey();
-            $ciphertext = base64_decode($encrypted, true);
-
-            $decrypted = openssl_decrypt($ciphertext, 'aes-128-cbc', $key, OPENSSL_RAW_DATA | OPENSSL_NO_PADDING, $this->iv);
-
-            $result = $this->decode($decrypted);
-        } catch (BaseException $e) {
+            $decrypted = openssl_decrypt(
+                base64_decode($encrypted, true), 'aes-128-cbc', base64_decode($sessionKey, true),
+                OPENSSL_RAW_DATA | OPENSSL_NO_PADDING, base64_decode($iv, true)
+            );
+        } catch (Exception $e) {
             throw new EncryptionException($e->getMessage(), EncryptionException::ERROR_DECRYPT_AES);
         }
 
-        $result = json_decode($result, true);
+        if (is_null($result = json_decode($this->decode($decrypted), true))) {
+            throw new EncryptionException('ILLEGAL_BUFFER', EncryptionException::ILLEGAL_BUFFER);
+        }
 
-        return new Collection($result);
+        return $result;
     }
 }

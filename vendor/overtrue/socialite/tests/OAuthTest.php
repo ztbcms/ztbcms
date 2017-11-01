@@ -11,7 +11,6 @@
 
 use Mockery as m;
 use Overtrue\Socialite\AccessTokenInterface;
-use Overtrue\Socialite\Config;
 use Overtrue\Socialite\Providers\AbstractProvider;
 use Overtrue\Socialite\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +26,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
     {
         $request = Request::create('foo');
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
-        $session->shouldReceive('set')->once();
+        $session->shouldReceive('put')->once();
         $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect');
         $response = $provider->redirect();
 
@@ -40,10 +39,10 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $request = Request::create('foo', 'GET', ['state' => str_repeat('A', 40), 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
 
-        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret');
+        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret');
         $this->assertNull($provider->getRedirectUrl());
 
-        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret', 'redirect_uri');
+        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect_uri');
         $this->assertSame('redirect_uri', $provider->getRedirectUrl());
         $provider->setRedirectUrl('overtrue.me');
         $this->assertSame('overtrue.me', $provider->getRedirectUrl());
@@ -58,7 +57,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
 
         $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
-        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret', 'redirect_uri');
+        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect_uri');
         $provider->http = m::mock('StdClass');
         $provider->http->shouldReceive('post')->once()->with('http://token.url', [
             'headers' => ['Accept' => 'application/json'], 'form_params' => ['client_id' => 'client_id', 'client_secret' => 'client_secret', 'code' => 'code', 'redirect_uri' => 'redirect_uri'],
@@ -71,7 +70,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Overtrue\Socialite\InvalidStateException
+     * @expectedException \Overtrue\Socialite\InvalidStateException
      */
     public function testExceptionIsThrownIfStateIsInvalid()
     {
@@ -83,7 +82,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Overtrue\Socialite\AuthorizeFailedException
+     * @expectedException \Overtrue\Socialite\AuthorizeFailedException
      * @expectedExceptionMessage Authorize Failed: {"error":"scope is invalid"}
      */
     public function testExceptionisThrownIfAuthorizeFailed()
@@ -91,7 +90,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $request = Request::create('foo', 'GET', ['state' => str_repeat('A', 40), 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
         $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
-        $provider = new OAuthTwoTestProviderStub($request, new Config([]), 'client_id', 'client_secret', 'redirect_uri');
+        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect_uri');
         $provider->http = m::mock('StdClass');
         $provider->http->shouldReceive('post')->once()->with('http://token.url', [
             'headers' => ['Accept' => 'application/json'], 'form_params' => ['client_id' => 'client_id', 'client_secret' => 'client_secret', 'code' => 'code', 'redirect_uri' => 'redirect_uri'],
@@ -101,7 +100,7 @@ class OAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Overtrue\Socialite\InvalidStateException
+     * @expectedException \Overtrue\Socialite\InvalidStateException
      */
     public function testExceptionIsThrownIfStateIsNotSet()
     {
@@ -110,6 +109,14 @@ class OAuthTest extends PHPUnit_Framework_TestCase
         $session->shouldReceive('get')->once()->with('state');
         $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect');
         $user = $provider->user();
+    }
+
+    public function testDriverName()
+    {
+        $request = Request::create('foo', 'GET', ['state' => 'state', 'code' => 'code']);
+        $provider = new OAuthTwoTestProviderStub($request, 'client_id', 'client_secret', 'redirect');
+
+        $this->assertSame('OAuthTwoTest', $provider->getName());
     }
 }
 

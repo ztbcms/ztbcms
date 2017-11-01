@@ -28,6 +28,7 @@ namespace EasyWeChat\Foundation;
 
 use Doctrine\Common\Cache\Cache as CacheInterface;
 use Doctrine\Common\Cache\FilesystemCache;
+use EasyWeChat\Core\AbstractAPI;
 use EasyWeChat\Core\AccessToken;
 use EasyWeChat\Core\Http;
 use EasyWeChat\Support\Log;
@@ -41,33 +42,38 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class Application.
  *
- * @property \EasyWeChat\Core\AccessToken                $access_token
- * @property \EasyWeChat\Server\Guard                    $server
- * @property \EasyWeChat\User\User                       $user
- * @property \EasyWeChat\User\Tag                        $user_tag
- * @property \EasyWeChat\User\Group                      $user_group
- * @property \EasyWeChat\Js\Js                           $js
- * @property \Overtrue\Socialite\SocialiteManager        $oauth
- * @property \EasyWeChat\Menu\Menu                       $menu
- * @property \EasyWeChat\Notice\Notice                   $notice
- * @property \EasyWeChat\Material\Material               $material
- * @property \EasyWeChat\Material\Temporary              $material_temporary
- * @property \EasyWeChat\Staff\Staff                     $staff
- * @property \EasyWeChat\Url\Url                         $url
- * @property \EasyWeChat\QRCode\QRCode                   $qrcode
- * @property \EasyWeChat\Semantic\Semantic               $semantic
- * @property \EasyWeChat\Stats\Stats                     $stats
- * @property \EasyWeChat\Payment\Merchant                $merchant
- * @property \EasyWeChat\Payment\Payment                 $payment
- * @property \EasyWeChat\Payment\LuckyMoney\LuckyMoney   $lucky_money
- * @property \EasyWeChat\Payment\MerchantPay\MerchantPay $merchant_pay
- * @property \EasyWeChat\Reply\Reply                     $reply
- * @property \EasyWeChat\Broadcast\Broadcast             $broadcast
- * @property \EasyWeChat\Card\Card                       $card
- * @property \EasyWeChat\Device\Device                   $device
- * @property \EasyWeChat\ShakeAround\ShakeAround         $shakearound
- * @property \EasyWeChat\OpenPlatform\OpenPlatform       $open_platform
- * @property \EasyWeChat\MiniProgram\MiniProgram         $mini_program
+ * @property \EasyWeChat\Core\AccessToken                    $access_token
+ * @property \EasyWeChat\Server\Guard                        $server
+ * @property \EasyWeChat\User\User                           $user
+ * @property \EasyWeChat\User\Tag                            $user_tag
+ * @property \EasyWeChat\User\Group                          $user_group
+ * @property \EasyWeChat\Js\Js                               $js
+ * @property \Overtrue\Socialite\Providers\WeChatProvider    $oauth
+ * @property \EasyWeChat\Menu\Menu                           $menu
+ * @property \EasyWeChat\Notice\Notice                       $notice
+ * @property \EasyWeChat\Material\Material                   $material
+ * @property \EasyWeChat\Material\Temporary                  $material_temporary
+ * @property \EasyWeChat\Staff\Staff                         $staff
+ * @property \EasyWeChat\Url\Url                             $url
+ * @property \EasyWeChat\QRCode\QRCode                       $qrcode
+ * @property \EasyWeChat\Semantic\Semantic                   $semantic
+ * @property \EasyWeChat\Stats\Stats                         $stats
+ * @property \EasyWeChat\Payment\Merchant                    $merchant
+ * @property \EasyWeChat\Payment\Payment                     $payment
+ * @property \EasyWeChat\Payment\LuckyMoney\LuckyMoney       $lucky_money
+ * @property \EasyWeChat\Payment\MerchantPay\MerchantPay     $merchant_pay
+ * @property \EasyWeChat\Payment\CashCoupon\CashCoupon       $cash_coupon
+ * @property \EasyWeChat\Reply\Reply                         $reply
+ * @property \EasyWeChat\Broadcast\Broadcast                 $broadcast
+ * @property \EasyWeChat\Card\Card                           $card
+ * @property \EasyWeChat\Device\Device                       $device
+ * @property \EasyWeChat\Comment\Comment                     $comment
+ * @property \EasyWeChat\ShakeAround\ShakeAround             $shakearound
+ * @property \EasyWeChat\OpenPlatform\OpenPlatform           $open_platform
+ * @property \EasyWeChat\MiniProgram\MiniProgram             $mini_program
+ *
+ * @method \EasyWeChat\Support\Collection clearQuota()
+ * @method \EasyWeChat\Support\Collection getCallbackIp()
  */
 class Application extends Container
 {
@@ -77,6 +83,7 @@ class Application extends Container
      * @var array
      */
     protected $providers = [
+        ServiceProviders\FundamentalServiceProvider::class,
         ServiceProviders\ServerServiceProvider::class,
         ServiceProviders\UserServiceProvider::class,
         ServiceProviders\JsServiceProvider::class,
@@ -98,6 +105,7 @@ class Application extends Container
         ServiceProviders\ShakeAroundServiceProvider::class,
         ServiceProviders\OpenPlatformServiceProvider::class,
         ServiceProviders\MiniProgramServiceProvider::class,
+        ServiceProviders\CommentServiceProvider::class,
     ];
 
     /**
@@ -123,11 +131,26 @@ class Application extends Container
 
         Http::setDefaultOptions($this['config']->get('guzzle', ['timeout' => 5.0]));
 
-        foreach (['app_id', 'secret'] as $key) {
-            !isset($config[$key]) || $config[$key] = '***'.substr($config[$key], -5);
+        AbstractAPI::maxRetries($this['config']->get('max_retries', 2));
+
+        $this->logConfiguration($config);
+    }
+
+    /**
+     * Log configuration.
+     *
+     * @param array $config
+     */
+    public function logConfiguration($config)
+    {
+        $config = new Config($config);
+
+        $keys = ['app_id', 'secret', 'open_platform.app_id', 'open_platform.secret', 'mini_program.app_id', 'mini_program.secret'];
+        foreach ($keys as $key) {
+            !$config->has($key) || $config[$key] = '***'.substr($config[$key], -5);
         }
 
-        Log::debug('Current config:', $config);
+        Log::debug('Current config:', $config->toArray());
     }
 
     /**
@@ -252,5 +275,24 @@ class Application extends Container
         }
 
         Log::setLogger($logger);
+    }
+
+    /**
+     * Magic call.
+     *
+     * @param string $method
+     * @param array  $args
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function __call($method, $args)
+    {
+        if (is_callable([$this['fundamental.api'], $method])) {
+            return call_user_func_array([$this['fundamental.api'], $method], $args);
+        }
+
+        throw new \Exception("Call to undefined method {$method}()");
     }
 }
