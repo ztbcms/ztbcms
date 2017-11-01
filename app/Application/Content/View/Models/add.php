@@ -9,11 +9,11 @@
       <table width="100%"  class="table_form">
         <tr>
           <th width="120">模型名称：</th>
-          <td class="y-bg"><input type="text" class="input" name="name" id="name" size="30" value="" /></td>
+          <td class="y-bg"><input type="text" class="input" name="name" id="name" size="30" value="" placeholder="中文名"/></td>
         </tr>
         <tr>
           <th>模型表键名：</th>
-          <td class="y-bg"><input type="text" class="input" name="tablename" id="tablename" size="30" value="" /></td>
+          <td class="y-bg"><input type="text" class="input" name="tablename" id="tablename" size="30" value="" placeholder="英文，小写"/></td>
         </tr>
         <tr>
           <th>描述：</th>
