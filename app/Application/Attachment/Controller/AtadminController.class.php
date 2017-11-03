@@ -51,7 +51,7 @@ class AtadminController extends AdminBase {
 			$where['status'] = array('eq', $status);
 		}
 		$count = $db->where($where)->count();
-		$page = $this->page($count, 20);
+		$page = $this->page($count, 20,I('page',1));
 		$data = $db->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("uploadtime" => "DESC"))->select();
 		foreach ($data as $k => $v) {
 			$data[$k]['filesize'] = round($data[$k]['filesize'] / 1024, 2);

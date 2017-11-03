@@ -113,7 +113,7 @@ class BehaviorController extends AdminBase {
         }
         $model = M('BehaviorLog');
         $count = $model->where($wehre)->count();
-        $page = $this->page($count, 20);
+        $page = $this->page($count, 20,I('page',1));
         $data = $model->where($wehre)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
         $this->assign('Page', $page->show())
                 ->display();
