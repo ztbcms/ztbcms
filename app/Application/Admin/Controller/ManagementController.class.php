@@ -35,7 +35,7 @@ class ManagementController extends AdminBase {
             }
         }
         $count = D('Admin/User')->where($where)->count();
-        $page = $this->page($count, 20);
+        $page = $this->page($count, 20, I('page', 1));
         $User = D('Admin/User')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
         $this->assign("Userlist", $User);
         $this->assign("Page", $page->show());
