@@ -164,7 +164,7 @@ class Form {
      * @param string $showweek 是否显示周，使用，true | false
      * @return string
      */
-    public static function date($name, $value = '', $isdatetime = 0, $loadjs = 0, $showweek = 'true', $timesystem = 1) {
+    public static function date($name, $value = '', $isdatetime = 0, $loadjs = 0, $showweek = 'true', $timesystem = 1, $class = 'J_datetime') {
         if ($value == '0000-00-00 00:00:00')
             $value = '';
         $id = preg_match("/\[(.*)\]/", $name, $m) ? $m[1] : $name;
@@ -182,7 +182,7 @@ class Form {
             $showsTime = 'false';
         }
         $str = '';
-        $str .= '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" size="' . $size . '" class="input length_3 J_datetime ">';
+        $str .= '<input type="text" name="' . $name . '" id="' . $id . '" value="' . $value . '" size="' . $size . '" class="input length_3 ' . $class . ' ">';
         return $str;
     }
 

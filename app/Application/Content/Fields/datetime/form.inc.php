@@ -25,6 +25,7 @@ function datetime($field, $value, $fieldinfo) {
             $value = time();
         }
         //整数 显示格式
+        $format_class = $setting['format'] == 'Y-m-d' ? 'J_date' : 'J_datetime';
         $format_txt = $setting['format'] == 'm-d' ? 'm-d' : $setting['format'];
         if ($setting['format'] == 'Y-m-d Ah:i:s') {
             $format_txt = 'Y-m-d h:i:s';
@@ -43,5 +44,5 @@ function datetime($field, $value, $fieldinfo) {
         $isdatetime = 1;
         $timesystem = 0;
     }
-    return \Form::date("info[{$field}]", $value, $isdatetime, 1, 'true', $timesystem);
+    return \Form::date("info[{$field}]", $value, $isdatetime, 1, 'true', $timesystem, $format_class);
 }
