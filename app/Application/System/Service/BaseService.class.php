@@ -119,11 +119,16 @@ class BaseService {
      */
     protected static function find($tablename = '', $where = [], $isRelation = false) {
         $db = self::getModelInstance($tablename);
+        $fields = '';
+        //检测是否有指定字段
+        if(method_exists($db, '_getEnableFields')){
+            $fields = $db->_getEnableFields();
+        }
 
         if($isRelation && $db instanceof RelationModel){
-            $result = $db->where($where)->relation(true)->find();
+            $result = $db->where($where)->field($fields)->relation(true)->find();
         }else{
-            $result = $db->where($where)->find();
+            $result = $db->where($where)->field($fields)->find();
         }
 
 
@@ -143,11 +148,16 @@ class BaseService {
      */
     protected static function select($tablename = '', $where = [], $order = '', $page = 1, $limit = 20, $isRelation = false) {
         $db = self::getModelInstance($tablename);
+        $fields = '';
+        //检测是否有指定字段
+        if(method_exists($db, '_getEnableFields')){
+            $fields = $db->_getEnableFields();
+        }
 
         if($isRelation && $db instanceof RelationModel){
-            $items = $db->where($where)->order($order)->page($page)->limit($limit)->relation(true)->select();
+            $items = $db->where($where)->order($order)->page($page)->limit($limit)->relation(true)->field($fields)->select();
         }else{
-            $items = $db->where($where)->order($order)->page($page)->limit($limit)->select();
+            $items = $db->where($where)->order($order)->page($page)->limit($limit)->field($fields)->field($fields)->select();
         }
 
         $total_items = $db->where($where)->count();

@@ -396,7 +396,7 @@ class MemberController extends AdminBase {
                 }
             } else {
                 $count = $db->count();
-                $page = $this->page($count, 20);
+                $page = $this->page($count, 20, I('page', 1));
                 $data = $db->limit($page->firstRow . ',' . $page->listRows)->order(array('connectid' => 'DESC'))->select();
                 foreach ($data as $k => $r) {
                     $data[$k]['username'] = $this->member->where(array("userid" => $r['uid']))->getField("username");
