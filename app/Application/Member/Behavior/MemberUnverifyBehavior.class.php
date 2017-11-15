@@ -1,20 +1,24 @@
 <?php
 
 /**
- * Created by PhpStorm.
  * User: zhlhuang
  * Date: 26/09/2017
  * Time: 12:20
  */
-// +----------------------------------------------------------------------
-// | 用户审核通过触发行为
-// +----------------------------------------------------------------------
 
 namespace Member\Behavior;
 
-use Libs\System\Behavior;
+use Common\Behavior\BaseBehavior;
+use Member\BehaviorParam\MemberBehaviorParam;
 
-class MemberUnverifyBehavior extends Behavior {
+/**
+ * 用户审核不通过触发行为
+ */
+class MemberUnverifyBehavior extends BaseBehavior {
+
+    /**
+     * @param MemberBehaviorParam $params
+     */
     public function run(&$params) {
         parent::run($param);
     }
