@@ -649,8 +649,7 @@ CREATE TABLE `cms_module` (
   `installtime` int(10) NOT NULL DEFAULT '0' COMMENT '安装时间',
   `updatetime` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间',
   `listorder` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  PRIMARY KEY (`module`),
-  KEY `sign` (`sign`)
+  PRIMARY KEY (`module`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='已安装模块列表';
 
 -- ----------------------------
@@ -824,9 +823,7 @@ CREATE TABLE `cms_terms` (
   `name` varchar(200) NOT NULL DEFAULT '' COMMENT '分类名称',
   `module` varchar(200) NOT NULL DEFAULT '' COMMENT '所属模块',
   `setting` mediumtext COMMENT '相关配置信息',
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `module` (`module`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
 -- ----------------------------
