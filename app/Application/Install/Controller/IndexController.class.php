@@ -62,7 +62,7 @@ class IndexController extends Controller {
 			'/app/Common/Conf/',
 			'/app/Common/Conf/addition.php',
 		);
-		$dir = new \Dir();
+		$dir = new \Dir("/");
 		$folderInfo = array();
 		foreach ($folder as $dir) {
 			$result = array(
