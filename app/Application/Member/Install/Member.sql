@@ -49,7 +49,6 @@ CREATE TABLE `cms_member` (
   `islock` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否锁定',
   `vip` tinyint(1) NOT NULL COMMENT 'vip等级',
   `overduedate` int(10) NOT NULL COMMENT 'vip过期时间',
-  `store_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属门店ID',
   PRIMARY KEY (`userid`),
   UNIQUE KEY `username` (`username`),
   KEY `email` (`email`(20)),
