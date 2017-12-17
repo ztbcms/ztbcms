@@ -131,6 +131,9 @@ class BaseService {
             $result = $db->where($where)->field($fields)->find();
         }
 
+        if(!$result){
+            return self::createReturn(false, null);
+        }
 
         return self::createReturn(true, $result);
     }
