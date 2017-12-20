@@ -26,7 +26,7 @@ class RbacController extends AdminBase {
             } else {
                 //其他管理员
                 $operating = '<a href="' . U("Admin/AccessGroup/accessGroupRoleSetting", ['role_id' => $rs['id']]) . '">权限组设置</a> | ';
-                $operating .= '<a href="' . U("Rbac/authorize", array("id" => $rs["id"])) . '">权限设置</a> | <a href="' . U("Rbac/authorize", array("id" => $rs["id"])) . '">权限设置</a> | <a href="' . U("Rbac/setting_cat_priv", array("roleid" => $rs["id"])) . '">栏目权限</a> | <a href="' . U('Management/manager', array('role_id' => $rs['id'])) . '">成员管理</a> | <a href="' . U('Rbac/roleedit', array('id' => $rs['id'])) . '">修改</a> | <a class="J_ajax_del" href="' . U('Rbac/roledelete', array('id' => $rs['id'])) . '">删除</a>';
+                $operating .= '<a href="' . U("Rbac/authorize", array("id" => $rs["id"])) . '">权限设置</a> | <a href="' . U("Rbac/setting_cat_priv", array("roleid" => $rs["id"])) . '">栏目权限</a> | <a href="' . U('Management/manager', array('role_id' => $rs['id'])) . '">成员管理</a> | <a href="' . U('Rbac/roleedit', array('id' => $rs['id'])) . '">修改</a> | <a class="J_ajax_del" href="' . U('Rbac/roledelete', array('id' => $rs['id'])) . '">删除</a>';
             }
             if ($rs['status'] == 1) {
                 $status = "<font color='red'>√</font>";
