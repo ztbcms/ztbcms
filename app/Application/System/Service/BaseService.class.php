@@ -18,16 +18,21 @@ class BaseService {
     /**
      * 创建统一的Service返回结果
      *
-     * @param boolean $status
-     * @param array   $data
-     * @param string  $msg
+     * @param boolean $status 返回状态
+     * @param array   $data   返回数据
+     * @param string  $msg    返回提示
+     * @param string  $code   错误码
+     * @param string  $url    下一跳地址
+     *
      * @return array
      */
-    protected static function createReturn($status, $data = [], $msg = '') {
+    protected static function createReturn($status, $data = [], $msg = '', $code = 200, $url = '') {
         return [
             'status' => $status,
-            'data' => $data,
-            'msg' => $msg
+            'data'   => $data,
+            'msg'    => $msg,
+            'code'   => $code,
+            'url'    => $url,
         ];
     }
 
@@ -40,19 +45,20 @@ class BaseService {
      * @param $limit
      * @param $total_items
      * @param $total_pages
+     *
      * @return array
      */
-    protected static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages){
+    protected static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages) {
         return [
             'status' => $status,
-            'data' => [
-                'items' => $items,
-                'page' => $page,
-                'limit' => $limit,
+            'data'   => [
+                'items'       => $items,
+                'page'        => $page,
+                'limit'       => $limit,
                 'total_items' => $total_items,
                 'total_pages' => $total_pages,
             ],
-            'msg' => ''
+            'msg'    => '',
         ];
     }
 
@@ -60,27 +66,30 @@ class BaseService {
      * 获取模型实例
      *
      * @param $tablename
+     *
      * @return \Think\Model
      */
-    protected static function getModelInstance($tablename){
-        if(strpos($tablename, '/') === false){
+    protected static function getModelInstance($tablename) {
+        if (strpos($tablename, '/') === false) {
             //没有自定义域名
-            if(self::isExistSystemModel($tablename)){
+            if (self::isExistSystemModel($tablename)) {
                 $db = D('System/' . $tablename);
-            }else{
+            } else {
                 $db = D($tablename);
             }
-        }else{
+        } else {
             $db = D($tablename);
         }
 
         return $db;
     }
+
     /**
      * 获取
      *
      * @param string $tablename
      * @param array  $where
+     *
      * @return mixed
      */
     protected static function findBy($tablename = '', $where = []) {
@@ -97,11 +106,15 @@ class BaseService {
      * @param string $order
      * @param int    $page
      * @param int    $limit
+     *
      * @return array
      */
     protected static function selectBy($tablename = '', $where = [], $order = '', $page = 1, $limit = 20) {
         $db = M($tablename);
-        $result = $db->where($where)->order($order)->page($page)->limit($limit)->select();
+        if ($limit > 0) {
+            $db->page($page)->limit($limit);
+        }
+        $result = $db->where($where)->order($order)->select();
         if (empty($result)) {
             $result = [];
         }
@@ -115,23 +128,24 @@ class BaseService {
      * @param string $tablename
      * @param array  $where
      * @param bool   $isRelation
+     *
      * @return mixed
      */
     protected static function find($tablename = '', $where = [], $isRelation = false) {
-        $db = self::getModelInstance($tablename);
+        $db     = self::getModelInstance($tablename);
         $fields = '';
         //检测是否有指定字段
-        if(method_exists($db, '_getEnableFields')){
+        if (method_exists($db, '_getEnableFields')) {
             $fields = $db->_getEnableFields();
         }
 
-        if($isRelation && $db instanceof RelationModel){
+        if ($isRelation && $db instanceof RelationModel) {
             $result = $db->where($where)->field($fields)->relation(true)->find();
-        }else{
+        } else {
             $result = $db->where($where)->field($fields)->find();
         }
 
-        if(!$result){
+        if (!$result) {
             return self::createReturn(false, null);
         }
 
@@ -147,21 +161,31 @@ class BaseService {
      * @param int    $page
      * @param int    $limit
      * @param bool   $isRelation 是否开启关联查询
+     *
      * @return array
      */
     protected static function select($tablename = '', $where = [], $order = '', $page = 1, $limit = 20, $isRelation = false) {
-        $db = self::getModelInstance($tablename);
+        $db     = self::getModelInstance($tablename);
         $fields = '';
         //检测是否有指定字段
-        if(method_exists($db, '_getEnableFields')){
+        if (method_exists($db, '_getEnableFields')) {
             $fields = $db->_getEnableFields();
         }
 
-        if($isRelation && $db instanceof RelationModel){
-            $items = $db->where($where)->order($order)->page($page)->limit($limit)->relation(true)->field($fields)->select();
-        }else{
-            $items = $db->where($where)->order($order)->page($page)->limit($limit)->field($fields)->field($fields)->select();
+        //设置查询条件
+        $db->where($where)->order($order)->field($fields);
+
+        //设置分页
+        if ($limit > 0) {
+            $db->page($page)->limit($limit);
         }
+
+        //设置关联查询
+        if ($isRelation && $db instanceof RelationModel) {
+            $db->relation(true);
+        }
+
+        $items = $db->select();
 
         $total_items = $db->where($where)->count();
         $total_pages = ceil($total_items / $limit);
@@ -177,16 +201,18 @@ class BaseService {
      *
      * @param string $tablename
      * @param array  $data
+     *
      * @return array
      */
-    public static function create($tablename = '', $data = []){
+    public static function create($tablename = '', $data = []) {
         $db = self::getModelInstance($tablename);
-        $result = $db->add($data);
-
-        if($result){
-            return self::createReturn(true, $result, '操作成功');
-        }else{
-            return self::createReturn(true, null, '操作失败,错误信息：'. $db->getError());
+        if ($db->create($data)) {
+            $result = $db->add();
+            if ($result) {
+                return self::createReturn(true, $result, '操作成功');
+            }
+        } else {
+            return self::createReturn(true, null, '操作失败,错误信息：' . $db->getError());
         }
 
     }
@@ -196,10 +222,11 @@ class BaseService {
      *
      * @param string $tablename
      * @param array  $where
+     *
      * @return array
      */
-    public static function delete($tablename = '', $where = []){
-        $db = self::getModelInstance($tablename);
+    public static function delete($tablename = '', $where = []) {
+        $db     = self::getModelInstance($tablename);
         $result = $db->where($where)->delete();
 
         return self::createReturn(true, $result, '操作成功');
@@ -211,24 +238,30 @@ class BaseService {
      * @param string $tablename
      * @param array  $where
      * @param array  $update_data
+     *
      * @return array
      */
-    public static function update($tablename = '', $where = [], $update_data = []){
-        $db = self::getModelInstance($tablename);
+    public static function update($tablename = '', $where = [], $update_data = []) {
+        $db     = self::getModelInstance($tablename);
         $result = $db->where($where)->save($update_data);
 
-        return self::createReturn(true, $result, '操作成功');
+        if ($result || empty($db->getError())) {
+            return self::createReturn(true, $result, '操作成功');
+        } else {
+            return self::createReturn(false, $result, $db->getError(), '500');
+        }
     }
 
     /**
      * 判断是否存在 对应的Model在System模块下
      *
      * @param $model_name
+     *
      * @return array
      */
-    protected static function isExistSystemModel($model_name){
+    protected static function isExistSystemModel($model_name) {
         $model_name = APP_PATH . DIRECTORY_SEPARATOR . 'System' . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . $model_name . 'Model.class.php';
-        if(file_exists($model_name)){
+        if (file_exists($model_name)) {
             return self::createReturn(true, null, $model_name . 'Model 存在');
         }
 
