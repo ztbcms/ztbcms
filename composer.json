@@ -3,7 +3,8 @@
         "overtrue/wechat": "~3.2",
         "smarty/smarty": "^3.1",
         "nikic/php-parser": "^3.1",
-        "phpdocumentor/reflection-docblock": "^4.1"
+        "phpdocumentor/reflection-docblock": "^4.1",
+        "fguillot/json-rpc": "^1.2"
     },
     "repositories": {
         "packagist": {
