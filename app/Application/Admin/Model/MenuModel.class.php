@@ -150,6 +150,29 @@ class MenuModel extends Model {
     }
 
     /**
+     * 获取给定菜单ID下的所有菜单
+     *
+     * @param $parent_menu_id
+     * @return array
+     */
+    function getMenuListWithoutTree($parent_menu_id){
+        $ret = array();
+        $data = M('menu')->where(['parentid' => $parent_menu_id])->select();
+        if (is_array($data)) {
+            $ret = array_merge($ret, $data);
+
+            foreach ($data as $a) {
+                $id = $a['id'];
+
+                $child = $this->getMenuListWithoutTree($id);
+
+                $ret = array_merge($ret, $child);
+            }
+        }
+        return $ret;
+    }
+
+    /**
      * 获取菜单导航
      * @return array
      */
