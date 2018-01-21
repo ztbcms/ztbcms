@@ -6,7 +6,7 @@
 //字段数据库类型
 $field_type = 'mediumtext';
 //是否允许作为主表字段
-$field_basic_table = 0;
+$field_basic_table = 1;
 //是否允许建立索引
 $field_allow_index = 0;
 //字符长度默认最小值
