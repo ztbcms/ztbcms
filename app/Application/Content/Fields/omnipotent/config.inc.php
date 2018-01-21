@@ -4,7 +4,7 @@
  * 万能字段字段类型相关配置
  */
 //字段数据库类型
-$field_type = 'varchar';
+$field_type = 'text';
 //是否允许作为主表字段
 $field_basic_table = 1;
 //是否允许建立索引
