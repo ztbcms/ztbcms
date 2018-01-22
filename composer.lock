@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8e95e6d37de54e8ed6fda6a4778d66c8",
+    "content-hash": "e730fcd28bd56cf63ce74159e403f5aa",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -75,6 +75,45 @@
                 "caching"
             ],
             "time": "2017-07-22T12:49:21+00:00"
+        },
+        {
+            "name": "fguillot/json-rpc",
+            "version": "v1.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fguillot/JsonRPC.git",
+                "reference": "ea2720b13e986bbf23e832b135c84c91ead7259f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/fguillot/JsonRPC/ea2720b13e986bbf23e832b135c84c91ead7259f.zip",
+                "reference": "ea2720b13e986bbf23e832b135c84c91ead7259f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.8.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JsonRPC": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frédéric Guillot"
+                }
+            ],
+            "description": "Simple Json-RPC client/server library that just works",
+            "homepage": "https://github.com/fguillot/JsonRPC",
+            "time": "2017-01-12T21:31:30+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
