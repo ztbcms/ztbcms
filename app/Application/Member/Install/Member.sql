@@ -18,7 +18,7 @@ CREATE TABLE `cms_connect` (
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_member`;
 CREATE TABLE `cms_member` (
-  `userid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
+  `userid` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
   `username` varchar(64) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
   `encrypt` varchar(6) NOT NULL DEFAULT '' COMMENT '随机码',
