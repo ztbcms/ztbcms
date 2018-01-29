@@ -229,6 +229,12 @@ if (window.parent !== window.self) {
 </div>
 <script src="{$config_siteurl}statics/js/common.js"></script>
 <script>
+$('#subbtn').click(submit);
+
+function submit() {
+    $('#subbtn').attr('disabled', 'disabled');
+    $('#loginform').submit();
+}
 //刷新二维码
 function refreshs(){
 	document.getElementById('code_img').src="{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=&refresh=1')}&time="+Math.random();void(0);
