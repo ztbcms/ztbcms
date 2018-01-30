@@ -26,12 +26,16 @@ class BaseService {
      *
      * @return array
      */
-    protected static function createReturn($status, $data = [], $msg = '', $code = 200, $url = '') {
+    static function createReturn($status, $data = [], $msg = '', $code = null, $url = '') {
+        //默认成功则为200 错误则为400
+        if(empty($code)){
+            $code = $status ? 200 : 400;
+        }
         return [
             'status' => $status,
+            'code'   => $code,
             'data'   => $data,
             'msg'    => $msg,
-            'code'   => $code,
             'url'    => $url,
         ];
     }
@@ -48,18 +52,16 @@ class BaseService {
      *
      * @return array
      */
-    protected static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages) {
-        return [
-            'status' => $status,
-            'data'   => [
-                'items'       => $items,
-                'page'        => $page,
-                'limit'       => $limit,
-                'total_items' => $total_items,
-                'total_pages' => $total_pages,
-            ],
-            'msg'    => '',
+    static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages) {
+        $data = [
+            'items'       => $items,
+            'page'        => $page,
+            'limit'       => $limit,
+            'total_items' => $total_items,
+            'total_pages' => $total_pages,
         ];
+
+        return self::createReturn($status, $data);
     }
 
     /**
