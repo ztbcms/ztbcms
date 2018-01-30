@@ -202,7 +202,7 @@ if (window.parent !== window.self) {
             <li class="login_input" style="margin: 0 auto;">
               <input maxlength="16" type="password" id="p" name="password" tabindex="2" class="input_txt" value="" placeholder="密码" title="密码">
             </li>
-            <li class="yanzhengma clearfix" id="verifytip"> 
+            <li class="yanzhengma clearfix" id="verifytip">
 							<span id="verifyinput" style="float: left;margin-left: 47px;">
               	<input id="verifycode" name="code" maxlength="5" tabindex="3" class="input_txt" type="text" value="" placeholder="请输入验证码">
               </span>
@@ -216,7 +216,7 @@ if (window.parent !== window.self) {
         <div class="quick_login" id="qlogin"> </div>
       </div>
     </div>
-    <div class="platform_box"> 
+    <div class="platform_box">
 				<div class="inner" style="text-align: center;color: white !important;">
 						<div class="copyright clearfix">
 							<p>当前版本 v{:C('APPLIATION_VERSION')}</p>
@@ -229,9 +229,17 @@ if (window.parent !== window.self) {
 </div>
 <script src="{$config_siteurl}statics/js/common.js"></script>
 <script>
-$('#subbtn').click(submit);
 
+//进入页面的时候，把按钮的 disabled 属性去掉
+window.addEventListener('pageshow', pageshow);
+function pageshow() {
+    $('#subbtn').removeAttr('disabled');
+}
+
+//使用js function 代替原生的 submit
+$('#subbtn').click(submit);
 function submit() {
+    //点击后为按钮添加 disabled 属性，防止二次点击
     $('#subbtn').attr('disabled', 'disabled');
     $('#loginform').submit();
 }
