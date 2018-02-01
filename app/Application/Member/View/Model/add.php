@@ -32,6 +32,6 @@
     </div>
   </form>
 </div>
-<script src="{$config_siteurl}statics/js/common.js?v"></script>
+<script src="{$config_siteurl}statics/js/common.js"></script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 
 namespace Common\Controller;
 
+/**
+ * 前台基类
+ */
 class Base extends CMS {
 
 	//初始化
