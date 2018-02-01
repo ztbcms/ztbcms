@@ -5,5 +5,7 @@ d/
 runtime/
 api/
 statics/
-app/Cron
 app/Common/Conf/dataconfig.php
+app/Template
+install.lock
+app/Libs/Driver/Passport/
