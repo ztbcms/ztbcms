@@ -64,7 +64,7 @@ iframe{background-color:transparent}
 .login_main .login_list .yanzhengma .yanzheng_txt{margin-left:2px}
 .login_main .login_list .yanzhengma .input_txt{width:139px;margin-bottom:40px}
 .login_main .login_list .yanzhengma .yanzhengma_box{position:absolute;left:160px;top:0}
-.login_main .login_list .yanzhengma .yanzheng_img{display:block;margin-bottom:10px}
+.login_main .login_list .yanzhengma .yanzheng_img{display:block;margin-bottom:10px;height: 53px;width: 120px;}
 .login_main .login_btn{ width:148px;height:48px;line-height:150px;overflow:hidden;font-size:0;*background:none;background-image:url({$config_siteurl}statics/images/qzone_login.png);background-position:-514px 0;border:none;cursor:pointer}
 .qzone_login .login_main nav{color:#d0d3d7;margin:20px 0 0 3px}
 .qzone_login .login_main nav .sep{margin:0 12px}
