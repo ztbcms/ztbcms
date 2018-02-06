@@ -1,10 +1,15 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | ZTBCMS
-// +----------------------------------------------------------------------
+//配置
 
-return array(
+//检测有无本机配置,有责覆盖默认配置
+$local_dataconfig_path = __DIR__ . DIRECTORY_SEPARATOR . 'local_dataconfig.php';
+$local_dataconfig = [];
+if(file_exists($local_dataconfig_path)){
+    $local_dataconfig = require($local_dataconfig_path);
+}
+
+$default = array(
 	/* 数据库设置 */
 	'DB_TYPE' => 'mysql', // 数据库类型
 	'DB_HOST' => '#DB_HOST#', // 服务器地址
@@ -24,3 +29,7 @@ return array(
 	/* 数据缓存设置 */
 	'DATA_CACHE_PREFIX' => '#DATA_CACHE_PREFIX#', // 缓存前缀
 );
+
+$config =  array_merge($default, $local_dataconfig);
+
+return $config;

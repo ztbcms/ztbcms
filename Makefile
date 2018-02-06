@@ -33,6 +33,7 @@ clean-runtime:
 
 # 清除安装目录
 clean-install:
+    -@rm dev.gitignore
 	-@rm install.php
 	-@rm -rf app/Application/Install
 	-@rm -rf statics/extres/install
