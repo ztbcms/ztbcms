@@ -14,5 +14,5 @@ return array(
 	'TMPL_STRIP_SPACE' => false, // 是否去除模板文件里面的html空格与换行
 	'SHOW_ERROR_MSG' => true, // 显示错误信息
 	'URL_CASE_INSENSITIVE' => false, // URL区分大小写
-	'SHOW_PAGE_TRACE' => true, //显示页面Trace信息
+	'SHOW_PAGE_TRACE' => false, //显示页面Trace信息
 );
