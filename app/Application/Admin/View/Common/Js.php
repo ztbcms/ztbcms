@@ -13,3 +13,9 @@ var GV = {
 <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
 <!-- vue.js -->
 <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
+<script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>
+<script>
+    (function (vue) {
+        vue.mixin(window.__vueCommon);
+    })(window.Vue);
+</script>
