@@ -26,7 +26,7 @@
         <td align='center'>
         <?php
 		$operate = array();
-            $operate[] = '<a href="'.U("Derivetask/dictionaryField",array("modelid"=>$vo['modelid'])).'">导出数据字典</a>';
+            $operate[] = '<a href="'.U("FieldExport/exportModelFields",array("modelid"=>$vo['modelid'])).'">导出数据字典</a>';
 		if(\Libs\System\RBAC::authenticate('edit')){
 			$operate[] = '<a href="'.U("edit",array("modelid"=>$vo['modelid'])).'">修改</a>';
 		}
@@ -54,8 +54,8 @@
     </tbody>
   </table>
   </div>
-    <a href="{:U('Derivetask/dictionaryField')}" class="btn btn-success">导出所有数据字典</a>
-    <a href="{:U('Derivetask/dictionaryTable')}" class="btn btn-success">根据表名导出字典</a>
+    <a href="{:U('FieldExport/exportModelFields')}" class="btn btn-success">导出全部模型数据字典</a>
+    <a href="{:U('FieldExport/exportTableFields')}" class="btn btn-success">手动填写表名导出字典</a>
 </div>
 
 <script src="{$config_siteurl}statics/js/common.js?v"></script>
