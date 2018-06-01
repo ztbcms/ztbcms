@@ -132,7 +132,7 @@ class MenuModel extends Model {
                     $fu = "?" . $a['parameter'];
                 }
                 $array = array(
-                    "icon" => "",
+                    "icon" => $a['icon'],
                     "id" => $id . $name,
                     "name" => $a['name'],
                     "parent" => $parent,
