@@ -21,7 +21,7 @@ class FieldExportController extends AdminBase {
     }
 
     /**
-     * 获取模型导出数据
+     * 获取模型字段导出数据
      */
     private function _getModelExportInfo($modelid){
         $where['modelid'] = $modelid;
@@ -29,8 +29,13 @@ class FieldExportController extends AdminBase {
         $where['disabled'] = 0;//已启用
 
         $db = D("Content/ModelField");
-        $fields = $db->where($where)->field('modelid,field,name,formtype,tips')->select();
+        $fields = $db->where($where)->field('modelid,field,name,formtype,tips,setting')->select();
         $fields = empty($fields) ? [] : $fields;
+        foreach ($fields as $index => $field){
+            $setting = unserialize($field['setting']);
+            $fields[$index]['type'] = $this->_getTypeByFromtype($field['formtype'], $setting);
+            unset($fields[$index]['formtype']);
+        }
 
         $tableInfo = M("Model")->where(array("modelid" => $modelid))->field('name,tablename,modelid')->find();
 
@@ -41,6 +46,47 @@ class FieldExportController extends AdminBase {
         ];
 
         return $result;
+    }
+
+
+    /**
+     * 根据表单字段类型获取对应的数类型
+     * @param $formtype
+     * @return string
+     */
+    private function _getTypeByFromtype($formtype, $setting = []){
+        switch ($formtype){
+            case 'author':
+            case 'box':
+            case 'copyfrom':
+            case 'downfile':
+            case 'downfiles':
+            case 'editor':
+            case 'image':
+            case 'images':
+            case 'keyword':
+            case 'omnipotent':
+            case 'pages':
+            case 'posid':
+            case 'tags':
+            case 'template':
+            case 'text':
+            case 'textarea':
+            case 'title':
+            case 'typeid':
+                return 'string';
+            case 'islink':
+            case 'catid':
+            case 'datetime':
+                return 'int';
+            case 'number':
+                if($setting['decimaldigits'] == 0){
+                    return 'int';
+                }else{
+                    return 'float';
+                }
+        }
+        return '';
     }
 
     /**
