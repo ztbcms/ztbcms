@@ -35,6 +35,7 @@ class FieldExportController extends AdminBase {
             $setting = unserialize($field['setting']);
             $fields[$index]['type'] = $this->_getTypeByFromtype($field['formtype'], $setting);
             unset($fields[$index]['formtype']);
+            unset($fields[$index]['setting']);
         }
 
         $tableInfo = M("Model")->where(array("modelid" => $modelid))->field('name,tablename,modelid')->find();
