@@ -13,13 +13,20 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/dist/css/AdminLTE.min.css">
     <!-- AdminLTE 皮肤. 可以从/statics/admin/theme/adminlte/dist/css/skins/目录中选择其中一个 -->
-    <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/dist/css/skins/skin-blue.css">
+    <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/adminlte/dist/css/skins/skin-ztbcms.css">
 
     <!-- jQuery 2.2.0 -->
     <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
     <!-- Bootstrap 3.3.6 -->
     <script src="{$config_siteurl}statics/admin/theme/adminlte/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- tab -->
+    <link rel="stylesheet" href="{$config_siteurl}statics/css/tab.css">
+
+    <!-- iconfont -->
+    <link rel="stylesheet" href="{$config_siteurl}statics/css/iconfont/iconfont.css">
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;">
 <div class="wrapper" style="position: absolute;">
@@ -113,8 +120,8 @@
                                     $_href = '#';
                                 }
                             ?>
-                            <a href="javascript:void(0);" data-url="{$_href}">
-                                <i class="fa fa-dashboard"></i>
+                            <a href="javascript:void(0);" data-url="{$_href}" data-id="{$first_menu['id']}" data-title="{$first_menu['name']}">
+                                <i class="fa <?php echo $first_menu['icon'] ? 'iconfont '.$first_menu['icon'] : 'fa-dashboard';?>"></i>
                                 <span>{$first_menu['name']}</span>
                                 <if condition="count($first_menu['items']) == 0">
                                         <!-- 没有子项则直接当该一级栏目是一个页面 -->
@@ -129,7 +136,7 @@
                             <ul class="treeview-menu">
                                 <?php $second_items = $first_menu['items'];?>
                                 <volist name="second_items" id="second_menu" key="second_menu_index">
-                                    <li class="treeview"><a href="javascript:void(0);" data-url="{$second_menu['url']}">{$second_menu['name']}</a></li>
+                                    <li class="treeview"><a href="javascript:void(0);" data-url="{$second_menu['url']}" data-id="{$second_menu['id']}" data-title="{$second_menu['name']}">{$second_menu['name']}</a></li>
                                 </volist>
                             </ul>
                         </li>
@@ -142,111 +149,279 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper" style="position: fixed;left: 0;right: 0;">
+
+
+        <!-- Tab栏  -->
+        <div class="tab_container">
+            <ul class="tab_lists" id="tab_lists">
+            </ul>
+        </div>
+
         <!-- 内容页 -->
         <section class="content" style="padding: 0;">
-            <div id="B_frame">
-                <?php
-                //获取当前登录用户信息
-                $userInfo = \Admin\Service\User::getInstance()->getInfo();
-                //根据不同的角色，修改不同的默认页面
-                $default_page = U('Main/index');
-                //非超级管理员，显示首页默认为 其权限下的第一个页面(检索顺序为: 一级菜单 -> 二级菜单 -> 三级菜单)
-                if($userInfo['role_id'] != 1){
-                    //一级目录
-                    foreach ($submenu_config as $first_index => $first_menu){
-                        if(!empty($first_menu['items'])){
-                            //二级目录
-                            foreach ($first_menu['items'] as $second_index => $second_menu){
-                                if(!empty($second_menu['items'])){
-                                    //三级目录
-                                    foreach ($second_menu['items'] as $third_index => $third_menu){
-                                        $default_page = $third_menu['url'];
-                                        break;
-                                    }
-                                }else{
-                                    $default_page = $second_menu['url'];
-                                }
-                                break;
-                            }
-                        }else{
-                            $default_page = $first_menu['url'];
-                        }
-                        break;
-                    }
-                }
-                ?>
-                <iframe id="iframe_default" src="{$default_page}" style="height: 100%; width: 100%;display:none;" data-id="default" frameborder="0" scrolling="auto"></iframe>
+            <div id="B_frame" style="height: 100%">
 
             </div>
         </section>
+        <input type="hidden" id="srcData" name="srcData" value="{:U('Admin/SelfInfo/index')}">
         <!-- /.content -->
     </div>
+
     <!-- /.content-wrapper -->
 </div>
 <!-- ./wrapper -->
 
+<!--隐藏的模板-->
+<!--tab项模板-->
+<template style="display: none;" id="template_tab_item">
+    <li class="tab_item" data-id="___ID___" title="___TITLE___">
+        <div class="title" data-id="___ID___" data-url="___HREF__" data-title="___TITLE___">
+            <p>___TITLE___</p>
+        </div>
+        <div data-id="___ID___" class="iconfont_container"><i class="iconfont icon-close"></i></div>
+    </li>
+</template>
+<!--内容部分iframe-->
+<template style="display: none;" id="template_iframe">
+    <iframe id="iframe-___ID___" src="___HREF___" style="height: 100%; width: 100%;" data-id="___ID___" data-title="___TITLE___" data-url="___HREF___" frameborder="0" scrolling="auto"></iframe>
+</template>
+
 </body>
 <literal>
     <script>
+        var open_new_iframe;
+
         (function ($) {
-            //iframe 加载事件
-            var iframe_default = document.getElementById('iframe_default');
-            $(iframe_default.contentWindow.document).ready(function () {
-                setTimeout(function(){
-//                    $('#loading').hide();
-                },500);
-                iframe_height();
-                $(iframe_default).show();
-            });
+            open_new_iframe = function(data){
+                iframeJudge(data)
+                updateTab(data)
+            };
 
-            function iframe_height(){
-
-                var def_iframe_height = $(window).height() - $(".navbar.navbar-static-top").height();
-                $("#B_frame").height(def_iframe_height);
-            }
+            //更新设置内容的高度
+            update_content_height()
 
             //当文档窗口改变大小时触发
             $(window).on('resize', function () {
                 setTimeout(function () {
-                    iframe_height();
+                    update_content_height();
                 }, 100);
             });
 
+            //更新设置内容的高度
+            function update_content_height(){
+                var def_iframe_height = $(window).height() - $(".navbar.navbar-static-top").height() - $('.tab_container').height();
+                $(".content-wrapper .content").height(def_iframe_height);
+            }
+
+
             //点击顶级导航
-            $top_nav = $('nav.top_navbar .pull-left');
+            var $top_nav = $('nav.top_navbar .pull-left');
             $top_nav.on('click', 'a', function (e) {
                 //取消事件的默认动作
                 e.preventDefault();
                 //终止事件 不再派发事件
                 e.stopPropagation();
+
+                //设置高亮
+                var $btn = $('nav.top_navbar .pull-left a')
+                $btn.removeClass('current')
+                $(this).addClass('current')
+
+
                 //显示左侧菜单
                 var id = $(this).data('id');
                 $('.sidebar.sidebar-menu').hide();
                 $('#sidebar_' + id).show();
+
+                //打开左侧菜单栏第一个可以展示的页面
+                var $sidebar_items = $('#sidebar_' + id + ' .treeview a')
+                if($sidebar_items.length > 0){
+                    for(var i=0; i<$sidebar_items.length; i++){
+                        var $target = $($sidebar_items[i])
+                        var redirect_url = $target.data('url');
+                        var id = $target.data('id');
+                        var title = $target.data('title')
+                        var data = {
+                            'url' : redirect_url,
+                            'id': id,
+                            'title': title
+                        }
+                        if(redirect_url != '#' && redirect_url != ''){
+                            iframeJudge(data)
+                            updateTab(data)
+                            return
+                        }
+                    }
+                }
+
             });
             //默认选中第一个
             $('nav.top_navbar .pull-left a:first').trigger('click');
 
+            //显示iframe
+            function activeIframe(iframe_options){
+                $('#B_frame iframe').hide();
+                $('iframe#iframe-'+iframe_options.id).show();
+            }
+
+            //删除iframe
+            function removeIframe(iframe_options){
+                $('iframe#iframe-'+iframe_options.id).remove();
+            }
 
             //判断显示或创建iframe
             function iframeJudge(options) {
                 if(options.url == ''){
                     return;
                 }
-                $('iframe').prop('src', options.url);
+                var $target_iframe = $('iframe#iframe-'+options.id)
+
+                if($target_iframe.length > 0){
+                    //存在该iframe
+                    activeIframe(options)
+                    $target_iframe.prop('src', options.url);
+                }else{
+                    //不存在该iframe
+                    //创建一个并加以标识
+                    var html = $('#template_iframe').html();
+                    var result_html = html.replace(/___ID___/g, options.id).replace(/___TITLE___/g, options.title).replace(/___HREF___/g, options.url)
+
+                    $(result_html).appendTo('#B_frame');
+                    activeIframe(options)
+                }
+                // $('iframe').prop('src', options.url);
             }
 
+            //选中高亮某个tab
+            function activeTab(tab_options){
+                $('.tab_lists .tab_item').removeClass('active');
+                $('#tab_lists .tab_item[data-id="' + tab_options.id +'"]').addClass('active');
+            }
+
+            function removeTab(tab_options){
+                $('#tab_lists .tab_item[data-id="' + tab_options.id +'"]').remove();
+            }
+
+            function updateTab(options){
+                var $tab = $('.tab_item[data-id="' + options.id +'"]');
+                if($tab.length > 0){
+                    //存在该Tab
+                    activeTab(options)
+                }else{
+                    //不存在
+
+                    //创建一个并加以标识
+                    var html = $('#template_tab_item').html();
+                    var result_html = html.replace(/___ID___/g, options.id).replace(/___TITLE___/g, options.title).replace(/___HREF___/g, options.url)
+                    $(result_html).appendTo('#tab_lists');
+
+                    activeTab(options)
+
+                    changeTabWidth();
+                }
+            }
+
+            //修改tab栏宽度
+            function changeTabWidth(){
+                var obj = $('.tab_container .tab_lists .tab_item');
+                var width = obj.width();
+                var length = obj.length;
+                var max_width = $('#tab_lists').width();
+
+                var new_width = 120;
+                if(width * length >= max_width){
+                    new_width = (max_width / length) < 45 ? 45 : (max_width / length);
+                }else{
+                    new_width = (max_width / length) > 120 ? 120 : (max_width / length);
+                }
+                obj.width(new_width);
+
+                var title = $('.tab_container .tab_lists .tab_item .title');
+                var title_width = new_width - 20;
+                title.css('width', title_width);
+            }
+
+            //点击左侧菜单栏
             $('.main-sidebar').on('click', 'ul li a', function(e){
                 e.preventDefault();
                 e.stopPropagation();
                 $('.treeview').removeClass('active');
                 var redirect_url = $(this).data('url');
+                var id = $(this).data('id');
+                var title = $(this).data('title')
+                var data = {
+                    'url' : redirect_url,
+                    'id': id,
+                    'title': title
+                }
+                console.log(data)
                 if(redirect_url != '' && redirect_url != '#'){
-                    iframeJudge({'url' : redirect_url});
+
+                    iframeJudge(data);
+                    updateTab(data)
                     $(this).parents('li').addClass('active');
                 }else{
                     $(this).parent().toggleClass('active');
                 }
+            });
+
+            //点击tab
+            $('.tab_container').on('click', '.tab_lists .tab_item .title', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+
+                // alert('点击tab')
+                var redirect_url = $(this).data('url');
+                var id = $(this).data('id');
+                var title = $(this).data('title')
+                var data = {
+                    'url' : redirect_url,
+                    'id': id,
+                    'title': title
+                }
+                activeTab(data)
+                activeIframe(data)
+
+                activeMenu(data.id);
+
+            });
+
+            //菜单显示
+            function activeMenu(id){
+                $('.sidebar li').removeClass('active');
+                $('.sidebar li').has('a[data-id='+id+']').addClass('active');
+
+                $('.sidebar').hide();
+                $('.sidebar').has('li.treeview.active').show();
+
+                var tmp = $('.sidebar ul').has('li.treeview.active').attr('id');
+                var menu_id = tmp.substr(8);
+                $('.nav a').removeClass('current');
+                $('.nav a[data-id='+menu_id+']').addClass('current');
+            }
+
+            //点击tab 关闭按钮
+            var timer;
+            $('.tab_container').on('click', '.tab_lists .iconfont_container', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                var redirect_url = $(this).data('url');
+                var id = $(this).data('id');
+                var title = $(this).data('title')
+                var data = {
+                    'url' : redirect_url,
+                    'id': id,
+                    'title': title
+                }
+
+                removeTab(data)
+                removeIframe(data)
+
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    changeTabWidth();
+                }, 500);
+
             });
 
             //点击登陆用户
@@ -261,6 +436,11 @@
 
             //点击 缓存更新
             $('#deletecache').on('click', function(){
+                iframeJudge({url: $(this).data('url')});
+            });
+
+            //点击 缓存更新
+            $('#edit').on('click', function(){
                 iframeJudge({url: $(this).data('url')});
             });
 
