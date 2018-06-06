@@ -279,6 +279,7 @@
                 if($target_iframe.length > 0){
                     //存在该iframe
                     activeIframe(options)
+                    $target_iframe.prop('src', options.url);
                 }else{
                     //不存在该iframe
                     //创建一个并加以标识
