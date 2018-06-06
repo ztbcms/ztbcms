@@ -33,6 +33,20 @@ class PublicController extends AdminBase {
         if (empty($code)) {
             $this->error("请输入验证码！", U("Public/login"));
         }
+
+        //登录失败次数检测
+        $login_max_fail = C('LOGIN_MAX_FAIL');
+        $login_reset_minute = C('LOGIN_RESET_MINUTE');
+        $start_time = time() - $login_reset_minute*60;
+        $count = M('Loginlog')->where([
+            'status' => 0, //登录失败
+            'loginip' => $ip, //当前IP
+            'logintime' => ['BETWEEN', [$start_time, time()]] //登录时间
+        ])->count();
+        if($count >= $login_max_fail){
+            $this->error("登陆失败次数过多，请".$login_reset_minute."分钟后再试！", U("Public/login"));
+        }
+
         //验证码开始验证
         if (!$this->verify($code)) {
             $this->error("验证码错误，请重新输入！", U("Public/login"));

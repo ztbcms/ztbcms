@@ -11,4 +11,6 @@ return array(
             'path' => 'Libs.System.Module',
         ),
     ),
+    'LOGIN_MAX_FAIL' => 5,
+    'LOGIN_RESET_MINUTE' => 30 //登录失败5次之后需等待30分钟才可再次登录
 );
