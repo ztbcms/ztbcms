@@ -162,7 +162,7 @@
       </volist>
     </ul>
   </div>
-  <div class="p10"><div class="pages"> {$Page} </div> </div>
+  <div class="p10" style="padding: 0;"><div class="pages"> {$Page} </div> </div>
 </div>
 <script src="{$config_siteurl}statics/js/common.js?v"></script>
 <script type="text/javascript">
