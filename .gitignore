@@ -1,3 +1,13 @@
+.vscode
 .idea
 d/
 runtime/
+
+
+# 开发ZtbCMS用到的.gitignore
+#api/
+#statics/
+#app/Common/Conf/dataconfig.php
+#app/Template
+#install.lock
+#app/Libs/Driver/Passport/
