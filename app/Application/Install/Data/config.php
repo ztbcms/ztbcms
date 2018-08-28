@@ -2,7 +2,7 @@
 
 //配置
 
-//检测有无本机配置,有责覆盖默认配置
+//检测有无本机配置,有则覆盖默认配置
 $local_dataconfig_path = __DIR__ . DIRECTORY_SEPARATOR . 'local_dataconfig.php';
 $local_dataconfig = [];
 if(file_exists($local_dataconfig_path)){
