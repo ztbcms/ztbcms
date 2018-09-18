@@ -168,6 +168,8 @@ class BaseService {
      */
     protected static function select($tablename = '', $where = [], $order = '', $page = 1, $limit = 20, $isRelation = false) {
         $db     = self::getModelInstance($tablename);
+        $page = intval($page);
+        $limit = intval($limit);
         $fields = '';
         //检测是否有指定字段
         if (method_exists($db, '_getEnableFields')) {
@@ -189,7 +191,7 @@ class BaseService {
 
         $items = $db->select();
 
-        $total_items = $db->where($where)->count();
+        $total_items = intval($db->where($where)->count());
         $total_pages = ceil($total_items / $limit);
         if (empty($items)) {
             $items = [];
