@@ -19,6 +19,7 @@ $default = array(
 	'DB_PORT' => '#DB_PORT#', // 端口
 	'DB_PREFIX' => '#DB_PREFIX#', // 数据库表前缀
 	'DB_DEBUG' => false,
+    'DB_CHARSET' => 'utf8mb4', //字符集
 
 	/* 站点安全设置 */
 	"AUTHCODE" => '#AUTHCODE#', //密钥
