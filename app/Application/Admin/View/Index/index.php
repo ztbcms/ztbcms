@@ -37,7 +37,7 @@
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>Z</b>TB</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>{$Config.sitename}</b></span>
+            <span class="logo-lg"><b style="font-size: 15px;">{$Config.sitename}</b></span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="top_navbar navbar navbar-static-top">
