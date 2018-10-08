@@ -1,11 +1,11 @@
 <extend name="../../Admin/View/Common/base_layout"/>
 <block name="content">
-    <div id="app" style="padding: 8px;display: none;">
+    <div id="app" style="padding: 8px;background: white;" v-cloak>
         <h4>日志列表</h4>
         <hr>
         <div class="search_type cc mb10">
-            类别：<input type="text" class="input" v-model="where.category" placeholder="">
-            日志内容：<input type="text" class="input" v-model="where.message" placeholder="">
+            类别：<input type="text" class="input" v-model="where.category" placeholder="支持模糊搜索">
+            日志内容：<input type="text" class="input" v-model="where.message" placeholder="支持模糊搜索">
             时间：
             <input type="text" name="start_date" class="input datepicker" >
             -
@@ -75,9 +75,22 @@
                         var res = y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + '';
                         res += '  ' + (h < 10 ? '0' + h : h) + ':' + (i < 10 ? '0' + i : i);
                         return res;
-                    }
+                    },
+
                 },
                 methods: {
+                    /**
+                     * 格式化
+                     * @param value 千分秒
+                     */
+                    formatTimeToYMD: function(value){
+                        var time = new Date(parseInt(value));
+                        var y = time.getFullYear();
+                        var m = time.getMonth() + 1;
+                        var d = time.getDate();
+                        var res = y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + '';
+                        return res;
+                    },
                     getList: function () {
                         var that = this;
                         $.ajax({
@@ -114,8 +127,13 @@
                     }
                 },
                 mounted: function () {
-                    document.getElementById('app').style.display = 'block';
-                    this.getList();
+                    //默认显示最近7日日志
+                    var date_today = new Date();
+                    var date_last = new Date(date_today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    $('input[name="start_date"]').val(this.formatTimeToYMD(date_last.getTime()));
+                    $('input[name="end_date"]').val(this.formatTimeToYMD(date_today.getTime()));
+
+                    this.search();
                 }
             });
         });
