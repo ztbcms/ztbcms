@@ -4,8 +4,8 @@
         <h4>日志列表</h4>
         <hr>
         <div class="search_type cc mb10">
-            类别：<input type="text" class="input" v-model="where.category" placeholder="">
-            日志内容：<input type="text" class="input" v-model="where.message" placeholder="">
+            类别：<input type="text" class="input" v-model="where.category" placeholder="支持模糊搜索">
+            日志内容：<input type="text" class="input" v-model="where.message" placeholder="支持模糊搜索">
             时间：
             <input type="text" name="start_date" class="input datepicker" >
             -
