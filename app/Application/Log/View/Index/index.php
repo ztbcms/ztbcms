@@ -27,7 +27,7 @@
                 <tr v-for="item in logs">
                     <td align="center">{{item.id}}</td>
                     <td align="center">{{item.category}}</td>
-                    <td align="center"><div style="word-wrap:break-word">{{item.message}}</div></td>
+                    <td align="center"><div style="overflow-wrap: break-word; max-width: 500px;">{{item.message}}</div></td>
                     <td align="center">{{item.inputtime|getFormatTime}}</td>
                 </tr>
                 </tbody>
