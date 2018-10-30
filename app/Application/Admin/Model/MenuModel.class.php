@@ -265,7 +265,7 @@ class MenuModel extends Model {
      * @param string $moduleNama 安装模块名称
      * @return array
      */
-    private function menuRoute($route, $moduleNama) {
+    private function menuRoute($route, $moduleNama = '') {
         $route = explode('/', $route, 3);
         if (count($route) < 3) {
             array_unshift($route, $moduleNama);
