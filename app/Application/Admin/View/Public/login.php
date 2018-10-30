@@ -200,7 +200,7 @@ if (window.parent !== window.self) {
               <input value="" id="u" name="username" class="input_txt" tabindex="1" type="text" placeholder="帐号名" title="帐号名">
             </li>
             <li class="login_input" style="margin: 0 auto;">
-              <input maxlength="16" type="password" id="p" name="password" tabindex="2" class="input_txt" value="" placeholder="密码" title="密码">
+              <input type="password" id="p" name="password" tabindex="2" class="input_txt" value="" placeholder="密码" title="密码">
             </li>
             <li class="yanzhengma clearfix" id="verifytip">
 							<span id="verifyinput" style="float: left;margin-left: 47px;">
