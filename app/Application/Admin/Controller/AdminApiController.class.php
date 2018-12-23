@@ -11,40 +11,46 @@ namespace Admin\Controller;
 use Admin\Service\User;
 use Common\Controller\AdminBase;
 
-class AdminApiController extends AdminBase
+/**
+ * 后台通用接口【无需检查权限】
+ * @package Admin\Controller
+ */
+class AdminApiController extends AdminApiBaseController
 {
-    protected function _initialize()
-    {
-        $this->supportCros();
-        User::getInstance()->login('admin', 'admin');
-
-        parent::_initialize();
-    }
-
-    function supportCros(){
-        //http 预检响应
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *,'); //不能设置为 *，必须指定
-            header('Access-Control-Max-Age: 86400'); // cache for 1 day
-
-            exit();
-        }
-
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: *');
-        header('Access-Control-Allow-Headers: *'); //不能设置为 *，必须指定
-    }
-
-
     /**
      * 获取后台用户的菜单
      */
-    public function getMenuList(){
+    public function getMenuList()
+    {
+        $adminUserInfo = $this->userInfo;
 
-        $menuList = D("Admin/Menu")->getAdminUserMenuTree(1);
+        $menuList = D("Admin/Menu")->getAdminUserMenuTree($adminUserInfo['role_id']);
         $this->ajaxReturn(self::createReturn(true, $menuList));
     }
+
+    /**
+     * 获取后台管理员信息
+     */
+    public function getAdminUserInfo()
+    {
+        $adminUser = M('user')->where(['id' => $this->uid])->field('password,verify', true)->find();
+
+        $this->ajaxReturn(self::createReturn(true, $adminUser));
+    }
+
+    /**
+     * 登出
+     */
+    public function logout()
+    {
+        User::getInstance()->logout();
+        //手动登出时，清空forward
+        cookie( NULL);
+        $this->ajaxReturn(self::createReturn(true, [
+            'redirect' => U("Admin/Public/login")
+        ],'注销成功'));
+
+    }
+
 
 }

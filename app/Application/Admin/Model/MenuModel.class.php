@@ -154,7 +154,7 @@ class MenuModel extends Model {
                     $action = $_match[1];
                 }
                 //是否有权限
-                if (D('Admin/Access')->hasPermission($where)) {
+                if (D('Admin/Access')->hasPermission($role_id, $where)) {
                     $array[] = $v;
                 }
             }
@@ -162,6 +162,13 @@ class MenuModel extends Model {
         return $array;
     }
 
+    /**
+     * 获取后台管理员的菜单
+     * @param $role_id
+     * @param int $parentid
+     * @param int $Level
+     * @return array
+     */
     function getAdminUserMenuTree($role_id, $parentid = 0, $Level = 1){
         $data = $this->adminMenu2($role_id, $parentid);
         $Level++;

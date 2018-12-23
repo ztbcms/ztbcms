@@ -13,16 +13,22 @@ class IndexController extends AdminBase {
 
     //后台框架首页
     public function index() {
+        $this->display('dashboard');
+    }
+
+    //后台框架首页（旧版）
+    public function oldIndex() {
         if (IS_AJAX) {
             $this->ajaxReturn(array('status' => 1));
             return true;
         }
         $submenu_config = D("Admin/Menu")->getMenuList();
+
         $this->assign("SUBMENU_CONFIG", json_encode($submenu_config));
         $this->assign("submenu_config", $submenu_config);
         $this->assign('userInfo', User::getInstance()->getInfo());
         $this->assign('role_name', D('Admin/Role')->getRoleIdName(User::getInstance()->role_id));
-        $this->display();
+        $this->display('index');
     }
 
     //缓存更新

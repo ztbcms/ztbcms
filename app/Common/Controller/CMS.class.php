@@ -264,7 +264,8 @@ class CMS extends Controller {
 
 	//空操作
 	public function _empty() {
-		$this->error('该页面不存在！');
+	    //404 该页面不存在
+        $this->display(C('TMPL_ACTION_PAGE_NOT_FOUND'));
 	}
 
 	static public function logo() {

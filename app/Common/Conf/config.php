@@ -101,6 +101,9 @@ return array(
 	'TMPL_CONTENT_TYPE' => 'text/html', // 默认模板输出类型
 	'TMPL_ACTION_ERROR' => APP_PATH . 'Admin/View/error.php', // 默认错误跳转对应的模板文件
 	'TMPL_ACTION_SUCCESS' => APP_PATH . 'Admin/View/success.php', // 默认成功跳转对应的模板文件
+    'TMPL_ACTION_PAGE_NOT_FOUND' => APP_PATH . 'Admin/View/GuidePage/404.php', // 404
+    'TMPL_ACTION_PAGE_UNAUTHORIZED' => APP_PATH . 'Admin/View/GuidePage/401.php', // 401
+    'TMPL_ACTION_PAGE_FORBIDDEN' => APP_PATH . 'Admin/View/GuidePage/403.php', // 403
 	'TMPL_EXCEPTION_FILE' => APP_PATH . 'Admin/View/Common/Exception.php', // 异常页面的模板文件
 	'TMPL_TRACE_FILE' => APP_PATH . 'Admin/View/Common/Trace.php',
 	'TMPL_DETECT_THEME' => false, // 自动侦测模板主题
