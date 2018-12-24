@@ -29,6 +29,23 @@ class AdminApiController extends AdminApiBaseController
     }
 
     /**
+     * 获取后台权限信息
+     * - 显示的权限菜单
+     * - 所有权限列表
+     */
+    public function getPermissionInfo(){
+        $adminUserInfo = $this->userInfo;
+
+        $menuList = D("Admin/Menu")->getAdminUserMenuTree($adminUserInfo['role_id']);
+        $role_access_list = D("Admin/Role")->getAccessList($adminUserInfo['role_id']);
+        $ret = [
+            'menuList' => $menuList,
+            'roleAccessList' => $role_access_list
+        ];
+        $this->ajaxReturn(self::createReturn(true, $ret));
+    }
+
+    /**
      * 获取后台管理员信息
      */
     public function getAdminUserInfo()
