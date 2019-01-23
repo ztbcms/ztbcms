@@ -632,7 +632,7 @@ function initupload($module, $catid, $args, $userid, $groupid = 8, $isadmin = fa
 function urlDomain($url) {
 	if ($url) {
 		$pathinfo = parse_url($url);
-		return $pathinfo['scheme'] . "://" . $pathinfo['host'] . "/";
+		return $pathinfo['scheme'] . "://" . $pathinfo['host'] .':'.$pathinfo['port'];
 	}
 	return false;
 }
