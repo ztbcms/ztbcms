@@ -188,7 +188,7 @@ class MenuModel extends Model {
                     "icon" => $a['icon'],
                     "id" => $id . $name,
                     "name" => $a['name'],
-                    "url" => urlDomain(get_url()) . U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id)),
+                    "url" => U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id)),
                     "path" => "/{$id}{$name}/{$controller}/{$action}",
                     "items" => []
                 );
