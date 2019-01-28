@@ -51,6 +51,10 @@ class AdminApiController extends AdminApiBaseController
     public function getAdminUserInfo()
     {
         $adminUser = M('user')->where(['id' => $this->uid])->field('password,verify', true)->find();
+        if($adminUser){
+            $role = M('role')->where(['id' => $adminUser['role_id']])->find();
+            $adminUser['role_name'] = $role['name'];
+        }
 
         $this->ajaxReturn(self::createReturn(true, $adminUser));
     }
