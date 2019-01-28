@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href=/statics/admin/pages/dashboard/favicon.ico>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-elementUI.fd758e0b.css rel=stylesheet>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-libs.88eb1712.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/app.cac9f061.css rel=stylesheet>
+    <link href=/statics/admin/pages/dashboard/static/css/app.b0348faf.css rel=stylesheet>
 </head>
 <body>
 <div id=app></div>
@@ -42,14 +42,8 @@
 
         i.e = function (e) {
             var t = [];
-            o[e] ? t.push(o[e]) : 0 !== o[e] && {
-                "chunk-506d": 1,
-                "chunk-62a5": 1
-            }[e] && t.push(o[e] = new Promise(function (t, r) {
-                for (var n = "static/css/" + ({}[e] || e) + "." + {
-                    "chunk-506d": "db293919",
-                    "chunk-62a5": "70fdd67f"
-                }[e] + ".css", o = i.p + n, a = document.getElementsByTagName("link"), u = 0; u < a.length; u++) {
+            o[e] ? t.push(o[e]) : 0 !== o[e] && {"chunk-506d": 1}[e] && t.push(o[e] = new Promise(function (t, r) {
+                for (var n = "static/css/" + ({}[e] || e) + "." + {"chunk-506d": "db293919"}[e] + ".css", o = i.p + n, a = document.getElementsByTagName("link"), u = 0; u < a.length; u++) {
                     var c = (s = a[u]).getAttribute("data-href") || s.getAttribute("href");
                     if ("stylesheet" === s.rel && (c === n || c === o)) return t()
                 }
@@ -60,8 +54,7 @@
                 }
                 var f = document.createElement("link");
                 f.rel = "stylesheet", f.type = "text/css", f.onload = t, f.onerror = function (t) {
-                    var n = t && t.target && t.target.src || o,
-                        a = new Error("Loading CSS chunk " + e + " failed.\n(" + n + ")");
+                    var n = t && t.target && t.target.src || o, a = new Error("Loading CSS chunk " + e + " failed.\n(" + n + ")");
                     a.request = n, r(a)
                 }, f.href = o, document.getElementsByTagName("head")[0].appendChild(f)
             }).then(function () {
@@ -75,10 +68,7 @@
                 t.push(r[2] = n);
                 var u, c = document.getElementsByTagName("head")[0], l = document.createElement("script");
                 l.charset = "utf-8", l.timeout = 120, i.nc && l.setAttribute("nonce", i.nc), l.src = function (e) {
-                    return i.p + "static/js/" + ({}[e] || e) + "." + {
-                        "chunk-506d": "4d9ab8f4",
-                        "chunk-62a5": "3e9076a9"
-                    }[e] + ".js"
+                    return i.p + "static/js/" + ({}[e] || e) + "." + {"chunk-506d": "4d9ab8f4"}[e] + ".js"
                 }(e), u = function (t) {
                     l.onerror = l.onload = null, clearTimeout(s);
                     var r = a[e];
@@ -132,7 +122,7 @@
     }([]);</script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-elementUI.70b6a4f6.js></script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-libs.947e1304.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/app.28f64628.js></script>
+<script src=/statics/admin/pages/dashboard/static/js/app.787065f2.js></script>
 <script src="//at.alicdn.com/t/font_130644_jg74jqshzfpkqpvi.js"></script>
 </body>
 </html>
