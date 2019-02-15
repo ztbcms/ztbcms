@@ -34,11 +34,14 @@ class AdminBase extends CMS {
 		if (false == RBAC::AccessDecision(MODULE_NAME)) {
 			//检查是否登录
 			if (false === RBAC::checkLogin()) {
-				//跳转到登录界面
-				redirect(C('USER_AUTH_GATEWAY'));
+				//未登录，跳转到登录界面
+                $this->assign('user_auth_gateway', C('USER_AUTH_GATEWAY'));
+                $this->display(C('TMPL_ACTION_PAGE_UNAUTHORIZED'));
+                exit;
 			}
 			//没有操作权限
-			$this->error('您没有操作此项的权限！');
+            $this->display(C('TMPL_ACTION_PAGE_FORBIDDEN'));
+            exit;
 		}
 		parent::_initialize();
 		//验证登录

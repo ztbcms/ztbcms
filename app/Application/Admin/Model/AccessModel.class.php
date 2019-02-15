@@ -6,6 +6,7 @@
 
 namespace Admin\Model;
 
+use Admin\Service\User;
 use Common\Model\Model;
 
 class AccessModel extends Model {
@@ -38,18 +39,30 @@ class AccessModel extends Model {
     }
 
     /**
-     * 检查用户是否有对应权限
+     * 检查用户是否有对应权限 【请使用 hasPermission()】
+     *
+     * @deprecated
      * @param string $map 方法[模块/控制器/方法]，为空自动获取
      * @return boolean
      */
     public function isCompetence($map = '') {
+        return $this->hasPermission(\Admin\Service\User::getInstance()->role_id, $map);
+    }
+
+    /**
+     * 检查用户是否有对应权限
+     * @param $role_id
+     * @param $map
+     * @return bool
+     */
+    public function hasPermission($role_id, $map){
         //超级管理员
-        if (\Admin\Service\User::getInstance()->isAdministrator()) {
+        if ($role_id == User::administratorRoleId) {
             return true;
         }
         if (!is_array($map)) {
             //子角色列表
-            $child = explode(',', D("Admin/Role")->getArrchildid(\Admin\Service\User::getInstance()->role_id));
+            $child = explode(',', D("Admin/Role")->getArrchildid($role_id));
             if (!empty($map)) {
                 $map = trim($map, '/');
                 $map = explode('/', $map);
@@ -74,6 +87,7 @@ class AccessModel extends Model {
         $count = $this->where($map)->count();
         return $count ? true : false;
     }
+
 
     /**
      * 返回用户权限列表，用于授权
