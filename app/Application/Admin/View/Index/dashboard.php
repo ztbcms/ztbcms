@@ -9,10 +9,11 @@
     <link rel="shortcut icon" href=/statics/admin/pages/dashboard/favicon.ico>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-elementUI.fd758e0b.css rel=stylesheet>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-libs.88eb1712.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/app.f4308325.css rel=stylesheet>
+    <link href=/statics/admin/pages/dashboard/static/css/app.40c533ae.css rel=stylesheet>
 </head>
 <body>
 <div id=app></div>
+<script src=//at.alicdn.com/t/font_130644_jg74jqshzfpkqpvi.js></script>
 <script>!function (e) {
         function t(t) {
             for (var n, o, i = t[0], c = t[1], l = t[2], s = 0, d = []; s < i.length; s++) o = i[s], a[o] && d.push(a[o][0]), a[o] = 0;
@@ -54,8 +55,7 @@
                 }
                 var f = document.createElement("link");
                 f.rel = "stylesheet", f.type = "text/css", f.onload = t, f.onerror = function (t) {
-                    var n = t && t.target && t.target.src || o,
-                        a = new Error("Loading CSS chunk " + e + " failed.\n(" + n + ")");
+                    var n = t && t.target && t.target.src || o, a = new Error("Loading CSS chunk " + e + " failed.\n(" + n + ")");
                     a.request = n, r(a)
                 }, f.href = o, document.getElementsByTagName("head")[0].appendChild(f)
             }).then(function () {
@@ -123,7 +123,6 @@
     }([]);</script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-elementUI.70b6a4f6.js></script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-libs.947e1304.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/app.5e513ed9.js></script>
-<script src="//at.alicdn.com/t/font_130644_jg74jqshzfpkqpvi.js"></script>
+<script src=/statics/admin/pages/dashboard/static/js/app.0ea28c22.js></script>
 </body>
 </html>
