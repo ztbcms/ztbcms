@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href=/statics/admin/pages/dashboard/favicon.ico>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-elementUI.fd758e0b.css rel=stylesheet>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-libs.88eb1712.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/app.40c533ae.css rel=stylesheet>
+    <link href=/statics/admin/pages/dashboard/static/css/app.2d8a8d3f.css rel=stylesheet>
 </head>
 <body>
 <div id=app></div>
@@ -123,6 +123,6 @@
     }([]);</script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-elementUI.70b6a4f6.js></script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-libs.947e1304.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/app.0ea28c22.js></script>
+<script src=/statics/admin/pages/dashboard/static/js/app.9bc4b8e0.js></script>
 </body>
 </html>
