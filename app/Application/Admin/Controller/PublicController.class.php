@@ -64,7 +64,8 @@ class PublicController extends AdminBase {
                 'ip' => $ip,
             );
             tag('admin_public_tologin', $admin_public_tologin);
-            $this->redirect('Index/index');
+
+            $this->success('登录成功', U('Admin/Index/index'));
         } else {
             //增加登录失败行为调用
             $admin_public_tologin = array(
