@@ -56,34 +56,6 @@ class LogsController extends AdminBase {
 
     //操作日志查看
     public function index() {
-        if (IS_POST) {
-            $this->redirect('index', $_POST);
-        }
-        $uid = I('uid');
-        $start_time = I('start_time');
-        $end_time = I('end_time');
-        $ip = I('ip');
-        $status = I('status');
-        $where = array();
-        if (!empty($uid)) {
-            $where['uid'] = array('eq', $uid);
-        }
-        if (!empty($start_time) && !empty($end_time)) {
-            $start_time = strtotime($start_time);
-            $end_time = strtotime($end_time) + 86399;
-            $where['time'] = array(array('GT', $start_time), array('LT', $end_time), 'AND');
-        }
-        if (!empty($ip)) {
-            $where['ip '] = array('like', "%{$ip}%");
-        }
-        if ($status != '') {
-            $where['status'] = (int) $status;
-        }
-        $count = M("Operationlog")->where($where)->count();
-        $page = $this->page($count, 20, I('get.page', 1));
-        $Logs = M("Operationlog")->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("id" => "desc"))->select();
-        $this->assign("Page", $page->show());
-        $this->assign("logs", $Logs);
         $this->display();
     }
 
