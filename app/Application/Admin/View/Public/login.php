@@ -8,7 +8,7 @@
     <!--  百度统计 -->
     <script>
         var _hmt = _hmt || [];
-        (function() {
+        (function () {
             var hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?123929b4d143a8384864a99fd4199190";
             var s = document.getElementsByTagName("script")[0];
@@ -26,20 +26,22 @@
             align-items: center;
             background: #f6f7ff;
         }
+
         .flex-between {
             display: flex;
             justify-content: space-between;
         }
+
         .main {
             box-sizing: border-box;
             padding: 50px 30px;
             width: 460px;
             height: 532px;
             background: #fff;
-            box-shadow: 0px 12px 34px 0px
-            rgba(0, 84, 202, 0.14);
+            box-shadow: 0px 12px 34px 0px rgba(0, 84, 202, 0.14);
             border-radius: 12px;
         }
+
         .logo-box {
             margin-bottom: 50px;
         }
@@ -52,15 +54,18 @@
             width: 100%;
             text-align: center;
         }
+
         .label {
             font-weight: bold;
             font-size: 14px;
             color: #333333;
             line-height: 1;
         }
+
         .input, .code-box {
             margin-bottom: 44px;
         }
+
         .input input {
             padding: 11px 0;
             width: 100%;
@@ -68,24 +73,31 @@
             outline: 0;
             border-bottom: 1px solid #ededed;
         }
+
         ::-webkit-input-placeholder { /* WebKit browsers */
             color: #d8d8d8;
         }
+
         :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
             color: #d8d8d8;
         }
+
         ::-moz-placeholder { /* Mozilla Firefox 19+ */
             color: #d8d8d8;
         }
+
         :-ms-input-placeholder { /* Internet Explorer 10+ */
             color: #d8d8d8;
         }
+
         .code {
             margin-left: 16px;
         }
+
         .btn-box {
             margin-top: 50px;
         }
+
         button {
             width: 402px;
             height: 50px;
@@ -95,21 +107,34 @@
             border: 0;
             outline: 0;
         }
+
         .default {
             background: #d4d4d4;
         }
+
         .finish {
             background: #409eff;
         }
-        .footer{
+
+        .footer {
             position: absolute;
-            bottom: 0;
-            color: #d4d4d4;
+            bottom: 16px;
+            color: #909399;
             font-size: 14px;
+            text-align: center;
         }
-        .footer a{
-            color: #d4d4d4;
+
+        .footer p{
+            margin: 6px;
+        }
+
+        .footer a {
+            color: #909399;
             text-decoration: none;
+        }
+
+        .footer p img {
+            vertical-align: bottom;
         }
     </style>
     <admintemplate file="Admin/Common/Js"/>
@@ -140,6 +165,12 @@
 </div>
 <div class="footer">
     <p>V{:C('APPLIATION_VERSION')} © 2016-{:date('Y')} POWER BY <a href="https://www.zhutibang.cn">ZTBCMS</a></p>
+    <p> 建议分辨率1366*768以上，推荐使用 </p>
+    <p>
+        Chrome浏览器 <img src="/statics/admin/pages/public/login/chrome.png" alt="">
+        Firefox浏览器 <img src="/statics/admin/pages/public/login/firefox.png" alt="">
+        360极速浏览器 <img src="/statics/admin/pages/public/login/360.png" alt="">
+        IE11及以上浏览器 <img src="/statics/admin/pages/public/login/ie.png" alt=""></p>
 </div>
 <script>
     var inputs = document.querySelectorAll('input');
@@ -150,7 +181,7 @@
         i.addEventListener('input', inputChange);
     });
 
-    function inputChange () {
+    function inputChange() {
         var index = 0;
 
         inputs.forEach(i => {
@@ -175,9 +206,10 @@
         document.getElementById('code_img').src = "{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=&refresh=1')}&time=" + Math.random();
         void(0);
     }
+
     refreshs();
 
-    function doLogin(){
+    function doLogin() {
         console.log('doLogin')
         var username = $('input#username').val();
         var password = $('input#password').val();
@@ -186,21 +218,21 @@
         $.ajax({
             url: "{:U('Admin/Public/tologin')}",
             method: 'post',
-            dataType:'json',
+            dataType: 'json',
             data: {
                 username: username,
                 password: password,
                 code: code,
             },
-            success: function(res){
+            success: function (res) {
                 console.log(res)
-                if(!res.status){
+                if (!res.status) {
                     var msg = res.info
                     layer.msg(msg)
-                }else{
+                } else {
                     var msg = res.info
                     layer.msg(msg)
-                    setTimeout(function(){
+                    setTimeout(function () {
                         window.location.replace(res.url)
                     }, 1500)
                 }
