@@ -3,52 +3,59 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-row :gutter="10">
-                <el-col :span="2">
-                    <el-input v-model="form.uid"  placeholder="用户ID"/>
-                </el-col>
-                <el-col :span="2">
-                    <el-input v-model="form.ip"  placeholder="IP"/>
-                </el-col>
-                <el-col :span="2">
-                    <el-select v-model="form.status" placeholder="状态">
-                        <el-option
-                                label="不限"
-                                value="">
-                        </el-option>
-                        <el-option
-                                label="成功"
-                                value="1">
-                        </el-option>
-                        <el-option
-                                label="失败"
-                                value="0">
-                        </el-option>
-                    </el-select>
-                </el-col>
+            <div class="filter_container">
+                <el-row :gutter="10">
+                    <el-col :span="2">
+                        <el-input v-model="form.uid" placeholder="用户ID"/>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-input v-model="form.ip" placeholder="IP"/>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-select v-model="form.status" placeholder="状态">
+                            <el-option
+                                    label="不限"
+                                    value="">
+                            </el-option>
+                            <el-option
+                                    label="成功"
+                                    value="1">
+                            </el-option>
+                            <el-option
+                                    label="失败"
+                                    value="0">
+                            </el-option>
+                        </el-select>
+                    </el-col>
 
-                <el-col :span="4">
-                    <el-date-picker
-                            v-model="form.search_date"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期">
-                    </el-date-picker>
-                </el-col>
+                    <el-col :span="4">
+                        <el-date-picker
+                                v-model="form.search_date"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期">
+                        </el-date-picker>
+                    </el-col>
 
 
-            </el-row>
+                </el-row>
 
-            <el-row :gutter="10" style="margin-top: 10px;">
+                <el-row :gutter="10" style="margin-top: 10px;">
 
-                <el-col :span="10">
-                    <el-button  type="primary" @click="getList">
-                        筛选
-                    </el-button>
-                </el-col>
-            </el-row>
+                    <el-col :span="10">
+                        <el-button type="primary" @click="getList">
+                            筛选
+                        </el-button>
+
+                        <el-button @click="deletelog" type="primary" plain>
+                            删除一个月前的操作日志
+                        </el-button>
+                    </el-col>
+                </el-row>
+            </div>
+
 
             <el-table
                     :data="tableData"
@@ -87,9 +94,10 @@
                 </el-table-column>
                 <el-table-column
                         prop="time"
-                        label="时间">
+                        label="时间"
+                        width="200">
                     <template slot-scope="scope">
-                        <span >{{ scope.row.time | formatTime }}</span>
+                        <span>{{ scope.row.time | formatTime }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -115,7 +123,11 @@
     </div>
 
     <style>
-        .pager_container{
+        .filter_container{
+            background: #f8f8f8;
+            padding: 25px 36px 12px;
+        }
+        .pager_container {
             margin-top: 20px;
         }
     </style>
@@ -127,7 +139,7 @@
                 data: {
                     tableData: [],
                     pagination: {
-                        page:1 ,
+                        page: 1,
                         limit: 20,
                         total_pages: 0,
                         total_items: 0,
@@ -143,19 +155,19 @@
                     }
                 },
                 watch: {
-                    'form.search_date': function(newValue){
-                        if(newValue && newValue.length == 2){
+                    'form.search_date': function (newValue) {
+                        if (newValue && newValue.length == 2) {
                             this.form.start_time = newValue[0]
                             this.form.end_time = newValue[1]
                         }
                     }
                 },
                 filters: {
-                  formatTime(timestamp){
-                      var date = new Date();
-                      date.setTime(parseInt(timestamp) * 1000);
-                      return moment(date).format('YYYY-MM-DD HH:mm:ss')
-                  }
+                    formatTime(timestamp) {
+                        var date = new Date();
+                        date.setTime(parseInt(timestamp) * 1000);
+                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
+                    }
                 },
                 methods: {
                     getList: function () {
@@ -182,6 +194,23 @@
                                 that.pagination.total_pages = data.total_pages;
                                 that.pagination.total_items = data.total_items;
                                 that.tableData = data.items
+                            }
+                        })
+                    },
+                    deletelog: function () {
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('Admin/Logs/deletelog')}",
+                            data: {},
+                            dataType: 'json',
+                            type: 'get',
+                            success: function (res) {
+                                if (res.status) {
+                                    ELEMENT.Message.success(res.msg)
+                                } else {
+                                    ELEMENT.Message.error(res.msg)
+                                }
+
                             }
                         })
                     },

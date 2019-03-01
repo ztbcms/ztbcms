@@ -59,29 +59,17 @@
                     });
                     $(document).ajaxComplete(function () {
                         if (window.__GLOBAL_ELEMENT_LOADING_INSTANCE) {
-                            //保证Loading显示至少1秒
-                            var timeout = 0;
-                            if(Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time < 1000){
-                                timeout = 1000 - (Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time);
-                            }
-
                             setTimeout(function(){
                                 window.__GLOBAL_ELEMENT_LOADING_INSTANCE.close()
-                            }, timeout)
+                            }, 0)
 
                         }
                     });
                     $(document).ajaxError(function () {
                         if (window.__GLOBAL_ELEMENT_LOADING_INSTANCE) {
-                            //保证Loading显示至少1秒
-                            var timeout = 0;
-                            if(Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time < 1000){
-                                timeout = 1000 - (Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time);
-                            }
-
                             setTimeout(function(){
                                 window.__GLOBAL_ELEMENT_LOADING_INSTANCE.close()
-                            }, timeout)
+                            }, 0)
 
                         }
                     })

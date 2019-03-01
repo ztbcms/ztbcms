@@ -62,9 +62,9 @@ class LogsController extends AdminBase {
     //删除一个月前的操作日志
     public function deletelog() {
         if (D("Admin/Operationlog")->deleteAMonthago()) {
-            $this->success("删除操作日志成功！");
+            $this->ajaxReturn(self::createReturn(true, null,'操作成功'));
         } else {
-            $this->error("删除操作日志失败！");
+            $this->ajaxReturn(self::createReturn(false, null,'操作失败'));
         }
     }
 
