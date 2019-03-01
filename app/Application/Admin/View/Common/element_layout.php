@@ -18,11 +18,14 @@
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
 
         <!-- 时间格式化工具  -->
-        <script src="https://unpkg.com/moment@2.24.0/moment.js"></script>
+        <script src="{$config_siteurl}statics/admin/theme/elementui/momentjs/2.24.0.js"></script>
+
+        <!--  Element UI START  -->
         <!-- 引入样式 -->
-        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/elementui/elementui_2.5.4/index.css">
         <!-- 引入组件库 -->
-        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+        <script src="{$config_siteurl}statics/admin/theme/elementui/elementui_2.5.4/index.js"></script>
+        <!--  Element UI END  -->
 
         <style>
             /* vue相关  */
