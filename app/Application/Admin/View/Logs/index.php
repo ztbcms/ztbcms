@@ -105,9 +105,7 @@
                         :page-size="pagination.limit"
                         :current-page.sync="pagination.page"
                         :total="pagination.total_items"
-                        @current-change="getList"
-                >
-
+                        @current-change="getList">
                 </el-pagination>
             </div>
 
@@ -124,7 +122,6 @@
 
     <script>
         $(document).ready(function () {
-            console.log('xx');
             new Vue({
                 el: '#app',
                 data: {

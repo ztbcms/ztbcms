@@ -37,22 +37,48 @@
             ;(function () {
 
                 $(document).ready(function () {
-                    // //注册 ajax加载时 显示加载框
-                    // $(document).ajaxStart(function () {
-                    //     if (layer) {
-                    //         window.__layer_loading_index = layer.load(1);
-                    //     }
-                    // });
-                    // $(document).ajaxComplete(function () {
-                    //     if (layer) {
-                    //         layer.close(window.__layer_loading_index);
-                    //     }
-                    // });
-                    // $(document).ajaxError(function () {
-                    //     if (layer) {
-                    //         layer.msg('网络繁忙，请稍后再试..');
-                    //     }
-                    // })
+                    //注册 ajax加载时 显示加载框
+                    $(document).ajaxStart(function () {
+                        if (ELEMENT) {
+                            //显示时间
+                            window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time = Date.now();
+                            //load实例
+                            window.__GLOBAL_ELEMENT_LOADING_INSTANCE = window.ELEMENT.Loading.service({
+                                lock: true,
+                                text: '',
+                                // spinner: 'el-icon-loading',
+                                // background: 'rgba(0, 0, 0, 0.7)'
+                            });
+                        }
+                    });
+                    $(document).ajaxComplete(function () {
+                        if (window.__GLOBAL_ELEMENT_LOADING_INSTANCE) {
+                            //保证Loading显示至少1秒
+                            var timeout = 0;
+                            if(Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time < 1000){
+                                timeout = 1000 - (Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time);
+                            }
+
+                            setTimeout(function(){
+                                window.__GLOBAL_ELEMENT_LOADING_INSTANCE.close()
+                            }, timeout)
+
+                        }
+                    });
+                    $(document).ajaxError(function () {
+                        if (window.__GLOBAL_ELEMENT_LOADING_INSTANCE) {
+                            //保证Loading显示至少1秒
+                            var timeout = 0;
+                            if(Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time < 1000){
+                                timeout = 1000 - (Date.now() - window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time);
+                            }
+
+                            setTimeout(function(){
+                                window.__GLOBAL_ELEMENT_LOADING_INSTANCE.close()
+                            }, timeout)
+
+                        }
+                    })
                 });
 
             })(jQuery);
@@ -62,7 +88,7 @@
     <block name="header"></block>
 
 </head>
-<body class="hold-transition skin-blue sidebar-mini fixed" style="height: 100%;background-color: #F8F8F8">
+<body style="height: 100%;background-color: #F8F8F8">
 
 <block name="content">
 
