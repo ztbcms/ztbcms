@@ -6,13 +6,13 @@
             <div class="filter_container">
                 <el-row :gutter="10">
                     <el-col :span="2">
-                        <el-input v-model="form.uid" placeholder="用户ID"/>
+                        <el-input v-model="form.uid" placeholder="用户ID" size="medium"/>
                     </el-col>
                     <el-col :span="2">
-                        <el-input v-model="form.ip" placeholder="IP"/>
+                        <el-input v-model="form.ip" placeholder="IP" size="medium"/>
                     </el-col>
                     <el-col :span="2">
-                        <el-select v-model="form.status" placeholder="状态">
+                        <el-select v-model="form.status" placeholder="状态" size="medium">
                             <el-option
                                     label="不限"
                                     value="">
@@ -35,7 +35,7 @@
                                 type="datetimerange"
                                 range-separator="至"
                                 start-placeholder="开始日期"
-                                end-placeholder="结束日期">
+                                end-placeholder="结束日期" size="medium">
                         </el-date-picker>
                     </el-col>
 
@@ -45,11 +45,11 @@
                 <el-row :gutter="10" style="margin-top: 10px;">
 
                     <el-col :span="10">
-                        <el-button type="primary" @click="getList">
+                        <el-button type="primary" @click="getList" size="medium">
                             筛选
                         </el-button>
 
-                        <el-button @click="deletelog" type="primary" plain>
+                        <el-button @click="deletelog" type="primary" plain size="medium">
                             删除一个月前的操作日志
                         </el-button>
                     </el-col>
@@ -58,6 +58,7 @@
 
 
             <el-table
+                    size="medium"
                     :data="tableData"
                     border
                     style="width: 100%;margin-top: 10px;">
