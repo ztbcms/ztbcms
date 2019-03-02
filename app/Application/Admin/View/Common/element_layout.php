@@ -12,10 +12,19 @@
 
     <block name="header-main">
 
+        <!-- ztbcms 默认 iconfont -->
+        <link rel="stylesheet" href="{$config_siteurl}statics/css/iconfont/iconfont.css">
+
         <!-- jQuery 2.x -->
         <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jquery-2.2.3.min.js"></script>
         <!-- vue.js -->
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
+        <script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>
+        <script>
+            (function (vue) {
+                vue.mixin(window.__vueCommon);
+            })(window.Vue);
+        </script>
 
         <!-- 时间格式化工具  -->
         <script src="{$config_siteurl}statics/admin/theme/elementui/momentjs/2.24.0.js"></script>
