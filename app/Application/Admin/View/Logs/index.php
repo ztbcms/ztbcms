@@ -5,27 +5,11 @@
         <el-card>
             <div class="filter_container">
                 <el-row :gutter="10">
-                    <el-col :span="2">
+                    <el-col :span="3">
                         <el-input v-model="form.uid" placeholder="用户ID" size="medium"/>
                     </el-col>
-                    <el-col :span="2">
+                    <el-col :span="3">
                         <el-input v-model="form.ip" placeholder="IP" size="medium"/>
-                    </el-col>
-                    <el-col :span="2">
-                        <el-select v-model="form.status" placeholder="状态" size="medium">
-                            <el-option
-                                    label="不限"
-                                    value="">
-                            </el-option>
-                            <el-option
-                                    label="成功"
-                                    value="1">
-                            </el-option>
-                            <el-option
-                                    label="失败"
-                                    value="0">
-                            </el-option>
-                        </el-select>
                     </el-col>
 
                     <el-col :span="4">
@@ -38,8 +22,6 @@
                                 end-placeholder="结束日期" size="medium">
                         </el-date-picker>
                     </el-col>
-
-
                 </el-row>
 
                 <el-row :gutter="10" style="margin-top: 10px;">
@@ -57,66 +39,77 @@
             </div>
 
 
-            <el-table
-                    size="medium"
-                    :data="tableData"
-                    border
-                    style="width: 100%;margin-top: 10px;">
-                <el-table-column
-                        prop="id"
-                        label="ID"
-                        width="80">
-                </el-table-column>
-                <el-table-column
-                        prop="uid"
-                        label="用户ID"
-                        width="80">
-                </el-table-column>
-                <el-table-column
-                        prop="status"
-                        label="状态"
-                        width="80">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.status == 1" style="color: green">成功</span>
-                        <span v-else style="color: red">失败</span>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        prop="info"
-                        label="说明">
-                    <template slot-scope="scope">
-                        <p v-html="scope.row.info"></p>
-                    </template>
-                </el-table-column>
+            <el-tabs type="border-card" style="margin-top: 20px;"
+                     @tab-click="handleClickTabs">
+                <el-tab-pane label="全部"></el-tab-pane>
+                <el-tab-pane label="成功"></el-tab-pane>
+                <el-tab-pane label="失败"></el-tab-pane>
 
-                <el-table-column
-                        prop="get"
-                        label="GET">
-                </el-table-column>
-                <el-table-column
-                        prop="time"
-                        label="时间"
-                        width="200">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.time | formatTime }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        prop="ip"
-                        label="IP"
-                        width="100">
-                </el-table-column>
-            </el-table>
-            <div class="pager_container">
-                <el-pagination
-                        background
-                        layout="prev, pager, next"
-                        :page-size="pagination.limit"
-                        :current-page.sync="pagination.page"
-                        :total="pagination.total_items"
-                        @current-change="getList">
-                </el-pagination>
-            </div>
+                <el-table
+                        size="medium"
+                        :data="tableData"
+                        border
+                        style="width: 100%;"
+                        @sort-change="handleSortChange">
+                    <el-table-column
+                            prop="id"
+                            label="ID"
+                            width="80">
+                    </el-table-column>
+                    <el-table-column
+                            prop="uid"
+                            label="用户ID"
+                            width="80">
+                    </el-table-column>
+                    <el-table-column
+                            prop="status"
+                            label="状态"
+                            width="80">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.status == 1" style="color: green">成功</span>
+                            <span v-else style="color: red">失败</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="info"
+                            label="说明">
+                        <template slot-scope="scope">
+                            <p v-html="scope.row.info"></p>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            prop="get"
+                            label="GET">
+                    </el-table-column>
+                    <el-table-column
+                            prop="time"
+                            label="时间"
+                            width="200"
+                            sortable="custom"
+                    >
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.time | formatTime }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="ip"
+                            label="IP"
+                            width="100">
+                    </el-table-column>
+                </el-table>
+                <div class="pager_container">
+                    <el-pagination
+                            background
+                            layout="prev, pager, next"
+                            :page-size="pagination.limit"
+                            :current-page.sync="pagination.page"
+                            :total="pagination.total_items"
+                            @current-change="getList">
+                    </el-pagination>
+                </div>
+            </el-tabs>
+
 
         </el-card>
 
@@ -129,7 +122,7 @@
             padding: 25px 36px 12px;
         }
         .pager_container {
-            margin-top: 20px;
+
         }
     </style>
 
@@ -152,7 +145,8 @@
                         ip: '',
                         start_time: '',
                         end_time: '',
-                        status: ''
+                        status: '',
+                        sort_time: '',//排序：时间
                     }
                 },
                 watch: {
@@ -181,6 +175,7 @@
                             status: this.form.status,
                             start_time: this.form.start_time,
                             end_time: this.form.end_time,
+                            sort_time: this.form.sort_time
                         };
                         $.ajax({
                             url: "{:U('Admin/LogsApi/getOperateLogList')}",
@@ -215,6 +210,35 @@
                             }
                         })
                     },
+                    handleClickTabs(tab){
+                        if(tab.index == 0){
+                            this.form.status = '';
+                        }
+                        if(tab.index == 1){
+                            this.form.status = '1';
+                        }
+                        if(tab.index == 2){
+                            this.form.status = '0';
+                        }
+                        this.getList()
+                    },
+                    handleSortChange(event){
+                        if(event.prop == 'time'){
+                            if(event.order.toLowerCase().indexOf('asc') >= 0){
+                                this.form.sort_time = 'asc'
+                                this.getList();
+                                return;
+                            }else if(event.order.toLowerCase().indexOf('desc') >= 0){
+                                this.form.sort_time = 'desc'
+                                this.getList();
+                                return;
+                            }
+                        }
+
+                        this.form.sort_time = ''
+                        this.getList();
+                    }
+
                 },
                 mounted: function () {
                     this.getList();

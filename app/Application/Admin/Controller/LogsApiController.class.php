@@ -25,6 +25,7 @@ class LogsApiController extends AdminApiBaseController
         $status = I('status');
         $page = I('page', 1);
         $limit = I('limit', 20);
+        $sort_time = I('sort_time');
         $where = array();
         if (!empty($uid)) {
             $where['uid'] = array('eq', $uid);
@@ -44,7 +45,11 @@ class LogsApiController extends AdminApiBaseController
         $total_count = M("Operationlog")->where($where)->count();
         $total_pages = ceil($total_count / $limit);
 
-        $logs = M("Operationlog")->where($where)->page($page)->limit($limit)->order(array("id" => "desc"))->select();
+        $order = ["id" => "desc"];
+        if (!empty($sort_time)) {
+            $order = ['time' => $sort_time == 'desc' ? 'desc' : 'asc'];
+        }
+        $logs = M("Operationlog")->where($where)->page($page)->limit($limit)->order($order)->select();
 
         $this->ajaxReturn($this->createReturnList(true, $logs, $page, $limit, $total_count, $total_pages));
     }
