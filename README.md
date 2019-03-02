@@ -98,11 +98,10 @@ const event = new CustomEvent('adminOpenNewFrame', {
 window.parent.dispatchEvent(event)
 ```
 
-```
 
 2.刷新指定页面（一般很少用）
 
-```
+```php
 const event = new CustomEvent('adminRefreshFrame', {
   detail: {
     refreshView: {
@@ -118,7 +117,6 @@ window.parent.dispatchEvent(event)
 
 3. 图标配置
 
-
 到iconfont.cn选取icon,用的是svg
 ![图片](https://dn-coding-net-production-pp.codehub.cn/c02721e8-2d56-4407-8e59-8101e6f3fe1b.png)
 
@@ -127,3 +125,5 @@ window.parent.dispatchEvent(event)
 
 设置菜单的icon
 ![图片](https://dn-coding-net-production-pp.codehub.cn/f856614b-fcbe-40f6-9f47-b332c34852dd.png)
+
+拓展：ztbcms默认后台icon已经内置，请打开`/statics/css/iconfont/demo_index.html`查看
