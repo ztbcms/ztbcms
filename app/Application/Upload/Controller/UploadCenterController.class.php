@@ -20,8 +20,5 @@ class UploadCenterController extends AdminBase
         $this->display();
     }
 
-    function videoUploadPanel(){
-        $this->display();
-    }
 
 }

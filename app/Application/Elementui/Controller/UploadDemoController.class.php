@@ -13,8 +13,14 @@ use Common\Controller\AdminBase;
 
 class UploadDemoController extends AdminBase
 {
-    function index(){
+
+
+    function uploadImage(){
         $this->display();
     }
-    
+
+    function uploadFile(){
+        $this->display();
+    }
+
 }
