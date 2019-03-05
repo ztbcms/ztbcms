@@ -4,15 +4,16 @@
     <div id="app" style="" v-cloak>
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleTabClick">
             <el-tab-pane label="本地上传" name="uploadLocal">
-                <p>支持同时上传{{uploadConfig.limit}}个文件 支持格式：jpg,jpeg,gif,png,bmp</p>
+                <p>支持同时上传 <span style="color: orangered;">{{uploadConfig.max_upload}}</span> 个文件 支持格式：<span style="color: orangered;">jpg,jpeg,gif,png,bmp</span></p>
                 <el-upload
                         ref="uploadRef"
-                        :limit="uploadConfig.limit"
+                        :limit="uploadConfig.max_upload"
                         :action="uploadConfig.uploadUrl"
                         :accept="uploadConfig.accept"
                         :on-remove="handleRemove"
                         :on-success="handleUploadSuccess"
                         :on-error="handleUploadError"
+                        :on-exceed="handleExceed"
                         multiple
                         list-type="picture-card"
                         class="thumb-uploader">
@@ -25,8 +26,7 @@
                     <template v-for="(img,index) in galleryList">
                         <div :key="index"
                              class="imgListItme">
-                            <img
-                                    :src="img.url"
+                            <img :src="img.url"
                                     style="width:80px;height: 80px;"
                                     alt="img.name"
                                     @click="selectImgEvent(index)">
@@ -49,13 +49,10 @@
 
         </el-tabs>
 
-
         <div class="footer">
             <el-button type="primary" @click="confirm">确定</el-button>
             <el-button type="default" @click="closePanel">关闭</el-button>
         </div>
-
-
     </div>
 
     <style>
@@ -126,9 +123,9 @@
                 data: {
                     activeName: 'uploadLocal',
                     uploadConfig: {
-                        uploadUrl: "{:U('Upload/UploadAdminApi/uploadByAdmin')}",
-                        limit: 3,
-                        accept: 'image/*'
+                        uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
+                        max_upload: 6,//同时上传文件数
+                        accept: 'image/*' //接收的文件类型，请看：https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
                     },
                     uploadedLocalFileList: [], //本地上传的文件
                     pagination: {
@@ -205,7 +202,10 @@
                         }
                     },
                     handleUploadError: function () {
-                        ELEMENT.Message.success('上传失败');
+                        ELEMENT.Message.error('上传失败');
+                    },
+                    handleExceed: function(){
+                        ELEMENT.Message.error('上传文件数量超限制');
                     },
                     getGalleryList: function () {
                         var that = this;
@@ -255,7 +255,7 @@
                     }
                 },
                 mounted: function () {
-
+                    this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
                 }
             })
         })

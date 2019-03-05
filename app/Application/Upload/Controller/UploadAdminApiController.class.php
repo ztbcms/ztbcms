@@ -16,10 +16,14 @@ class UploadAdminApiController extends AdminApiBaseController
 
     const isadmin = 1; //后台上传
 
+    //模块
+    const MODULE_IMAGE = 'module_upload_images';
+    const MODULE_FILE = 'module_upload_files';
+
     /**
-     *
+     * @param $module  string 文件所属模块
      */
-    public function uploadByAdmin()
+    private function _upload($module)
     {
         if (IS_POST) {
             //回调函数
@@ -28,8 +32,6 @@ class UploadAdminApiController extends AdminApiBaseController
             $upuserid = $userInfo['id'];
             //取得栏目ID
             $catid = I('post.catid', 0, 'intval');
-            //取得模块名称
-            $module = I('post.module', 'admin', 'trim,strtolower');
             //获取附件服务
             $Attachment = service("Attachment", array('module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid));
 
@@ -59,6 +61,14 @@ class UploadAdminApiController extends AdminApiBaseController
         }
     }
 
+    function uploadImage(){
+        $this->_upload(self::MODULE_IMAGE);
+    }
+
+    function uploadFile(){
+        $this->_upload(self::MODULE_FILE);
+    }
+
     function getGalleryList()
     {
         $page = I('page', 1);
@@ -68,6 +78,7 @@ class UploadAdminApiController extends AdminApiBaseController
 
         $db = M('Attachment');
         $where = [
+            'module' => self::MODULE_IMAGE,
             'userid' => $userid,
             'isadmin' => 1,
         ];

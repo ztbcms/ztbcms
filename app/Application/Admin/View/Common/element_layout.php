@@ -17,6 +17,9 @@
 
         <!-- jQuery 2.x -->
         <script src="{$config_siteurl}statics/admin/theme/adminlte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <!-- layer.js -->
+        <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
+
         <!-- vue.js -->
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
         <script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>
