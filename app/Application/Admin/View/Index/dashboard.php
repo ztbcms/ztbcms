@@ -123,6 +123,6 @@
     }([]);</script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-elementUI.70b6a4f6.js></script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-libs.6675385e.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/app.dd2762f1.js></script>
+<script src=/statics/admin/pages/dashboard/static/js/app.78823727.js></script>
 </body>
 </html>
