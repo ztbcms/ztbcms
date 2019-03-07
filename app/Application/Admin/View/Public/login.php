@@ -18,12 +18,11 @@
     <!--  百度统计 -->
 
     <style>
+        html,body{
+            height: 100%;
+            width: 100%;
+        }
         body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             background: #f6f7ff;
         }
 
@@ -40,6 +39,7 @@
             background: #fff;
             box-shadow: 0px 12px 34px 0px rgba(0, 84, 202, 0.14);
             border-radius: 12px;
+            margin: 5% auto;
         }
 
         .logo-box {
@@ -122,9 +122,11 @@
             color: #909399;
             font-size: 14px;
             text-align: center;
+            left: 0;
+            width: 100%;
         }
 
-        .footer p{
+        .footer p {
             margin: 6px;
         }
 
@@ -164,7 +166,7 @@
     </div>
 </div>
 <div class="footer">
-    <p>V{:C('APPLIATION_VERSION')} © 2016-{:date('Y')} POWER BY <a href="https://www.zhutibang.cn">Zhutibang</a></p>
+    <p>V{:C('APPLIATION_VERSION')} © 2016-{:date('Y')} POWER BY <a href="https://www.zhutibang.cn">ZHUTIBANG</a></p>
     <p> 建议分辨率1366*768以上，推荐使用 </p>
     <p>
         Chrome浏览器 <img src="/statics/admin/pages/public/login/chrome.png" alt="">
@@ -177,18 +179,19 @@
     var len = inputs.length;
     var btn = document.querySelector('button');
 
-    inputs.forEach(i => {
-        i.addEventListener('input', inputChange);
-    });
+
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener('input', inputChange);
+    }
 
     function inputChange() {
         var index = 0;
 
-        inputs.forEach(i => {
-            if (i.value.length > 0) {
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value.length > 0) {
                 index++;
             }
-        });
+        }
 
         if (index == len) {
             btn.classList.remove('default');

@@ -220,7 +220,7 @@
                     }
                 },
                 filters: {
-                    formatTime(timestamp) {
+                    formatTime: function(timestamp) {
                         var date = new Date();
                         date.setTime(parseInt(timestamp) * 1000);
                         return moment(date).format('YYYY-MM-DD HH:mm:ss')
