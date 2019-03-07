@@ -8,8 +8,8 @@
     <title>管理平台</title>
     <link rel="shortcut icon" href=/statics/admin/pages/dashboard/favicon.ico>
     <link href=/statics/admin/pages/dashboard/static/css/chunk-elementUI.fd758e0b.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/chunk-libs.88eb1712.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/app.2165ba07.css rel=stylesheet>
+    <link href=/statics/admin/pages/dashboard/static/css/chunk-libs.336c0876.css rel=stylesheet>
+    <link href=/statics/admin/pages/dashboard/static/css/app.0092c034.css rel=stylesheet>
 </head>
 <body>
 <div id=app></div>
@@ -122,7 +122,7 @@
         r()
     }([]);</script>
 <script src=/statics/admin/pages/dashboard/static/js/chunk-elementUI.70b6a4f6.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/chunk-libs.947e1304.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/app.d14fcc6d.js></script>
+<script src=/statics/admin/pages/dashboard/static/js/chunk-libs.6675385e.js></script>
+<script src=/statics/admin/pages/dashboard/static/js/app.dd2762f1.js></script>
 </body>
 </html>
