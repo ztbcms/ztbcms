@@ -127,3 +127,8 @@ window.parent.dispatchEvent(event)
 ![图片](https://dn-coding-net-production-pp.codehub.cn/f856614b-fcbe-40f6-9f47-b332c34852dd.png)
 
 拓展：ztbcms默认后台icon已经内置，请打开`/statics/css/iconfont/demo_index.html`查看
+
+## 后台IE兼容性
+
+IE 10或以上
+
