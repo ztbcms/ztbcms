@@ -446,7 +446,7 @@ CREATE TABLE `cms_menu` (
 -- ----------------------------
 -- Records of cms_menu
 -- ----------------------------
-INSERT INTO `cms_menu` VALUES ('1', '缓存更新', '0', 'Admin', 'Index', 'cache', '', '1', '0', '', '0', '');
+INSERT INTO `cms_menu` VALUES (1, '概览', 0, 'Admin', 'Main', 'index', '', 1, 1, '', 0, '');
 INSERT INTO `cms_menu` VALUES ('2', '我的面板', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('3', '设置', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('4', '个人信息', '2', 'Admin', 'Adminmanage', 'myinfo', '', '0', '1', '', '0', '');
@@ -561,6 +561,11 @@ INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`,
 VALUES
 	(113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0),
 	(114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0);
+
+INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`, `icon`)
+VALUES
+	(115, '缓存更新', 0, 'Admin', 'Index', 'cache', '', 1, 0, '', 0, '');
+
 
 
 -- ----------------------------
