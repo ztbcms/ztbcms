@@ -12,7 +12,10 @@ use Libs\Helper\MysqlHelper;
 
 class MainApiController extends AdminApiBaseController
 {
-
+    /**
+     * 系统信息
+     * @return array
+     */
     private function _getSystemInfo()
     {
         $system_info = [
@@ -64,6 +67,10 @@ class MainApiController extends AdminApiBaseController
         return $system_info;
     }
 
+    /**
+     * 后台统计信息
+     * @return array
+     */
     private function _getAdminStatisticsInfo()
     {
         $limit_time = time() - 7 * 24 * 60 * 60;//7日内
@@ -81,9 +88,9 @@ class MainApiController extends AdminApiBaseController
             'logintime' => ['EGT', $limit_time],
         ])->count();
 
-        if($login_total == 0){
+        if ($login_total == 0) {
             $login_success_percent = 100 . '%';
-        }else{
+        } else {
             $login_success_percent = round($login_success_amount / $login_total * 100, 1) . '%';
         }
 
@@ -97,9 +104,9 @@ class MainApiController extends AdminApiBaseController
             'time' => ['EGT', $limit_time],
         ])->count();
 
-        if($total == 0){
+        if ($total == 0) {
             $operate_success_percent = 100 . '%';
-        }else{
+        } else {
             $operate_success_percent = round($success_amount / $total * 100, 1) . '%';
         }
 
@@ -112,12 +119,30 @@ class MainApiController extends AdminApiBaseController
         return $info;
     }
 
+    /**
+     * 获取警报信息
+     */
+    function _getAlertMessage()
+    {
+        $msg = [];
+
+        if (file_exists(APP_PATH . 'Install')) {
+            $msg [] = [
+                'type' => 'warning', //success,info,warning,error
+                'msg' => '您还没有删除 Install 模块，出于安全的考虑，我们建议您删除 Install 模块(/app/Application/Install)'
+            ];
+        }
+
+        return $msg;
+    }
+
     function getDashboardInfo()
     {
         //服务器信息
         $return_data = [
             'system_info' => $this->_getSystemInfo(),
             'admin_statistics_info' => $this->_getAdminStatisticsInfo(),
+            'alert_message' => $this->_getAlertMessage(),
         ];
 
         $this->ajaxReturn($this->createReturn(true, $return_data));

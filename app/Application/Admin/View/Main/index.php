@@ -5,8 +5,21 @@
         <el-row :gutter="20">
             <!--  左侧  -->
             <el-col :span="19">
-                <!-- 后台统计  -->
                 <el-row :gutter="20">
+                    <template v-for="msg in alert_message">
+                        <el-col :span="24" style="margin-top: 8px;">
+                            <el-alert
+                                    :title="msg.msg"
+                                    :type="msg.type"
+                                    show-icon>
+                            </el-alert>
+                        </el-col>
+                    </template>
+
+                </el-row>
+
+                <!-- 后台统计  -->
+                <el-row :gutter="20" style="margin-top: 20px;">
                     <el-col :span="24">
                         <el-card body-style="height:130px; " class="card-summary">
                             <div class="card-summary-label">后台统计</div>
@@ -210,6 +223,7 @@
                 data: {
                     systemInfo: [],
                     adminStatisticsInfo: {},
+                    alert_message: [],
                 },
                 watch: {
                     'form.search_date': function (newValue) {
@@ -238,6 +252,7 @@
                                 var data = res.data;
                                 that.systemInfo = data.system_info;
                                 that.adminStatisticsInfo = data.admin_statistics_info
+                                that.alert_message = data.alert_message
                             }
                         })
                     },
