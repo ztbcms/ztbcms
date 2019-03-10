@@ -247,6 +247,17 @@ class RoleModel extends Model {
      */
     public function getAccessList($roleid) {
         $priv_data = array();
+        if($roleid == User::administratorRoleId){
+            //超级管理员返回全部
+            return [
+                [
+                    'role_id' => $roleid,
+                    'app' => '%',
+                    'controller' => '%',
+                    'action' => '%',
+                ]
+            ];
+        }
         $data = D("Admin/Access")->getAccessList($roleid);
         if (empty($data)) {
             return $priv_data;

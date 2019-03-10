@@ -55,10 +55,10 @@ class BaseService {
     static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages) {
         $data = [
             'items'       => $items,
-            'page'        => $page,
-            'limit'       => $limit,
-            'total_items' => $total_items,
-            'total_pages' => $total_pages,
+            'page'        => intval($page),
+            'limit'       => intval($limit),
+            'total_items' => intval($total_items),
+            'total_pages' => intval($total_pages),
         ];
 
         return self::createReturn($status, $data);

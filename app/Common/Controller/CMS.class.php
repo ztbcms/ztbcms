@@ -60,7 +60,20 @@ class CMS extends Controller {
         ];
     }
 
-	/**
+    function createReturnList($status, $items, $page, $limit, $total_items, $total_pages) {
+        $data = [
+            'items'       => $items,
+            'page'        => intval($page),
+            'limit'       => intval($limit),
+            'total_items' => intval($total_items),
+            'total_pages' => intval($total_pages),
+        ];
+
+        return self::createReturn($status, $data);
+    }
+
+
+    /**
 	 * 获取CMS 对象
 	 * @return \Common\Controller\CMS
 	 */
@@ -264,7 +277,8 @@ class CMS extends Controller {
 
 	//空操作
 	public function _empty() {
-		$this->error('该页面不存在！');
+	    //404 该页面不存在
+        $this->display(C('TMPL_ACTION_PAGE_NOT_FOUND'));
 	}
 
 	static public function logo() {
