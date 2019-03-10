@@ -6,11 +6,11 @@
 
 return array(
 	//模块名称
-	'modulename' => 'Element UI 示例',
+	'modulename' => 'Element UI 后台示例',
 	//图标
 	'icon' => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
 	//模块简介
-	'introduce' => '常用的UI',
+	'introduce' => '常用的页面演示',
 	//模块介绍地址
 	'address' => 'http://doc.ztbcms.com/module/log/',
 	//模块作者
@@ -26,7 +26,9 @@ return array(
 	//签名
 	'sign' => 'd04078c5b86475cd5a0c690b9905953d',
 	//依赖模块
-	'depend' => array(),
+	'depend' => array(
+	    'Upload'
+    ),
 	//行为注册
 	'tags' => array(),
 	//缓存，格式：缓存key=>array('module','model','action')
