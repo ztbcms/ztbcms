@@ -7,6 +7,7 @@
 namespace Content\Controller;
 
 use Common\Controller\AdminBase;
+use Think\Hook;
 
 class FieldController extends AdminBase {
 
@@ -76,6 +77,9 @@ class FieldController extends AdminBase {
 				$this->error('数据不能为空！');
 			}
 			if ($this->modelfield->editField($post, $fieldid)) {
+                $field = $post['field'];
+                $params = array("modelid" => $modelid, 'field' => $field);
+                Hook::listen('content_model_edit_field', $params);
 				$this->success("更新成功！", U("Field/index", array("modelid" => $modelid)));
 			} else {
 				$error = $this->modelfield->getError();
@@ -151,6 +155,9 @@ class FieldController extends AdminBase {
 				$this->error('数据不能为空！');
 			}
 			if ($this->modelfield->addField($post)) {
+                $field = $post['field'];
+                $params = array("modelid" => $modelid, 'field' => $field);
+                Hook::listen('content_model_edit_field', $params);
 				$this->success("添加成功！", U("Field/index", array("modelid" => $modelid)));
 			} else {
 				$error = $this->modelfield->getError();

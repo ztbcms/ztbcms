@@ -3,17 +3,17 @@
         <td width="100">选项列表</td>
         <td><textarea name="setting[options]" rows="2" cols="20" id="options" style="height:100px;width:400px;">选项名称1|选项值1</textarea></td>
     </tr>
-    <tr> 
+    <tr>
         <td>选项类型</td>
         <td>
-            <input type="radio" name="setting[boxtype]" value="radio" checked onclick="$('#setcols').show();$('#setsize').hide();"/> 单选按钮 
-            <input type="radio" name="setting[boxtype]" value="checkbox" onclick="$('#setcols').show();$('setsize').hide();"/> 复选框 
-            <input type="radio" name="setting[boxtype]" value="select" onclick="$('#setcols').hide();$('setsize').show();" /> 下拉框 
+            <input type="radio" name="setting[boxtype]" value="radio" checked onclick="$('#setcols').show();$('#setsize').hide();"/> 单选按钮
+            <input type="radio" name="setting[boxtype]" value="checkbox" onclick="$('#setcols').show();$('setsize').hide();"/> 复选框
+            <input type="radio" name="setting[boxtype]" value="select" onclick="$('#setcols').hide();$('setsize').show();" /> 下拉框
             <input type="radio" name="setting[boxtype]" value="multiple" onclick="$('#setcols').hide();$('setsize').show();" /> 多选列表框
         </td>
     </tr>
-    <tr> 
-        <td>字段类型</td>
+    <tr>
+    <td>字段类型</td>
         <td>
             <select name="setting[fieldtype]" onchange="javascript:fieldtype_setting(this.value);">
                 <option value="varchar">字符 VARCHAR</option>
@@ -45,6 +45,13 @@
         <td>
             <input type="radio" name="setting[outputtype]" value="1" checked /> 输出选项值 
             <input type="radio" name="setting[outputtype]" value="0" /> 输出选项名称
+        </td>
+    </tr>
+    <tr>
+        <td>创建关联表</td>
+        <td>
+            <input type="radio" name="setting[relation]" value="1" checked /> 是
+            <input type="radio" name="setting[relation]" value="0" /> 否
         </td>
     </tr>
 </table>

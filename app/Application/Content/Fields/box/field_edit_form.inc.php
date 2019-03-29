@@ -47,6 +47,13 @@
             <input type="radio" name="setting[outputtype]" value="0" <?php if (!$setting['outputtype']) echo 'checked'; ?> /> 输出选项名称
         </td>
     </tr>
+    <tr>
+        <td>创建关联表</td>
+        <td>
+            <input type="radio" name="setting[relation]" value="1" <?php if ($setting['outputtype']) echo 'checked'; ?> /> 是
+            <input type="radio" name="setting[relation]" value="0" <?php if (!$setting['outputtype']) echo 'checked'; ?> /> 否
+        </td>
+    </tr>
 </table>
 <script>
     <!--
