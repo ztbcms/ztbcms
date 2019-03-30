@@ -15,9 +15,9 @@ class ContentModelEditFieldBehavior {
             $setting = unserialize($field['setting']);
             if ($setting['relation'] == 1) {
                 //要求关联表，检查数据库表是否存在
-                $model = M('Model')->where(['modelid' => $field['modelid']])->field('modelid,name')->find();
-                $tableName = C('DB_PREFIX') . $model['name'] . '_box_' . $field['field'];
-                $tableNameNo = $model['name'] . '_box_' . $field['field'];
+                $model = M('Model')->where(['modelid' => $field['modelid']])->field('modelid,tablename')->find();
+                $tableName = C('DB_PREFIX') . $model['tablename'] . '_box_' . $field['field'];
+                $tableNameNo = $model['tablename'] . '_box_' . $field['field'];
                 M()->execute("DROP TABLE IF EXISTS `$tableName`");
                 $createTableSql = str_replace('cms_box_options', $tableName,
                     file_get_contents(APP_PATH . 'Content/Data/Sql/cms_box_field.sql'));

@@ -22,9 +22,9 @@ class BoxFieldController extends AdminBase {
     public function list() {
         $modelid = I('get.modelid');
         $fieldid = I('get.fieldid');
-        $model = M('Model')->where(['modelid' => $modelid])->field('name')->find();
+        $model = M('Model')->where(['modelid' => $modelid])->field('tablename')->find();
         $field = M('ModelField')->where(['fieldid' => $fieldid])->field('field')->find();
-        $tableName = $model['name'] . '_box_' . $field['field'];
+        $tableName = $model['tablename'] . '_box_' . $field['field'];
         $options = M($tableName)->select();
         $this->assign('options', $options);
         $this->display();
@@ -38,10 +38,10 @@ class BoxFieldController extends AdminBase {
         if (count($postData) > 0) {
             $modelid = $postData[0]['modelid'];
             $fieldid = $postData[0]['fieldid'];
-            $model = M('Model')->where(['modelid' => $modelid])->field('name')->find();
+            $model = M('Model')->where(['modelid' => $modelid])->field('tablename')->find();
             $field = M('ModelField')->where(['fieldid' => $fieldid])->find();
             if ($model && $field) {
-                $tableName = $model['name'] . '_box_' . $field['field'];
+                $tableName = $model['tablename'] . '_box_' . $field['field'];
                 M($tableName)->where(1)->delete();
                 $options = [];
                 foreach ($postData as $key => &$datum) {
