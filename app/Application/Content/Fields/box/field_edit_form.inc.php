@@ -50,8 +50,8 @@
     <tr>
         <td>创建关联表</td>
         <td>
-            <input type="radio" name="setting[relation]" value="1" <?php if ($setting['outputtype']) echo 'checked'; ?> /> 是
-            <input type="radio" name="setting[relation]" value="0" <?php if (!$setting['outputtype']) echo 'checked'; ?> /> 否
+            <input type="radio" name="setting[relation]" value="1" <?php if ($setting['relation']) echo 'checked'; ?> /> 是
+            <input type="radio" name="setting[relation]" value="0" <?php if (!$setting['relation']) echo 'checked'; ?> /> 否
         </td>
     </tr>
 </table>
