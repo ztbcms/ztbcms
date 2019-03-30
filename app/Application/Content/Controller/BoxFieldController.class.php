@@ -54,6 +54,8 @@ class BoxFieldController extends AdminBase {
                 $setting = unserialize($field['setting']);
                 $setting['options'] = $optionsString;
                 M('ModelField')->where(['fieldid' => $fieldid])->save(['setting' => serialize($setting)]);
+                //清楚字段缓存
+                S('ModelField', null);
                 $this->ajaxReturn(self::createReturn(true, $postData));
             } else {
                 $this->ajaxReturn(self::createReturn(false, $postData, '查不到选项记录'));

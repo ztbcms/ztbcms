@@ -56,7 +56,7 @@ function box($field, $value, $fieldinfo) {
         $id = $fieldinfo['fieldid'];
         $url = U('Content/BoxField/list',['modelid'=>$fieldinfo['modelid'],'fieldid'=>$fieldinfo['fieldid']]);
         $title = '管理'.$fieldinfo['name'];
-        $string.="<span style='margin-left: 20px;'><button onClick=\"omnipotent({$id},'{$url}','{$title}')\" class='btn btn-default'>管理".$fieldinfo['name']."</button></span>";
+        $string.="<span style='margin-left: 20px;'><input type='button' onClick=\"omnipotent({$id},'{$url}','{$title}')\" class='btn btn-default' value='管理".$fieldinfo['name']."'></span>";
     }
     return $string;
 }
