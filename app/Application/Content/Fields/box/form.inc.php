@@ -51,5 +51,12 @@ function box($field, $value, $fieldinfo) {
             $string = \Form::select($option, $value, "name='info[$field][]' id='$field ' size=2 multiple='multiple' style='height:60px;' {$fieldinfo['formattribute']}");
             break;
     }
+    //如果设置了关联表，显示管理按钮
+    if($setting['relation']==1){
+        $id = $fieldinfo['fieldid'];
+        $url = U('Content/BoxField/list',['modelid'=>$fieldinfo['modelid'],'fieldid'=>$fieldinfo['fieldid']]);
+        $title = '管理'.$fieldinfo['name'];
+        $string.="<span style='margin-left: 20px;'><button onClick=\"omnipotent({$id},'{$url}','{$title}')\" class='btn btn-default'>管理".$fieldinfo['name']."</button></span>";
+    }
     return $string;
 }
