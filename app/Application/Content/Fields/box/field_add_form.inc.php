@@ -50,8 +50,8 @@
     <tr>
         <td>创建关联表</td>
         <td>
-            <input type="radio" name="setting[relation]" value="1" checked /> 是
-            <input type="radio" name="setting[relation]" value="0" /> 否
+            <input type="radio" name="setting[relation]" value="1"  /> 是
+            <input type="radio" name="setting[relation]" value="0" checked /> 否
         </td>
     </tr>
 </table>
