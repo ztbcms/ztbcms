@@ -40,9 +40,12 @@ function datetime($field, $value, $fieldinfo) {
     } elseif ($setting['fieldtype'] == 'datetime') {
         $isdatetime = 1;
         $timesystem = 1;
+        $format_class =  'J_datetime';
     } elseif ($setting['fieldtype'] == 'datetime_a') {
         $isdatetime = 1;
         $timesystem = 0;
+    } else {
+        $format_class =  'J_date';
     }
     return \Form::date("info[{$field}]", $value, $isdatetime, 1, 'true', $timesystem, $format_class);
 }

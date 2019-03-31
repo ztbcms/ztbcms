@@ -47,7 +47,8 @@ body fieldset legend {
 <body class="J_scroll_fixed">
 <div class="wrap J_check_wrap">
   <form name="myform" id="myform" action="{:U("Content/edit")}" method="post" class="J_ajaxForms" enctype="multipart/form-data">
-  <div class="col-right">
+    <if condition="$forminfos['senior']" >
+        <div class="col-right">
     <div class="table_full">
       <table width="100%">
 <?php
@@ -80,6 +81,7 @@ if(is_array($forminfos['senior'])) {
       </table>
     </div>
   </div>
+    </if>
   <div class="col-auto">
     <div class="h_a">内容</div>
     <div class="table_full">
