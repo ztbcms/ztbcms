@@ -28,9 +28,9 @@ class content_form {
 	/**
 	 * 构造函数
 	 * @param type $modelid 模型ID
-	 * @param type $catid 栏目id
+	 * @param int $catid 栏目id
 	 */
-	public function __construct($modelid, $catid) {
+	public function __construct($modelid, $catid = 0) {
 		$this->model = cache("Model");
 		if ($modelid) {
 			$this->setModelid($modelid, $catid);
