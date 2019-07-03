@@ -27,4 +27,5 @@ return array(
 	'downfile' => '单文件上传',
 	'downfiles' => '多文件上传',
 	'omnipotent' => '万能字段',
+    'relationbox' => '关联字段'
 );
