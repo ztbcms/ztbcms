@@ -1,21 +1,26 @@
 <?php
 
 /**
- * 选项字段类型内容获取
- * @param type $field 字段名
- * @param type $value 字段内容
+ * 关联栏目字段类型内容获取
+ *
+ * @param $field
+ * @param $value
+ *
+ * @throws \Think\Exception
  * @return string
  */
-function box($field, $value) {
+function relationbox($field, $value)
+{
     $setting = unserialize($this->fields[$field]['setting']);
     if ($setting['outputtype']) {
         return $value;
     } else {
-        $options = explode("\n", $setting['options']);
-        foreach ($options as $_k) {
-            $v = explode("|", $_k);
-            $k = trim($v[1]);
-            $option[$k] = $v[0];
+        $catid = $setting['options'];
+        $catInfo = getCategory($catid);
+        $model = Content\Model\ContentModel::getInstance($catInfo['modelid']);
+        $records = $model->where(['status' => 99])->select();
+        foreach ($records as $record) {
+            $option[$record['id']] = $record[$setting['fieldkey']];
         }
         $string = '';
         switch ($setting['boxtype']) {
@@ -26,7 +31,7 @@ function box($field, $value) {
                 $value_arr = explode(',', $value);
                 foreach ($value_arr as $_v) {
                     if ($_v)
-                        $string .= $option[$_v] . ' 、';
+                        $string .= $option[$_v].' 、';
                 }
                 break;
             case 'select':
@@ -36,7 +41,7 @@ function box($field, $value) {
                 $value_arr = explode(',', $value);
                 foreach ($value_arr as $_v) {
                     if ($_v)
-                        $string .= $option[$_v] . ' 、';
+                        $string .= $option[$_v].' 、';
                 }
                 break;
         }
