@@ -88,7 +88,7 @@ parent.window.__adminOpenNewFrame({
 })
 
 //方法3 底层实现方法,使用事件触发
-const event = new CustomEvent('adminOpenNewFrame', {
+var event = new CustomEvent('adminOpenNewFrame', {
   detail: {
     title: '启动父窗口1', 
     router_path: '/a/b/c', 
@@ -101,8 +101,8 @@ window.parent.dispatchEvent(event)
 
 2.刷新指定页面（一般很少用）
 
-```php
-const event = new CustomEvent('adminRefreshFrame', {
+```js
+var event = new CustomEvent('adminRefreshFrame', {
   detail: {
     refreshView: {
       name:'路由的name',
