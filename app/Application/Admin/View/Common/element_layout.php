@@ -23,6 +23,10 @@
         <!-- vue.js -->
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
         <script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>
+
+        <!--  ztbcms工具类  -->
+        <script src="{$config_siteurl}statics/js/ztbcms/ztbcms.js"></script>
+
         <script>
             (function (vue) {
                 vue.mixin(window.__vueCommon);
@@ -86,6 +90,18 @@
                         }
                     })
                 });
+
+                //打开新的iframe（内容页）
+                window.openNewIframe = function (title, url) {
+                    if (parent.window != window) {
+                        parent.window.__adminOpenNewFrame({
+                            title: title,
+                            url: url
+                        })
+                    } else {
+                        window.location.href = url;
+                    }
+                }.bind(this)
 
             })(jQuery);
         </script>
