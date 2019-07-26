@@ -11,26 +11,38 @@ use Admin\Service\User;
 
 class AdminmanageController extends AdminBase {
 
-    //修改当前登录状态下的用户个人信息
+    /**
+     * 修改当前登录状态下的用户个人信息
+     */
     public function myinfo() {
         if (IS_POST) {
+            sleep(5);
             $data = array(
                 'id' => User::getInstance()->id,
                 'nickname' => I('nickname'),
                 'email' => I('email'),
                 'remark' => I('remark')
             );
-            if (D("Admin/User")->create($data)) {
+            $db = D("Admin/User");
+            if ($db->create($data)) {
                 if (D("Admin/User")->where(array('id' => User::getInstance()->id))->save() !== false) {
-                    $this->success("资料修改成功！", U("Adminmanage/myinfo"));
+                    $this->ajaxReturn(self::createReturn(true, null, '操作成功'));
                 } else {
-                    $this->error("更新失败！");
+                    $this->ajaxReturn(self::createReturn(false, null, '操作失败'));
                 }
             } else {
-                $this->error(D("Admin/User")->getError());
+                $this->ajaxReturn(self::createReturn(false, null, $db->getError()));
             }
         } else {
-            $this->assign("data", User::getInstance()->getInfo());
+            $user_info = User::getInstance()->getInfo();
+            $data = [
+                'id' => $user_info['id'],
+                'username' => $user_info['username'],
+                'nickname' => $user_info['nickname'],
+                'email' => $user_info['email'],
+                'remark' => $user_info['remark']
+            ];
+            $this->assign("data", $data);
             $this->display();
         }
     }
