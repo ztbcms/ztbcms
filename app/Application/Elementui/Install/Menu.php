@@ -35,10 +35,16 @@ return array(
                 "name" => "文件上传",
             ),
             array(
-                "route" => "Elementui/Element/common_table",
+                "route" => "Elementui/ElementDemo/common_table",
                 "type" => 1,
                 "status" => 1,
                 "name" => "列表页",
+            ),
+            array(
+                "route" => "Elementui/ElementDemo/common_form",
+                "type" => 1,
+                "status" => 1,
+                "name" => "表单页",
             ),
         ),
     ),
