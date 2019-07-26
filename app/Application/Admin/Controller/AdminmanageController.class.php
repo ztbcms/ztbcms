@@ -16,7 +16,6 @@ class AdminmanageController extends AdminBase {
      */
     public function myinfo() {
         if (IS_POST) {
-            sleep(5);
             $data = array(
                 'id' => User::getInstance()->id,
                 'nickname' => I('nickname'),
