@@ -25,7 +25,7 @@
                 <el-button class="filter-item" type="primary" icon="el-icon-search">
                     搜索
                 </el-button>
-                <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
+                <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="alert('TODO..')">
                     添加
                 </el-button>
 
@@ -53,7 +53,7 @@
                 </el-table-column>
                 <el-table-column label="标题" min-width="150px">
                     <template slot-scope="{row}">
-                        <span class="link-type">{{ row.title }}</span>
+                        <span  style="color: #337ab7;cursor: pointer;" @click="openArticleLink(row.link)">{{ row.title }}</span>
                         <el-tag>{{ row.type }}</el-tag>
                     </template>
                 </el-table-column>
@@ -175,7 +175,7 @@
                     },
                 },
                 methods: {
-                    getList() {
+                    getList: function() {
                         this.listLoading = true
                         // this.list = response.data.items
                         // this.total = response.data.total
@@ -199,7 +199,8 @@
                                 comment_disabled: true,
                                 pageviews: '1000',
                                 image_uri: 'https://picsum.photos/200',
-                                platforms: ['a-platform']
+                                platforms: ['a-platform'],
+                                link: 'https://baidu.com?v=' + i,
                             }
                             new_list.push(item);
                             this.list = new_list
@@ -209,7 +210,7 @@
                             this.listLoading = false
                         }, 1.5 * 1000)
                     },
-                    handleFilter() {
+                    handleFilter: function() {
                         this.listQuery.page = 1
                         this.getList()
                     },
@@ -236,14 +237,22 @@
                                 ? 'descending'
                                 : ''
                     },
-                    handleModifyStatus(row, status) {
+                    handleModifyStatus: function(row, status) {
                         this.$message({
                             message: '操作Success',
                             type: 'success'
                         })
                         row.status = status
                     },
-
+                    //以窗口形式打开链接
+                    openArticleLink: function(url){
+                        layer.open({
+                            type: 2,
+                            title: '预览',
+                            content: url,
+                            area: ['60%', '70%'],
+                        })
+                    }
                 },
                 mounted: function () {
                     this.getList();

@@ -19,7 +19,7 @@ class ElementDemoController extends AdminBase
     }
 
     //表单
-    function form()
+    function common_form()
     {
         $this->display();
     }
