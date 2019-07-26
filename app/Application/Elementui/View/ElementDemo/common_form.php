@@ -17,17 +17,26 @@
                                     <el-option label="区域二" value="beijing"></el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="活动时间">
+                            <el-form-item label="开始时间">
                                 <el-col :span="11">
-                                    <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.start_date" style="width: 100%;"></el-date-picker>
                                 </el-col>
                                 <el-col :span="2" style="text-align: center;">-</el-col>
                                 <el-col :span="11">
-                                    <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                                    <el-time-picker placeholder="选择时间" format="HH:mm:ss" value-format="HH:mm:ss" v-model="form.start_time" style="width: 100%;"></el-time-picker>
+                                </el-col>
+                            </el-form-item>
+                            <el-form-item label="结束时间">
+                                <el-col :span="11">
+                                    <el-date-picker type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="form.end_date" style="width: 100%;"></el-date-picker>
+                                </el-col>
+                                <el-col :span="2" style="text-align: center;">-</el-col>
+                                <el-col :span="11">
+                                    <el-time-picker placeholder="选择时间" format="HH:mm:ss" value-format="HH:mm:ss" v-model="form.end_time" style="width: 100%;"></el-time-picker>
                                 </el-col>
                             </el-form-item>
                             <el-form-item label="即时配送">
-                                <el-switch v-model="form.delivery"></el-switch>
+                                <el-switch v-model="form.delivery" active-value="1" inactive-value="0"></el-switch>
                             </el-form-item>
                             <el-form-item label="活动性质">
                                 <el-checkbox-group v-model="form.type">
@@ -37,14 +46,14 @@
                                     <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
                                 </el-checkbox-group>
                             </el-form-item>
-                            <el-form-item label="特殊资源">
-                                <el-radio-group v-model="form.resource">
-                                    <el-radio label="线上品牌商赞助"></el-radio>
-                                    <el-radio label="线下场地免费"></el-radio>
+                            <el-form-item label="功能开关">
+                                <el-radio-group v-model="form.enable">
+                                    <el-radio label="1">开启</el-radio>
+                                    <el-radio label="0">关闭</el-radio>
                                 </el-radio-group>
                             </el-form-item>
                             <el-form-item label="活动形式">
-                                <el-input type="textarea" v-model="form.desc"></el-input>
+                                <el-input type="textarea" v-model="form.desc" rows="3"></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -72,11 +81,13 @@
                     form: {
                         name: '',
                         region: '',
-                        date1: '',
-                        date2: '',
-                        delivery: false,
+                        start_date: '',
+                        start_time: '',
+                        end_date: '',
+                        end_time: '',
+                        delivery: 0,
                         type: [],
-                        resource: '',
+                        enable: '1',
                         desc: ''
                     }
                 },
