@@ -23,7 +23,7 @@ class DeleteLoglog extends Cron {
     public function run($cronId) {
         \Think\Log::record("Run:DeleteCronLog");
         $time = time() - 60 * 60 * 24 * 30;
-        $where['inputtime'] = array('ELT', $time);
+        $where['input_time'] = array('ELT', $time);
         $res = D('Cron/Log')->where($where)->delete();
         echo '删除计划任务日志记录数:' . $res;
     }
