@@ -630,11 +630,15 @@ function initupload($module, $catid, $args, $userid, $groupid = 8, $isadmin = fa
  * @return string|boolean 返回域名
  */
 function urlDomain($url) {
-	if ($url) {
-		$pathinfo = parse_url($url);
-		return $pathinfo['scheme'] . "://" . $pathinfo['host'] .':'.$pathinfo['port'];
-	}
-	return false;
+    if ($url) {
+        $pathinfo = parse_url($url);
+        $domain = $pathinfo['scheme'] . "://" . $pathinfo['host'];
+        if (isset($pathinfo['port'])) {
+            $domain .= ':' . $pathinfo['port'];
+        }
+        return $domain;
+    }
+    return '';
 }
 
 /**
