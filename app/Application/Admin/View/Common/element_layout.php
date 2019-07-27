@@ -59,9 +59,11 @@
             ;(function () {
 
                 $(document).ready(function () {
+                    //是否启用 loading
+                    window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = true;
                     //注册 ajax加载时 显示加载框
                     $(document).ajaxStart(function () {
-                        if (ELEMENT) {
+                        if (ELEMENT && window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE) {
                             //显示时间
                             window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time = Date.now();
                             //load实例
