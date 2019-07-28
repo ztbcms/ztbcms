@@ -32,7 +32,6 @@
             </div>
             <el-table
                     :key="tableKey"
-                    v-loading="listLoading"
                     :data="list"
                     border
                     fit
@@ -141,7 +140,6 @@
                     tableKey: 0,
                     list: [],
                     total: 0,
-                    listLoading: true,
                     listQuery: {
                         page: 1,
                         limit: 20,
@@ -176,16 +174,13 @@
                 },
                 methods: {
                     getList: function() {
-                        this.listLoading = true
-                        // this.list = response.data.items
-                        // this.total = response.data.total
-                        // Just to simulate the time of the request
+                        //模拟
                         var new_list = [];
 
                         for (var i = 0; i < 20; i++) {
                             var item = {
                                 id: i,
-                                timestamp: 1564040831,
+                                timestamp: Date.now()+i,
                                 author: '小明',
                                 reviewer: '大明',
                                 title: '这里是文章',
@@ -206,9 +201,7 @@
                             this.list = new_list
                             this.total = 400
                         }
-                        setTimeout(() => {
-                            this.listLoading = false
-                        }, 1.5 * 1000)
+
                     },
                     handleFilter: function() {
                         this.listQuery.page = 1
