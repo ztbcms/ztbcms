@@ -120,7 +120,7 @@
             position: absolute;
             bottom: 16px;
             color: #909399;
-            font-size: 14px;
+            font-size: 12px;
             text-align: center;
             left: 0;
             width: 100%;
@@ -137,6 +137,7 @@
 
         .footer p img {
             vertical-align: bottom;
+            height: 20px;
         }
     </style>
     <admintemplate file="Admin/Common/Js"/>
