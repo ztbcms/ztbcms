@@ -7,7 +7,7 @@
             <el-row>
                 <el-col :sm="16" :md="8" >
                     <div class="grid-content ">
-                        <el-form ref="form" :model="form" label-width="80px">
+                        <el-form ref="form" :model="form" label-width="120px">
                             <el-form-item label="用户ID">
                                 {{ form.id }}
                             </el-form-item>
