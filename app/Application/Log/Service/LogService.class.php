@@ -19,6 +19,7 @@ class LogService extends BaseService
      *
      * @param string $category 日志类别
      * @param string $message 日志信息
+     * @return array
      */
     static function log($category = '', $message = '')
     {
@@ -32,9 +33,9 @@ class LogService extends BaseService
 
         $insertid = $db->add($data);
         if ($insertid > 0) {
-            self::createReturn(true, '', '添加日志成功');
+            return self::createReturn(true, null, '添加日志成功');
         } else {
-            self::createReturn(false, '', '添加日志失败');
+            return self::createReturn(false, null, '添加日志失败');
         }
     }
 
@@ -48,7 +49,7 @@ class LogService extends BaseService
      * @param string $message 指定
      * @return array
      */
-    public static function getLogs($category = '', $start_date = '', $end_date = '', $page = 1, $limit = 20, $message = '')
+    public static function getLogs($category = '', $message = '', $start_date = '', $end_date = '', $page = 1, $limit = 20)
     {
         $db = D('Log/Log');
         //初始化条件数组
@@ -78,19 +79,13 @@ class LogService extends BaseService
         //总页数
         $total_page = ceil($count / $limit);
         //获取到的分页数据
-        $Logs = $db->where($where)->page($page)->limit($limit)->select();
-        $data = [
-            'items' => $Logs,
-            'page' => $page,
-            'limit' => $limit,
-            'total_page' => $total_page,
-            'total' => $count
-        ];
+        $logs = $db->where($where)->page($page)->limit($limit)->order('id desc')->select();
 
-        return self::createReturn(true, $data);
+        return self::createReturnList(true, $logs, $page, $limit, $count, $total_page);
     }
 
     /**
+     * 删除日志
      * @param $id
      * @return array
      */
@@ -102,8 +97,8 @@ class LogService extends BaseService
         $db = D('Log/Log');
         $num = $db->where(['id' => ['EQ', $id]])->delete();
         if ($num) {
-            return self::createReturn(true, '', '操作成功');
+            return self::createReturn(true, null, '操作成功');
         }
-        return self::createReturn(false, '', '操作失败');
+        return self::createReturn(false, null, '操作失败');
     }
 }

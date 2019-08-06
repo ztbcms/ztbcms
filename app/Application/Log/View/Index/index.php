@@ -25,6 +25,9 @@
                 <el-button class="filter-item" type="primary" @click="search">
                     搜索
                 </el-button>
+                <el-button class="filter-item" type="primary" @click="clickAddLog">
+                    添加日志
+                </el-button>
             </div>
             <el-table
                     :key="tableKey"
@@ -56,7 +59,7 @@
                 </el-table-column>
                 <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="{row}">
-                        <el-button v-if="row.status!='deleted'" size="mini" type="danger"
+                        <el-button size="mini" type="danger"
                                    @click="deleteLog(row.id)">
                             删除
                         </el-button>
@@ -70,7 +73,7 @@
                         background
                         layout="prev, pager, next, jumper"
                         :total="total"
-                        v-show="total>0"
+                        v-show="total > 0"
                         :current-page.sync="where.page"
                         :page-size.sync="where.limit"
                         @current-change="getList"
@@ -126,14 +129,6 @@
                     parseTime: function (time, format) {
                         return Ztbcms.formatTime(time, format)
                     },
-                    statusFilter: function (status) {
-                        var statusMap = {
-                            published: 'success',
-                            draft: 'info',
-                            deleted: 'danger'
-                        }
-                        return statusMap[status]
-                    },
                 },
                 methods: {
                     getList: function () {
@@ -146,8 +141,8 @@
                             success: function (res) {
                                 if (res.status) {
                                     that.logs = res.data.items;
-                                    that.total = res.data.total - 1 + 1;
-                                    that.where.page = res.data.page - 1 + 1;
+                                    that.total = res.data.total_items;
+                                    that.where.page = res.data.page;
                                 }
                             }
                         });
@@ -161,7 +156,16 @@
                         this.getList()
                     },
                     deleteLog: function (id) {
-                        var that = this;
+                        var that = this
+                        layer.confirm('确认删除？', {title:'提示'}, function(index){
+                            //do something
+                            that.doDeleteLog(id)
+
+                            layer.close(index);
+                        });
+                    },
+                    doDeleteLog: function (id){
+                        var that = this
                         $.ajax({
                             url: '{:U("Log/Index/deleteLog")}',
                             data: {
@@ -176,7 +180,6 @@
                                 } else {
                                     that.$message.error(res.msg);
                                 }
-                                this.status = false;
                             }
                         });
                     },
@@ -187,6 +190,19 @@
                             title: '预览',
                             content: url,
                             area: ['60%', '70%'],
+                        })
+                    },
+                    clickAddLog: function (){
+                        var url = "{:U('Log/Index/addLog')}"
+                        var that = this
+                        layer.open({
+                            type: 2,
+                            title: '编辑',
+                            content: url,
+                            area: ['60%', '70%'],
+                            end: function(){
+                                that.getList()
+                            }
                         })
                     }
                 },

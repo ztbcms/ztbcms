@@ -28,6 +28,18 @@ return array(
                  "status" => 0,
                  "name" => "获取日志列表信息接口",
              ),
+            array(
+                "route" => "Log/Index/addLog",
+                "type" => 1,
+                "status" => 0,
+                "name" => "添加日志",
+            ),
+            array(
+                "route" => "Log/Index/doAddLog",
+                "type" => 1,
+                "status" => 0,
+                "name" => "添加日志接口",
+            ),
         ),
     ),
 );

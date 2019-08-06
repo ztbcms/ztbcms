@@ -19,12 +19,31 @@ class IndexController extends AdminBase
     {
         //默认搜索最近3日
         $end_date = date('Y-m-d');
-        $start_date = date('Y-m-d', time() - 3 * 24 * 60 *60);
+        $start_date = date('Y-m-d', time() - 3 * 24 * 60 * 60);
         $this->assign('data', [
             'start_date' => $start_date,
             'end_date' => $end_date,
         ]);
         $this->display();
+    }
+
+    /**
+     * 添加日志页
+     */
+    public function addLog()
+    {
+        $this->display();
+    }
+
+    /**
+     * 添加日志操作
+     */
+    public function doAddLog()
+    {
+        $category = I('category');
+        $message = I('message');
+        $result = LogService::log($category, $message);
+        $this->ajaxReturn($result);
     }
 
     /**
@@ -42,10 +61,10 @@ class IndexController extends AdminBase
         $limit = I('limit', 20);
         //按内容搜索时的日志内容关键字
         $message = I('message');
-        $sort = I('sort');
-        $data = LogService::getLogs($category, $start_date, $end_date, $page, $limit, $message, $sort);
+
+        $result = LogService::getLogs($category, $message, $start_date, $end_date, $page, $limit);
         //返回数据
-        $this->ajaxReturn($data);
+        $this->ajaxReturn($result);
     }
 
     /**
@@ -54,7 +73,7 @@ class IndexController extends AdminBase
     public function deleteLog()
     {
         $id = I('id');
-        $data = LogService::deleteLog($id);
-        $this->ajaxReturn($data);
+        $result = LogService::deleteLog($id);
+        $this->ajaxReturn($result);
     }
 }
