@@ -74,7 +74,7 @@ class PublicController extends MemberbaseController {
 			} else {
 				$script = '';
 			}
-			$this->message("登陆成功！", array(
+			$this->message("登录成功", array(
 				'error' => 10000,
 				'uid' => $userid,
 				'vip' => $userInfo['vip'],
@@ -555,7 +555,7 @@ class PublicController extends MemberbaseController {
 		//登陆用户名
 		$loginName = I('post.loginName', '', 'trim');
 		if (empty($loginName)) {
-			$this->error('登陆用户名不能为空！');
+			$this->error('登录用户名不能为空！');
 		}
 		//验证码
 		$vCode = I('post.vCode', '', 'trim');
