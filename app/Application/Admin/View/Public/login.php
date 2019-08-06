@@ -117,6 +117,7 @@
         }
 
         .footer {
+            z-index: -1;
             position: absolute;
             bottom: 16px;
             color: #909399;
