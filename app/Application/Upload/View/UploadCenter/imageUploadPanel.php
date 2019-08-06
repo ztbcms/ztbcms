@@ -238,11 +238,10 @@
                         this.galleryList[index].is_select = !this.galleryList[index].is_select
                     },
                     confirm: function(){
-                        event = new CustomEvent('ZTBCMS_UPLOAD_FILE', {
-                            detail: {
-                                files: this.selectdImageList
-                            }
-                        })
+                        var event = document.createEvent('CustomEvent');
+                        event.initCustomEvent('ZTBCMS_UPLOAD_FILE', true, true, {
+                            files: this.selectdImageList
+                        });
                         window.parent.dispatchEvent(event)
                         this.closePanel();
                     },

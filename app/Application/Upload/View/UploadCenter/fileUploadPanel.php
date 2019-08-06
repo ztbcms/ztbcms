@@ -162,11 +162,10 @@
                         ELEMENT.Message.error('上传文件数量超限制');
                     },
                     confirm: function(){
-                        event = new CustomEvent('ZTBCMS_UPLOAD_FILE', {
-                            detail: {
-                                files: this.selectdImageList
-                            }
-                        })
+                        var event = document.createEvent('CustomEvent');
+                        event.initCustomEvent('ZTBCMS_UPLOAD_FILE', true, true, {
+                            files: this.selectdImageList
+                        });
                         window.parent.dispatchEvent(event)
                         this.closePanel();
                     },
