@@ -456,25 +456,25 @@ INSERT INTO `cms_menu` VALUES ('5', '修改个人信息', '4', 'Admin', 'Adminma
 INSERT INTO `cms_menu` VALUES ('6', '修改密码', '4', 'Admin', 'Adminmanage', 'chanpass', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('7', '系统设置', '3', 'Admin', 'Config', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('8', '站点配置', '7', 'Admin', 'Config', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('9', '邮箱配置', '8', 'Admin', 'Config', 'mail', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('10', '附件配置', '8', 'Admin', 'Config', 'attach', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('11', '高级配置', '8', 'Admin', 'Config', 'addition', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('12', '扩展配置', '8', 'Admin', 'Config', 'extend', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('13', '行为管理', '7', 'Admin', 'Behavior', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('14', '行为日志', '13', 'Admin', 'Behavior', 'logs', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('15', '编辑行为', '13', 'Admin', 'Behavior', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('16', '删除行为', '13', 'Admin', 'Behavior', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('17', '后台菜单管理', '7', 'Admin', 'Menu', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('18', '添加菜单', '17', 'Admin', 'Menu', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('19', '修改', '17', 'Admin', 'Menu', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('20', '删除', '17', 'Admin', 'Menu', 'delete', '', '1', '0', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('9', '邮箱配置', '7', 'Admin', 'Config', 'mail', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('10', '附件配置', '7', 'Admin', 'Config', 'attach', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('11', '高级配置', '7', 'Admin', 'Config', 'addition', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('12', '扩展配置', '7', 'Admin', 'Config', 'extend', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('13', '行为管理', '3', 'Admin', 'Behavior', 'index', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('14', '行为日志', '13', 'Admin', 'Behavior', 'logs', '', '1', '1', '', '2', '');
+INSERT INTO `cms_menu` VALUES ('15', '编辑行为', '13', 'Admin', 'Behavior', 'edit', '', '1', '0', '', '5', '');
+INSERT INTO `cms_menu` VALUES ('16', '删除行为', '13', 'Admin', 'Behavior', 'delete', '', '1', '0', '', '4', '');
+INSERT INTO `cms_menu` VALUES ('17', '后台菜单管理', '3', 'Admin', 'Menu', 'index', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('18', '添加菜单', '17', 'Admin', 'Menu', 'add', '', '1', '1', '', '2', '');
+INSERT INTO `cms_menu` VALUES ('19', '修改菜单', '17', 'Admin', 'Menu', 'edit', '', '1', '0', '', '3', '');
+INSERT INTO `cms_menu` VALUES ('20', '删除菜单', '17', 'Admin', 'Menu', 'delete', '', '1', '0', '', '4', '');
 INSERT INTO `cms_menu` VALUES ('21', '管理员设置', '3', 'Admin', 'Management', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('22', '管理员管理', '21', 'Admin', 'Management', 'manager', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('23', '添加管理员', '22', 'Admin', 'Management', 'adminadd', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('22', '管理员列表', '21', 'Admin', 'Management', 'manager', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('23', '添加管理员', '21', 'Admin', 'Management', 'adminadd', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('24', '编辑管理信息', '22', 'Admin', 'Management', 'edit', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('25', '删除管理员', '22', 'Admin', 'Management', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('26', '角色管理', '21', 'Admin', 'Rbac', 'rolemanage', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('27', '添加角色', '26', 'Admin', 'Rbac', 'roleadd', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('26', '角色管理', '3', 'Admin', 'Rbac', 'rolemanage', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('27', '添加角色', '26', 'Admin', 'Rbac', 'roleadd', '', '1', '1', '', '2', '');
 INSERT INTO `cms_menu` VALUES ('28', '删除角色', '26', 'Admin', 'Rbac', 'roledelete', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('29', '角色编辑', '26', 'Admin', 'Rbac', 'roleedit', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('30', '角色授权', '26', 'Admin', 'Rbac', 'authorize', '', '1', '0', '', '0', '');
@@ -483,7 +483,7 @@ INSERT INTO `cms_menu` VALUES ('32', '后台登录日志', '31', 'Admin', 'Logs'
 INSERT INTO `cms_menu` VALUES ('33', '后台操作日志', '31', 'Admin', 'Logs', 'index', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('34', '删除一个月前的登录日志', '32', 'Admin', 'Logs', 'deleteloginlog', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('35', '删除一个月前的操作日志', '33', 'Admin', 'Logs', 'deletelog', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('36', '添加行为', '13', 'Admin', 'Behavior', 'add', '', '1', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('36', '添加行为', '13', 'Admin', 'Behavior', 'add', '', '1', '1', '', '3', '');
 INSERT INTO `cms_menu` VALUES ('37', '模块', '0', 'Admin', 'Module', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('42', '模块管理', '37', 'Admin', 'Module', 'local', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('43', '本地模块', '42', 'Admin', 'Module', 'index', '', '1', '1', '', '0', '');
@@ -557,17 +557,12 @@ INSERT INTO `cms_menu` VALUES ('109', '升级模块', '39', 'Admin', 'Moduleshop
 INSERT INTO `cms_menu` VALUES ('110', '安装插件', '40', 'Admin', 'Addonshop', 'install', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('111', '升级插件', '40', 'Admin', 'Addonshop', 'upgrade', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('112', '栏目授权', '26', 'Admin', 'Rbac', 'setting_cat_priv', '', '1', '0', '', '0', '');
-
--- 权限组
-INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`)
-VALUES
-	(113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0),
-	(114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0);
-
-INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`, `icon`)
-VALUES
-	(115, '缓存更新', 0, 'Admin', 'Index', 'cache', '', 1, 0, '', 0, '');
-
+INSERT INTO `cms_menu` VALUES (113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0,'');
+INSERT INTO `cms_menu` VALUES (114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0,'');
+INSERT INTO `cms_menu` VALUES (115, '缓存更新', 0, 'Admin', 'Index', 'cache', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '');
+INSERT INTO `cms_menu` VALUES (117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '');
+INSERT INTO `cms_menu` VALUES (118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '');
 
 
 -- ----------------------------
