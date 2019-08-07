@@ -261,10 +261,10 @@
                         this.openNewIframeByRouter('内容管理', '/65Content/Content/index', "{:U('Content/Content/index')}")
                     },
                     gotoPage2: function () {
-                        this.openNewIframeByRouter('模型管理', '/54Content/Models/index', "{:U('/Content/Models/index')}")
+                        this.openNewIframeByRouter('模型管理', '/54Content/Models/index', "{:U('Content/Models/index')}")
                     },
                     gotoPage3: function () {
-                        this.openNewIframeByRouter('站点配置', '/8Admin/Config/index', "{:U('/Admin/Config/index')}")
+                        this.openNewIframeByRouter('站点配置', '/8Admin/Config/index', "{:U('Admin/Config/index')}")
                     },
 
                     gotoPage4: function () {
@@ -273,8 +273,6 @@
                     gotoPage5: function () {
                         this.openNewIframeByUrl('开发文档', "http://ztbcms.com/")
                     }
-
-
                 },
                 mounted: function () {
                     this.getInfo();
