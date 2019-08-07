@@ -18,6 +18,18 @@ class Route {
     public static function check(){
         $depr   =   C('URL_PATHINFO_DEPR');
         $regx   =   preg_replace('/\.'.__EXT__.'$/i','',trim($_SERVER['PATH_INFO'],$depr));
+        //先检测后缀是否满足伪静态
+        if (!empty(__EXT__)) {
+            $ext = preg_replace('/\./i', '', __EXT__);
+            $URL_HTML_SUFFIX = preg_replace('/\./i', '', C('URL_HTML_SUFFIX'));
+            if (C('URL_CASE_INSENSITIVE')) {
+                $ext = strtolower($ext);
+                $URL_HTML_SUFFIX = strtolower($URL_HTML_SUFFIX);
+            }
+            if ($ext !== $URL_HTML_SUFFIX) {
+                return false;
+            }
+        }
         // 分隔符替换 确保路由定义使用统一的分隔符
         if('/' != $depr){
             $regx = str_replace($depr,'/',$regx);

@@ -11,6 +11,8 @@ var GV = {
 
 <!-- layer.js -->
 <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
+<!--  ztbcms工具类(必须在vue-commonn 前加载)  -->
+<script src="{$config_siteurl}statics/js/ztbcms/ztbcms.js"></script>
 <!-- vue.js -->
 <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
 <script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>

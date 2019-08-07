@@ -1,96 +1,136 @@
-<extend name="../../Admin/View/Common/base_layout"/>
-<block name="content">
-    <div id="app" style="padding: 8px;background: white;" v-cloak>
-        <h4>日志列表</h4>
-        <hr>
-        <div class="search_type cc mb10">
-            类别：<input type="text" class="input" v-model="where.category" placeholder="支持模糊搜索">
-            日志内容：<input type="text" class="input" v-model="where.message" placeholder="支持模糊搜索">
-            时间：
-            <input type="text" name="start_date" class="input datepicker" >
-            -
-            <input type="text" name="end_date" class="input datepicker">
-            <button class="btn btn-primary" style="margin-left: 8px;" @click="search">搜索</button>
-        </div>
-        <hr>
-        <div class="table_list">
-            <table class="table table-bordered table-hover">
-                <thead>
-                <tr style="background: gainsboro;">
-                    <td align="center" width="80">ID</td>
-                    <td align="center" width="300">类别</td>
-                    <td align="center">日志内容</td>
-                    <td align="center" width="160">发布时间</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in logs">
-                    <td align="center">{{item.id}}</td>
-                    <td align="center">{{item.category}}</td>
-                    <td align="center"><div style="overflow-wrap: break-word; max-width: 500px;">{{item.message}}</div></td>
-                    <td align="center">{{item.inputtime|getFormatTime}}</td>
-                </tr>
-                </tbody>
-            </table>
+<extend name="../../Admin/View/Common/element_layout"/>
 
-            <div style="text-align: center">
-                <ul class="pagination pagination-sm no-margin">
-                    <button @click="toPage( parseInt(where.page) - 1 )" class="btn btn-primary">上一页</button>
-                    {{ where.page }} / {{ total_page }}
-                    <button @click="toPage( parseInt(where.page) + 1 )" class="btn btn-primary">下一页</button>
-                    <span style="line-height: 30px;margin-left: 10px;"><input id="ipt_page"
-                                                                              style="width:50px;text-align: center;"
-                                                                              type="text" v-model="temp_page"></span>
-                    <span><button class="btn btn-primary" @click="toPage( temp_page )">跳转</button></span>
-                </ul>
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <h3>日志列表</h3>
+
+            <div class="filter-container">
+                <el-input v-model="where.category" placeholder="类别" style="width: 200px;"
+                          class="filter-item"></el-input>
+
+                <el-input v-model="where.message" placeholder="日志内容" style="width: 200px;"
+                          class="filter-item"></el-input>
+                <el-date-picker
+                        v-model="s_e_date"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        clearable
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd">
+                </el-date-picker>
+                <el-button class="filter-item" type="primary" @click="search">
+                    搜索
+                </el-button>
+                <el-button class="filter-item" type="primary" @click="clickAddLog">
+                    添加日志
+                </el-button>
             </div>
-        </div>
+            <el-table
+                    :key="tableKey"
+                    :data="logs"
+                    border
+                    fit
+                    highlight-current-row
+                    style="width: 100%;"
+            >
+                <el-table-column label="ID" prop="id"  align="center" width="80">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="类别" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.category }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="日志内容" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.message }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="发布时间" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.input_time | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+                    <template slot-scope="{row}">
+                        <el-button size="mini" type="danger"
+                                   @click="deleteLog(row.id)">
+                            删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+
+            <div class="pagination-container">
+                <el-pagination
+                        background
+                        layout="prev, pager, next, jumper"
+                        :total="total"
+                        v-show="total > 0"
+                        :current-page.sync="where.page"
+                        :page-size.sync="where.limit"
+                        @current-change="getList"
+                >
+                </el-pagination>
+            </div>
+
+        </el-card>
     </div>
 
+    <style>
+        .filter-container {
+            padding-bottom: 10px;
+        }
+
+        .pagination-container {
+            padding: 32px 16px;
+        }
+    </style>
     <script>
         $(document).ready(function () {
             new Vue({
                 el: '#app',
                 data: {
+                    form: {},
+                    tableKey: 0,
+                    logs: [],
+                    total: 0,
+                    s_e_date: [
+                        '{$data["start_date"]}',
+                        '{$data["end_date"]}'
+                    ],
                     where: {
                         category: '',
                         message: '',
-                        start_date: '',
-                        end_date: '',
+                        start_date: '{$data["start_date"]}',
+                        end_date: '{$data["end_date"]}',
                         page: 1,
-                        limit: 20
+                        limit: 20,
                     },
-                    logs: {},
-                    temp_page: 1,
-                    total_page: 0
+                },
+                watch: {
+                    's_e_date': function(newValue, oldValue){
+                        if (newValue instanceof Array) {
+                            this.where.start_date = newValue[0];
+                            this.where.end_date = newValue[1];
+                        } else {
+                            this.where.start_date = this.where.end_date = '';
+                        }
+                    }
                 },
                 filters: {
-                    getFormatTime: function (value) {
-                        var time = new Date(parseInt(value * 1000));
-                        var y = time.getFullYear();
-                        var m = time.getMonth() + 1;
-                        var d = time.getDate();
-                        var h = time.getHours();
-                        var i = time.getMinutes();
-                        var res = y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + '';
-                        res += '  ' + (h < 10 ? '0' + h : h) + ':' + (i < 10 ? '0' + i : i);
-                        return res;
+                    parseTime: function (time, format) {
+                        return Ztbcms.formatTime(time, format)
                     },
-
                 },
                 methods: {
-                    /**
-                     * 格式化
-                     * @param value 千分秒
-                     */
-                    formatTimeToYMD: function(value){
-                        var time = new Date(parseInt(value));
-                        var y = time.getFullYear();
-                        var m = time.getMonth() + 1;
-                        var d = time.getDate();
-                        var res = y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + '';
-                        return res;
-                    },
                     getList: function () {
                         var that = this;
                         $.ajax({
@@ -101,41 +141,76 @@
                             success: function (res) {
                                 if (res.status) {
                                     that.logs = res.data.items;
+                                    that.total = res.data.total_items;
                                     that.where.page = res.data.page;
-                                    that.where.limit = res.data.limit;
-                                    that.temp_page = res.data.page;
-                                    that.total_page = res.data.total_page;
                                 }
                             }
                         });
                     },
-                    toPage: function (page) {
-                        this.where.page = page;
-                        if (this.where.page < 1) {
-                            this.where.page = 1;
-                        }
-                        if (this.where.page > this.total_page) {
-                            this.where.page = this.total_page;
-                        }
-                        this.getList();
-                    },
                     search: function () {
                         this.where.page = 1;
-                        this.where.start_date = $('input[name="start_date"]').val();
-                        this.where.end_date = $('input[name="end_date"]').val();
                         this.getList();
+                    },
+                    handleFilter: function () {
+                        this.where.page = 1
+                        this.getList()
+                    },
+                    deleteLog: function (id) {
+                        var that = this
+                        layer.confirm('确认删除？', {title:'提示'}, function(index){
+                            //do something
+                            that.doDeleteLog(id)
+
+                            layer.close(index);
+                        });
+                    },
+                    doDeleteLog: function (id){
+                        var that = this
+                        $.ajax({
+                            url: '{:U("Log/Index/deleteLog")}',
+                            data: {
+                                'id': id
+                            },
+                            type: 'post',
+                            dataType: 'json',
+                            success: function (res) {
+                                if (res.status) {
+                                    that.getList()
+                                    that.$message.success(res.msg);
+                                } else {
+                                    that.$message.error(res.msg);
+                                }
+                            }
+                        });
+                    },
+                    //以窗口形式打开链接
+                    openArticleLink: function (url) {
+                        layer.open({
+                            type: 2,
+                            title: '预览',
+                            content: url,
+                            area: ['60%', '70%'],
+                        })
+                    },
+                    clickAddLog: function (){
+                        var url = "{:U('Log/Index/addLog')}"
+                        var that = this
+                        layer.open({
+                            type: 2,
+                            title: '编辑',
+                            content: url,
+                            area: ['60%', '70%'],
+                            end: function(){
+                                that.getList()
+                            }
+                        })
                     }
                 },
                 mounted: function () {
-                    //默认显示最近7日日志
-                    var date_today = new Date();
-                    var date_last = new Date(date_today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    $('input[name="start_date"]').val(this.formatTimeToYMD(date_last.getTime()));
-                    $('input[name="end_date"]').val(this.formatTimeToYMD(date_today.getTime()));
+                    this.getList();
+                },
 
-                    this.search();
-                }
-            });
-        });
+            })
+        })
     </script>
 </block>

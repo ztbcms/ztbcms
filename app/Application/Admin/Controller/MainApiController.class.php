@@ -96,7 +96,7 @@ class MainApiController extends AdminApiBaseController
 
         //操作成功率
         $success_amount = M('operationlog')->where([
-            'logintime' => ['EGT', $limit_time],
+            'time' => ['EGT', $limit_time],
             'status' => ['EQ', 1],
         ])->count();
 
@@ -113,7 +113,7 @@ class MainApiController extends AdminApiBaseController
         $info = [
             'admin_user_amount' => $admin_user_amount,
             'login_success_percent' => $login_success_percent,
-            'operate_success_percent' => $operate_success_percent
+            'operate_success_percent' => $operate_success_percent,
         ];
 
         return $info;

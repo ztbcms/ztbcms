@@ -1,34 +1,37 @@
 <?php
 
 /**
- * 选项字段类型表单组合处理
+ * 关联栏目字段类型表单组合处理
  * @param type $field 字段名
  * @param type $value 字段内容
  * @param type $fieldinfo 字段配置
  * @return type
  */
-function box($field, $value, $fieldinfo) {
+
+function relationbox($field, $value, $fieldinfo)
+{
     //错误提示
     $errortips = $fieldinfo['errortips'];
     if ($fieldinfo['minlength']) {
         //验证规则
-        $this->formValidateRules['info[' . $field . ']'] = array("required" => true);
+        $this->formValidateRules['info['.$field.']'] = ["required" => true];
         //验证不通过提示
-        $this->formValidateMessages['info[' . $field . ']'] = array("required" => $errortips ? $errortips : $fieldinfo['name'] . "不能为空！");
+        $this->formValidateMessages['info['.$field.']'] = ["required" => $errortips ? $errortips : $fieldinfo['name']."不能为空！"];
     }
     //扩展配置
     $setting = unserialize($fieldinfo['setting']);
-    if (is_null($value) || $value == ''){
+    if (is_null($value) || $value == '') {
         $value = $setting['defaultvalue'];
     }
-    $options = explode("\n", $setting['options']);
-    foreach ($options as $_k) {
-        $v = explode("|", $_k);
-        $k = trim($v[1]);
-        $option[$k] = $v[0];
+    $catid = $setting['options'];
+    $catInfo = getCategory($catid);
+    $model = Content\Model\ContentModel::getInstance($catInfo['modelid']);
+    $records=$model->where(['status' => 99])->select();
+    foreach ($records as $record){
+        $option[$record['id']] = $record[$setting['fieldkey']];
     }
     $values = explode(',', $value);
-    $value = array();
+    $value = [];
     foreach ($values as $_k) {
         if ($_k != '')
             $value[] = $_k;
@@ -52,11 +55,11 @@ function box($field, $value, $fieldinfo) {
             break;
     }
     //如果设置了关联表，显示管理按钮
-    if($setting['relation']==1){
+    if ($setting['relation'] == 1) {
         $id = $fieldinfo['fieldid'];
-        $url = U('Content/BoxField/list',['modelid'=>$fieldinfo['modelid'],'fieldid'=>$fieldinfo['fieldid']]);
+        $url = U('Content/BoxField/list', ['modelid' => $fieldinfo['modelid'], 'fieldid' => $fieldinfo['fieldid']]);
         $title = '管理'.$fieldinfo['name'];
-        $string.="<span style='margin-left: 20px;'><input type='button' onClick=\"omnipotent({$id},'{$url}','{$title}')\" class='btn btn-default' value='管理".$fieldinfo['name']."'></span>";
+        $string .= "<span style='margin-left: 20px;'><input type='button' onClick=\"omnipotent({$id},'{$url}','{$title}')\" class='btn btn-default' value='管理".$fieldinfo['name']."'></span>";
     }
     return $string;
 }

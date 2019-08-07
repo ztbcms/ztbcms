@@ -20,11 +20,15 @@
         <!-- layer.js -->
         <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
 
+        <!--  ztbcms工具类(必须在vue-commonn 前加载)  -->
+        <script src="{$config_siteurl}statics/js/ztbcms/ztbcms.js"></script>
+
         <!-- vue.js -->
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
         <script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>
         <script>
             (function (vue) {
+                //引入vue mixin
                 vue.mixin(window.__vueCommon);
             })(window.Vue);
         </script>
@@ -55,9 +59,11 @@
             ;(function () {
 
                 $(document).ready(function () {
+                    //是否启用 loading
+                    window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = true;
                     //注册 ajax加载时 显示加载框
                     $(document).ajaxStart(function () {
-                        if (ELEMENT) {
+                        if (ELEMENT && window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE) {
                             //显示时间
                             window.__GLOBAL_ELEMENT_LOADING_INSTANCE_show_time = Date.now();
                             //load实例

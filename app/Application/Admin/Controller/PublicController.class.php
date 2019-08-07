@@ -44,7 +44,7 @@ class PublicController extends AdminBase {
             'logintime' => ['BETWEEN', [$start_time, time()]] //登录时间
         ])->count();
         if($count >= $login_max_faild){
-            $this->error("登陆失败次数过多，请".$ban_login_time."分钟后再试！", U("Public/login"));
+            $this->error("登录失败次数过多，请".$ban_login_time."分钟后再试！", U("Public/login"));
         }
 
         //验证码开始验证

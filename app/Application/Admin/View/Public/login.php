@@ -117,10 +117,11 @@
         }
 
         .footer {
+            z-index: -1;
             position: absolute;
             bottom: 16px;
             color: #909399;
-            font-size: 14px;
+            font-size: 12px;
             text-align: center;
             left: 0;
             width: 100%;
@@ -137,6 +138,7 @@
 
         .footer p img {
             vertical-align: bottom;
+            height: 20px;
         }
     </style>
     <admintemplate file="Admin/Common/Js"/>
@@ -175,6 +177,11 @@
         IE11及以上浏览器 <img src="/statics/admin/pages/public/login/ie.png" alt=""></p>
 </div>
 <script>
+    //若当前页面是再后台的内容页，则通知外层页面跳转
+    if(parent !== window){
+        parent.window.location = "{:U('Admin/Public/login')}"
+    }
+
     var inputs = document.querySelectorAll('input');
     var len = inputs.length;
     var btn = document.querySelector('button');

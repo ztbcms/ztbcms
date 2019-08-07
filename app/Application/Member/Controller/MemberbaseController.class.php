@@ -178,7 +178,7 @@ class MemberbaseController extends Base {
 					$data['error'] = 10000;
 					break;
 				case 10005:
-					$message = '登陆账号不能为空！';
+					$message = '登录账号不能为空！';
 					$data['error'] = 10005;
 					break;
 				case 10006:

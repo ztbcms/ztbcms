@@ -11,7 +11,9 @@ use Admin\Service\User;
 
 class AdminmanageController extends AdminBase {
 
-    //修改当前登录状态下的用户个人信息
+    /**
+     * 修改当前登录状态下的用户个人信息
+     */
     public function myinfo() {
         if (IS_POST) {
             $data = array(
@@ -20,17 +22,26 @@ class AdminmanageController extends AdminBase {
                 'email' => I('email'),
                 'remark' => I('remark')
             );
-            if (D("Admin/User")->create($data)) {
+            $db = D("Admin/User");
+            if ($db->create($data)) {
                 if (D("Admin/User")->where(array('id' => User::getInstance()->id))->save() !== false) {
-                    $this->success("资料修改成功！", U("Adminmanage/myinfo"));
+                    $this->ajaxReturn(self::createReturn(true, null, '操作成功'));
                 } else {
-                    $this->error("更新失败！");
+                    $this->ajaxReturn(self::createReturn(false, null, '操作失败'));
                 }
             } else {
-                $this->error(D("Admin/User")->getError());
+                $this->ajaxReturn(self::createReturn(false, null, $db->getError()));
             }
         } else {
-            $this->assign("data", User::getInstance()->getInfo());
+            $user_info = User::getInstance()->getInfo();
+            $data = [
+                'id' => $user_info['id'],
+                'username' => $user_info['username'],
+                'nickname' => $user_info['nickname'],
+                'email' => $user_info['email'],
+                'remark' => $user_info['remark']
+            ];
+            $this->assign("data", $data);
             $this->display();
         }
     }
@@ -39,24 +50,31 @@ class AdminmanageController extends AdminBase {
     public function chanpass() {
         if (IS_POST) {
             $oldPass = I('post.password', '', 'trim');
-            if (empty($oldPass)) {
-                $this->error("请输入旧密码！");
-            }
             $newPass = I('post.new_password', '', 'trim');
             $new_pwdconfirm = I('post.new_pwdconfirm', '', 'trim');
+
+            if (empty($oldPass)) {
+                $this->ajaxReturn(self::createReturn(false, null,  '请输入旧密码'));
+                return;
+            }
             if ($newPass != $new_pwdconfirm) {
-                $this->error("两次密码不相同！");
+                $this->ajaxReturn(self::createReturn(false, null,  '两次密码不相同'));
+                return;
             }
             if (D("Admin/User")->changePassword(User::getInstance()->id, $newPass, $oldPass)) {
                 //退出登录
                 User::getInstance()->logout();
-                $this->success("密码已经更新，请从新登录！", U("Admin/Public/login"));
+
+                $this->ajaxReturn(self::createReturn(true, [
+                    'rediret_url' => U("Admin/Public/login") //跳转链接
+                ],  '密码已经更新，请从新登录'));
+                return;
             } else {
-                $error = D("Admin/User")->getError();
-                $this->error($error ? $error : "密码更新失败！");
+                $this->ajaxReturn(self::createReturn(false, null,  '密码更新失败'));
+                return;
             }
         } else {
-            $this->assign('userInfo', User::getInstance()->getInfo());
+            $this->assign('data', User::getInstance()->getInfo());
             $this->display();
         }
     }

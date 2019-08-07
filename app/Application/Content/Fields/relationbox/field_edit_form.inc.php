@@ -1,7 +1,18 @@
 <table cellpadding="2" cellspacing="1" width="98%">
-    <tr> 
-        <td width="100">选项列表</td>
-        <td><textarea name="setting[options]" rows="2" cols="20" id="options" style="height:100px;width:200px;"><?php echo $setting['options']; ?></textarea></td>
+    <tr>
+        <td width="100">关联栏目</td>
+        <td>
+            <?php $category = M("Category")->select(); ?>
+            <select name="setting[options]" id="options">
+                <?php foreach ($category as $vo) { ?>
+                    <option <?php echo $setting['options']==$vo['catid']?"selected":"";?> value="<?php echo $vo['catid'] ?>"><?php echo $vo['catname'] ?></option>
+                <?php } ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>字段</td>
+        <td><input type="text" name="setting[fieldkey]" value="<?php echo $setting['fieldkey']; ?>" size="5" class="input"></td>
     </tr>
     <tr> 
         <td>选项类型</td>
@@ -45,13 +56,6 @@
         <td>
             <input type="radio" name="setting[outputtype]" value="1" <?php if ($setting['outputtype']) echo 'checked'; ?> /> 输出选项值
             <input type="radio" name="setting[outputtype]" value="0" <?php if (!$setting['outputtype']) echo 'checked'; ?> /> 输出选项名称
-        </td>
-    </tr>
-    <tr>
-        <td>创建关联表</td>
-        <td>
-            <input type="radio" name="setting[relation]" value="1" <?php if ($setting['relation']) echo 'checked'; ?> /> 是
-            <input type="radio" name="setting[relation]" value="0" <?php if (!$setting['relation']) echo 'checked'; ?> /> 否
         </td>
     </tr>
 </table>
