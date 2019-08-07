@@ -41,59 +41,13 @@ window.__vueCommon = {
         },
         //解析URL
         __parserUrl: function(url){
-            var a = document.createElement('a');
-            a.href = url;
-
-            var search = function(search) {
-                if(!search) return {};
-
-                var ret = {};
-                search = search.slice(1).split('&');
-                for(var i = 0, arr; i < search.length; i++) {
-                    arr = search[i].split('=');
-                    var key = arr[0], value = arr[1];
-                    if(/\[\]$/.test(key)) {
-                        ret[key] = ret[key] || [];
-                        ret[key].push(value);
-                    } else {
-                        ret[key] = value;
-                    }
-                }
-                return ret;
-            };
-
-            return {
-                protocol: a.protocol,
-                host: a.host,
-                hostname: a.hostname,
-                pathname: a.pathname,
-                search: search(a.search),
-                hash: a.hash
-            }
+            return window.Ztbcms.parserUrl(url)
         },
         openNewIframeByUrl: function(title, url){
-            if (parent.window != window) {
-                parent.window.__adminOpenNewFrame({
-                    title: title,
-                    url: url
-                })
-            } else {
-                window.location.href = url;
-            }
+            window.Ztbcms.openNewIframeByUrl(title, url)
         },
         openNewIframeByRouter: function(title, router, url){
-            if (parent.window != window) {
-                var event = new CustomEvent('adminOpenNewFrame', {
-                    detail: {
-                        title: title,
-                        router_path: router,
-                        url: url
-                    }
-                })
-                window.parent.dispatchEvent(event)
-            } else {
-                window.location.href = url;
-            }
+           window.Ztbcms.openNewIframeByRouter(title, router, url)
 
         }
     },

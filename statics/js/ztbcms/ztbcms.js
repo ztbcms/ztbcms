@@ -1,4 +1,74 @@
+//请务必再Vue-common 前加载
 window.Ztbcms = {
+    /**
+     * 打开内容页
+     * @param title
+     * @param url
+     */
+    openNewIframeByUrl: function (title, url){
+        if (parent.window !== window) {
+            //父窗口
+            parent.window.__adminOpenNewFrame({
+                title: title,
+                url: url
+            })
+        } else {
+            window.location.href = url;
+        }
+    },
+    /**
+     * 打开内容页
+     * @param title
+     * @param router
+     * @param url
+     */
+    openNewIframeByRouter: function(title, router, url){
+        if (parent.window !== window) {
+            var event = document.createEvent('CustomEvent');
+            event.initCustomEvent('adminOpenNewFrame', true, true, {
+                title: title,
+                router_path: router,
+                url: url
+            });
+            window.parent.dispatchEvent(event)
+        } else {
+            window.location.href = url;
+        }
+    },
+    /**
+     * URL 解析
+     * @param url
+     * @returns {{protocol: string, hostname: string, search: ({}|{}), host: string, hash: string, pathname: string}}
+     */
+    parserUrl: function(url){
+        var a = document.createElement('a');
+        a.href = url;
+        var search = function(search) {
+            if(!search) return {};
+            var ret = {};
+            search = search.slice(1).split('&');
+            for(var i = 0, arr; i < search.length; i++) {
+                arr = search[i].split('=');
+                var key = arr[0], value = arr[1];
+                if(/\[\]$/.test(key)) {
+                    ret[key] = ret[key] || [];
+                    ret[key].push(value);
+                } else {
+                    ret[key] = value;
+                }
+            }
+            return ret;
+        };
+
+        return {
+            protocol: a.protocol,
+            host: a.host,
+            hostname: a.hostname,
+            pathname: a.pathname,
+            search: search(a.search),
+            hash: a.hash
+        }
+    },
     /**
      * 时间格式化
      * @param time 时间戳

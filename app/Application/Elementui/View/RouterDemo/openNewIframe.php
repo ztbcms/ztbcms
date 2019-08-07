@@ -26,11 +26,11 @@
                 filters: {},
                 methods: {
                     gotoAdminPage: function () {
-                        window.openNewIframe('修改个人信息', '/index.php?g=Admin&m=Adminmanage&a=myinfo')
+                        Ztbcms.openNewIframeByUrl('修改个人信息', '/index.php?g=Admin&m=Adminmanage&a=myinfo')
                     },
 
                     gotoOutside1: function () {
-                        window.openNewIframe('百度搜索', 'https://www.baidu.com/s?wd=ztbcms')
+                        Ztbcms.openNewIframeByUrl('百度搜索', 'https://www.baidu.com/s?wd=ztbcms')
                     },
 
                     gotoOutside2: function () {

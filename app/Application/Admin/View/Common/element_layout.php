@@ -20,15 +20,15 @@
         <!-- layer.js -->
         <script src="{$config_siteurl}statics/admin/layer/layer.js"></script>
 
+        <!--  ztbcms工具类(必须在vue-commonn 前加载)  -->
+        <script src="{$config_siteurl}statics/js/ztbcms/ztbcms.js"></script>
+
         <!-- vue.js -->
         <script src="{$config_siteurl}statics/js/vue/vue.js"></script>
         <script src="{$config_siteurl}statics/js/vue/vue-common.js"></script>
-
-        <!--  ztbcms工具类  -->
-        <script src="{$config_siteurl}statics/js/ztbcms/ztbcms.js"></script>
-
         <script>
             (function (vue) {
+                //引入vue mixin
                 vue.mixin(window.__vueCommon);
             })(window.Vue);
         </script>
@@ -92,18 +92,6 @@
                         }
                     })
                 });
-
-                //打开新的iframe（内容页）
-                window.openNewIframe = function (title, url) {
-                    if (parent.window != window) {
-                        parent.window.__adminOpenNewFrame({
-                            title: title,
-                            url: url
-                        })
-                    } else {
-                        window.location.href = url;
-                    }
-                }.bind(this)
 
             })(jQuery);
         </script>
