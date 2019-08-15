@@ -214,9 +214,11 @@ class BaseService {
             $result = $db->add();
             if ($result) {
                 return self::createReturn(true, $result, '操作成功');
+            } else{
+                return self::createReturn(false, $result, '操作失败,错误信息：' . $db->getError());
             }
         } else {
-            return self::createReturn(true, null, '操作失败,错误信息：' . $db->getError());
+            return self::createReturn(false, null, '操作失败,错误信息：' . $db->getError());
         }
 
     }
