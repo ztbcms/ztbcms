@@ -106,9 +106,8 @@
 
 </block>
 
-<block name="footer"></block>
-
-
 </body>
+
+<block name="footer"></block>
 
 </html>
