@@ -62,16 +62,17 @@ class UploadAdminApiController extends AdminApiBaseController
      */
     function uploadImage()
     {
+        $watermark_enable = I('enable', 0);
         $result = $this->_upload(self::MODULE_IMAGE);
         if (!$result['status']) {
             $this->ajaxReturn($result);
             return;
         }
         //处理水印
-        $watermarkService = new WatermarkService();
-        $watermark_config = $watermarkService->getWatermarkConfig()['data'];
         //是否添加水印
-        if($watermark_config['enable'] == 1){
+        if($watermark_enable == 1){
+            $watermarkService = new WatermarkService();
+            $watermark_config = $watermarkService->getWatermarkConfig()['data'];
             $source_image_path = SITE_PATH . $result['data']['url'];
             $save_image_path = SITE_PATH . $result['data']['url'];
             $watermarkService->addWaterMark($source_image_path, $save_image_path, $watermark_config);
@@ -119,5 +120,13 @@ class UploadAdminApiController extends AdminApiBaseController
         }
 
         $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
+    }
+
+    /**
+     * 获取水印配置
+     */
+    function getWatermarkConfig(){
+        $service = new WatermarkService();
+        $this->ajaxReturn($service->getWatermarkConfig());
     }
 }
