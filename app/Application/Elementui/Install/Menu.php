@@ -23,13 +23,13 @@ return array(
                 "name" => "打开新页面",
             ),
             array(
-                "route" => "Elementui/UploadDemo/uploadFile",
+                "route" => "Elementui/UploadDemo/uploadImage",
                 "type" => 1,
                 "status" => 1,
                 "name" => "图片上传",
             ),
             array(
-                "route" => "Elementui/UploadDemo/uploadImage",
+                "route" => "Elementui/UploadDemo/uploadFile",
                 "type" => 1,
                 "status" => 1,
                 "name" => "文件上传",
