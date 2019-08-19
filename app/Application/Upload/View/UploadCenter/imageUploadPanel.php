@@ -125,7 +125,7 @@
                     uploadConfig: {
                         uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
                         max_upload: 6,//同时上传文件数
-                        accept: 'image/*' //接收的文件类型，请看：https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
+                        accept: 'image/*', //接收的文件类型，请看：https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
                     },
                     uploadedLocalFileList: [], //本地上传的文件
                     pagination: {

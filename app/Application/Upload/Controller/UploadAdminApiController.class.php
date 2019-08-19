@@ -10,6 +10,8 @@ namespace Upload\Controller;
 
 use Admin\Controller\AdminApiBaseController;
 use Admin\Service\User;
+use Intervention\Image\ImageManagerStatic as Image;
+use Upload\Service\WatermarkService;
 
 class UploadAdminApiController extends AdminApiBaseController
 {
@@ -22,6 +24,7 @@ class UploadAdminApiController extends AdminApiBaseController
 
     /**
      * @param $module  string 文件所属模块
+     * @return array
      */
     private function _upload($module)
     {
@@ -38,37 +41,57 @@ class UploadAdminApiController extends AdminApiBaseController
             //开始上传
             $info = $Attachment->upload($Callback);
             if ($info) {
-                $this->ajaxReturn([
-                    'status' => true,
-                    'data' => [
-                        'url' => $info[0]['url'],
-                        'name' => $info[0]['name'],
-                    ],
-                    'msg' => '上传成功'
-                ]);
+                $data = [
+                    'url' => $info[0]['url'],//上传文件路径
+                    'name' => $info[0]['name'],//名称
+                ];
+                return self::createReturn(true, $data, '上传成功');
             } else {
                 //上传失败，返回错误
-                $this->ajaxReturn([
-                    'status' => false,
-                    'msg' => $Attachment->getErrorMsg()
-                ]);
+                $msg = $Attachment->getErrorMsg();
+                $msg = empty($msg) ? '上传失败' : $msg;
+                return self::createReturn(false, null, $msg);
             }
         } else {
-            $this->ajaxReturn([
-                'status' => false,
-                'msg' => '上传失败'
-            ]);
+            return self::createReturn(false, null, '上传失败');
         }
     }
 
-    function uploadImage(){
-        $this->_upload(self::MODULE_IMAGE);
+    /**
+     * 上传图片
+     */
+    function uploadImage()
+    {
+        $result = $this->_upload(self::MODULE_IMAGE);
+        if (!$result['status']) {
+            $this->ajaxReturn($result);
+            return;
+        }
+        //处理水印
+        $watermarkService = new WatermarkService();
+        $watermark_config = $watermarkService->getWatermarkConfig()['data'];
+        //是否添加水印
+        if($watermark_config['enable'] == 1){
+            $source_image_path = SITE_PATH . $result['data']['url'];
+            $save_image_path = SITE_PATH . $result['data']['url'];
+            $watermarkService->addWaterMark($source_image_path, $save_image_path, $watermark_config);
+        }
+        $this->ajaxReturn($result);
+
     }
 
-    function uploadFile(){
-        $this->_upload(self::MODULE_FILE);
+    /**
+     * 上传文件
+     */
+    function uploadFile()
+    {
+        $result = $this->_upload(self::MODULE_FILE);
+        $this->ajaxReturn($result);
     }
 
+    /**
+     * 获取图像
+     */
     function getGalleryList()
     {
         $page = I('page', 1);
