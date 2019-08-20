@@ -25,6 +25,22 @@ class UploadPublicApiController extends Base
     const MODULE_IMAGE = 'module_upload_images';
     const MODULE_FILE = 'module_upload_files';
 
+    protected function _initialize() {
+        //支持跨域
+        //http 预检响应
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+            header('Access-Control-Max-Age: 86400');
+            exit();
+        }
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: *');
+        header('Access-Control-Allow-Headers: *');
+        parent::_initialize();
+    }
+
     /**
      * @param $module  string 文件所属模块
      * @return array
