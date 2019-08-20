@@ -10,6 +10,11 @@ namespace Upload\Controller;
 
 use Common\Controller\AdminBase;
 
+/**
+ * 后台上传
+ * Class UploadCenterController
+ * @package Upload\Controller
+ */
 class UploadCenterController extends AdminBase
 {
     function imageUploadPanel(){
@@ -17,6 +22,11 @@ class UploadCenterController extends AdminBase
     }
 
     function fileUploadPanel(){
+        $this->display();
+    }
+
+    //编辑水印配置
+    function editWatermarkConfig(){
         $this->display();
     }
 

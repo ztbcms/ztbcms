@@ -64,7 +64,7 @@
                     onUploadedFile: function (event) {
                         var that = this;
                         console.log(event)
-                        files = event.detail.files
+                        var files = event.detail.files
                         console.log(files)
                         if (files) {
 

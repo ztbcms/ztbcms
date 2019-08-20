@@ -23,4 +23,8 @@ class UploadDemoController extends AdminBase
         $this->display();
     }
 
+    function uploadImage_fontend(){
+        $this->display();
+    }
+
 }
