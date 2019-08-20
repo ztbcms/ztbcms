@@ -23,17 +23,32 @@ return array(
                 "name" => "打开新页面",
             ),
             array(
-                "route" => "Elementui/UploadDemo/uploadImage",
+                "route" => "Elementui/Upload/index",
                 "type" => 1,
                 "status" => 1,
-                "name" => "图片上传",
+                "name" => "上传示例",
+                "child" => array(
+                    array(
+                        "route" => "Elementui/UploadDemo/uploadImage",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "后台图片上传",
+                    ),
+                    array(
+                        "route" => "Elementui/UploadDemo/uploadFile",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "后台文件上传",
+                    ),
+                    array(
+                        "route" => "Elementui/UploadDemo/uploadImage_fontend",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "前台图片上传",
+                    ),
+                )
             ),
-            array(
-                "route" => "Elementui/UploadDemo/uploadFile",
-                "type" => 1,
-                "status" => 1,
-                "name" => "文件上传",
-            ),
+
             array(
                 "route" => "Elementui/ElementDemo/common_table",
                 "type" => 1,

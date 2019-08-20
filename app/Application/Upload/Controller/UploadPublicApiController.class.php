@@ -8,18 +8,18 @@
 namespace Upload\Controller;
 
 
-use Admin\Controller\AdminApiBaseController;
-use Admin\Service\User;
+use Common\Controller\Base;
 use Upload\Service\WatermarkService;
 
 /**
- * 后台上传管理接口
+ * 上传开放接口
+ * Class UploadPublicApiController
  * @package Upload\Controller
  */
-class UploadAdminApiController extends AdminApiBaseController
+class UploadPublicApiController extends Base
 {
 
-    const isadmin = 1; //后台上传
+    const isadmin = 0; //后台上传 0否1是
 
     //模块
     const MODULE_IMAGE = 'module_upload_images';
@@ -34,10 +34,9 @@ class UploadAdminApiController extends AdminApiBaseController
         if (IS_POST) {
             //回调函数
             $Callback = false;
-            $userInfo = User::getInstance()->getInfo();
-            $upuserid = $userInfo['id'];
+            $upuserid = 0; //用户ID，请根据实际情况获取
             //取得栏目ID
-            $catid = I('post.catid', 0, 'intval');
+            $catid = I('post.catid', 0, 'intval');//根据实际获取
             //获取附件服务
             $Attachment = service("Attachment", array('module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid));
 
@@ -65,21 +64,23 @@ class UploadAdminApiController extends AdminApiBaseController
      */
     function uploadImage()
     {
-        $watermark_enable = I('enable', 0);
         $result = $this->_upload(self::MODULE_IMAGE);
         if (!$result['status']) {
             $this->ajaxReturn($result);
             return;
         }
         //处理水印
+        $watermarkService = new WatermarkService();
+        $watermark_config = $watermarkService->getWatermarkConfig()['data'];
+        $watermark_enable = $watermark_config['enable'];
         //是否添加水印
-        if($watermark_enable == 1){
-            $watermarkService = new WatermarkService();
-            $watermark_config = $watermarkService->getWatermarkConfig()['data'];
+        if ($watermark_enable == 1) {
             $source_image_path = SITE_PATH . $result['data']['url'];
             $save_image_path = SITE_PATH . $result['data']['url'];
             $watermarkService->addWaterMark($source_image_path, $save_image_path, $watermark_config);
         }
+        //调整链接
+        $result['data']['url'] = urlDomain(get_url()) . $result['data']['url'];
         $this->ajaxReturn($result);
 
     }
@@ -93,42 +94,12 @@ class UploadAdminApiController extends AdminApiBaseController
         $this->ajaxReturn($result);
     }
 
-    /**
-     * 获取图像
-     */
-    function getGalleryList()
-    {
-        $page = I('page', 1);
-        $limit = I('limit', 20);
-        $userInfo = User::getInstance()->getInfo();
-        $userid = $userInfo['id'];
-
-        $db = M('Attachment');
-        $where = [
-            'module' => self::MODULE_IMAGE,
-            'userid' => $userid,
-            'isadmin' => 1,
-        ];
-        $total_items = $db->where($where)->count();
-        $total_page = ceil($total_items / $limit);
-        $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
-
-        $return_list = [];
-        foreach ($list as $index => $item) {
-            $return_list [] = [
-                'name' => $item['filename'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
-                'filepath' => $item['filepath'],
-            ];
-        }
-
-        $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
-    }
 
     /**
      * 获取水印配置
      */
-    function getWatermarkConfig(){
+    function getWatermarkConfig()
+    {
         $system_configs = M('Config')->where([
             'varname' => ['IN', 'watermarkenable,watermarkminwidth,watermarkminheight,watermarkimg,watermarkpct,watermarkquality,watermarkpos']
         ])->select();
@@ -139,19 +110,4 @@ class UploadAdminApiController extends AdminApiBaseController
         $this->ajaxReturn(self::createReturn(true, $config));
     }
 
-    /**
-     * 保存水印配置
-     */
-    function saveWatermarkConfig(){
-        $post = I('post.');
-
-        $fileds = ['watermarkenable','watermarkminwidth','watermarkminheight','watermarkimg','watermarkpct','watermarkquality','watermarkpos'];
-        foreach ($post as $key => $value){
-            if(in_array($key, $fileds)){
-                M('Config')->where(['varname' => $key])->save(['value' => $value]);
-            }
-        }
-
-        $this->ajaxReturn(self::createReturn(true, null, '操作完成'));
-    }
 }
