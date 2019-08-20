@@ -28,7 +28,7 @@ class Local extends Attachment {
 			//上传栏目
 			'catid' => 0,
 			//上传模块
-			'module' => 'content ',
+			'module' => 'content',
 			//是否添加水印
 			'watermarkenable' => $this->config['watermarkenable'],
 			//生成缩略图

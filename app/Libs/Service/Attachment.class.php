@@ -46,12 +46,13 @@ class Attachment extends Service {
 		$this->options[$name] = $value;
 	}
 
-	/**
-	 * 连接附件系统
-	 * @param string $name 服务名
-	 * @param array $options 参数
-	 * @return Attachment
-	 */
+    /**
+     * 连接附件系统
+     * @param string $name 服务名
+     * @param array $options 参数
+     * @return Attachment
+     * @throws \Think\Exception
+     */
 	public static function connect($name = '', $options = array()) {
 		if (empty($options['type'])) {
 			//驱动类型
