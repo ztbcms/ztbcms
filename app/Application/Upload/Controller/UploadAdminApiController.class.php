@@ -126,7 +126,29 @@ class UploadAdminApiController extends AdminApiBaseController
      * 获取水印配置
      */
     function getWatermarkConfig(){
-        $service = new WatermarkService();
-        $this->ajaxReturn($service->getWatermarkConfig());
+        $system_configs = M('Config')->where([
+            'varname' => ['IN', 'watermarkenable,watermarkminwidth,watermarkminheight,watermarkimg,watermarkpct,watermarkquality,watermarkpos']
+        ])->select();
+        $config = [];
+        foreach ($system_configs as $i => $v) {
+            $config[$v['varname']] = $v['value'];
+        }
+        $this->ajaxReturn(self::createReturn(true, $config));
+    }
+
+    /**
+     * 保存水印配置
+     */
+    function saveWatermarkConfig(){
+        $post = I('post.');
+
+        $fileds = ['watermarkenable','watermarkminwidth','watermarkminheight','watermarkimg','watermarkpct','watermarkquality','watermarkpos'];
+        foreach ($post as $key => $value){
+            if(in_array($key, $fileds)){
+                M('Config')->where(['varname' => $key])->save(['value' => $value]);
+            }
+        }
+
+        $this->ajaxReturn(self::createReturn(true, null, '操作完成'));
     }
 }

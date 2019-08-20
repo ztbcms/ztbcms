@@ -20,5 +20,10 @@ class UploadCenterController extends AdminBase
         $this->display();
     }
 
+    //编辑水印配置
+    function editWatermarkConfig(){
+        $this->display();
+    }
+
 
 }
