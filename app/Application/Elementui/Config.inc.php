@@ -20,7 +20,7 @@ return array(
 	//作者邮箱
 	'authoremail' => 'admin@ztbcms.com',
 	//版本号，请不要带除数字外的其他字符
-	'version' => '1.0.0.0',
+	'version' => '1.0.0.1',
 	//适配最低CMS版本，
 	'adaptation' => '3.7.0.0',
 	//签名
