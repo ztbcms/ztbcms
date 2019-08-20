@@ -5,6 +5,7 @@
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleTabClick">
             <el-tab-pane label="本地上传" name="uploadLocal">
                 <p>支持同时上传 <span style="color: orangered;">{{uploadConfig.max_upload}}</span> 个文件 支持格式：<span style="color: orangered;">jpg,jpeg,gif,png,bmp</span></p>
+                <p><el-checkbox v-model="watermarkConfig.enable" true-label="1" false-label="0">添加水印</el-checkbox></p>
                 <el-upload
                         ref="uploadRef"
                         :limit="uploadConfig.max_upload"
@@ -14,6 +15,7 @@
                         :on-success="handleUploadSuccess"
                         :on-error="handleUploadError"
                         :on-exceed="handleExceed"
+                        :data="watermarkConfig"
                         multiple
                         list-type="picture-card"
                         class="thumb-uploader">
@@ -125,7 +127,7 @@
                     uploadConfig: {
                         uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
                         max_upload: 6,//同时上传文件数
-                        accept: 'image/*' //接收的文件类型，请看：https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
+                        accept: 'image/*', //接收的文件类型，请看：https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
                     },
                     uploadedLocalFileList: [], //本地上传的文件
                     pagination: {
@@ -143,6 +145,9 @@
                         end_time: '',
                         status: '',
                         sort_time: '',//排序：时间
+                    },
+                    watermarkConfig: {
+                        enable: '0'
                     }
                 },
                 watch: {},
@@ -251,9 +256,24 @@
                         }else{
                             window.close();
                         }
+                    },
+                    //获取水印配置
+                    getWatermarkConfig: function(){
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/getWatermarkConfig')}",
+                            data: {},
+                            dataType: 'json',
+                            type: 'get',
+                            success: function (res) {
+                                that.watermarkConfig = res.data;
+                                that.watermarkConfig.enable = that.watermarkConfig.enable + ''
+                            }
+                        })
                     }
                 },
                 mounted: function () {
+                    this.getWatermarkConfig()
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
                 }
             })
