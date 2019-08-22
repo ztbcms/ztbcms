@@ -198,7 +198,6 @@
 
                     },
                     handleUploadSuccess: function (response, file, fileList) {
-                        console.log(response)
                         if (response.status) {
                             this.uploadedLocalFileList.push({
                                 name: response.data.name,
@@ -224,7 +223,6 @@
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
-                                console.log(res)
                                 var data = res.data;
                                 that.pagination.page = data.page;
                                 that.pagination.limit = data.limit;
@@ -266,8 +264,7 @@
                             dataType: 'json',
                             type: 'get',
                             success: function (res) {
-                                that.watermarkConfig = res.data;
-                                that.watermarkConfig.enable = that.watermarkConfig.enable + ''
+                                that.watermarkConfig.enable = res.data.watermarkenable + ''
                             }
                         })
                     }
