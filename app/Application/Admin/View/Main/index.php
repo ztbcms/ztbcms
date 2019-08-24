@@ -133,6 +133,7 @@
                                 {{info.value}}
                             </el-form-item>
                         </template>
+                    </el-form>
                 </el-card>
             </el-col>
 
