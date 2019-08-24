@@ -19,18 +19,13 @@ namespace Symfony\Component\HttpFoundation\Session\Attribute;
  */
 class NamespacedAttributeBag extends AttributeBag
 {
-    /**
-     * Namespace character.
-     *
-     * @var string
-     */
     private $namespaceCharacter;
 
     /**
      * @param string $storageKey         Session storage key
      * @param string $namespaceCharacter Namespace character to use in keys
      */
-    public function __construct($storageKey = '_sf2_attributes', $namespaceCharacter = '/')
+    public function __construct(string $storageKey = '_sf2_attributes', string $namespaceCharacter = '/')
     {
         $this->namespaceCharacter = $namespaceCharacter;
         parent::__construct($storageKey);
@@ -49,7 +44,7 @@ class NamespacedAttributeBag extends AttributeBag
             return false;
         }
 
-        return array_key_exists($name, $attributes);
+        return \array_key_exists($name, $attributes);
     }
 
     /**
@@ -65,7 +60,7 @@ class NamespacedAttributeBag extends AttributeBag
             return $default;
         }
 
-        return array_key_exists($name, $attributes) ? $attributes[$name] : $default;
+        return \array_key_exists($name, $attributes) ? $attributes[$name] : $default;
     }
 
     /**
@@ -86,7 +81,7 @@ class NamespacedAttributeBag extends AttributeBag
         $retval = null;
         $attributes = &$this->resolveAttributePath($name);
         $name = $this->resolveKey($name);
-        if (null !== $attributes && array_key_exists($name, $attributes)) {
+        if (null !== $attributes && \array_key_exists($name, $attributes)) {
             $retval = $attributes[$name];
             unset($attributes[$name]);
         }
@@ -115,21 +110,27 @@ class NamespacedAttributeBag extends AttributeBag
         }
 
         $parts = explode($this->namespaceCharacter, $name);
-        if (count($parts) < 2) {
+        if (\count($parts) < 2) {
             if (!$writeContext) {
                 return $array;
             }
 
-            $array[$parts[0]] = array();
+            $array[$parts[0]] = [];
 
             return $array;
         }
 
-        unset($parts[count($parts) - 1]);
+        unset($parts[\count($parts) - 1]);
 
         foreach ($parts as $part) {
-            if (null !== $array && !array_key_exists($part, $array)) {
-                $array[$part] = $writeContext ? array() : null;
+            if (null !== $array && !\array_key_exists($part, $array)) {
+                if (!$writeContext) {
+                    $null = null;
+
+                    return $null;
+                }
+
+                $array[$part] = [];
             }
 
             $array = &$array[$part];

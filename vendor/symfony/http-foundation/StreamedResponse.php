@@ -17,7 +17,7 @@ namespace Symfony\Component\HttpFoundation;
  * A StreamedResponse uses a callback for its content.
  *
  * The callback should use the standard PHP functions like echo
- * to stream the response back to the client. The flush() method
+ * to stream the response back to the client. The flush() function
  * can also be used if needed.
  *
  * @see flush()
@@ -35,7 +35,7 @@ class StreamedResponse extends Response
      * @param int           $status   The response status code
      * @param array         $headers  An array of response headers
      */
-    public function __construct(callable $callback = null, $status = 200, $headers = array())
+    public function __construct(callable $callback = null, int $status = 200, array $headers = [])
     {
         parent::__construct(null, $status, $headers);
 
@@ -55,7 +55,7 @@ class StreamedResponse extends Response
      *
      * @return static
      */
-    public static function create($callback = null, $status = 200, $headers = array())
+    public static function create($callback = null, $status = 200, $headers = [])
     {
         return new static($callback, $status, $headers);
     }
@@ -64,37 +64,45 @@ class StreamedResponse extends Response
      * Sets the PHP callback associated with this Response.
      *
      * @param callable $callback A valid PHP callback
+     *
+     * @return $this
      */
     public function setCallback(callable $callback)
     {
         $this->callback = $callback;
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      *
      * This method only sends the headers once.
+     *
+     * @return $this
      */
     public function sendHeaders()
     {
         if ($this->headersSent) {
-            return;
+            return $this;
         }
 
         $this->headersSent = true;
 
-        parent::sendHeaders();
+        return parent::sendHeaders();
     }
 
     /**
      * {@inheritdoc}
      *
      * This method only sends the content once.
+     *
+     * @return $this
      */
     public function sendContent()
     {
         if ($this->streamed) {
-            return;
+            return $this;
         }
 
         $this->streamed = true;
@@ -103,19 +111,27 @@ class StreamedResponse extends Response
             throw new \LogicException('The Response callback must not be null.');
         }
 
-        call_user_func($this->callback);
+        ($this->callback)();
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      *
      * @throws \LogicException when the content is not null
+     *
+     * @return $this
      */
     public function setContent($content)
     {
         if (null !== $content) {
             throw new \LogicException('The content cannot be set on a StreamedResponse instance.');
         }
+
+        $this->streamed = true;
+
+        return $this;
     }
 
     /**

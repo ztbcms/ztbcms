@@ -133,6 +133,7 @@
                                 {{info.value}}
                             </el-form-item>
                         </template>
+                    </el-form>
                 </el-card>
             </el-col>
 
@@ -225,21 +226,8 @@
                     adminStatisticsInfo: {},
                     alert_message: [],
                 },
-                watch: {
-                    'form.search_date': function (newValue) {
-                        if (newValue && newValue.length == 2) {
-                            this.form.start_time = newValue[0]
-                            this.form.end_time = newValue[1]
-                        }
-                    }
-                },
-                filters: {
-                    formatTime: function(timestamp) {
-                        var date = new Date();
-                        date.setTime(parseInt(timestamp) * 1000);
-                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
-                    }
-                },
+                watch: {},
+                filters: {},
                 methods: {
                     getInfo: function () {
                         var that = this;

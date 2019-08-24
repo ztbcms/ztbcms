@@ -11,7 +11,6 @@
 
 namespace Overtrue\Socialite\Providers;
 
-use Overtrue\Socialite\AccessToken;
 use Overtrue\Socialite\AccessTokenInterface;
 use Overtrue\Socialite\InvalidArgumentException;
 use Overtrue\Socialite\ProviderInterface;
@@ -142,6 +141,7 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
             'response_type' => 'code',
             'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
             'state' => $state ?: md5(time()),
+            'connect_redirect' => 1,
         ], $this->parameters);
     }
 
@@ -223,7 +223,7 @@ class WeChatProvider extends AbstractProvider implements ProviderInterface
      */
     protected function removeCallback($response)
     {
-        if (strpos($response, 'callback') !== false) {
+        if (false !== strpos($response, 'callback')) {
             $lpos = strpos($response, '(');
             $rpos = strrpos($response, ')');
             $response = substr($response, $lpos + 1, $rpos - $lpos - 1);
