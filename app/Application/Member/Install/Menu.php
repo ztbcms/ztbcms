@@ -13,9 +13,15 @@ return array(
         //名称
         "name" => "用户",
         //备注
-        "remark" => "网站用户管理！",
+        "remark" => "网站用户管理",
         //子菜单列表
         "child" => array(
+            array(
+                "route" => "Member/DashboardAdmin/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "概览",
+            ),
             array(
                 "route" => "Member/Member/create",
                 "type" => 0,
