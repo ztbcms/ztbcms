@@ -48,16 +48,18 @@ class SocialiteManager implements FactoryInterface
      * @var array
      */
     protected $initialDrivers = [
-            'facebook' => 'Facebook',
-            'github' => 'GitHub',
-            'google' => 'Google',
-            'linkedin' => 'Linkedin',
-            'weibo' => 'Weibo',
-            'qq' => 'QQ',
-            'wechat' => 'WeChat',
-            'wechat_open' => 'WeChatOpenPlatform',
-            'douban' => 'Douban',
-            'wework' => 'WeWork',
+        'facebook' => 'Facebook',
+        'github' => 'GitHub',
+        'google' => 'Google',
+        'linkedin' => 'Linkedin',
+        'weibo' => 'Weibo',
+        'qq' => 'QQ',
+        'wechat' => 'WeChat',
+        'douban' => 'Douban',
+        'wework' => 'WeWork',
+        'outlook' => 'Outlook',
+        'douyin' => 'DouYin',
+        'taobao' => 'Taobao',
     ];
 
     /**
@@ -76,6 +78,10 @@ class SocialiteManager implements FactoryInterface
     public function __construct(array $config, Request $request = null)
     {
         $this->config = new Config($config);
+
+        if ($this->config->has('guzzle')) {
+            Providers\AbstractProvider::setGuzzleOptions($this->config->get('guzzle'));
+        }
 
         if ($request) {
             $this->setRequest($request);
@@ -220,8 +226,10 @@ class SocialiteManager implements FactoryInterface
     public function buildProvider($provider, $config)
     {
         return new $provider(
-            $this->getRequest(), $config['client_id'],
-            $config['client_secret'], $config['redirect']
+            $this->getRequest(),
+            $config['client_id'],
+            $config['client_secret'],
+            $config['redirect']
         );
     }
 

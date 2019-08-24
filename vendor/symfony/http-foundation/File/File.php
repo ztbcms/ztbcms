@@ -13,8 +13,7 @@ namespace Symfony\Component\HttpFoundation\File;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
+use Symfony\Component\Mime\MimeTypes;
 
 /**
  * A file in the file system.
@@ -31,7 +30,7 @@ class File extends \SplFileInfo
      *
      * @throws FileNotFoundException If the given path is not a file
      */
-    public function __construct($path, $checkPath = true)
+    public function __construct(string $path, bool $checkPath = true)
     {
         if ($checkPath && !is_file($path)) {
             throw new FileNotFoundException($path);
@@ -50,33 +49,28 @@ class File extends \SplFileInfo
      *
      * @return string|null The guessed extension or null if it cannot be guessed
      *
-     * @see ExtensionGuesser
+     * @see MimeTypes
      * @see getMimeType()
      */
     public function guessExtension()
     {
-        $type = $this->getMimeType();
-        $guesser = ExtensionGuesser::getInstance();
-
-        return $guesser->guess($type);
+        return MimeTypes::getDefault()->getExtensions($this->getMimeType())[0] ?? null;
     }
 
     /**
      * Returns the mime type of the file.
      *
-     * The mime type is guessed using a MimeTypeGuesser instance, which uses finfo(),
-     * mime_content_type() and the system binary "file" (in this order), depending on
-     * which of those are available.
+     * The mime type is guessed using a MimeTypeGuesserInterface instance,
+     * which uses finfo_file() then the "file" system binary,
+     * depending on which of those are available.
      *
      * @return string|null The guessed mime type (e.g. "application/pdf")
      *
-     * @see MimeTypeGuesser
+     * @see MimeTypes
      */
     public function getMimeType()
     {
-        $guesser = MimeTypeGuesser::getInstance();
-
-        return $guesser->guess($this->getPathname());
+        return MimeTypes::getDefault()->guessMimeType($this->getPathname());
     }
 
     /**
@@ -93,9 +87,11 @@ class File extends \SplFileInfo
     {
         $target = $this->getTargetFile($directory, $name);
 
-        if (!@rename($this->getPathname(), $target)) {
-            $error = error_get_last();
-            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error['message'])));
+        set_error_handler(function ($type, $msg) use (&$error) { $error = $msg; });
+        $renamed = rename($this->getPathname(), $target);
+        restore_error_handler();
+        if (!$renamed) {
+            throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error)));
         }
 
         @chmod($target, 0666 & ~umask());
@@ -113,7 +109,7 @@ class File extends \SplFileInfo
             throw new FileException(sprintf('Unable to write in the "%s" directory', $directory));
         }
 
-        $target = rtrim($directory, '/\\').DIRECTORY_SEPARATOR.(null === $name ? $this->getBasename() : $this->getName($name));
+        $target = rtrim($directory, '/\\').\DIRECTORY_SEPARATOR.(null === $name ? $this->getBasename() : $this->getName($name));
 
         return new self($target, false);
     }

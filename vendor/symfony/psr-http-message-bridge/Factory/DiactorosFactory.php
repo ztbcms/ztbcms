@@ -11,6 +11,9 @@
 
 namespace Symfony\Bridge\PsrHttpMessage\Factory;
 
+@trigger_error(sprintf('The "%s" class is deprecated since symfony/psr-http-message-bridge 1.2, use PsrHttpFactory instead.', DiactorosFactory::class), E_USER_DEPRECATED);
+
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -27,6 +30,8 @@ use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
  * Builds Psr\HttpMessage instances using the Zend Diactoros implementation.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
+ *
+ * @deprecated since symfony/psr-http-message-bridge 1.2, use PsrHttpFactory instead
  */
 class DiactorosFactory implements HttpMessageFactoryInterface
 {
@@ -42,20 +47,21 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     public function createRequest(Request $symfonyRequest)
     {
-        $server = DiactorosRequestFactory::normalizeServer($symfonyRequest->server->all());
+        $server = method_exists('Zend\Diactoros\ServerRequestFactory', 'normalizeServer')
+            ? DiactorosRequestFactory::normalizeServer($symfonyRequest->server->all())
+            : \Zend\Diactoros\normalizeServer($symfonyRequest->server->all());
         $headers = $symfonyRequest->headers->all();
 
-        if (PHP_VERSION_ID < 50600) {
-            $body = new DiactorosStream('php://temp', 'wb+');
-            $body->write($symfonyRequest->getContent());
-        } else {
-            $body = new DiactorosStream($symfonyRequest->getContent(true));
-        }
+        $body = new DiactorosStream($symfonyRequest->getContent(true));
+
+        $files = method_exists('Zend\Diactoros\ServerRequestFactory', 'normalizeFiles')
+            ? DiactorosRequestFactory::normalizeFiles($this->getFiles($symfonyRequest->files->all()))
+            : \Zend\Diactoros\normalizeUploadedFiles($this->getFiles($symfonyRequest->files->all()));
 
         $request = new ServerRequest(
             $server,
-            DiactorosRequestFactory::normalizeFiles($this->getFiles($symfonyRequest->files->all())),
-            $symfonyRequest->getUri(),
+            $files,
+            $symfonyRequest->getSchemeAndHttpHost().$symfonyRequest->getRequestUri(),
             $symfonyRequest->getMethod(),
             $body,
             $headers
@@ -65,6 +71,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
             ->withCookieParams($symfonyRequest->cookies->all())
             ->withQueryParams($symfonyRequest->query->all())
             ->withParsedBody($symfonyRequest->request->all())
+            ->withRequestTarget($symfonyRequest->getRequestUri())
         ;
 
         foreach ($symfonyRequest->attributes->all() as $key => $value) {
@@ -83,7 +90,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     private function getFiles(array $uploadedFiles)
     {
-        $files = array();
+        $files = [];
 
         foreach ($uploadedFiles as $key => $value) {
             if (null === $value) {
@@ -111,7 +118,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
     {
         return new DiactorosUploadedFile(
             $symfonyUploadedFile->getRealPath(),
-            $symfonyUploadedFile->getClientSize(),
+            (int) $symfonyUploadedFile->getSize(),
             $symfonyUploadedFile->getError(),
             $symfonyUploadedFile->getClientOriginalName(),
             $symfonyUploadedFile->getClientMimeType()
@@ -131,7 +138,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
                 ob_start(function ($buffer) use ($stream) {
                     $stream->write($buffer);
 
-                    return false;
+                    return '';
                 });
 
                 $symfonyResponse->sendContent();
@@ -142,13 +149,13 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         }
 
         $headers = $symfonyResponse->headers->all();
-
-        $cookies = $symfonyResponse->headers->getCookies();
-        if (!empty($cookies)) {
-            $headers['Set-Cookie'] = array();
-
-            foreach ($cookies as $cookie) {
-                $headers['Set-Cookie'][] = $cookie->__toString();
+        if (!isset($headers['Set-Cookie']) && !isset($headers['set-cookie'])) {
+            $cookies = $symfonyResponse->headers->getCookies();
+            if (!empty($cookies)) {
+                $headers['Set-Cookie'] = [];
+                foreach ($cookies as $cookie) {
+                    $headers['Set-Cookie'][] = $cookie->__toString();
+                }
             }
         }
 

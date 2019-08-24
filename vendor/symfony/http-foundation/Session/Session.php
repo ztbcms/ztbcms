@@ -11,12 +11,12 @@
 
 namespace Symfony\Component\HttpFoundation\Session;
 
-use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -24,22 +24,12 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
  */
 class Session implements SessionInterface, \IteratorAggregate, \Countable
 {
-    /**
-     * Storage driver.
-     *
-     * @var SessionStorageInterface
-     */
     protected $storage;
 
-    /**
-     * @var string
-     */
     private $flashName;
-
-    /**
-     * @var string
-     */
     private $attributeName;
+    private $data = [];
+    private $usageIndex = 0;
 
     /**
      * @param SessionStorageInterface $storage    A SessionStorageInterface instance
@@ -120,7 +110,7 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     public function clear()
     {
-        $this->storage->getBag($this->attributeName)->clear();
+        $this->getAttributeBag()->clear();
     }
 
     /**
@@ -148,7 +138,36 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     public function count()
     {
-        return count($this->getAttributeBag()->all());
+        return \count($this->getAttributeBag()->all());
+    }
+
+    /**
+     * @return int
+     *
+     * @internal
+     */
+    public function getUsageIndex()
+    {
+        return $this->usageIndex;
+    }
+
+    /**
+     * @return bool
+     *
+     * @internal
+     */
+    public function isEmpty()
+    {
+        if ($this->isStarted()) {
+            ++$this->usageIndex;
+        }
+        foreach ($this->data as &$data) {
+            if (!empty($data)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -190,7 +209,9 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     public function setId($id)
     {
-        $this->storage->setId($id);
+        if ($this->storage->getId() !== $id) {
+            $this->storage->setId($id);
+        }
     }
 
     /**
@@ -214,6 +235,8 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     public function getMetadataBag()
     {
+        ++$this->usageIndex;
+
         return $this->storage->getMetadataBag();
     }
 
@@ -222,7 +245,7 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     public function registerBag(SessionBagInterface $bag)
     {
-        $this->storage->registerBag($bag);
+        $this->storage->registerBag(new SessionBagProxy($bag, $this->data, $this->usageIndex));
     }
 
     /**
@@ -230,7 +253,9 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     public function getBag($name)
     {
-        return $this->storage->getBag($name);
+        $bag = $this->storage->getBag($name);
+
+        return method_exists($bag, 'getBag') ? $bag->getBag() : $bag;
     }
 
     /**
@@ -252,6 +277,6 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      */
     private function getAttributeBag()
     {
-        return $this->storage->getBag($this->attributeName);
+        return $this->getBag($this->attributeName);
     }
 }
