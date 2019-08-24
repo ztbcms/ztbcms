@@ -21,7 +21,7 @@
                                                 -
                                             </template>
                                         </div>
-                                        <div class="data-label">用户数总数</div>
+                                        <div class="data-label">会员数总数</div>
                                     </el-col>
                                     <el-col :span="8" class="col-data">
                                         <div class="data-value">
@@ -64,45 +64,10 @@
                                             <div class="item-icon">
                                                 <i class="iconfont icon-shuju"></i>
                                             </div>
-                                            <div class="item-label">用户前台</div>
+                                            <div class="item-label">会员前台</div>
                                         </div>
                                     </el-col>
 
-                                    <el-col :span="4">
-                                        <div class="col-data" @click="gotoPage2">
-                                            <div class="item-icon">
-                                                <i class="iconfont icon-empty"></i>
-                                            </div>
-                                            <div class="item-label">模型管理</div>
-                                        </div>
-                                    </el-col>
-
-                                    <el-col :span="4">
-                                        <div class="col-data" @click="gotoPage3">
-                                            <div class="item-icon">
-                                                <i class="el-icon-setting"></i>
-                                            </div>
-                                            <div class="item-label">站点配置</div>
-                                        </div>
-                                    </el-col>
-
-                                    <el-col :span="4">
-                                        <div class="col-data" @click="gotoPage4">
-                                            <div class="item-icon">
-                                                <i class="iconfont icon-question"></i>
-                                            </div>
-                                            <div class="item-label">管理员管理</div>
-                                        </div>
-                                    </el-col>
-
-                                    <el-col :span="4">
-                                        <div class="col-data" @click="gotoPage5">
-                                            <div class="item-icon">
-                                                <i class="el-icon-tickets"></i>
-                                            </div>
-                                            <div class="item-label">开发文档</div>
-                                        </div>
-                                    </el-col>
 
                                 </el-row>
                             </div>
