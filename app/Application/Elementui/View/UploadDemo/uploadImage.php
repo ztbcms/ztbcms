@@ -79,7 +79,7 @@
                             type: 2,
                             title: '上传图片',
                             content: "{:U('Upload/UploadCenter/imageUploadPanel', ['max_upload' => 9])}",
-                            area: ['60%', '50%'],
+                            area: ['80%', '70%'],
                         })
                     },
                     onUploadedFile: function (event) {
