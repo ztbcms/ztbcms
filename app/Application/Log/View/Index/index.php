@@ -189,7 +189,7 @@
                             type: 2,
                             title: '预览',
                             content: url,
-                            area: ['60%', '70%'],
+                            area: ['80%', '70%'],
                         })
                     },
                     clickAddLog: function (){
@@ -199,7 +199,7 @@
                             type: 2,
                             title: '编辑',
                             content: url,
-                            area: ['60%', '70%'],
+                            area: ['80%', '70%'],
                             end: function(){
                                 that.getList()
                             }
