@@ -1,9 +1,9 @@
 <?php
 
 // 检测PHP环境
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+if (version_compare(PHP_VERSION, '7.1.0', '<')) {
     header("Content-type: text/html; charset=utf-8");
-    die('PHP环境不支持，使用本系统需要 PHP > 5.3.0 版本才可以~ !');
+    die('PHP环境不支持，使用本系统需要 PHP > 7.1.0');
 }
 
 include __DIR__ . '/vendor/autoload.php';

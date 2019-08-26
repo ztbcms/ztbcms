@@ -9,14 +9,18 @@
 
 ## 环境要求
 
-* PHP版本需要5.4+ 推荐5.6
-    * php5-curl 
-    * php5-gd
-    * php5-mysql
-* Mysql 5.5+
+* PHP版本需要7.1+
+    * php7-curl 
+    * php7-gd
+    * php7-mysql
+* Mysql 5.6+
     * mysql-client
-* Apache 2.2(推荐2.4) 
+* Apache 2.4 
 * 可选的配置URL重写，参考[ThinkPHP - URL重写](http://document.thinkphp.cn/manual_3_2.html#url_rewrite)
+
+#### 如何兼容php 5.5+?
+
+- 去掉"overtrue/wechat": "^4.2"，使用 3.x 版本
 
 ## 下载安装
 
