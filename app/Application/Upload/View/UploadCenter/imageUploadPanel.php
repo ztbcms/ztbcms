@@ -38,6 +38,10 @@
 
                         </div>
                     </template>
+                    <div>
+                        <el-button v-show="selectdImageList.length > 0" type="danger" size="small"  @click="clickDeleteSelected">删除选中</el-button>
+                        <el-button v-show="selectdImageList.length > 0" type="primary" size="small" @click="clickCancelSelected">取消选中</el-button>
+                    </div>
                     <el-pagination
                             :page-size="pagination.limit"
                             :current-page.sync="pagination.page"
@@ -45,6 +49,7 @@
                             background
                             layout="prev, pager, next"
                             @current-change="getGalleryList"
+                            style="margin-top: 10px"
                     ></el-pagination>
                 </div>
             </el-tab-pane>
@@ -167,6 +172,7 @@
                             this.galleryList.forEach(function (file) {
                                 if (file.is_select) {
                                     result.push({
+                                        aid: file.aid,
                                         url: file.url,
                                         name: file.name
                                     })
@@ -265,6 +271,33 @@
                             type: 'get',
                             success: function (res) {
                                 that.watermarkConfig.enable = res.data.watermarkenable + ''
+                            }
+                        })
+                    },
+                    // 取消选中
+                    clickCancelSelected: function(){
+                        for (var i = 0; i < this.galleryList.length; i++) {
+                            this.galleryList[i].is_select = false
+                        }
+                    },
+                    // 删除选中
+                    clickDeleteSelected: function(){
+                        var that = this;
+                        var form = {
+                            files: []
+                        }
+                        for (var i = 0; i < this.selectdImageList.length; i++) {
+                            form['files'].push(this.selectdImageList[i])
+                        }
+
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/deleteFiles')}",
+                            data: form,
+                            dataType: 'json',
+                            type: 'post',
+                            success: function (res) {
+                                layer.msg(res.msg)
+                                that.getGalleryList()
                             }
                         })
                     }

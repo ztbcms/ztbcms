@@ -15,6 +15,10 @@ class AttachmentModel extends Model {
     //当前时间戳
     public $time;
 
+    // 删除状态
+    const DELETE_STATUS_YES = 1;
+    const DELETE_STATUS_NO = 0;
+
     protected function _initialize() {
         parent::_initialize();
         $this->time = time();
