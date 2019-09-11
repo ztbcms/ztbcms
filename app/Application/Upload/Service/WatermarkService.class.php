@@ -68,7 +68,7 @@ class WatermarkService extends BaseService
         if ($source_image->width() >= $watermark_config['width'] && $source_image->height() >= $watermark_config['height']) {
             // create a new Image instance for inserting
             $watermark = Image::make(SITE_PATH . $watermark_config['img_path']);
-            $watermark->resize($watermark_config['height'], $watermark_config['width']);
+            $watermark->resize($watermark_config['width'], $watermark_config['height']);
             $watermark->opacity($watermark_config['opacity']);
 
             // insert watermark
