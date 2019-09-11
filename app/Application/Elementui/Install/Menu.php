@@ -50,17 +50,33 @@ return array(
             ),
 
             array(
-                "route" => "Elementui/ElementDemo/common_table",
+                "route" => "Elementui/ElementDemo/index",
                 "type" => 1,
                 "status" => 1,
-                "name" => "列表页",
+                "name" => "页面",
+                "child" => array(
+                    array(
+                        "route" => "Elementui/ElementDemo/common_table",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "列表页",
+                    ),
+                    array(
+                        "route" => "Elementui/ElementDemo/common_form",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "表单页",
+                    ),
+                    array(
+                        "route" => "Elementui/ElementDemo/ueditor_xiumi",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "UEditor+秀米",
+                    ),
+                )
             ),
-            array(
-                "route" => "Elementui/ElementDemo/common_form",
-                "type" => 1,
-                "status" => 1,
-                "name" => "表单页",
-            ),
+
+
         ),
     ),
 );
