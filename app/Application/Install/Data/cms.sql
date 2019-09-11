@@ -53,6 +53,7 @@ CREATE TABLE `cms_attachment` (
   `uploadip` varchar(16) NOT NULL DEFAULT '' COMMENT '上传ip',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '附件使用状态',
   `authcode` varchar(32) NOT NULL DEFAULT '' COMMENT '附件路径MD5值',
+  `delete_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态 0未删除 1已删除',
   PRIMARY KEY (`aid`),
   KEY `authcode` (`authcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';

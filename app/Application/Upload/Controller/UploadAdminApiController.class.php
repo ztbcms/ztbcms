@@ -10,6 +10,7 @@ namespace Upload\Controller;
 
 use Admin\Controller\AdminApiBaseController;
 use Admin\Service\User;
+use Attachment\Model\AttachmentModel;
 use Upload\Service\WatermarkService;
 
 /**
@@ -85,6 +86,19 @@ class UploadAdminApiController extends AdminApiBaseController
     }
 
     /**
+     * 批量删除文件
+     */
+    function deleteFiles()
+    {
+        $files = I('post.files');
+        $db = M('Attachment');
+        foreach ($files as $file) {
+            $db->where(['aid' => ['EQ', $file['aid']]])->save(['delete_status' => AttachmentModel::DELETE_STATUS_YES]);
+        }
+        $this->ajaxReturn(self::createReturn(true, null, '操作成功'));
+    }
+
+    /**
      * 上传文件
      */
     function uploadFile()
@@ -108,6 +122,7 @@ class UploadAdminApiController extends AdminApiBaseController
             'module' => self::MODULE_IMAGE,
             'userid' => $userid,
             'isadmin' => 1,
+            'delete_status' => AttachmentModel::DELETE_STATUS_NO
         ];
         $total_items = $db->where($where)->count();
         $total_page = ceil($total_items / $limit);
@@ -116,6 +131,7 @@ class UploadAdminApiController extends AdminApiBaseController
         $return_list = [];
         foreach ($list as $index => $item) {
             $return_list [] = [
+                'aid' => $item['aid'],
                 'name' => $item['filename'],
                 'url' => cache('Config.sitefileurl') . $item['filepath'],
                 'filepath' => $item['filepath'],
