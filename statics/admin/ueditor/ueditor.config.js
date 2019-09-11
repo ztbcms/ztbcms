@@ -294,7 +294,7 @@
         //,toolbarTopOffset:400
 
         //设置远程图片是否抓取到本地保存
-        //,catchRemoteImageEnable: true //设置是否抓取远程图片
+        ,catchRemoteImageEnable: true //设置是否抓取远程图片
 
         //pageBreakTag
         //分页标识符,默认是_ueditor_page_break_tag_
@@ -409,7 +409,7 @@
 			p:      ['class', 'style'],
 			pre:    ['class', 'style'],
 			s:      [],
-			section:[],
+			section:['class', 'style'], //秀米 http://hgs.xiumi.us/uedit/
 			small:  [],
 			span:   ['class', 'style'],
 			sub:    ['class', 'style'],

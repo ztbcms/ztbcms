@@ -63,7 +63,6 @@ class Uploader
             $this->upFile();
         }
 
-        $this->stateMap['ERROR_TYPE_NOT_ALLOWED'] = iconv('unicode', 'utf-8', $this->stateMap['ERROR_TYPE_NOT_ALLOWED']);
     }
 
     /**
@@ -174,7 +173,9 @@ class Uploader
     {
         $imgUrl = htmlspecialchars($this->fileField);
         $imgUrl = str_replace("&amp;", "&", $imgUrl);
-
+        //去除不分远程图片存在 ?、#
+        $imgUrl = explode('?', $imgUrl)[0];
+        $imgUrl = explode('#', $imgUrl)[0];
         //http开头验证
         if (strpos($imgUrl, "http") !== 0) {
             $this->stateInfo = $this->getStateInfo("ERROR_HTTP_LINK");

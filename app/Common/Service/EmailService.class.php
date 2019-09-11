@@ -16,6 +16,7 @@ class EmailService extends BaseService {
      * @param $subject
      * @param $message
      * @return array
+     * @throws \phpmailerException
      */
     static function send($email, $subject, $message) {
         $config = cache('Config');
@@ -27,18 +28,22 @@ class EmailService extends BaseService {
         $mail->SMTPAuth = true;
         $mail->Username = $config['mail_user']; // SMTP username
         $mail->Password = $config['mail_password'];
-        $mail->Port = 25;
+        $mail->Port = $config['mail_port'];
         $mail->setFrom($config['mail_from'], $config['mail_fname']);
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body = $message;
 
-        $result = $mail->send();
-        if ($result) {
-            return self::createReturn(true, null, '发送成功');
-        } else {
-            return self::createReturn(false, null, '发送失败: ' . $mail->ErrorInfo);
+        try {
+            $result = $mail->send();
+            if ($result) {
+                return self::createReturn(true, null, '发送成功');
+            } else {
+                return self::createReturn(false, null, '发送失败: ' . $mail->ErrorInfo);
+            }
+        } catch (\phpmailerException $e) {
+            return self::createReturn(false, null, '发送失败: ' . $e->getMessage());
         }
     }
 }

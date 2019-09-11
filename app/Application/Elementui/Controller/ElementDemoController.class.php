@@ -23,4 +23,9 @@ class ElementDemoController extends AdminBase
     {
         $this->display();
     }
+
+    function ueditor_xiumi(){
+        $this->display();
+
+    }
 }
