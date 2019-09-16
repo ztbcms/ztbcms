@@ -46,47 +46,6 @@
         "description": "The composer plugin for EasyWeChat"
     },
     {
-        "name": "fguillot/json-rpc",
-        "version": "v1.2.4",
-        "version_normalized": "1.2.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/matasarei/JsonRPC.git",
-            "reference": "ea2720b13e986bbf23e832b135c84c91ead7259f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/matasarei/JsonRPC/zipball/ea2720b13e986bbf23e832b135c84c91ead7259f",
-            "reference": "ea2720b13e986bbf23e832b135c84c91ead7259f",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.4"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.8.*"
-        },
-        "time": "2017-01-12T21:31:30+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "JsonRPC": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Frédéric Guillot"
-            }
-        ],
-        "description": "Simple Json-RPC client/server library that just works",
-        "homepage": "https://github.com/fguillot/JsonRPC"
-    },
-    {
         "name": "guzzlehttp/guzzle",
         "version": "6.3.3",
         "version_normalized": "6.3.3.0",

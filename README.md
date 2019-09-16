@@ -9,7 +9,7 @@
 
 ## 环境要求
 
-* PHP版本需要7.1+
+* PHP版本需要7.0+
     * php7-curl 
     * php7-gd
     * php7-mysql

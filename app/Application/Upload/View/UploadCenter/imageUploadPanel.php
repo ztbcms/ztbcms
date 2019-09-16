@@ -282,6 +282,18 @@
                     },
                     // 删除选中
                     clickDeleteSelected: function(){
+                        var that = this
+                        layer.confirm('确认删除？', {
+                            title: '提示',
+                            btn: ['确认', '取消'] //按钮
+                        }, function () {
+                            //确认回掉
+                            that.doDeleteSelected()
+                        }, function () {
+                            //取消回掉
+                        });
+                    },
+                    doDeleteSelected: function(){
                         var that = this;
                         var form = {
                             files: []

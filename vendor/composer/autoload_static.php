@@ -202,13 +202,6 @@ class ComposerStaticInite766d226433bf0c120f1dc5e51097aee
                 0 => __DIR__ . '/..' . '/pimple/pimple/src',
             ),
         ),
-        'J' => 
-        array (
-            'JsonRPC' => 
-            array (
-                0 => __DIR__ . '/..' . '/fguillot/json-rpc/src',
-            ),
-        ),
     );
 
     public static function getInitializer(ClassLoader $loader)

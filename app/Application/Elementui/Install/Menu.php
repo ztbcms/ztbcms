@@ -73,6 +73,12 @@ return array(
                         "status" => 1,
                         "name" => "UEditor+秀米",
                     ),
+                    array(
+                        "route" => "Elementui/ElementDemo/preview_images",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "图片预览",
+                    ),
                 )
             ),
 
