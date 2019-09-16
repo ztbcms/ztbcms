@@ -19,7 +19,7 @@
     </tr>
     <tr> 
         <td>输入框长度</td>
-        <td><input type="text" name="setting[size]" value="" size="3" class="input"/> px</td>
+        <td><input type="text" name="setting[size]" value="200" size="3" class="input"/> px</td>
     </tr>
     <tr> 
         <td>默认值</td>
