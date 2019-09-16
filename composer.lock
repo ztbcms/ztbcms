@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5786db7287f46a6289f50118ddad6a16",
+    "content-hash": "05d4b58a2779b90532931b4facfac71a",
     "packages": [
         {
             "name": "easywechat-composer/easywechat-composer",
@@ -49,45 +49,6 @@
             ],
             "description": "The composer plugin for EasyWeChat",
             "time": "2019-02-22T07:59:50+00:00"
-        },
-        {
-            "name": "fguillot/json-rpc",
-            "version": "v1.2.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/matasarei/JsonRPC.git",
-                "reference": "ea2720b13e986bbf23e832b135c84c91ead7259f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/matasarei/JsonRPC/zipball/ea2720b13e986bbf23e832b135c84c91ead7259f",
-                "reference": "ea2720b13e986bbf23e832b135c84c91ead7259f",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.8.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "JsonRPC": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Frédéric Guillot"
-                }
-            ],
-            "description": "Simple Json-RPC client/server library that just works",
-            "homepage": "https://github.com/fguillot/JsonRPC",
-            "time": "2017-01-12T21:31:30+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

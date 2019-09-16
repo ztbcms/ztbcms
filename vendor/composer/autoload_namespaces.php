@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
-    'JsonRPC' => array($vendorDir . '/fguillot/json-rpc/src'),
 );
