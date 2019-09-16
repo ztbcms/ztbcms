@@ -24,8 +24,16 @@ class ElementDemoController extends AdminBase
         $this->display();
     }
 
-    function ueditor_xiumi(){
+    //ueditor+秀米
+    function ueditor_xiumi()
+    {
         $this->display();
 
+    }
+
+    // 图片预览
+    function preview_images()
+    {
+        $this->display();
     }
 }
