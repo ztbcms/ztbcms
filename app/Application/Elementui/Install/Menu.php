@@ -97,7 +97,7 @@ return array(
                         "route" => "Elementui/IconfontDemo/element_iconfoont",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "Element icon",
+                        "name" => "Element iconfont",
                     ),
                 )
             ),
