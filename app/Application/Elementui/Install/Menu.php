@@ -81,6 +81,21 @@ return array(
                     ),
                 )
             ),
+            array(
+                "route" => "Elementui/Iconfont/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "Iconfont",
+                "child" => array(
+                    array(
+                        "route" => "Elementui/IconfontDemo/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "内置iconfont",
+                    ),
+                )
+            ),
+
 
 
         ),
