@@ -2,8 +2,8 @@
 
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
-        <h1 style="text-align: center;">内置iconfont</h1>
-        <iframe src="/statics/css/iconfont/demo_index.html" frameborder="0" style="height:100%;width: 100%"></iframe>
+        <h1 style="text-align: center;">Element UI 自带</h1>
+        <iframe src="https://element.eleme.cn/#/zh-CN/component/icon" frameborder="0" style="height:100%;width: 100%"></iframe>
     </div>
 
     <style>

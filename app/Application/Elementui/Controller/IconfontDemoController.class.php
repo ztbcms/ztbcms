@@ -13,7 +13,11 @@ use Common\Controller\AdminBase;
 class IconfontDemoController extends AdminBase
 {
 
-    function index(){
+    function ali_iconfont(){
+        $this->display();
+    }
+
+    function element_iconfoont(){
         $this->display();
     }
 }

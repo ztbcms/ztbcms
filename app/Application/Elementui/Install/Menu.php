@@ -88,10 +88,16 @@ return array(
                 "name" => "Iconfont",
                 "child" => array(
                     array(
-                        "route" => "Elementui/IconfontDemo/index",
+                        "route" => "Elementui/IconfontDemo/ali_iconfont",
                         "type" => 1,
                         "status" => 1,
                         "name" => "内置iconfont",
+                    ),
+                    array(
+                        "route" => "Elementui/IconfontDemo/element_iconfoont",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "Element icon",
                     ),
                 )
             ),
