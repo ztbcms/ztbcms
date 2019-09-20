@@ -3,7 +3,7 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>UEditor+秀米编辑器</h3>
+            <h3>UEditor+秀米编辑器+对接系统内置的上传图片组件</h3>
             <p>本示例只包含了一个uediotor实例，若需要一个页面有多 editor 实例，请查看 ztbcms-Translate 多语言模块的Demo</p>
             <el-row>
                 <el-col :span="24">

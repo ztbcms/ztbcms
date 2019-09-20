@@ -81,8 +81,40 @@ return array(
                     ),
                 )
             ),
-
-
+            array(
+                "route" => "Elementui/Iconfont/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "Iconfont",
+                "child" => array(
+                    array(
+                        "route" => "Elementui/IconfontDemo/ali_iconfont",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "内置iconfont",
+                    ),
+                    array(
+                        "route" => "Elementui/IconfontDemo/element_iconfoont",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "Element iconfont",
+                    ),
+                )
+            ),
+            array(
+                "route" => "Elementui/ImageProcessDemo/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "图片处理",
+                "child" => array(
+                    array(
+                        "route" => "Elementui/ImageProcessDemo/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "图片合成",
+                    ),
+                )
+            ),
         ),
     ),
 );

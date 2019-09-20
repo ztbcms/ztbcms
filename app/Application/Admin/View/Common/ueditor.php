@@ -16,3 +16,8 @@
 <link rel="stylesheet" href="{$config_siteurl}statics/admin/ueditor/xiumi/xiumi-ue-v5.css">
 <script src="{$config_siteurl}statics/admin/ueditor/xiumi/xiumi-ue-dialog-v5.js"></script>
 <!--  秀米编辑器END  -->
+
+<!--  CMS上传图片组件,不需要时，可以直接注释  -->
+<link rel="stylesheet" href="{$config_siteurl}statics/admin/ueditor/cms_uploadImage/index.css">
+<script src="{$config_siteurl}statics/admin/ueditor/cms_uploadImage/index.js"></script>
+<!--  CMS上传图片组件  -->
