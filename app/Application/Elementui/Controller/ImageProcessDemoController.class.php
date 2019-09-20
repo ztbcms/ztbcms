@@ -23,7 +23,6 @@ class ImageProcessDemoController extends AdminBase
      * 1. 少用字符
      * 2. 文字尽量简洁
      * 3. 不支持emoji
-     * @return array
      */
     function createSharePoster()
     {
@@ -73,7 +72,6 @@ class ImageProcessDemoController extends AdminBase
 
         //用户头像
         $avatar_url = SITE_PATH . 'statics/admin/demo/elementui/images/avatar.jpg';
-
         $w = 100;
         $h = 100;
         $avatarImg = Image::make(file_get_contents($avatar_url))->resize($w, $h);
@@ -84,7 +82,6 @@ class ImageProcessDemoController extends AdminBase
         $nick_name = $config['nick_name'];
         $nickname_color = $config['nickname_color'];
         $this->_renderText($img, $nick_name, 145, 705, 28, $nickname_color, 0, 0);
-
 
         // 用户小程序二维码
         $mini_code_url = SITE_PATH . 'statics/admin/demo/elementui/images/qrcode.png';
@@ -155,6 +152,7 @@ class ImageProcessDemoController extends AdminBase
     private function _renderText(\Intervention\Image\Image $image, $text, $start_x = 0, $start_y = 0, $font_size = 16, $font_color = '#333',
                                  $width = 0, $height = 0, $align = 'left', $valign = 'top', $marginTop = 0, $textOverflow = 'ellipsis')
     {
+        //引入字体
         $font_path = SITE_PATH . 'statics/admin/demo/elementui/font/SourceHanSansCN-Regular.otf';
         //单行最大数量
         $max_single_line_text_amount = mb_strlen($text) * 1000;// 默认无限
