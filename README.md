@@ -138,3 +138,10 @@ window.parent.dispatchEvent(event)
 
 IE 10或以上
 
+## 依赖说明
+
+```
+"intervention/image": "^2.5", // 图片处理 http://image.intervention.io/
+"overtrue/wechat": "^4.2" // 微信开发SDK https://www.easywechat.com/
+```
+
