@@ -101,9 +101,20 @@ return array(
                     ),
                 )
             ),
-
-
-
+            array(
+                "route" => "Elementui/ImageProcessDemo/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "图片处理",
+                "child" => array(
+                    array(
+                        "route" => "Elementui/ImageProcessDemo/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "图片合成",
+                    ),
+                )
+            ),
         ),
     ),
 );
