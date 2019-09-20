@@ -15,62 +15,74 @@ class ImageProcessDemoController extends AdminBase
 {
     function index()
     {
-
+        $this->display();
     }
 
+    /**
+     * 图片生成建议：
+     * 1. 少用字符
+     * 2. 文字尽量简洁
+     * 3. 不支持emoji
+     * @return array
+     */
     function createSharePoster()
     {
-        $application_id = '';
-        $isFilePath = false;
-        $store_member_id = 1;
+        $nickname = I('nick_name');
+        $description = I('description');
+        if (empty($nickname)) {
+            $nickname = 'Jackson 杰克逊';
+        }
+        if (empty($description)) {
+            $description = '我就666，不一样的烟火。今年过节不送礼，送礼就送XXX!';
+        }
+        $member_id = md5($nickname . $description);
+        $config = [
+            'member_id' => $member_id,
+            'nick_name' => $nickname,
+            'nickname_color' => '#333',
+            'description_color' => '#333',
+            'description' => $description,
+        ];
+        $this->ajaxReturn($this->_genImage($config));
+    }
+
+    private function _genImage($config)
+    {
+        $member_id = $config['member_id'];
 
         // 图片命名规则
-        $file_base_path = SITE_PATH . 'd/';
+        $upload_dir = 'd/file/';
+        $file_base_path = SITE_PATH . $upload_dir;
         // 背景图
         $bg_img_url = SITE_PATH . 'statics/admin/demo/elementui/images/bg.png';
-        $poster_file_path = 'poster/poster_' . md5($bg_img_url) . '_' . $store_member_id . '.jpg';
+        $poster_file_path = 'poster/poster_' . md5($bg_img_url) . '_' . $member_id . '.jpg';
         $save_path = $file_base_path . $poster_file_path;
-        $font_path = SITE_PATH . 'statics/admin/demo/elementui/font/fh.ttf';
-        $return_url = $save_path;
+        $return_path = '/' . $upload_dir . $poster_file_path;
 
         //已存在就返回
-//        if (File::exists($save_path)) {
-//            if (!$isFilePath) {
-//                $return_url = config('app.img_host') . $poster_file_path;
-//            }
-//            return self::returnSuccess($return_url);
-//        }
+        if (file_exists($save_path)) {
+            return self::createReturn(true, ['path' => $return_path]);
+        }
 
         // 画布
         $img = Image::canvas(640, 940);
-//var_dump($bg_img_url);exit;
+
         // 背景图
         $thumb = Image::make($bg_img_url)->resize(640, 940);
         $img->insert($thumb);
 
         //用户头像
         $avatar_url = SITE_PATH . 'statics/admin/demo/elementui/images/avatar.jpg';
-        $avatarImg = Image::make(file_get_contents($avatar_url))->resize(100, 100);
+
         $w = 100;
         $h = 100;
-        $r = $w / 2;
-        for ($x = 0; $x < $w; $x++) {
-            for ($y = 0; $y < $h; $y++) {
-                $_x = $x - $w / 2;
-                $_y = $y - $h / 2;
-                if ((($_x * $_x) + ($_y * $_y)) < ($r * $r)) {
-                    // 圆形内
-                } else {
-                    //圆形外，画空白
-                    $avatarImg->pixel(array(255, 255, 255, 0), $x, $y);
-                }
-            }
-        }
+        $avatarImg = Image::make(file_get_contents($avatar_url))->resize($w, $h);
+        $this->_roundImage($avatarImg, $w, $h);
         $img->insert($avatarImg, 'top-left', 30, 670);
 
         //用户名称
-        $nick_name = 'Jackson 杰克逊';
-        $nickname_color = '#333';
+        $nick_name = $config['nick_name'];
+        $nickname_color = $config['nickname_color'];
         $this->_renderText($img, $nick_name, 145, 705, 28, $nickname_color, 0, 0);
 
 
@@ -83,26 +95,45 @@ class ImageProcessDemoController extends AdminBase
             $img->insert($qrcode, 'top-right', 30, 700);
         }
 
-
         // 描述
-        $description_color = '#333';
-        $description = '我就666，不一样的烟火。今年过节不送礼礼礼礼礼礼礼礼礼礼礼礼礼礼，送礼就送XXX!';
+        $description_color = $config['description_color'];
+        $description = $config['description'];
 
         //最多显示2行
         $this->_renderText($img, $description, 30, 800, 24, $description_color, 360, 24 * 2, 'left', 'top', 14, 'clip');
 
-
         // 保存图片
-//        var_dump();exit;
         if (!file_exists(dirname($save_path))) {
             mkdir(dirname($save_path), 0755, true);
         }
         $img->save($save_path, 90, 'jpg');
 
-//        if (!$isFilePath) {
-//            $return_url = config('app.img_host') . $poster_file_path;
-//        }
-        return self::createReturn(true, $save_path);
+        return self::createReturn(true, ['path' => $return_path]);
+    }
+
+    /**
+     * 把图片切为圆形
+     * @param \Intervention\Image\Image $image
+     * @param int $width
+     * @param int $height
+     */
+    private function _roundImage(\Intervention\Image\Image $image, $width = 100, $height = 100)
+    {
+        $w = $width;
+        $h = $height;
+        $r = $w / 2;
+        for ($x = 0; $x < $w; $x++) {
+            for ($y = 0; $y < $h; $y++) {
+                $_x = $x - $w / 2;
+                $_y = $y - $h / 2;
+                if ((($_x * $_x) + ($_y * $_y)) < ($r * $r)) {
+                    // 圆形内
+                } else {
+                    //圆形外，画空白
+                    $image->pixel(array(255, 255, 255, 0), $x, $y);
+                }
+            }
+        }
     }
 
     /**
@@ -124,7 +155,7 @@ class ImageProcessDemoController extends AdminBase
     private function _renderText(\Intervention\Image\Image $image, $text, $start_x = 0, $start_y = 0, $font_size = 16, $font_color = '#333',
                                  $width = 0, $height = 0, $align = 'left', $valign = 'top', $marginTop = 0, $textOverflow = 'ellipsis')
     {
-        $font_path = SITE_PATH . 'statics/admin/demo/elementui/font/fh.ttf';
+        $font_path = SITE_PATH . 'statics/admin/demo/elementui/font/SourceHanSansCN-Regular.otf';
         //单行最大数量
         $max_single_line_text_amount = mb_strlen($text) * 1000;// 默认无限
         if ($width != 0) {
