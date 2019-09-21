@@ -13,7 +13,8 @@
 </head>
 <body>
 <div id=app></div>
-<script src=//at.alicdn.com/t/font_130644_jg74jqshzfpkqpvi.js></script>
+<!--引入iconfont-->
+<script src=//at.alicdn.com/t/font_130644_m500t1u48k.js></script>
 <script>!function (e) {
         function t(t) {
             for (var n, o, i = t[0], c = t[1], l = t[2], s = 0, d = []; s < i.length; s++) o = i[s], a[o] && d.push(a[o][0]), a[o] = 0;
