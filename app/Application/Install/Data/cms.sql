@@ -452,9 +452,9 @@ CREATE TABLE `cms_menu` (
 -- ----------------------------
 -- Records of cms_menu
 -- ----------------------------
-INSERT INTO `cms_menu` VALUES (1, '概览', 0, 'Admin', 'Main', 'index', '', 1, 1, '', 0, '');
-INSERT INTO `cms_menu` VALUES ('2', '我的面板', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('3', '设置', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES (1, '概览', 0, 'Admin', 'Main', 'index', '', 1, 1, '', 0, 'dashboard');
+INSERT INTO `cms_menu` VALUES ('2', '我的面板', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', 'icon_boss');
+INSERT INTO `cms_menu` VALUES ('3', '设置', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', 'icon_setting');
 INSERT INTO `cms_menu` VALUES ('4', '个人信息', '2', 'Admin', 'Adminmanage', 'myinfo', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('5', '修改个人信息', '4', 'Admin', 'Adminmanage', 'myinfo', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('6', '修改密码', '4', 'Admin', 'Adminmanage', 'chanpass', '', '1', '1', '', '0', '');
@@ -488,11 +488,11 @@ INSERT INTO `cms_menu` VALUES ('33', '后台操作日志', '31', 'Admin', 'Logs'
 INSERT INTO `cms_menu` VALUES ('34', '删除一个月前的登录日志', '32', 'Admin', 'Logs', 'deleteloginlog', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('35', '删除一个月前的操作日志', '33', 'Admin', 'Logs', 'deletelog', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('36', '添加行为', '13', 'Admin', 'Behavior', 'add', '', '1', '1', '', '3', '');
-INSERT INTO `cms_menu` VALUES ('37', '模块', '0', 'Admin', 'Module', 'index', '', '0', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('37', '模块', '0', 'Admin', 'Module', 'index', '', '0', '1', '', '0', 'icon_subordinate');
 INSERT INTO `cms_menu` VALUES ('42', '模块管理', '37', 'Admin', 'Module', 'local', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('43', '本地模块', '42', 'Admin', 'Module', 'index', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('41', '模块仓库', '42', 'Admin', 'Module', 'remote', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('44', '内容', '0', 'Content', 'Index', 'index', '', '0', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('44', '内容', '0', 'Content', 'Index', 'index', '', '0', '1', '', '0', 'news1');
 INSERT INTO `cms_menu` VALUES ('45', '内容管理', '44', 'Content', 'Content', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('46', '内容相关设置', '44', 'Content', 'Category', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('47', '栏目列表', '46', 'Content', 'Category', 'index', '', '1', '1', '', '0', '');
@@ -538,7 +538,7 @@ INSERT INTO `cms_menu` VALUES ('86', 'Tags管理', '45', 'Content', 'Tags', 'ind
 INSERT INTO `cms_menu` VALUES ('87', '修改', '86', 'Content', 'Tags', 'edit', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('88', '删除', '86', 'Content', 'Tags', 'delete', '', '1', '0', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('89', 'Tags数据重建', '86', 'Content', 'Tags', 'create', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('90', '界面', '0', 'Template', 'Style', 'index', '', '0', '1', '', '0', '');
+INSERT INTO `cms_menu` VALUES ('90', '界面', '0', 'Template', 'Style', 'index', '', '0', '1', '', '0', 'icon_skin');
 INSERT INTO `cms_menu` VALUES ('91', '模板管理', '90', 'Template', 'Style', 'index', '', '0', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('92', '模板风格', '91', 'Template', 'Style', 'index', '', '1', '1', '', '0', '');
 INSERT INTO `cms_menu` VALUES ('93', '添加模板页', '92', 'Template', 'Style', 'add', '', '1', '1', '', '0', '');
