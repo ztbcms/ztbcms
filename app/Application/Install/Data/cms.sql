@@ -294,7 +294,7 @@ INSERT INTO `cms_config` VALUES ('8', 'uploadmaxsize', '允许上传附件大小
 INSERT INTO `cms_config` VALUES ('9', 'uploadallowext', '允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip');
 INSERT INTO `cms_config` VALUES ('10', 'qtuploadmaxsize', '前台允许上传附件大小', '1', '20480');
 INSERT INTO `cms_config` VALUES ('11', 'qtuploadallowext', '前台允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip');
-INSERT INTO `cms_config` VALUES ('12', 'watermarkenable', '是否开启图片水印', '1', '1');
+INSERT INTO `cms_config` VALUES ('12', 'watermarkenable', '是否开启图片水印', '1', '0');
 INSERT INTO `cms_config` VALUES ('13', 'watermarkminwidth', '水印-宽', '1', '300');
 INSERT INTO `cms_config` VALUES ('14', 'watermarkminheight', '水印-高', '1', '100');
 INSERT INTO `cms_config` VALUES ('15', 'watermarkimg', '水印图片', '1', '/statics/images/mark_bai.png');
