@@ -16,7 +16,7 @@
                             <div class="el-form-item">
                                 <label class="el-form-item__label" style="width: 80px;">内容</label>
                                 <div class="el-form-item__content" style="margin-left: 80px;line-height: 0;">
-                                    <textarea id="editor_content" style="height: 400px;"></textarea>
+                                    <textarea id="editor_content" style="height: 500px;width: 750px;"></textarea>
                                 </div>
                             </div>
 
