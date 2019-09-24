@@ -14,10 +14,14 @@
                             </el-form-item>
 
                             <el-form-item label="水印尺寸">
-                                <el-input v-model="form.watermarkminwidth" style="width:100px" placeholder="宽度"></el-input>
-                                x
-                                <el-input v-model="form.watermarkminheight" style="width:100px" placeholder="高度"></el-input>
-                                px
+                                <div>
+                                    <el-input v-model="form.watermarkminwidth" style="width:100px" placeholder="宽度"></el-input>
+                                    x
+                                    <el-input v-model="form.watermarkminheight" style="width:100px" placeholder="高度"></el-input>
+                                    px
+                                </div>
+                                <p style="margin: 0;font-size: 12px;">建议：宽高度为水印图片的宽高等比例缩放，否则会变形</p>
+
                             </el-form-item>
 
                             <el-form-item label="水印图片">
@@ -31,11 +35,18 @@
                             </el-form-item>
 
                             <el-form-item label="水印透明度">
-                                <el-input v-model="form.watermarkpct"></el-input>
+                                <div>
+                                    <el-input v-model="form.watermarkpct"></el-input>
+                                    <p style="margin: 0;font-size: 12px;">数值范围0-100，100为不透明</p>
+                                </div>
                             </el-form-item>
 
                             <el-form-item label="水印质量">
-                                <el-input v-model="form.watermarkquality"></el-input>
+                                <div>
+                                    <el-input v-model="form.watermarkquality"></el-input>
+                                    <p style="margin: 0;font-size: 12px;">数值范围0-100，100为最高质量</p>
+                                </div>
+
                             </el-form-item>
 
                             <el-form-item label="水印位置">
