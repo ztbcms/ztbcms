@@ -654,6 +654,20 @@ function get_url() {
 }
 
 /**
+ * 格式化资源路径
+ * @param $img_url
+ * @return mixed|string
+ */
+function formatResourceUrl($img_url)
+{
+    $url_obj = parse_url($img_url);
+    if (isset($url_obj['scheme'])) {
+        return $img_url;
+    }
+    return urlDomain(get_url()) . $img_url;
+}
+
+/**
  * 返回附件类型图标
  * @param string $file 附件名称
  * @param string $type png为大图标，gif为小图标

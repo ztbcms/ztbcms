@@ -17,6 +17,9 @@ use System\Service\BaseService;
  */
 class WatermarkService extends BaseService
 {
+    //是否启用
+    const ENABLE_YES = 1;
+    const ENABLE_NO = 0;
 
     /**
      * WatermarkService constructor.
@@ -61,6 +64,15 @@ class WatermarkService extends BaseService
      */
     function addWaterMark($source_image_path, $save_image_path, $watermark_config)
     {
+        $urlObj = parse_url($source_image_path);
+
+        if (empty($urlObj['scheme'])) {
+            // 图片路径是非http、https 链接,则拼上本地连接
+            $source_image_path = getcwd() . $source_image_path;
+            if (!file_exists($source_image_path)) {
+                return self::createReturn(false, null, '添加水印异常，原因：找不到源图片');
+            }
+        }
         // create new Intervention Image
         $source_image = Image::make($source_image_path);
 

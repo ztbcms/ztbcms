@@ -294,12 +294,12 @@ INSERT INTO `cms_config` VALUES ('8', 'uploadmaxsize', '允许上传附件大小
 INSERT INTO `cms_config` VALUES ('9', 'uploadallowext', '允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip');
 INSERT INTO `cms_config` VALUES ('10', 'qtuploadmaxsize', '前台允许上传附件大小', '1', '20480');
 INSERT INTO `cms_config` VALUES ('11', 'qtuploadallowext', '前台允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip');
-INSERT INTO `cms_config` VALUES ('12', 'watermarkenable', '是否开启图片水印', '1', '1');
-INSERT INTO `cms_config` VALUES ('13', 'watermarkminwidth', '水印-宽', '1', '300');
-INSERT INTO `cms_config` VALUES ('14', 'watermarkminheight', '水印-高', '1', '100');
+INSERT INTO `cms_config` VALUES ('12', 'watermarkenable', '是否开启图片水印', '1', '0');
+INSERT INTO `cms_config` VALUES ('13', 'watermarkminwidth', '水印-宽', '1', '227');
+INSERT INTO `cms_config` VALUES ('14', 'watermarkminheight', '水印-高', '1', '78');
 INSERT INTO `cms_config` VALUES ('15', 'watermarkimg', '水印图片', '1', '/statics/images/mark_bai.png');
-INSERT INTO `cms_config` VALUES ('16', 'watermarkpct', '水印透明度', '1', '80');
-INSERT INTO `cms_config` VALUES ('17', 'watermarkquality', 'JPEG 水印质量', '1', '85');
+INSERT INTO `cms_config` VALUES ('16', 'watermarkpct', '水印透明度', '1', '100');
+INSERT INTO `cms_config` VALUES ('17', 'watermarkquality', '水印质量', '1', '85');
 INSERT INTO `cms_config` VALUES ('18', 'watermarkpos', '水印位置', '1', '7');
 INSERT INTO `cms_config` VALUES ('19', 'theme', '主题风格', '1', 'Default');
 INSERT INTO `cms_config` VALUES ('20', 'ftpstatus', 'FTP上传', '1', '0');

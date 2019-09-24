@@ -27,7 +27,10 @@ class AttachmentModel extends Model {
     /**
      *  生成上传保存目录，不存在尝试创建
      *
-     * @return string 成功返回网站路径，失败反驳false
+     * @param $module
+     * @param string $dateFormat
+     * @param int $time
+     * @return string 成功返回网站路径，失败返回false
      */
     public function getFilePath($module, $dateFormat = '', $time = 0) {
         $filePath = C("UPLOADFILEPATH") . strtolower(trim($module)) . '/' . date($dateFormat ? $dateFormat : $this->dateFormat,

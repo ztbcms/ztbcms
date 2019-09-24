@@ -23,6 +23,11 @@
             width: 100%;
         }
         body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background: #f6f7ff;
         }
 
