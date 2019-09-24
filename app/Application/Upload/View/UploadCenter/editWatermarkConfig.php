@@ -20,7 +20,8 @@
                                     <el-input v-model="form.watermarkminheight" style="width:100px" placeholder="高度"></el-input>
                                     px
                                 </div>
-                                <p style="margin: 0;font-size: 12px;">建议：宽高度为水印图片的宽高等比例缩放，否则会变形</p>
+                                <p style="margin: 0;font-size: 12px;">建议：1、宽高度为水印图片的宽高等比例缩放，否则会变形</p>
+                                <p style="margin: 0;font-size: 12px;">2、只有上传图片的宽高都比水印尺寸大时，才会加上水印</p>
 
                             </el-form-item>
 
