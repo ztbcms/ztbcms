@@ -60,8 +60,15 @@ class UploadPublicApiController extends Base
             $info = $Attachment->upload($Callback);
             if ($info) {
                 $data = [
-                    'url' => $info[0]['url'],//上传文件路径
                     'name' => $info[0]['name'],//名称
+                    'type' => $info[0]['type'],//类型 eg:image/png
+                    'size' => $info[0]['size'],// 容量,单位 byte eg: 1KB=1024byte
+                    'extension' => $info[0]['extension'],// eg:png
+                    'savepath' => $info[0]['savepath'],// eg:"/root/project/ztbcms/d/file/module_upload_images/2019/09/"
+                    'savename' => $info[0]['savename'],// eg:image/png
+                    'hash' => $info[0]['hash'],// hash
+                    'aid' => $info[0]['aid'],// 附件ID
+                    'url' => $info[0]['url'],//上传文件路径, e.g: http://ztbcms.biz:8888/d/file/module_upload_images/2019/09/5d89d09186329.jpeg 、 或 /d/file/module_upload_images/2019/09/5d89d09186329.jpeg
                 ];
                 return self::createReturn(true, $data, '上传成功');
             } else {
@@ -89,15 +96,22 @@ class UploadPublicApiController extends Base
         $watermarkService = new WatermarkService();
         $watermark_config = $watermarkService->getWatermarkConfig()['data'];
         $watermark_enable = $watermark_config['enable'];
+        $upload_file_info = $result['data'];
         //是否添加水印
-        if ($watermark_enable == 1) {
-            $source_image_path = SITE_PATH . $result['data']['url'];
-            $save_image_path = SITE_PATH . $result['data']['url'];
+        if ($watermark_enable == WatermarkService::ENABLE_YES) {
+            $source_image_path = $upload_file_info['url'];
+            $save_image_path = $upload_file_info['savepath'] . $upload_file_info['savename'];
             $watermarkService->addWaterMark($source_image_path, $save_image_path, $watermark_config);
         }
         //调整链接
-        $result['data']['url'] = urlDomain(get_url()) . $result['data']['url'];
-        $this->ajaxReturn($result);
+        $upload_file_info['url'] = formatResourceUrl($upload_file_info['url']);
+        $return = [
+            'name' => $upload_file_info['name'],//名称
+            'size' => $upload_file_info['size'],// 容量,单位 byte eg: 1KB=1024byte
+            'aid' => $upload_file_info['aid'],// 附件ID
+            'url' => $upload_file_info['url'],
+        ];
+        $this->ajaxReturn(self::createReturn(true, $return));
 
     }
 
