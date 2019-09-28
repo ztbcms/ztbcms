@@ -62,10 +62,46 @@ return array(
                         "name" => "列表页",
                     ),
                     array(
+                        "route" => "Elementui/TableDemo/table1",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "列表页1",
+                    ),
+                    array(
+                        "route" => "Elementui/TableDemo/table2",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "列表页2",
+                    ),
+                    array(
+                        "route" => "Elementui/TableDemo/table3",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "列表页3",
+                    ),
+                    array(
+                        "route" => "Elementui/TableDemo/table4",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "列表页4",
+                    ),
+                    array(
                         "route" => "Elementui/ElementDemo/common_form",
                         "type" => 1,
                         "status" => 1,
                         "name" => "表单页",
+                    ),
+                    array(
+                        "route" => "Elementui/FormDemo/form1",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "表单页1"
+                    ),
+                    array(
+                        "route" => "Elementui/FormDemo/form2",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "表单页2"
                     ),
                     array(
                         "route" => "Elementui/ElementDemo/ueditor_xiumi",
