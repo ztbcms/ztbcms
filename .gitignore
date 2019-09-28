@@ -11,3 +11,5 @@ runtime/
 #app/Template
 #install.lock
 #app/Libs/Driver/Passport/
+app/Application/Install/install.lock
+app/Common/Conf/dataconfig.php
