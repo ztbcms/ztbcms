@@ -79,7 +79,7 @@ class WatermarkService extends BaseService
         //如果目标图片的宽高均大于水印图片才能打水印
         if ($source_image->width() >= $watermark_config['width'] && $source_image->height() >= $watermark_config['height']) {
             // create a new Image instance for inserting
-            $watermark = Image::make(SITE_PATH . $watermark_config['img_path']);
+            $watermark = Image::make(formatResourceUrl($watermark_config['img_path']));
             $watermark->resize($watermark_config['width'], $watermark_config['height']);
             $watermark->opacity($watermark_config['opacity']);
 
