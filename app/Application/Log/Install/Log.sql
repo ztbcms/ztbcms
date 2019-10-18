@@ -11,5 +11,5 @@ CREATE TABLE `cms_log_log` (
   `input_time` int(11) NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`),
   KEY `inputtime` (`input_time`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS=1;
