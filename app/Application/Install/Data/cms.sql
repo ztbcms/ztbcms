@@ -132,7 +132,7 @@ CREATE TABLE `cms_behavior_log` (
   `guid` char(50) NOT NULL DEFAULT '' COMMENT '标识',
   `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '执行行为的时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='行为日志';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='行为日志';
 
 -- ----------------------------
 -- Records of cms_behavior_log
@@ -422,7 +422,7 @@ CREATE TABLE `cms_loginlog` (
   `password` varchar(30) NOT NULL DEFAULT '' COMMENT '尝试错误密码',
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志表';
 
 -- ----------------------------
 -- Records of cms_loginlog
@@ -678,7 +678,7 @@ CREATE TABLE `cms_operationlog` (
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `username` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
 
 -- ----------------------------
 -- Records of cms_operationlog
