@@ -337,9 +337,11 @@ class MenuModel extends Model {
                 'parentid' => $pid,
                 'type' => isset($rs['type']) ? $rs['type'] : 1,
                 'status' => isset($rs['status']) ? $rs['status'] : 0,
-                'remark' => $rs['remark']? : '',
-                'listorder' => $rs['listorder']? : 0,
-                    ), $route);
+                'remark' => $rs['remark'] ?: '',
+                'listorder' => $rs['listorder'] ?: 0,
+                'parameter' => $rs['parameter'] ?: '',
+                'icon' => $rs['icon'] ?: '',
+            ), $route);
             if (!$this->create($newData)) {
                 $this->error = '菜单信息配置有误，' . $this->error;
                 return false;
