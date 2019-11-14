@@ -24,6 +24,7 @@ class UploadPublicApiController extends Base
     //模块
     const MODULE_IMAGE = 'module_upload_images';
     const MODULE_FILE = 'module_upload_files';
+    const MODULE_VIDEO = 'module_upload_video';
 
     protected function _initialize() {
         //支持跨域
@@ -121,6 +122,20 @@ class UploadPublicApiController extends Base
     function uploadFile()
     {
         $result = $this->_upload(self::MODULE_FILE);
+        $this->ajaxReturn($result);
+    }
+
+    /**
+     * 上传视频
+     */
+    function uploadVideo()
+    {
+        $result = $this->_upload(self::MODULE_VIDEO);
+        if ($result) {
+            //视频缩略图第一秒截屏（接入阿里云OSS）
+            $video_thumb_url = $result['data']['url'] . '?x-oss-process=video/snapshot,t_1000,f_jpg,w_0,h_0,m_fast';
+            $result['data']['video_thumb_url'] = $video_thumb_url;
+        }
         $this->ajaxReturn($result);
     }
 
