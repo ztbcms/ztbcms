@@ -154,12 +154,12 @@ IE 10或以上
     <tr>
       <td align="center" valign="middle">
         <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
-          <img width="200px" src="./statics/support/jetbrains.png">
+          <img width="200px" src="https://raw.githubusercontent.com/ztbcms/ztbcms/develop/statics/support/jetbrains.png">
         </a>
       </td>
       <td align="center" valign="middle">
         <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
-          <img width="200px" src="./statics/support/phpstorm.png">
+          <img width="200px" src="https://raw.githubusercontent.com/ztbcms/ztbcms/develop/statics/support/phpstorm.png">
         </a>
       </td>
     </tr>
