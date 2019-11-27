@@ -145,3 +145,25 @@ IE 10或以上
 "overtrue/wechat": "^4.2" // 微信开发SDK https://www.easywechat.com/
 ```
 
+
+## 支持/Support
+
+<!--Support start-->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="middle">
+        <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
+          <img width="200px" src="./statics/support/jetbrains.png">
+        </a>
+      </td>
+      <td align="center" valign="middle">
+        <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
+          <img width="200px" src="./statics/support/phpstorm.png">
+        </a>
+      </td>
+    </tr>
+    <tr></tr>
+  </tbody>
+</table>
+<!--Support end-->
