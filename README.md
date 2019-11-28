@@ -145,6 +145,9 @@ IE 10或以上
 "overtrue/wechat": "^4.2" // 微信开发SDK https://www.easywechat.com/
 ```
 
+## License 
+
+[Apache License](LICENSE)
 
 ## 支持/Support
 
