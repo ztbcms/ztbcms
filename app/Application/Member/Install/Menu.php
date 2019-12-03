@@ -14,6 +14,10 @@ return array(
         "name" => "会员",
         //备注
         "remark" => "会员管理",
+        //图标
+        'parameter' => '',
+        //图标
+        'icon' => 'icon_meeting',
         //子菜单列表
         "child" => array(
             array(

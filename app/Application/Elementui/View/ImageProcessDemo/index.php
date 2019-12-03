@@ -8,18 +8,19 @@
 * 图片生成建议：
 * 1. 少用字符
 * 2. 文字尽量简洁
-* 3. 不支持emoji
+* 3. 不支持emoji等特殊字符，有得话会过滤掉
 * 4. 注意字体版权（内置免费思源黑体简体）
+* 5. 避免多个动态内容相互依赖
             </pre>
             <el-row>
                 <el-col :span="16">
                     <div class="grid-content ">
                         <el-form ref="form" :model="form" label-width="80px">
                             <el-form-item label="呢称">
-                                <el-input v-model="form.nick_name"></el-input>
+                                <el-input v-model="form.nick_name" placeholder="最多一行，过长会显示省略号"></el-input>
                             </el-form-item>
                             <el-form-item label="描述">
-                                <el-input v-model="form.description"></el-input>
+                                <el-input v-model="form.description" placeholder="最多两行，过长会显示省略号"></el-input>
                             </el-form-item>
                             <el-form-item label="预览">
                                 <el-image v-if="url"
