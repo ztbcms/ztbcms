@@ -17,10 +17,10 @@
                     <div class="grid-content ">
                         <el-form ref="form" :model="form" label-width="80px">
                             <el-form-item label="呢称">
-                                <el-input v-model="form.nick_name"></el-input>
+                                <el-input v-model="form.nick_name" placeholder="最多一行，过长会显示省略号"></el-input>
                             </el-form-item>
                             <el-form-item label="描述">
-                                <el-input v-model="form.description"></el-input>
+                                <el-input v-model="form.description" placeholder="最多两行，过长会显示省略号"></el-input>
                             </el-form-item>
                             <el-form-item label="预览">
                                 <el-image v-if="url"
