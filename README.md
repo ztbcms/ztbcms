@@ -157,12 +157,12 @@ IE 10或以上
     <tr>
       <td align="center" valign="middle">
         <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
-          <img width="200px" src="https://raw.githubusercontent.com/ztbcms/ztbcms/develop/statics/support/jetbrains.png">
+          <img width="160px" src="https://i.loli.net/2019/12/05/rmZkUIH1Jgd2M5Y.png">
         </a>
       </td>
       <td align="center" valign="middle">
         <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
-          <img width="200px" src="https://raw.githubusercontent.com/ztbcms/ztbcms/develop/statics/support/phpstorm.png">
+          <img width="160px" src="https://i.loli.net/2019/12/05/17jf9rLW8ixHdyD.png">
         </a>
       </td>
     </tr>
