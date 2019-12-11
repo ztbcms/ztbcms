@@ -12,5 +12,7 @@ return array(
         ),
     ),
     'LOGIN_MAX_FAILD' => 5,
-    'BAN_LOGIN_TIME' => 30 //登录失败5次之后需等待30分钟才可再次登录
+    'BAN_LOGIN_TIME' => 30, //登录失败5次之后需等待30分钟才可再次登录
+    'ADMIN_PANEL_SECURITY_CODE' => '', //后台面板安全码
+
 );
