@@ -26,7 +26,7 @@ if (C('LAYOUT_ON')) {
     </head>
     <body>
         <div class="error">
-            <p class="face">:(</p>
+            <p class="face"></p>
             <h1><?php echo strip_tags($e['message']); ?></h1>
             <div class="content">
                 <?php if (isset($e['file'])) { ?>
@@ -42,7 +42,7 @@ if (C('LAYOUT_ON')) {
                 <?php if (isset($e['trace'])) { ?>
                     <div class="info">
                         <div class="title">
-                            <h3>TRACE</h3>
+                            <h3>Trace</h3>
                         </div>
                         <div class="text">
                             <p><?php echo nl2br($e['trace']); ?></p>
@@ -53,8 +53,6 @@ if (C('LAYOUT_ON')) {
         </div>
         <div class="copyright">
             <p>
-                <a title="官方网站" href="http://www.ztbcms.com" target="_blank">ZTBCMS</a>
-                <sup><?php echo CMS_VERSION ?> - <?php echo CMS_BUILD ?></sup>
             </p>
         </div>
     </body>
