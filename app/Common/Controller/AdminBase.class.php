@@ -7,6 +7,7 @@
 namespace Common\Controller;
 
 use Admin\Service\User;
+use Common\Traits\Crypto\CryptoControllerTrait;
 use Libs\System\RBAC;
 
 //定义是后台
@@ -16,6 +17,8 @@ define('IN_ADMIN', true);
  * 后台基类
  */
 class AdminBase extends CMS {
+
+    use CryptoControllerTrait;
 
     protected $uid;
     protected $userInfo;

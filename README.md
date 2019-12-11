@@ -13,6 +13,8 @@
     * php7-curl 
     * php7-gd
     * php7-mysql
+    * openssl 扩展
+    * file_info 扩展
 * Mysql 5.6+
     * mysql-client
 * Apache 2.4 
