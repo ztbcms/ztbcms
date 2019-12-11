@@ -175,7 +175,7 @@
     </div>
 </div>
 <div class="footer">
-    <p>V{:C('APPLIATION_VERSION')} © 2016-{:date('Y')} POWER BY <a href="https://www.zhutibang.cn">ZHUTIBANG</a></p>
+    <p>当前版本 v{:C('APPLIATION_VERSION')}</p>
     <p> 建议分辨率1366*768以上，推荐使用 </p>
     <p>
         Chrome浏览器 <img src="/statics/admin/pages/public/login/chrome.png" alt="">
