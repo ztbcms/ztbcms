@@ -38,9 +38,9 @@
 
         <!--  Element UI START  -->
         <!-- 引入样式 -->
-        <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/elementui/elementui_2.11.0/index.css">
+        <link rel="stylesheet" href="{$config_siteurl}statics/admin/theme/elementui/elementui_2.13.0/index.css">
         <!-- 引入组件库 -->
-        <script src="{$config_siteurl}statics/admin/theme/elementui/elementui_2.11.0/index.js"></script>
+        <script src="{$config_siteurl}statics/admin/theme/elementui/elementui_2.13.0/index.js"></script>
         <!--  Element UI END  -->
 
         <style>

@@ -160,20 +160,22 @@
     <div class="label">登录密码</div>
     <div class="input">
         <input type="password" placeholder="请输入密码" id="password">
+        <input type="hidden" placeholder="key" id="__crypto_key__" value="{$__crypto_key__}">
     </div>
     <div class="label">验证码</div>
-    <div class="input flex-between">
+    <div class="input flex-between" style="margin-bottom: 0px">
         <input type="text" placeholder="请输入验证码" style="flex: 1;" id="code">
         <img id="code_img" class="code"
              src="{:U('Api/Checkcode/index','code_len=4&font_size=20&width=130&height=50&font_color=&background=')}"
              onclick="refreshs()"></a>
     </div>
+    <p style="font-size: 12px;color: #7884a0;margin-top: 4px;">* 数据传输采用128位加密技术，保障您的信息安全</p>
     <div class="btn-box">
         <button class="default" onclick="doLogin()" disabled>登录</button>
     </div>
 </div>
 <div class="footer">
-    <p>V{:C('APPLIATION_VERSION')} © 2016-{:date('Y')} POWER BY <a href="https://www.zhutibang.cn">ZHUTIBANG</a></p>
+    <p>当前版本 v{:C('APPLIATION_VERSION')}</p>
     <p> 建议分辨率1366*768以上，推荐使用 </p>
     <p>
         Chrome浏览器 <img src="/statics/admin/pages/public/login/chrome.png" alt="">
@@ -225,22 +227,27 @@
     refreshs();
 
     function doLogin() {
-        console.log('doLogin')
         var username = $('input#username').val();
         var password = $('input#password').val();
         var code = $('input#code').val();
+        var __crypto_key__ = $('input#__crypto_key__').val();
+        var data = {
+            username: username,
+            password: password,
+            code: code,
+        }
+        var plain_text = JSON.stringify(data);
+
+        var encrypted_data = window.Ztbcms.AES.encrypt(plain_text, __crypto_key__)
 
         $.ajax({
             url: "{:U('Admin/Public/tologin')}",
             method: 'post',
             dataType: 'json',
             data: {
-                username: username,
-                password: password,
-                code: code,
+                form: encrypted_data
             },
             success: function (res) {
-                console.log(res)
                 if (!res.status) {
                     var msg = res.info
                     layer.msg(msg)

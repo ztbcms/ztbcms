@@ -10,6 +10,15 @@ use Common\Controller\AdminBase;
 use Admin\Service\User;
 
 class PublicController extends AdminBase {
+    protected function _initialize()
+    {
+        parent::_initialize();
+
+        //初始化加密
+        $this->initCryptoKey();
+        $this->assign('__crypto_key__', $this->getCryptoKey());
+    }
+
 
     //后台登录界面
     public function login() {
@@ -17,6 +26,14 @@ class PublicController extends AdminBase {
         if (User::getInstance()->id) {
             $this->redirect('Admin/Index/index');
         }
+        //安全码校验
+        $code = I('code');
+        $ADMIN_PANEL_SECURITY_CODE = C('ADMIN_PANEL_SECURITY_CODE');
+        if(!empty($ADMIN_PANEL_SECURITY_CODE) && $code != $ADMIN_PANEL_SECURITY_CODE){
+            $this->display(C('TMPL_ACTION_PAGE_NOT_FOUND'));
+            return;
+        }
+
         $this->display();
     }
 
@@ -24,9 +41,11 @@ class PublicController extends AdminBase {
     public function tologin() {
         //记录登录失败者IP
         $ip = get_client_ip();
-        $username = I("post.username", "", "trim");
-        $password = I("post.password", "", "trim");
-        $code = I("post.code", "", "trim");
+        $form = I('post.form');
+        $form_data = $this->decryptJsonString($form);
+        $username = trim($form_data['username']);
+        $password = trim($form_data['password']);
+        $code = trim($form_data['code']);
         if (empty($username) || empty($password)) {
             $this->error("用户名或者密码不能为空，请重新输入！", U("Public/login"));
         }

@@ -4,7 +4,8 @@
         "nikic/php-parser": "^3.1",
         "phpdocumentor/reflection-docblock": "^4.1",
         "intervention/image": "^2.5",
-        "overtrue/wechat": "^4.2"
+        "overtrue/wechat": "^4.2",
+        "ext-openssl": "*"
     },
     "repositories": {
         "packagist": {
