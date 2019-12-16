@@ -30,7 +30,6 @@
                              class="imgListItme">
                             <img :src="img.url"
                                     style="width:80px;height: 80px;"
-                                    alt="img.name"
                                     @click="selectImgEvent(index)">
                             <div v-if="img.is_select" class="is_check" @click="selectImgEvent(index)">
                                 <span style="line-height: 80px;" class="el-icon-check"></span>
