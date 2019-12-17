@@ -36,6 +36,14 @@ class MainApiController extends AdminApiBaseController
                 'value' => MysqlHelper::getVersion(),
             ],
             [
+                'name' => '数据库名字',
+                'value' => C('DB_NAME'),
+            ],
+            [
+                'name' => '数据库地址',
+                'value' => C('DB_HOST'),
+            ],
+            [
                 'name' => '产品名称',
                 'value' => CMS_APPNAME,
             ],
