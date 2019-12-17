@@ -18,6 +18,7 @@ define('IN_ADMIN', true);
  */
 class AdminBase extends CMS {
 
+    //加密解密
     use CryptoControllerTrait;
 
     protected $uid;
