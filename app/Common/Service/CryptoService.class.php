@@ -7,8 +7,7 @@
 
 namespace Common\Service;
 
-
-use Group\Service\BaseService;
+use System\Service\BaseService;
 
 /**
  * 加密服务
