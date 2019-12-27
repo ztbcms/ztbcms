@@ -86,6 +86,7 @@ trait Observable
      * @return \EasyWeChat\Kernel\Clauses\Clause
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \ReflectionException
      */
     public function observe($condition, $handler)
     {
@@ -99,6 +100,7 @@ trait Observable
      * @return \EasyWeChat\Kernel\Clauses\Clause
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \ReflectionException
      */
     public function on($condition, $handler)
     {
@@ -228,7 +230,7 @@ trait Observable
             return $handler;
         }
 
-        if (is_string($handler)) {
+        if (is_string($handler) && '*' !== $handler) {
             if (!class_exists($handler)) {
                 throw new InvalidArgumentException(sprintf('Class "%s" not exists.', $handler));
             }
