@@ -497,17 +497,17 @@
     },
     {
         "name": "overtrue/wechat",
-        "version": "4.2.2",
-        "version_normalized": "4.2.2.0",
+        "version": "4.2.11",
+        "version_normalized": "4.2.11.0",
         "source": {
             "type": "git",
             "url": "https://github.com/overtrue/wechat.git",
-            "reference": "e487edc44f9a3d26603bc3c153c087dd2cacd0b0"
+            "reference": "853e0772e6aa53a71edf1b5d251c7ff1e6b2a2bf"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/overtrue/wechat/zipball/e487edc44f9a3d26603bc3c153c087dd2cacd0b0",
-            "reference": "e487edc44f9a3d26603bc3c153c087dd2cacd0b0",
+            "url": "https://api.github.com/repos/overtrue/wechat/zipball/853e0772e6aa53a71edf1b5d251c7ff1e6b2a2bf",
+            "reference": "853e0772e6aa53a71edf1b5d251c7ff1e6b2a2bf",
             "shasum": ""
         },
         "require": {
@@ -516,7 +516,7 @@
             "ext-openssl": "*",
             "ext-simplexml": "*",
             "guzzlehttp/guzzle": "^6.2",
-            "monolog/monolog": "^1.22",
+            "monolog/monolog": "^1.22 || ^2.0",
             "overtrue/socialite": "~2.0",
             "php": ">=7.1",
             "pimple/pimple": "^3.0",
@@ -529,11 +529,11 @@
         "require-dev": {
             "friendsofphp/php-cs-fixer": "^2.15",
             "mikey179/vfsstream": "^1.6",
-            "mockery/mockery": "^1.0",
+            "mockery/mockery": "^1.2.3",
             "phpstan/phpstan": "^0.11.12",
-            "phpunit/phpunit": "~6.5"
+            "phpunit/phpunit": "^7.5"
         },
-        "time": "2019-08-16T10:24:45+00:00",
+        "time": "2019-11-27T16:38:00+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

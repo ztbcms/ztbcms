@@ -13,7 +13,7 @@
                                     <ul class="pictures">
                                         <template v-for="img_url in preview_images">
                                             <li @click="previewImage(img_url)">
-                                                <img data-original="../images/tibet-1.jpg" :src="img_url" alt="img_url">
+                                                <img data-original="../images/tibet-1.jpg" :src="img_url">
                                             </li>
                                         </template>
                                     </ul>
