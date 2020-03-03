@@ -67,7 +67,7 @@ class AdminmanageController extends AdminBase {
 
                 $this->ajaxReturn(self::createReturn(true, [
                     'rediret_url' => U("Admin/Public/login") //跳转链接
-                ],  '密码已经更新，请从新登录'));
+                ],  '密码已经更新，请重新登录'));
                 return;
             } else {
                 $this->ajaxReturn(self::createReturn(false, null,  '密码更新失败'));

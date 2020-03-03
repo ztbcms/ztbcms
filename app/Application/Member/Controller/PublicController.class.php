@@ -283,7 +283,7 @@ class PublicController extends MemberbaseController {
 		if (empty($key)) {
 			$this->message(array(
 				'error' => 1100,
-				'info' => '本次请求已经失效，请从新提交密码找回申请。',
+				'info' => '本次请求已经失效，请重新提交密码找回申请。',
 			));
 		}
 		$userinfo = explode('|', $key);
@@ -297,7 +297,7 @@ class PublicController extends MemberbaseController {
 		if ($password != $password2) {
 			$this->message(array(
 				'error' => 1014,
-				'info' => '两次输入密码不相同，请从新输入！',
+				'info' => '两次输入密码不相同，请重新输入！',
 			));
 		}
 		$status = service("Passport")->userEdit($userinfo[1], '', $password, '', 1);
@@ -593,7 +593,7 @@ class PublicController extends MemberbaseController {
 		if (empty($userInfo)) {
 			$this->message(array(
 				'error' => 1100,
-				'info' => '本次请求已经失效，请从新提交密码找回申请！',
+				'info' => '本次请求已经失效，请重新提交密码找回申请！',
 			));
 		}
 		$userInfo = explode('|', $userInfo);

@@ -218,7 +218,7 @@ class MemberbaseController extends Base {
 					$data['error'] = 20021;
 					break;
 				case 20022:
-					$message = '当前密码不正确，请从新输入！';
+					$message = '当前密码不正确，请重新输入！';
 					$data['error'] = 20022;
 					break;
 				case 20023:

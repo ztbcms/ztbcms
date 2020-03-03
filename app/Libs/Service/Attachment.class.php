@@ -285,7 +285,7 @@ class Attachment extends Service {
 					$att_arrs[] = md5(str_replace(array($domain, $dir_name), '', $content));
 				}
 			}
-			//删除旧的关联关系，从新绑定附件和信息关系
+			//删除旧的关联关系，重新绑定附件和信息关系
 			$att_index_db->where(array('keyid' => $keyid))->delete();
 			if (is_array($att_arrs) && !empty($att_arrs)) {
 				foreach ($att_arrs as $r) {
