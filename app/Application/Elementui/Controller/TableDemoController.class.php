@@ -25,6 +25,10 @@ class TableDemoController extends AdminBase
     {
         $this->display();
     }
+    public function select()
+    {
+        $this->display();
+    }
 
     public function detail()
     {

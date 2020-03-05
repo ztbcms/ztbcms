@@ -115,6 +115,12 @@ return array(
                         "status" => 1,
                         "name" => "图片预览",
                     ),
+                    array(
+                        "route" => "Elementui/TableDemo/select",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "地区三级联动",
+                    ),
                 )
             ),
             array(
