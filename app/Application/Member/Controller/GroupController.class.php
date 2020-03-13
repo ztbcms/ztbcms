@@ -32,6 +32,18 @@ class GroupController extends AdminBase {
 		$this->assign("data", $data);
 		$this->display();
 	}
+    public function indexNew(){
+        $this->display('indexNew');
+    }
+	public function indexNewApi(){
+        $this->member = D('Member');
+        $data = $this->memberGroupModel->order(array("sort" => "ASC", "groupid" => "DESC"))->select();
+        foreach ($data as $k => $v) {
+            //统计会员总数
+            $data[$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
+        }
+        return $this->ajaxReturn(self::createReturn(true,$data));
+    }
 
 	//添加会员组
 	public function add() {

@@ -28,13 +28,25 @@
 <tbody>
 <volist name="data" id="vo">
     <tr>
-		<td align="left"><if condition=" $vo['issystem'] neq '1' "> <input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x"  value="{$vo.groupid}" name="groupid[]"></if></td>
-		<td align="left">{$vo.groupid}</td>
-		<td align="center"><if condition=" $vo['issystem'] neq '1' "><input type="text" name="sort[{$vo.groupid}]" class="input" size="1" value="{$vo.sort}"></if></th>
-		<td align="center" title="">{$vo.name}</td>
-		<td align="center"><font color="red">√</font></td>
-		<td align="center">{$vo._count}</th>
-		<td align="center">{$vo.starnum}</td>
+        <td align="left">
+            <if condition=" $vo['issystem'] neq '1' ">
+                <input type="checkbox" class="J_check" data-yid="J_check_y"
+                                                             data-xid="J_check_x" value="{$vo.groupid}"
+                                                             name="groupid[]">
+            </if>
+        </td>
+        <td align="left">{$vo.groupid}</td>
+        <td align="center">
+            <if condition=" $vo['issystem'] neq '1' ">
+                <input type="text" name="sort[{$vo.groupid}]" class="input"
+                                                             size="1" value="{$vo.sort}">
+            </if>
+        </th>
+        <td align="center" title="">{$vo.name}</td>
+        <td align="center"><font color="red">√</font></td>
+        <td align="center">{$vo._count}
+        </th>
+        <td align="center">{$vo.starnum}</td>
 		<td align="center">{$vo.point}</td>
 		<td align="center"><if condition=" $vo['allowattachment'] eq '0' "><font color="blue">×</font><else /><font color="red">√</font></if></td>
 		<td align="center"><if condition=" $vo['allowpost'] eq '0' "><font color="blue">×</font><else /><font color="red">√</font></if></td>

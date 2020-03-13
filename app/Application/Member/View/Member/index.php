@@ -11,17 +11,13 @@
         <input type="hidden" value="1" name="search">
         <div class="search_type cc mb10">
             <div class="mb10">
-
                 <div class="mr20">
-
                     <section style="display: inline;">
                         注册时间：
                         <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">
                         -
                         <input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
-
                     </section>
-
                     <section style="display: inline;">
                         状态:
                         <input class="input length_2" type="hidden" name="_filter[0]" value="islock">
