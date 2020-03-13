@@ -30,11 +30,12 @@ class GroupController extends AdminBase {
 			$data[$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
 		}
 		$this->assign("data", $data);
-		$this->display();
+		$this->display('indexNew');
 	}
-    public function indexNew(){
-        $this->display('indexNew');
-    }
+	//测试完删除
+//    public function indexNew(){
+//        $this->display('indexNew');
+//    }
 	public function indexNewApi(){
         $this->member = D('Member');
         $data = $this->memberGroupModel->order(array("sort" => "ASC", "groupid" => "DESC"))->select();
