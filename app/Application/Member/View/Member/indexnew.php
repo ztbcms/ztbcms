@@ -102,7 +102,7 @@
                 <el-table-column label="用户名" align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.userpic == '' ">
-                            <el-avatar shape="square" :size="20" ></el-avatar>
+                            <el-avatar shape="square" :size="20" src="{$config_siteurl}statics/images/member/nophoto.gif" ></el-avatar>
                         </span>
                         <span v-else>
                             <el-avatar shape="square" :size="20" :src="scope.row.userpic"></el-avatar>

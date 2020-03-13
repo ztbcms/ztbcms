@@ -445,8 +445,73 @@ class MemberController extends AdminBase {
         }
     }
 
-    //会员资料查看
-    public function memberinfo() {
+    //会员资料查看 新页面 调试
+    public function memberinfo(){
+        $userid = I('get.userid', 0, 'intval');
+        //主表
+        $data = $this->member->where(array("userid" => $userid))->find();
+        if (empty($data)) {
+            $this->error("该会员不存在！");
+        }
+        if (!$data['modelid']) {
+            echo '会员信息不完善！';
+            exit();
+        }
+        $modelid = $data['modelid'];
+        //相应会员模型数据
+        $modeldata = \Content\Model\ContentModel::getInstance($modelid)->where(array("userid" => $userid))->find();
+        $content_output = new \content_output($modelid);
+        $output_data = $content_output->get($modeldata);
+        $modelField = cache('ModelField');
+        $Model_field = $modelField[$modelid];
+        foreach ($this->groupCache as $g) {
+            $groupCache[$g['groupid']] = $g['name'];
+        }
+        foreach ($this->groupsModel as $m) {
+            $groupsModel[$m['modelid']] = $m['name'];
+        }
+        $this->assign('groupCache', json_encode($groupCache));
+        $this->assign('groupsModel',json_encode($groupsModel));
+        $this->assign("output_data", json_encode($output_data));
+        $this->assign("Model_field", json_encode($Model_field));
+        $this->assign('userinfo',json_encode($data));
+        $this->display('memberinfonew');
+    }
+
+    //获取会员资料api
+    public function memberinfoApi(){
+        $userid = I('get.userid', 0, 'intval');
+        //主表
+        $data = $this->member->where(array("userid" => $userid))->find();
+        if (empty($data)) {
+            $this->error("该会员不存在！");
+        }
+        if (!$data['modelid']) {
+            echo '会员信息不完善！';
+            exit();
+        }
+        $modelid = $data['modelid'];
+        //相应会员模型数据
+        $modeldata = \Content\Model\ContentModel::getInstance($modelid)->where(array("userid" => $userid))->find();
+        $content_output = new \content_output($modelid);
+        $output_data = $content_output->get($modeldata);
+        $modelField = cache('ModelField');
+        $Model_field = $modelField[$modelid];
+        foreach ($this->groupCache as $g) {
+            $groupCache[$g['groupid']] = $g['name'];
+        }
+        foreach ($this->groupsModel as $m) {
+            $groupsModel[$m['modelid']] = $m['name'];
+        }
+        $data['userinfo'] = $data;
+        $data['groupCache'] = $groupCache;
+        $data['groupsModel'] = $groupsModel;
+        $data['output_data'] = $output_data;
+        $data['Model_field'] = $Model_field;
+        return $this->ajaxReturn(self::createReturn(true,$data,'获取成功'));
+    }
+    //会员资料查看 old
+    public function memberinfo_old() {
         $userid = I('get.userid', 0, 'intval');
         //主表
         $data = $this->member->where(array("userid" => $userid))->find();
