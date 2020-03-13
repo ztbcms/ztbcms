@@ -65,6 +65,31 @@ class GroupController extends AdminBase {
 		}
 	}
 
+    //添加会员组
+    public function addApi() {
+        if (IS_POST) {
+            $post = $_POST;
+            $newData = [];
+            foreach($post['quanxian'] as $post_k => $post_v){
+                $newData[$post_k] = $post_v ? 1 : 0;
+            }
+            foreach($post['checkList'] as $checkList_k => $checkList_v ){
+                $newData[$checkList_v] = 1;
+            }
+            unset($post['quanxian']);
+            unset($post['checkList']);
+            $newData = array_merge()
+            dump($post);
+
+
+        }
+    }
+
+	//新增会员组页面
+	public function addNew(){
+        $this->display();
+    }
+
 	//编辑会员组
 	public function edit() {
 		if (IS_POST) {
