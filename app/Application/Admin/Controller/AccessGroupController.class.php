@@ -23,13 +23,6 @@ class AccessGroupController extends AdminBase {
         $this->display();
     }
 
-    function accessGroupRoleSettingNew(){
-        $role_id = I('get.role_id');
-        $role = M("role")->where(['id' => $role_id])->find();
-        $this->assign('role', json_encode($role));
-        $this->display();
-    }
-
     /**
      * 权限组列表
      */

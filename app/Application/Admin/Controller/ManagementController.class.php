@@ -9,8 +9,7 @@ namespace Admin\Controller;
 use Common\Controller\AdminBase;
 use Admin\Service\User;
 
-class ManagementController extends AdminBase
-{
+class ManagementController extends AdminBase{
 
     //管理员列表
     public function manager() {
@@ -41,7 +40,7 @@ class ManagementController extends AdminBase
         $this->assign("Userlist", $User);
         $this->assign("Page", $page->show());
 
-        $this->display('adminlist');
+        $this->display();
 
     }
     /**
@@ -151,7 +150,7 @@ class ManagementController extends AdminBase
         } else {
             $myid = User::getInstance()->isAdministrator() ? 0 : User::getInstance()->role_id;
             $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid, 0, 'name="role_id"'));
-                        $this->display();
+            $this->display();
         }
     }
 
