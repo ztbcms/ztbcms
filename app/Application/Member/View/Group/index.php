@@ -18,7 +18,7 @@
                 >
                     <template slot-scope="scope">
                         <span v-if="scope.row.issystem != 1">
-                            <el-checkbox  @change="changebox(scope.row.groupid,$event)"></el-checkbox>
+                            <el-checkbox  @change="changebox(scope.row.groupid,$event)" ></el-checkbox>
                         </span>
                     </template>
                 </el-table-column>
@@ -185,8 +185,9 @@
                             },
                             success(res){
                                 if(res.status){
-                                    that.getList()
-                                    that.$message.success(res.info)
+                                    layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
+                                        window.location.reload();
+                                    });
                                 }else{
                                     that.$message.error(res.info)
                                 }
@@ -210,7 +211,7 @@
                         if (id !== 0) {
                             url += id
                         }
-                        Ztbcms.openNewIframeByUrl('修改',url)
+                        Ztbcms.openNewIframeByUrl('修改会员组',url)
                     },
                     handleDelete: function () {
                         var that = this;
@@ -234,8 +235,9 @@
                           },
                           success(res){
                               if(res.status){
-                                  that.getList()
-                                  that.$message.success(res.info)
+                                  layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
+                                      window.location.reload();
+                                  });
                               }else{
                                   that.$message.error(res.info)
                               }
