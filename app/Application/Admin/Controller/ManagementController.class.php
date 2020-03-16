@@ -9,7 +9,7 @@ namespace Admin\Controller;
 use Common\Controller\AdminBase;
 use Admin\Service\User;
 
-class ManagementController extends AdminBase{
+class ManagementController extends AdminBase {
 
     //管理员列表
     public function manager() {
