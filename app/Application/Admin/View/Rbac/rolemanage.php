@@ -4,10 +4,7 @@
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
             <div class="filter-container">
-<!--                <el-button class="filter-item" type="primary" style="margin-left: 10px;"-->
-<!--                           @click="openAdd">-->
-                    <h3>添加角色</h3>
-<!--                </el-button>-->
+                    <h3>角色列表</h3>
             </div>
             <el-table
                 :data="Manager"
