@@ -61,7 +61,7 @@ class GroupController extends AdminBase {
 				$this->error($this->memberGroupModel->getError());
 			}
 		} else {
-			$this->display();
+			$this->display('addNew');
 		}
 	}
 
@@ -78,17 +78,28 @@ class GroupController extends AdminBase {
             }
             unset($post['quanxian']);
             unset($post['checkList']);
-            $newData = array_merge()
-            dump($post);
+            $newData = array_merge($post,$newData);
+//            dump($post);
+//            dump($newData);
 
+            $data = $this->memberGroupModel->create($newData);
+            if ($data) {
+                if ($this->memberGroupModel->groupAdd($data)) {
+                    $this->success("添加成功！", U("Group/index"));
+                } else {
+                    $this->error("添加失败！");
+                }
+            } else {
+                $this->error($this->memberGroupModel->getError());
+            }
 
         }
     }
 
-	//新增会员组页面
-	public function addNew(){
-        $this->display();
-    }
+	//新增会员组页面 测试后删除
+//	public function addNew(){
+//        $this->display();
+//    }
 
 	//编辑会员组
 	public function edit() {
