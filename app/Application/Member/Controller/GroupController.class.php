@@ -30,7 +30,7 @@ class GroupController extends AdminBase {
 			$data[$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
 		}
 		$this->assign("data", $data);
-		$this->display('');
+		$this->display();
 	}
 
 	//获取会员组信息
@@ -133,7 +133,7 @@ class GroupController extends AdminBase {
 		}
 	}
 
-	//排序
+	//会员组排序
 	public function sort() {
 		if (IS_POST) {
 			$sort = I('post.sort');
@@ -148,7 +148,7 @@ class GroupController extends AdminBase {
 		}
 	}
 
-	//排序Api
+	//会员组排序Api
     public function sortApi(){
         if (IS_POST) {
             $sortlist = I('post.sortlist');
