@@ -1,145 +1,559 @@
+<extend name="../../Admin/View/Common/element_layout"/>
 
-<Admintemplate file="Common/Head"/>
-<body class="J_scroll_fixed">
-<div class="wrap J_check_wrap">
-    <Admintemplate file="Common/Nav"/>
-    <div class="h_a">搜索</div>
-    <form name="searchform" action="" method="get" >
-        <input type="hidden" value="Member" name="g">
-        <input type="hidden" value="Member" name="m">
-        <input type="hidden" value="index" name="a">
-        <input type="hidden" value="1" name="search">
-        <div class="search_type cc mb10">
-            <div class="mb10">
-                <div class="mr20">
-                    <section style="display: inline;">
-                        注册时间：
-                        <input type="text" name="start_time" class="input length_2 J_date" value="{$Think.get.start_time}" style="width:80px;">
-                        -
-                        <input type="text" class="input length_2 J_date" name="end_time" value="{$Think.get.end_time}" style="width:80px;">
-                    </section>
-                    <section style="display: inline;">
-                        状态:
-                        <input class="input length_2" type="hidden" name="_filter[0]" value="islock">
-                        <input class="input length_2" type="hidden" name="_operator[0]" value="EQ">
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card v-if="listQuery.tab == 1">
+            <div class="filter-container">
+                <template>
+                    <el-tabs v-model="listQuery.tab" >
+                        <el-tab-pane v-for="(item,index) in tab" :key="index" :label="item.name"
+                                     :name="item.id" ></el-tab-pane>
+                    </el-tabs>
+                </template>
+            </div>
 
-                        <select name="_value[0]" class="select_2">
-                            <option value='' <if condition=" $_value[0] == '' "> selected</if>>全部</option>
-                            <option value='1' <if condition=" $_value[0] == '1' "> selected</if>>锁定</option>
-                            <option value='2' <if condition=" $_value[0] == '2' "> selected</if>>正常</option>
-                        </select>
-                    </section>
-
-                    <section style="display: inline;">
-                        审核:
-                        <input class="input length_2" type="hidden" name="_filter[2]" value="checked">
-                        <input class="input length_2" type="hidden" name="_operator[2]" value="EQ">
-
-                        <select name="_value[2]" class="select_2">
-                            <option value='' <if condition=" $_value[2] == '' "> selected</if>>全部</option>
-                            <option value='1' <if condition=" $_value[2] == '1' "> selected</if>>审核通过</option>
-                            <option value='0' <if condition=" $_value[2] == '0' "> selected</if>>待审核</option>
-                        </select>
-                    </section>
-
-
-                    <section style="display: inline;">
-                        <!-- 搜索字段 -->
-                        <select name="_filter[1]" class="select_2">
-                            <option value="username" <if condition=" $_filter[1] == 'username' "> selected</if>>用户名</option>
-                            <option value="userid" <if condition=" $_filter[1] == 'userid' "> selected</if>>用户ID</option>
-                            <option value="nickname" <if condition=" $_filter[1] == 'nickname' "> selected</if>>昵称</option>
-                        </select>
-                        <!-- 操作符 -->
-                        <select name="_operator[1]" class="select_2">
-                            <option value="EQ" <if condition=" $_operator[1] == 'EQ' "> selected</if>>等于</option>
-                            <option value="NEQ" <if condition=" $_operator[1] == 'NEQ' "> selected</if>>不等于</option>
-                            <option value="GT" <if condition=" $_operator[1] == 'GT' "> selected</if>>大于</option>
-                            <option value="EGT" <if condition=" $_operator[1] == 'EGT' "> selected</if>>大于等于</option>
-                            <option value="LT" <if condition=" $_operator[1] == 'LT' "> selected</if>>小于</option>
-                            <option value="ELT" <if condition=" $_operator[1] == 'ELT' "> selected</if>>小于等于</option>
-                            <option value="LIKE" <if condition=" $_operator[1] == 'LIKE' "> selected</if>>模糊查询</option>
-                        </select>
-                        <!-- 搜索值 -->
-                        <input class="input length_3" type="text" name="_value[1]" value="{$_value[1]}">
-                    </section>
-
-                    <button class="btn">搜索</button>
+            <div class="filter-container">
+                注册时间：
+                <el-date-picker
+                        v-model="listQuery.input_date"
+                        type="daterange"
+                        size=""
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :default-time="['00:00:00', '23:59:59']">
+                </el-date-picker>
+                状态：
+                <el-select size="" v-model="listQuery.islock" placeholder="请选择">
+                    <el-option
+                            v-for="item in zt"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+                <br>
+                <div style="margin-top: 10px">
+                审核：
+                <el-select v-model="listQuery.checked" placeholder="请选择">
+                    <el-option
+                            v-for="item in zt1"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-select v-model="listQuery.type1" placeholder="请选择">
+                    <el-option
+                            v-for="item in filter1"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-select v-model="listQuery.type2" placeholder="请选择">
+                    <el-option
+                            v-for="item in filter2"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-input v-model="listQuery.title" placeholder="用户名" style="width: 200px;"
+                          class="filter-item"></el-input>
+                <el-button class="filter-item" type="primary" style="margin-left: 10px;"
+                           @click="search">
+                    搜索
+                </el-button>
                 </div>
-            </div>
-        </div>
-    </form>
-    <form name="myform" action="{:U('Member/delete')}" method="post" class="J_ajaxForm">
-        <div class="table_list">
-            <table width="100%" cellspacing="0">
-                <thead>
-                <tr>
-                    <td  align="left" width="20"><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></td>
-                    <td align="left"></td>
-                    <td align="left">用户ID</td>
-                    <td align="left">用户名</td>
-                    <td align="left">昵称</td>
-                    <td align="left">邮箱</td>
-                    <td align="left">模型名称</td>
-                    <td align="left">注册ip</td>
-                    <td align="left">最后登录</td>
-                    <td align="left">金钱总数</td>
-                    <td align="left">积分点数</td>
-                    <td align="left">操作</td>
-                </tr>
-                </thead>
-                <tbody>
-                <volist name="data" id="vo">
-                    <tr>
-                        <td align="left"><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x"  value="{$vo.userid}" name="userid[]"></td>
-                        <td align="left"><if condition=" $vo['islock'] eq '1' "><img title="锁定" src="{$config_siteurl}statics/images/icon/icon_padlock.gif"></if>
-                            <if condition=" $vo['checked'] eq '0' "><img title="待审核" src="{$config_siteurl}statics/images/icon/info.png"></if></td>
-                        <td align="left">{$vo.userid}</td>
-                        <td align="left"><img src="{$vo.userpic}" height=18 width=18 onerror="this.src='{$config_siteurl}statics/images/member/nophoto.gif'">{$vo.username}<a href="javascript:member_infomation({$vo.userid}, '{$vo.modelid}', '')"><img src="{$config_siteurl}statics/images/icon/detail.png"></a></td>
-                        <td align="left">{$vo.nickname}</td>
-                        <td align="left">{$vo.email}</td>
-                        <td align="left">{$groupsModel[$vo['modelid']]}</td>
-                        <td align="left">{$vo.regip}</td>
-                        <td align="left"><if condition=" $vo['lastdate'] eq 0 ">还没有登录过
-                                <else />
-                                {$vo.lastdate|date='Y-m-d H:i:s',###}</if></td>
-                        <td align="left">{$vo.amount}</td>
-                        <td align="left">{$vo.point}</td>
-                        <td align="left">
-                            <a href="javascript:member_infomation({$vo.userid}, '{$vo.modelid}', '')">[查看详情]</a>
-                            <a href="{:U('Member/edit', array('userid'=>$vo['userid']) )}">[修改]</a>
-                        </td>
-                    </tr>
-                </volist>
-                </tbody>
-            </table>
-            <div class="p10">
-                <div class="pages"> {$Page} </div>
-            </div>
-        </div>
-        <div class="">
-            <div class="btn_wrap_pd">
-                <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/userverify')}" type="submit">审核
-                </button>
-                <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/userunverify')}" type="submit">
-                    取消审核
-                </button>
-                <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/lock')}" type="submit">锁定</button>
-                <button class="btn  mr10 J_ajax_submit_btn" data-action="{:U('Member/Member/unlock')}" type="submit">解锁</button>
-                <button class="btn  mr10 J_ajax_submit_btn" type="submit">删除</button>
-            </div>
-        </div>
-    </form>
-</div>
-<script src="{$config_siteurl}statics/js/common.js?v"></script>
-<script src="{$config_siteurl}statics/js/content_addtop.j
 
-s"></script>
-<script>
-    //会员信息查看
-    function member_infomation(userid, modelid, name) {
-        omnipotent("member_infomation", GV.DIMAUB+'index.php?g=Member&m=Member&a=memberinfo&userid='+userid+'', "个人信息",1,'50%','80%')
-    }
-</script>
-</body>
-</html>
+            </div>
+
+            <el-table
+                ref="multipleTable"
+                :key="tableKey"
+                :data="list"
+                border
+                fit
+                highlight-current-row
+                @selection-change="changebox"
+                style="width: 100%;"
+            >
+                <el-table-column
+                        type="selection"
+                        width="55">
+                </el-table-column>
+                <el-table-column
+                        width="55">
+                    <template  slot-scope="scope">
+                        <span v-if="scope.row.islock == 1" title="锁定">
+                            <i class="el-icon-lock" style="color: red;"></i>
+                        </span>
+                        <span v-if="scope.row.checked == 0" title="待审核">
+                            <i class="el-icon-info" style="color: blue;"></i>
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="用户ID" align="center" width="50">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.userid }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="用户名" align="center">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.userpic == '' ">
+                            <el-avatar shape="square" :size="20" src="{$config_siteurl}statics/images/member/nophoto.gif" ></el-avatar>
+                        </span>
+                        <span v-else>
+                            <el-avatar shape="square" :size="20" :src="scope.row.userpic"></el-avatar>
+                        </span>
+                        <span @click="openDetail(scope.row.userid)">{{ scope.row.username }}
+                            <i class="el-icon-search" ></i>
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="昵称" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.nickname }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="邮箱" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.email }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="模型昵称" align="center">
+                    <template slot-scope="scope" v-if="groupsModel != null">
+                        <span>{{ groupsModel[scope.row.modelid] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="注册ip" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.regip }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="最后登录" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.lastdate }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="金钱总数" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.amount }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="积分点数" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.point }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
+                    <template slot-scope="scope">
+                        <el-button  size="mini" @click="openDetail(scope.row.userid)">
+                            查看详情
+                        </el-button>
+                        <el-button  size="mini" type="primary"
+                                   @click="editOpen(scope.row.userid)">
+                            修改
+                        </el-button>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+            <div style="margin-top: 30px;">
+                <template >
+                    <el-button  size="" @click="getIdSh()">
+                        审核
+                    </el-button>
+                    <el-button  size="" @click="getIdNoSh()">
+                        取消审核
+                    </el-button>
+                    <el-button  size="" @click="getIdSd()">
+                        锁定
+                    </el-button>
+                    <el-button  size="" @click="getIdJs()">
+                        解锁
+                    </el-button>
+                    <el-button  size="" @click="getIdDel()">
+                        删除
+                    </el-button>
+                </template>
+            </div>
+
+            <div class="pagination-container">
+                <el-pagination
+                    background
+                    layout="prev, pager, next, jumper"
+                    :total="total"
+                    v-show="total>0"
+                    :current-page.sync="listQuery.page"
+                    :page-size.sync="listQuery.limit"
+                    :page-size="Page_size"
+                    @current-change="getList"
+                >
+                </el-pagination>
+            </div>
+
+        </el-card>
+
+        <el-card v-if="listQuery.tab == 2">
+            <div class="filter-container">
+                <template>
+                    <el-tabs v-model="listQuery.tab" >
+                        <el-tab-pane v-for="(item,index) in tab" :key="index" :label="item.name"
+                                     :name="item.id" ></el-tab-pane>
+                    </el-tabs>
+                </template>
+            </div>
+        <el-row >
+            <el-col :span="9">
+                <div class="grid-content ">
+                    <el-form ref="form" :model="form" label-width="80px">
+                        <el-form-item label="用户名">
+                            <el-input v-model="form.username"></el-input>
+                        </el-form-item>
+                        <el-form-item label="是否审核">
+                            <el-radio-group v-model="form.checked">
+                                <el-radio label="1">审核通过</el-radio>
+                                <el-radio label="0">待审核</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="密码">
+                            <el-input type="password" v-model="form.password"></el-input>
+                        </el-form-item>
+                        <el-form-item label="确认密码">
+                            <el-input type="password" v-model="form.pwdconfirm"></el-input>
+                        </el-form-item>
+                        <el-form-item label="昵称">
+                            <el-input v-model="form.nickname"></el-input>
+                        </el-form-item>
+                        <el-form-item label="邮箱">
+                            <el-input v-model="form.email"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="会员组">
+                            <template>
+                                <el-select v-model="form.groupid" clearable placeholder="请选择">
+                                    <el-option
+                                            v-for="item in groupCache1"
+                                            :key="item.id"
+                                            :label="item.label"
+                                            :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                        </el-form-item>
+                        <el-form-item label="积分点数">
+                            <el-input v-model="form.point" style="width:70px"></el-input>
+                            &nbsp;请输入积分点数，积分点数将影响会员用户组
+                        </el-form-item>
+                        <template v-if="groupsModel1 != '' ">
+                        <el-form-item label="会员模型">
+                                <el-select v-model="form.modelid" clearable placeholder="请选择">
+                                    <el-option
+                                            v-for="item in groupsModel1"
+                                            :key="item.id"
+                                            :label="item.label"
+                                            :value="item.id">
+                                    </el-option>
+                                </el-select>
+                        </el-form-item>
+                        </template>
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">保存</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-col>
+            <el-col :span="16"><div class="grid-content "></div></el-col>
+        </el-row>
+        </el-card>
+    </div>
+
+    <style>
+        .filter-container {
+            padding-bottom: 10px;
+        }
+
+        .pagination-container {
+            padding: 32px 16px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    tableKey: 0,
+                    list: [],
+                    total: 0,
+                    Page_size:0,
+                    groupsModel:[],
+                    tab: [
+                        {
+                            id: "1",
+                            name: "会员列表"
+                        },
+                        {
+                            id: "2",
+                            name: "添加会员"
+                        },
+                    ],
+                    zt:[
+                        {value: '', label: '全部'},
+                        {value: '1', label: '锁定'},
+                        {value: '2', label: '正常'},
+                    ],
+                    zt1:[
+                        {value: '', label: '全部'},
+                        {value: '1', label: '审核通过'},
+                        {value: '0', label: '待审核'},
+                    ],
+                    filter1:[
+                        {value: 'username', label: '用户名'},
+                        {value: 'userid', label: '用户ID'},
+                        {value: 'nickname', label: '昵称'},
+                    ],
+                    filter2:[
+                        {value: 'EQ', label: '等于'},
+                        {value: 'NEQ', label: '不等于'},
+                        {value: 'GT', label: '大于'},
+                        {value: 'EGT', label: '大于等于'},
+                        {value: 'LT', label: '小于'},
+                        {value: 'ELT', label: '小于等于'},
+                        {value: 'LIKE', label: '模糊查询'},
+                    ],
+                    input_date: ['', ''],
+                    listQuery: {
+                        search:1,
+                        page: 1,
+                        tab: '1',
+                        limit: 20,
+                        start_time: '',
+                        end_time: '',
+                        user_name: '{:I("get.user_name")}',
+                        islock:'',
+                        checked:'{:I("get.checked")}',
+                        type1:'username',
+                        type2:'EQ',
+                        title:  '{:I("get.user_name")}',
+                        input_date: ['', ''],
+                    },
+                    form: {
+                        id:'{$_GET["id"]}',
+                        username: '',
+                        password: '',
+                        pwdconfirm: '',
+                        checked: '1',
+                        email: '',
+                        nickname: '',
+                        groupid: '',
+                        point: '0',
+                    },
+                    checkList:[],
+                    groupsModel1:[],
+                    groupCache1:{$groupCache1}
+                },
+                watch: {},
+                filters: {},
+                methods: {
+                    search: function () {
+                        this.getList();
+                    },
+                    //修改页面
+                    editOpen:function(id){
+                        var url = "{:U('edit')}";
+                        if (id !== 0) {
+                            url += '&userid=' + id
+                            Ztbcms.openNewIframeByUrl('修改会员信息', url)
+                        }
+                    },
+                    //个人详情
+                    openDetail: function(id){
+                        var url = "{:U('memberinfo')}";
+                        if (id !== 0) {
+                            url += '&userid=' + id
+                        }
+                        layer.open({
+                            type: 2,
+                            title: '会员详情',
+                            content: url,
+                            area: ['4   0%', '80%'],
+                        })
+                    },
+                    //选中的列表人
+                    changebox(val){
+                        var that = this;
+                        that.checkList = []
+                        val.forEach(function(value,index,array){
+                            that.checkList.push(value.userid)
+                        });
+                    },
+                    //审核
+                    getIdSh(){
+                        var that = this;
+                        var checkList = this.checkList
+                        $.ajax({
+                            url:"{:U('userverify')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": checkList,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getList()
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.success(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //取消审核
+                    getIdNoSh(){
+                        var that = this;
+                        var checkList = this.checkList
+                        $.ajax({
+                            url:"{:U('userunverify')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": checkList,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getList()
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.success(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //锁定
+                    getIdSd(){
+                        var that = this;
+                        var checkList = this.checkList
+                        $.ajax({
+                            url:"{:U('lock')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": checkList,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getList()
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.success(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //解锁
+                    getIdJs(){
+                        var that = this;
+                        var checkList = this.checkList
+                        $.ajax({
+                            url:"{:U('unlock')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": checkList,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getList()
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.success(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //删除
+                    getIdDel(){
+                        var that = this;
+                        var checkList = this.checkList
+                        $.ajax({
+                            url:"{:U('delete')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": checkList,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getList()
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.success(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //获取总列表
+                    getList: function () {
+                        var that = this;
+                        $.ajax({
+                            url:"{:U('getMemberUser')}",
+                            dataType:"json",
+                            type:"get",
+                            data: that.listQuery ,
+                            success(res){
+                                that.list = res.data.data;
+                                that.groupsModel = res.data.groupsModel;
+                                that.total = res.data.Page.Total_Size;
+                                that.Page_size = res.data.Page.Page_size;
+                                that.listQuery.page = res.data.Page.Current_page;
+                            }
+                        })
+                        this.getGroupsModel()
+                    },
+                    //添加会员
+                    onSubmit: function(){
+                        var that = this
+                        $.ajax({
+                            url:"{:U('add')}",
+                            dataType:"json",
+                            type:"post",
+                            data:  that.form,
+                            success(res){
+                                if(res.status){
+                                    layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
+                                        window.location.reload()
+                                    });
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+
+                    //获取会员模型
+                    getGroupsModel:function(tab, event) {
+                        var that = this;
+                        $.ajax({
+                            url:"{:U('getGroupsModel')}",
+                            dataType:"json",
+                            type:"get",
+                            success(res){
+                                that.groupsModel1 = res.data
+                                if(that.groupsModel1){
+                                    that.form.modelid = ''
+                                }
+                            }
+                        })
+                    },
+                },
+                mounted: function () {
+                    this.getList();
+                },
+            })
+        })
+    </script>
+</block>

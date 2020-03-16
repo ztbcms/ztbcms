@@ -53,11 +53,9 @@ class MemberController extends AdminBase {
             if ($where_start_time) {
                 $where['regdate'] = array('between', array($where_start_time, $where_end_time));
             }
-
             $filter = I('get._filter');
             $operator = I('get._operator');
             $value = I('get._value');
-
 
             if (is_array($filter)) {
                 foreach ($filter as $index => $k) {
@@ -84,14 +82,6 @@ class MemberController extends AdminBase {
         $page = $this->page($count, 20, $page);
         $data = $this->member->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("userid" => "DESC"))->select();
 
-//        foreach ($this->groupCache as $g) {
-//            $groupCache[$g['groupid']] = $g['name'];
-//        }
-//        foreach ($this->groupsModel as $m) {
-//            $groupsModel[$m['modelid']] = $m['name'];
-//        }
-
-        //会员组 New
         foreach ($this->groupCache as $key => $g) {
             if (in_array($g['groupid'], array(8, 1, 7))) {
                 continue;
@@ -103,22 +93,26 @@ class MemberController extends AdminBase {
         foreach ($groupCache as $groupCache_v){
             $groupCache1[] =  $groupCache_v;
         }
-        //会员模型 New
+        $groupCache = json_encode($groupCache1);
+        $this->assign('groupCache1', $groupCache);
+        $this->assign("Page", $page->show('Admin'));
+        $this->assign("data", $data);
+        $this->display();
+    }
+
+    //获取会员模型
+    public function getGroupsModel(){
         foreach ($this->groupsModel as $m) {
             $groupsModel['id'] = $m['modelid'];
             $groupsModel['label'] = $m['name'];
         }
-        $groupsModel = json_encode($groupsModel);
-        $groupCache = json_encode($groupCache1);
-
-        $this->assign('groupCache1', $groupCache);
-        $this->assign('groupsModel1', $groupsModel);
-
-        $this->assign("Page", $page->show('Admin'));
-        $this->assign("data", $data);
-        $this->display('indexNew');
+        if(!$groupsModel) {
+            $groupsModel='';
+        }else {
+            $groupsModel = json_encode($groupsModel);
+        }
+        return $this->ajaxReturn(self::createReturn(true,$groupsModel));
     }
-
     public function indexNew(){
         //会员组
         foreach ($this->groupCache as $key => $g) {
@@ -144,58 +138,53 @@ class MemberController extends AdminBase {
         $this->assign('groupsModel1', $groupsModel);
         $this->display();
     }
-    //会员管理首页API
-    public function indexApi() {
+    //获取会员列表
+    public function getMemberUser() {
         $search = I("get.search", null);
         $where = [];
-//        if ($search) {
-            //注册时间段
-            if(isset($_GET['input_date'])){
-                $start_time = $_GET['input_date'][0] ? $_GET['input_date'][0] :'';
-                $end_time = $_GET['input_date'][1] ? $_GET['input_date'][1] : date('Y-m-d', time());
-            }
-//            $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
-//            $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d', time());
-            //开始时间
-            $where_start_time = strtotime($start_time) ? strtotime($start_time) : 0;
-            //结束时间
-            $where_end_time = strtotime($end_time) ? (strtotime($end_time) + 86400) : 0;
-            //开始时间大于结束时间，置换变量
-            if ($where_start_time > $where_end_time) {
-                $tmp = $where_start_time;
-                $where_start_time = $where_end_time;
-                $where_end_time = $tmp;
-                $tmptime = $start_time;
-                $start_time = $end_time;
-                $end_time = $tmptime;
-                unset($tmp, $tmptime);
-            }
-            //时间范围
-            if ($where_start_time) {
-                $where['regdate'] = array('between', array($where_start_time, $where_end_time));
-            }
+        //注册时间段
+        if (isset($_GET['input_date'])) {
+            $start_time = $_GET['input_date'][0] ? $_GET['input_date'][0] : '';
+            $end_time = $_GET['input_date'][1] ? $_GET['input_date'][1] : date('Y-m-d', time());
+        }
+        //开始时间
+        $where_start_time = strtotime($start_time) ? strtotime($start_time) : 0;
+        //结束时间
+        $where_end_time = strtotime($end_time) ? (strtotime($end_time) + 86400) : 0;
+        //开始时间大于结束时间，置换变量
+        if ($where_start_time > $where_end_time) {
+            $tmp = $where_start_time;
+            $where_start_time = $where_end_time;
+            $where_end_time = $tmp;
+            $tmptime = $start_time;
+            $start_time = $end_time;
+            $end_time = $tmptime;
+            unset($tmp, $tmptime);
+        }
+        //时间范围
+        if ($where_start_time) {
+            $where['regdate'] = array('between', array($where_start_time, $where_end_time));
+        }
 
-            $islock = I('get.islock'); //是否锁定
-            $checked = I('get.checked'); //是否审核
-            $type1 = I('get.type1'); //搜索的字段  用户名。昵称
-            $type2 = I('get.type2'); //大于 等于
-            $title = I('get.title'); //关键词
+        $islock = I('get.islock'); //是否锁定
+        $checked = I('get.checked'); //是否审核
+        $type1 = I('get.type1'); //搜索的字段  用户名。昵称
+        $type2 = I('get.type2'); //大于 等于
+        $title = I('get.title'); //关键词
 
-            if ($islock != '') {
-                $where['islock'] = array('eq',$islock);
-            }
-            if ($checked != '') {
-                $where['checked'] = array('eq',$checked);
-            }
-            if ($title != '') {
-                $where[$type1] = array($type2,$title);
-            }
+        if ($islock != '') {
+            $where['islock'] = array('eq', $islock);
+        }
+        if ($checked != '') {
+            $where['checked'] = array('eq', $checked);
+        }
+        if ($title != '') {
+            $where[$type1] = array($type2, $title);
+        }
 
-//            }
         $page = I('get.page', 1);
         $count = $this->member->where($where)->count();
         $page = $this->page($count, 20, $page);
-//        dump($page);
         $data = $this->member->where($where)
             ->limit($page->firstRow . ',' . $page->listRows)
             ->order(array("userid" => "DESC"))->select();
@@ -213,39 +202,10 @@ class MemberController extends AdminBase {
         $result['total'] = $count;
         $this->assign('groupCache', $groupCache);
         $this->assign('groupsModel', $groupsModel);
-//        $this->assign("Page", $page->show('Admin'));
         $this->assign("data", $data);
-        return $this->ajaxReturn(self::createReturn(true,$result));
+        return $this->ajaxReturn(self::createReturn(true, $result));
     }
 
-    //添加会员
-    public function addNew(){
-        //会员组
-        foreach ($this->groupCache as $key => $g) {
-            if (in_array($g['groupid'], array(8, 1, 7))) {
-                continue;
-            }
-            $groupCache[$key]['id'] = $g['groupid'];
-            $groupCache[$key]['label'] = $g['name'];
-        }
-        $groupCache1 = [];
-        foreach ($groupCache as $groupCache_v){
-            $groupCache1[] =  $groupCache_v;
-        }
-
-        //会员模型
-        foreach ($this->groupsModel as $m) {
-            $groupsModel['id'] = $m['modelid'];
-            $groupsModel['label'] = $m['name'];
-        }
-        $groupsModel = json_encode($groupsModel);
-        $groupCache = json_encode($groupCache1);
-        $this->assign('groupCache', $groupCache);
-        $this->assign('groupsModel', $groupsModel);
-        $this->display();
-    }
-
-//    public
     //添加会员
     public function add() {
         if (IS_POST) {
@@ -445,7 +405,7 @@ class MemberController extends AdminBase {
         }
     }
 
-    //会员资料查看 新页面 调试
+    //会员资料查看
     public function memberinfo(){
         $userid = I('get.userid', 0, 'intval');
         //主表
@@ -475,7 +435,7 @@ class MemberController extends AdminBase {
         $this->assign("output_data", json_encode($output_data));
         $this->assign("Model_field", json_encode($Model_field));
         $this->assign('userinfo',json_encode($data));
-        $this->display('memberinfonew');
+        $this->display();
     }
 
     //获取会员资料api
@@ -510,38 +470,6 @@ class MemberController extends AdminBase {
         $data['Model_field'] = $Model_field;
         return $this->ajaxReturn(self::createReturn(true,$data,'获取成功'));
     }
-    //会员资料查看 old
-    public function memberinfo_old() {
-        $userid = I('get.userid', 0, 'intval');
-        //主表
-        $data = $this->member->where(array("userid" => $userid))->find();
-        if (empty($data)) {
-            $this->error("该会员不存在！");
-        }
-        if (!$data['modelid']) {
-            echo '会员信息不完善！';
-            exit();
-        }
-        $modelid = $data['modelid'];
-        //相应会员模型数据
-        $modeldata = \Content\Model\ContentModel::getInstance($modelid)->where(array("userid" => $userid))->find();
-        $content_output = new \content_output($modelid);
-        $output_data = $content_output->get($modeldata);
-        $modelField = cache('ModelField');
-        $Model_field = $modelField[$modelid];
-        foreach ($this->groupCache as $g) {
-            $groupCache[$g['groupid']] = $g['name'];
-        }
-        foreach ($this->groupsModel as $m) {
-            $groupsModel[$m['modelid']] = $m['name'];
-        }
-        $this->assign('groupCache', $groupCache);
-        $this->assign('groupsModel', $groupsModel);
-        $this->assign("output_data", $output_data);
-        $this->assign("Model_field", $Model_field);
-        $this->assign($data);
-        $this->display();
-    }
 
     //审核会员
     public function userverify() {
@@ -564,7 +492,6 @@ class MemberController extends AdminBase {
                 ['search' => 1, '_filter[2]' => 'checked', '_operator[2]' => 'EQ', '_value[2]' => 0,'checked'=>'0']);
         }
     }
-
 
     //取消审核会员
     public function userunverify() {

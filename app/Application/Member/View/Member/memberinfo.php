@@ -1,83 +1,249 @@
-<Admintemplate file="Common/Head"/>
-<body class="J_scroll_fixed">
-<div class="wrap J_check_wrap">
-    <form name="myform" action="{:U('Member/delete')}" method="post" class="J_ajaxForm">
-        <div class="table_full">
-            <div class="h_a">基本信息</div>
-            <input type="hidden" name="userid" value="{$userid}">
-            <table width="100%" class="table_form">
-                <tr>
-                    <th width="80">用户名</th>
-                    <td>{$username}</td>
-                </tr>
-                <tr>
-                    <th>头像</th>
-                    <td><img src="{$userpic}" onerror="this.src='{$config_siteurl}statics/images/member/nophoto.gif'"
-                             height=90 width=90></td>
-                </tr>
-                <tr>
-                    <th>是否审核</th>
-                    <td>
-                        <if condition=" $checked eq '1' "> 审核通过
-                            <else/>
-                            待审核
-                        </if>
-                    </td>
-                </tr>
-                <tr>
-                    <th>昵称</th>
-                    <td>{$nickname}</td>
-                </tr>
-                <tr>
-                    <th>邮箱</th>
-                    <td>{$email}</td>
-                </tr>
-                <tr>
-                    <th>会员组</th>
-                    <td><?php echo $groupCache[$groupid]; ?></td>
-                </tr>
-                <tr>
-                    <th>积分点数</th>
-                    <td>{$point}</td>
-                </tr>
-                <tr>
-                    <th>钱金总额</th>
-                    <td>{$amount}</td>
-                </tr>
-                <tr>
-                    <th>会员模型</th>
-                    <td><?php echo $groupsModel[$modelid]; ?></td>
-                </tr>
-            </table>
-            <div class="h_a"> 详细信息</div>
-            <table width="100%" class="table_form">
-                <?php foreach ($Model_field as $k => $v) { ?>
-                    <tr>
-                        <th width="80"><?php echo $v['name'] ?>：</th>
-                        <td><?php echo $output_data[$v['field']] ?></td>
-                    </tr>
-                <?php } ?>
-            </table>
-            <div class="btn_wrap" style="text-align: right;background: #F6F6F6;padding: 10px;">
-                <button class="btn  mr10 J_ajax_submit_btn"
-                        data-action="{:U('Member/Member/userverify')}" type="submit">审核
-                </button>
-                <button class="btn  mr10 J_ajax_submit_btn"
-                        data-action="{:U('Member/Member/userunverify')}" type="submit">
-                    取消审核
-                </button>
-                <button class="btn  mr10 J_ajax_submit_btn"
-                        data-action="{:U('Member/Member/lock')}" type="submit">锁定
-                </button>
-                <button class="btn  mr10 J_ajax_submit_btn"
-                        data-action="{:U('Member/Member/unlock')}" type="submit">解锁
-                </button>
-                <button class="btn  mr10 J_ajax_submit_btn" type="submit">删除</button>
-            </div>
-        </div>
-    </form>
-</div>
-<script src="{$config_siteurl}statics/js/common.js?v"></script>
-<script src="{$config_siteurl}statics/js/content_addtop.js"></script>
-</body>
-</html>
+<extend name="../../Admin/View/Common/element_layout"/>
+
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <el-row>
+                <el-col :span="8">
+                    <div class="grid-content ">
+                        <el-form ref="form" :model="form" label-width="100px">
+                            <input type="hidden" v-model="form.userinfo.userid">
+                            <el-form-item label="用户名">
+                                <span  style="margin-left: 10px;">{{form.userinfo.username}}</span>
+                            </el-form-item>
+                            <el-form-item label="头像" >
+                                <img class="form_img" style="margin-left: 10px;" :src="form.userinfo.userpic" v-if="form.userinfo.userpic != '' ">
+                                <img class="form_img" src="{$config_siteurl}statics/images/member/nophoto.gif" alt="" v-else>
+                            </el-form-item>
+                            <el-form-item label="是否审核">
+                                <span  style="margin-left: 10px;" v-if="form.userinfo.checked == 1">审核通过</span><span  style="margin-left: 10px;" v-else>待审核 <i class="el-icon-info" style="color: blue;"></i></span>
+                            </el-form-item>
+                            <el-form-item label="是否锁定" v-if="form.userinfo.islock == 1">
+                                <span  style="margin-left: 10px;" >锁定 <i class="el-icon-lock" style="color: red;"></i></span>
+                            </el-form-item>
+                            <el-form-item label="昵称">
+                                <span  style="margin-left: 10px;">{{form.userinfo.nickname}}</span>
+                            </el-form-item>
+                            <el-form-item label="邮箱">
+                                <span  style="margin-left: 10px;">{{form.userinfo.email}}</span>
+                            </el-form-item>
+                            <el-form-item label="会员组">
+                                <span  style="margin-left: 10px;">{{groupCache[form.userinfo.groupid]}}</span>
+                            </el-form-item>
+                            <el-form-item label="积分点数">
+                                <span  style="margin-left: 10px;">{{form.userinfo.point}}</span>
+                            </el-form-item>
+                            <el-form-item label="钱金总额">
+                                <span  style="margin-left: 10px;">{{form.userinfo.amount}}</span>
+                            </el-form-item>
+                            <el-form-item label="会员模型">
+                                <span  style="margin-left: 10px;">{{groupsModel[form.userinfo.modelid]}}</span>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-col>
+                <el-col :span="16"><div class="grid-content "></div></el-col>
+            </el-row>
+            <el-row>
+                <h3>详细信息</h3>
+                <div v-for="(item,index) in Model_field" >
+                    <table width="100%" class="table_form" >
+                        <th width="80">{{item.name}}:</th>
+                        <td>{{output_data[item.field]}}</td>
+                    </table>
+                </div>
+            </el-row>
+            <el-row>
+                <div style="margin-top: 30px;">
+                    <template >
+                        <el-button  size="" @click="getIdSh(id)">
+                            审核
+                        </el-button>
+                        <el-button  size="" @click="getIdNoSh(id)">
+                            取消审核
+                        </el-button>
+                        <el-button  size="" @click="getIdSd(id)">
+                            锁定
+                        </el-button>
+                        <el-button  size="" @click="getIdJs(id)">
+                            解锁
+                        </el-button>
+                        <el-button  size="" @click="getIdDel(id)">
+                            删除
+                        </el-button>
+                    </template>
+                </div>
+            </el-row>
+
+        </el-card>
+    </div>
+
+    <style>
+        .form_img{
+            width: 90px;
+            height: 90px;
+        }
+        .el-form-item{
+            margin-bottom: 0;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    id:"{:I('get.userid')}",
+                    form: {
+                        id:"{:I('get.userid')}",
+                        userinfo:[]
+                    },
+                    groupsModel:{$groupsModel},
+                    groupCache:{$groupCache},
+                    Model_field:{$Model_field},
+                    output_data:{$output_data},
+
+                },
+                watch: {},
+                filters: {},
+                methods: {
+                    //获取用户信息
+                    getUserinfo(userid){
+                        var that = this;
+                        console.log(this.Model_field)
+                        $.ajax({
+                            url:"{:U('memberinfoApi')}",
+                            dataType:"json",
+                            type:"get",
+                            data: {
+                                "userid": userid,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.form.userinfo = res.data.userinfo;
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+                    onSubmit: function(){
+                        console.log(this.form)
+                        this.$message.success('提交成功');
+                    },
+                    onCancel: function(){
+                        this.$message.error('已取消');
+                    },
+                    //审核
+                    getIdSh(userid){
+                        var that = this;
+                        $.ajax({
+                            url:"{:U('userverify')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": userid,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getUserinfo(userid)
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //取消审核
+                    getIdNoSh(userid){
+                        var that = this;
+                        $.ajax({
+                            url:"{:U('userunverify')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": userid,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getUserinfo(userid)
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //锁定
+                    getIdSd(userid){
+                        var that = this;
+                        $.ajax({
+                            url:"{:U('lock')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": userid,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getUserinfo(userid)
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //解锁
+                    getIdJs(userid){
+                        var that = this;
+                       
+                        $.ajax({
+                            url:"{:U('unlock')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": userid,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getUserinfo(userid)
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+                    //删除
+                    getIdDel(userid){
+                        var that = this;
+                        $.ajax({
+                            url:"{:U('delete')}",
+                            dataType:"json",
+                            type:"post",
+                            data: {
+                                "userid": userid,
+                            },
+                            success(res){
+                                if(res.state){
+                                    that.getUserinfo(userid)
+                                    that.$message.success(res.info);
+                                }else{
+                                    that.$message.error(res.info);
+                                }
+                            }
+                        })
+                    },
+
+                },
+                mounted: function () {
+                    if(this.id){
+                        this.getUserinfo(this.id)
+                    }
+                },
+
+            })
+        })
+    </script>
+</block>

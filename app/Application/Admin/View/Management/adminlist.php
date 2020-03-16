@@ -4,10 +4,6 @@
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
                 <div class="filter-container">
-<!--                <el-button class="filter-item" type="primary" style="margin-left: 10px;"-->
-<!--                           @click="openAdd">-->
-<!--                    添加管理员-->
-<!--                </el-button>-->
                     <h3>管理员列表</h3>
             </div>
             <el-table
@@ -120,36 +116,17 @@
                 watch: {},
                 filters: {},
                 methods: {
-                    search: function () {
-                        this.getList();
-                    },
                     openDetail: function (id) {
                         var that = this
                         var url = "{:U('Admin/Management/adminedit')}";
                         if (id !== 0) {
                             url += "&id=" + id;
                         }
-                        // Ztbcms.openNewIframeByRouter('修改管理员',url)//直接打开新页面
                         layer.open({
                             type: 2,
-                            title: '详情',
+                            title: '修改管理员',
                             content: url,
-                            area: ['100%', '100%'],
-                            end: function(){
-                                that.getList()
-                            }
-                        })
-                    },
-                    // 添加管理员
-                    openAdd(){
-                        var that = this
-                        var url = "{:U('Admin/Management/adminadd')}";
-                        //直接打开新页面
-                        layer.open({
-                            type: 2,
-                            title: '详情',
-                            content: url,
-                            area: ['100%', '100%'],
+                            area: ['30%', '90%'],
                             end: function(){
                                 that.getList()
                             }
@@ -170,9 +147,6 @@
                                 }
                             }
                         })
-                    },
-                    handleClick: function () {
-                        this.getList();
                     },
                     handleDelete: function (index) {
                         var that = this;
@@ -203,7 +177,6 @@
                                     that.$message.error(res.info)
                                 }
                             }
-
                         })
                     },
                 },

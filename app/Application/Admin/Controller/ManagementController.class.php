@@ -41,14 +41,9 @@ class ManagementController extends AdminBase
         $this->assign("Userlist", $User);
         $this->assign("Page", $page->show());
 
-//        $this->display('manager');  //旧版
         $this->display('adminlist');
 
     }
-//      调试后删除
-//    public function adminlistNew(){
-//        $this->display('adminlist');
-//    }
     /**
      *  获取管理员列表 API
      *  @method get
@@ -155,10 +150,8 @@ class ManagementController extends AdminBase
             }
         } else {
             $myid = User::getInstance()->isAdministrator() ? 0 : User::getInstance()->role_id;
-//            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid, 0, 'name="role_id"'));
-//                        $this->display();
-
-            $this->display('adminaddNew');
+            $this->assign("role", D('Admin/Role')->selectChildHtmlOption($myid, 0, 'name="role_id"'));
+                        $this->display();
         }
     }
 

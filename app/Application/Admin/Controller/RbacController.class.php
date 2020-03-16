@@ -51,19 +51,10 @@ class RbacController extends AdminBase {
 
         $roleList = D("Admin/Role")->getTreeArray();
         $userInfo=User::getInstance()->getInfo();
-
-
-        $this->display('rolelist');
-
-//        $this->assign("data", D("Admin/Role")->order(array("listorder" => "asc", "id" => "desc"))->select())
-//                ->display();
+        $this->assign("data", D("Admin/Role")->order(array("listorder" => "asc", "id" => "desc"))->select())
+                ->display();
     }
-
-    //角色列表页面新 调试后删除
-//    public function rolelistnew(){
-//        $this->display('rolelist');
-//    }
-    // 获取角色列表 api  父级子级
+    // 获取角色列表 api
     public function getrolemanage(){
         $roleList = D("Admin/Role")->select();
         $userInfo=User::getInstance()->getInfo();
@@ -81,11 +72,6 @@ class RbacController extends AdminBase {
         }else{
             $data = D("Admin/Role")->select();
         }
-//        dump($data);
-//        $tree = new \Tree();
-//        $tree->init($roleList);
-//        $data[] = $tree->get_tree_array($myid, $str)[1];
-
         $this->ajaxReturn(self::createReturn(true, $data, '获取成功'));
     }
 
@@ -117,14 +103,9 @@ class RbacController extends AdminBase {
         } else {
             //向前端渲染登录信息
             $this->assign('userInfo',$userInfo);
-//            $this->display();
-            $this->display('roleAddnew'); //新页面
+            $this->display();
         }
     }
-    //添加角色页面新 调试后删除
-//    public function roleaddNew(){
-//        $this->display('roleaddNew');
-//    }
 
     //删除角色
     public function roledelete() {
@@ -162,9 +143,8 @@ class RbacController extends AdminBase {
             if (empty($data)) {
                 $this->error("该角色不存在！", U('rolemanage'));
             }
-            $this->display('roleChange');
-//            $this->assign("data", $data)
-//                    ->display();
+            $this->assign("data", $data)
+                    ->display();
         }
     }
 

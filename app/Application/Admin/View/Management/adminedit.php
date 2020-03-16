@@ -11,9 +11,8 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>修改管理员</h3>
             <el-row v-loading="loading">
-                <el-col :span="8">
+                <el-col :span="24">
                     <div class="grid-content ">
                         <el-form ref="form" :model="form" label-width="80px">
                             <el-form-item label="用户名">
