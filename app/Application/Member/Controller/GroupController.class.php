@@ -30,13 +30,11 @@ class GroupController extends AdminBase {
 			$data[$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
 		}
 		$this->assign("data", $data);
-		$this->display('indexNew');
+		$this->display('');
 	}
-	//测试完删除
-//    public function indexNew(){
-//        $this->display('indexNew');
-//    }
-	public function indexNewApi(){
+
+	//获取会员组信息
+	public function getInfoApi(){
         $this->member = D('Member');
         $data = $this->memberGroupModel->order(array("sort" => "ASC", "groupid" => "DESC"))->select();
         foreach ($data as $k => $v) {
@@ -61,28 +59,14 @@ class GroupController extends AdminBase {
 				$this->error($this->memberGroupModel->getError());
 			}
 		} else {
-			$this->display('addNew');
+			$this->display();
 		}
 	}
-
-    //添加会员组
+    //添加会员组Api
     public function addApi() {
         if (IS_POST) {
             $post = $_POST;
-            $newData = [];
-            foreach($post['quanxian'] as $post_k => $post_v){
-                $newData[$post_k] = $post_v ? 1 : 0;
-            }
-            foreach($post['checkList'] as $checkList_k => $checkList_v ){
-                $newData[$checkList_v] = 1;
-            }
-            unset($post['quanxian']);
-            unset($post['checkList']);
-            $newData = array_merge($post,$newData);
-//            dump($post);
-//            dump($newData);
-
-            $data = $this->memberGroupModel->create($newData);
+            $data = $this->memberGroupModel->create($post);
             if ($data) {
                 if ($this->memberGroupModel->groupAdd($data)) {
                     $this->success("添加成功！", U("Group/index"));
@@ -92,14 +76,8 @@ class GroupController extends AdminBase {
             } else {
                 $this->error($this->memberGroupModel->getError());
             }
-
         }
     }
-
-	//新增会员组页面 测试后删除
-//	public function addNew(){
-//        $this->display();
-//    }
 
 	//编辑会员组
 	public function edit() {
@@ -126,6 +104,17 @@ class GroupController extends AdminBase {
 			$this->display();
 		}
 	}
+
+	//获取用户组信息
+	public function getGroupinfo(){
+        $groupid = I("get.groupid", 0, 'intval');
+        $data = $this->memberGroupModel->where(array("groupid" => $groupid))->find();
+        if (empty($data)) {
+            $this->error("该会员组不存在！", U("Group/index"));
+        }
+        $data['expand'] = unserialize($data['expand']);
+        return $this->ajaxReturn(self::createReturn(true,$data));
+    }
 
 	//删除会员组
 	public function delete() {
@@ -158,5 +147,23 @@ class GroupController extends AdminBase {
 			$this->error("请求方式错误！");
 		}
 	}
+
+	//排序Api
+    public function sortApi(){
+        if (IS_POST) {
+            $sortlist = I('post.sortlist');
+            $grouplist = I('post.grouplist');
+            if (is_array($sortlist)) {
+                foreach ($sortlist as $gid => $pxid) {
+                    if( in_array($pxid['groupid'],$grouplist) ){
+                        $this->memberGroupModel->where(array("groupid" => $pxid['groupid']))->save(array("sort" => $pxid['value']));
+                    }
+                }
+            }
+            $this->success("排序更新成功！", U("Group/index"));
+        } else {
+            $this->error("请求方式错误！");
+        }
+    }
 
 }
