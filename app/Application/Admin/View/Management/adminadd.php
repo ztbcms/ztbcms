@@ -146,9 +146,6 @@
                 },
                 mounted: function () {
                     this.getroleList()
-                    if(this.form.id){
-                        this.getManagerByid(this.form.id)
-                    }
                 },
 
             })
