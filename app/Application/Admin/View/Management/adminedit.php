@@ -100,21 +100,17 @@
                             data:  that.form,
                             success(res){
                                 if(res.status){
-                                    layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
-                                        //关闭弹窗
-                                        layer.close(index);
-                                        parent.layer.closeAll()
-                                    });
-
+                                    that.$message.success(res.msg);
+                                    if (window !== window.parent) {
+                                        setTimeout(function () {
+                                            window.parent.layer.closeAll();
+                                        }, 1000);
+                                    }
                                 }else{
-                                    that.$message.error(res.info);
+                                    that.$message.error(res.msg);
                                 }
-                                console.log(res)
                             }
                         })
-                    },
-                    onCancel: function(){
-                        this.$message.error('已取消');
                     },
                     //获取所有角色
                     getroleList:function () {
@@ -153,7 +149,6 @@
                 },
                 mounted: function () {
                     this.getroleList()
-                    console.log(this.form)
                     if(this.form.id){
                         this.loading = true
                         this.getManagerByid(this.form.id)

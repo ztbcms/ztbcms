@@ -57,11 +57,8 @@
                 </el-table-column>
                 <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="scope">
-                        <el-button @click="openDetail(scope.row.id)" >
-                            <i class="el-icon-edit" ></i>修改
-                        </el-button>
-                        <el-button @click="handleDelete(scope.row.id)">
-                        <i class="el-icon-delete"  ></i>删除</el-button>
+                        <el-button @click="openDetail(scope.row.id)" >修改</el-button>
+                        <el-button @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -70,8 +67,8 @@
                 <el-pagination
                         background
                         layout="prev, pager, next, jumper"
-                        :total="total"
-                        v-show="total>0"
+                        :total="listQuery.total"
+                        v-show="listQuery.total > 0"
                         :current-page.sync="listQuery.page"
                         :page-size.sync="listQuery.limit"
                         @current-change="getList"
@@ -103,12 +100,8 @@
                     input_date: ['', ''],
                     listQuery: {
                         page: 1,
-                        tab: '',
                         limit: 20,
-                        start_time: '',
-                        end_time: '',
-                        user_name: '{$user_name}',
-                        title: ''
+                        total: 0
                     },
                     Manager:[],
                     role_id:"{:I('get.role_id')}"
@@ -124,9 +117,9 @@
                         }
                         layer.open({
                             type: 2,
-                            title: '修改管理员',
+                            title: '编辑',
                             content: url,
-                            area: ['30%', '90%'],
+                            area: ['100%', '100%'],
                             end: function(){
                                 that.getList()
                             }
@@ -139,11 +132,15 @@
                             type: "get",
                             dataType:"json",
                             data:{
-                                role_id: that.role_id
+                                page: that.listQuery.page,
+                                limit: that.listQuery.limit,
                             },
                             success:function (res) {
                                 if(res.status){
-                                    that.Manager = res.data
+                                    that.Manager = res.data.items
+                                    that.listQuery.total = res.data.total_items
+                                    that.listQuery.page = res.data.page
+                                    that.listQuery.limit = res.data.limit
                                 }
                             }
                         })
@@ -171,10 +168,10 @@
                             dataType:"json",
                             success:function (res) {
                                 if(res.status){
-                                    that.$message.success(res.info)
+                                    that.$message.success(res.msg)
                                     that.getList();
                                 }else{
-                                    that.$message.error(res.info)
+                                    that.$message.error(res.msg)
                                 }
                             }
                         })

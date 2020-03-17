@@ -100,11 +100,14 @@
                             data:  that.form,
                             success(res){
                                 if(res.status){
-                                    layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
-                                        window.location.reload();
-                                    });
+                                    that.$message.success(res.msg);
+                                    if (window !== window.parent) {
+                                        setTimeout(function () {
+                                            window.parent.layer.closeAll();
+                                        }, 1000);
+                                    }
                                 }else{
-                                    that.$message.error(res.info);
+                                    that.$message.error(res.msg);
                                 }
                             }
                         })
