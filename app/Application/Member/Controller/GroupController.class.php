@@ -35,13 +35,23 @@ class GroupController extends AdminBase {
 
 	//获取会员组信息
 	public function getInfoApi(){
+        $page = I('page',1);
+        $limit = I('limit',20);
         $this->member = D('Member');
-        $data = $this->memberGroupModel->order(array("sort" => "ASC", "groupid" => "DESC"))->select();
-        foreach ($data as $k => $v) {
+        //获取总记录数
+        $count = $this->memberGroupModel->count();
+        //总页数
+        $total_page = ceil($count / $limit);
+        //获取到的分页数据
+        $data = $this->memberGroupModel
+            ->page($page)
+            ->limit($limit)
+            ->order(array("sort" => "ASC", "groupid" => "DESC"))->select();
+        foreach ($data['items'] as $k => $v) {
             //统计会员总数
-            $data[$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
+            $data['items'][$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
         }
-        return $this->ajaxReturn(self::createReturn(true,$data));
+        return $this->ajaxReturn(self::createReturnList(true, $data, $page, $limit, $count, $total_page));
     }
 
 	//添加会员组

@@ -103,12 +103,7 @@
                     input_date: ['', ''],
                     listQuery: {
                         page: 1,
-                        tab: '',
                         limit: 20,
-                        start_time: '',
-                        end_time: '',
-                        user_name: '{$user_name}',
-                        title: ''
                     },
                     Manager:[],
                     role_id:"{:I('get.role_id')}"
@@ -139,11 +134,15 @@
                             type: "get",
                             dataType:"json",
                             data:{
-                                role_id: that.role_id
+                                role_id: that.role_id,
+                                page:that.listQuery.page,
+                                limit:that.listQuery.limit,
                             },
                             success:function (res) {
                                 if(res.status){
-                                    that.Manager = res.data
+                                    that.listQuery.page = res.data.page
+                                    that.total = res.data.total_items
+                                    that.Manager = res.data.items
                                 }
                             }
                         })

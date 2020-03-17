@@ -120,7 +120,9 @@
                             type:"get",
                             dataType:"json",
                             success(res){
-                                that.role_list = res.data
+                                if(res.status){
+                                    that.role_list = res.data.items
+                                }
                             }
                         })
                     },

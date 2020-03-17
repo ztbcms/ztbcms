@@ -112,6 +112,20 @@
                 </el-table-column>
             </el-table>
 
+            <div class="pagination-container">
+                <el-pagination
+                        background
+                        layout="prev, pager, next, jumper"
+                        :total="total"
+                        v-show="total > 0"
+                        :current-page.sync="where.page"
+                        :page-size.sync="where.limit"
+                        @current-change="getList"
+                >
+                </el-pagination>
+            </div>
+
+
             <div style="margin-top: 20px;">
                     <el-button type="primary" size="" @click="sortBtn">
                         排序
@@ -140,9 +154,14 @@
             new Vue({
                 el: '#app',
                 data: {
+                    total:0,
                     groupid:[],
                     list: [],
                     sortlist:[],
+                    where: {
+                        page: 1,
+                        limit: 20,
+                    }
                 },
                 watch: {},
                 filters: {},
@@ -153,8 +172,11 @@
                             url:"{:U('getInfoApi')}",
                             dataType:"json",
                             type:"get",
+                            data: that.where,
                             success(res){
-                                that.list = res.data;
+                                that.list = res.data.items;
+                                that.total = res.data.total_items;
+                                that.where.page = res.data.page
                             }
                         })
                     },

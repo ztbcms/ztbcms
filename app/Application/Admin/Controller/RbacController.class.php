@@ -6,6 +6,7 @@
 
 namespace Admin\Controller;
 
+use Admin\Service\RbacService;
 use Admin\Service\User;
 use Common\Controller\AdminBase;
 
@@ -56,23 +57,17 @@ class RbacController extends AdminBase {
     }
     // 获取角色列表 api
     public function getrolemanage(){
-        $roleList = D("Admin/Role")->select();
         $userInfo=User::getInstance()->getInfo();
-        $str = "<tr>
-          <td>\$id</td>
-          <td>\$spacer\$name</td>
-          <td>\$remark</td>
-          <td align='center'>\$status</td>
-          <td align='center'>\$operating</td>
-        </tr>";
+        $page = I('page',1);
+        $limit = I('limit',20);
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
         $myid=User::getInstance()->isAdministrator() ? 0 : $userInfo['role_id'];
         if($myid){
-            $data = D("Admin/Role")->where('parentid='.$myid)->select();
+            $data = RbacService::getRoleList(['parentid'=>$myid],$page,$limit);
         }else{
-            $data = D("Admin/Role")->select();
+            $data = RbacService::getRoleList('',$page,$limit);
         }
-        $this->ajaxReturn(self::createReturn(true, $data, '获取成功'));
+        $this->ajaxReturn($data);
     }
 
     // 获取所有角色列表 api

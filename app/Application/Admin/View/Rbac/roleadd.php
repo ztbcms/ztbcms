@@ -76,7 +76,7 @@
                                     layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
                                         //关闭弹窗
                                         layer.close(index);
-                                        parent.layer.closeAll()
+                                        window.location.reload();
                                     });
                                 }else{
                                     that.$message.error(res.info);
@@ -106,12 +106,12 @@
                     getroleList:function () {
                         var that = this
                         $.ajax({
-                            url:"<?php echo U('Admin/Rbac/getrolemanage');?>",
+                            url:"{:U('Admin/Rbac/getrolemanage')}",
                             type:"get",
                             dataType:"json",
                             success(res){
                                 if(res.status){
-                                    that.roleList = res.data
+                                    that.roleList = res.data.items
                                 }
                             }
                         })

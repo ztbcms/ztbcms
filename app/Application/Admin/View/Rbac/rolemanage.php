@@ -93,15 +93,9 @@
                     tableKey: 0,
                     list: [],
                     total: 0,
-                    input_date: ['', ''],
                     listQuery: {
                         page: 1,
-                        tab: '',
                         limit: 20,
-                        start_time: '',
-                        end_time: '',
-                        user_name: '{$user_name}',
-                        title: ''
                     },
                     Manager:[]
                 },
@@ -111,7 +105,6 @@
                     search: function () {
                         this.getList();
                     },
-                    //编辑功能未完善
                     openDetail: function (id) {
                         var that = this
                         var url = "{:U('Admin/Rbac/roleedit')}";
@@ -163,11 +156,11 @@
                         url = url + '&role_id=' + id
                         Ztbcms.openNewIframeByUrl('成员管理', url)
                     },
+                    //权限组
                     openAuth:function(id){
                         var that = this
                         var url = "{:U('Admin/Rbac/authorize')}";
                         url += '&id=' + id;
-                        //直接打开新页面
                         layer.open({
                             type: 2,
                             title: '权限配置',
@@ -184,12 +177,14 @@
                             url:"{:U('getrolemanage')}",
                             type: "get",
                             dataType:"json",
+                            data: that.listQuery,
                             success:function (res) {
                                 console.log(res.data)
                                 if(res.status){
-                                    that.Manager = res.data
+                                    that.Manager = res.data.items;
+                                    that.total = res.data.total_items;
+                                    that.listQuery.page = res.data.page;
                                 }
-                                console.log(that.Manager)
                             }
 
                         })

@@ -189,7 +189,6 @@
                     v-show="total>0"
                     :current-page.sync="listQuery.page"
                     :page-size.sync="listQuery.limit"
-                    :page-size="Page_size"
                     @current-change="getList"
                 >
                 </el-pagination>
@@ -289,8 +288,6 @@
                     tableKey: 0,
                     list: [],
                     total: 0,
-                    Page_size:0,
-                    groupsModel:[],
                     tab: [
                         {
                             id: "1",
@@ -354,6 +351,7 @@
                     },
                     checkList:[],
                     groupsModel1:[],
+                    groupsModel:{$groupsModel},
                     groupCache1:{$groupCache1}
                 },
                 watch: {},
@@ -505,11 +503,10 @@
                             type:"get",
                             data: that.listQuery ,
                             success(res){
-                                that.list = res.data.data;
-                                that.groupsModel = res.data.groupsModel;
-                                that.total = res.data.Page.Total_Size;
-                                that.Page_size = res.data.Page.Page_size;
-                                that.listQuery.page = res.data.Page.Current_page;
+                                that.list = res.data.items;
+                                // that.groupsModel = res.data.groupsModel;
+                                that.total = res.data.total_items;
+                                that.listQuery.page = res.data.page;
                             }
                         })
                         this.getGroupsModel()
@@ -542,9 +539,8 @@
                             dataType:"json",
                             type:"get",
                             success(res){
-                                that.groupsModel1 = res.data
-                                if(that.groupsModel1){
-                                    that.form.modelid = ''
+                                if(res.status){
+                                    that.groupsModel1 = res.data
                                 }
                             }
                         })

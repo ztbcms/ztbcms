@@ -39,7 +39,6 @@ class ManagementController extends AdminBase {
         $User = D('Admin/User')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
         $this->assign("Userlist", $User);
         $this->assign("Page", $page->show());
-
         $this->display();
 
     }
@@ -50,6 +49,9 @@ class ManagementController extends AdminBase {
     public function getManager(){
         $where = array();
         $role_id = I('get.role_id', 0, 'intval');
+        $page = I('page',1);
+        $limit = I('limit',20);
+
         if ($role_id) {
             $where['role_id'] = $role_id;
             $menuReturn = array(
@@ -70,14 +72,14 @@ class ManagementController extends AdminBase {
             }
         }
         $count = D('Admin/User')->where($where)->count();
-        $page = $this->page($count, 20, I('page', 1));
-        $User = D('Admin/User')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
+        $total_page = ceil($count / $limit);
+        $User = D('Admin/User')->where($where)->page($page)->limit($limit)->order(array('id' => 'DESC'))->select();
         foreach ($User as $k => $User_value){
             if($User_value['last_login_time'])
                 $User[$k]['last_login_time']= date("Y-m-d H:i:s",$User_value['last_login_time']);
             $User[$k]['role_name'] = D('Admin/Role')->where('id='. $User[$k]['role_id'])->find()['name'];
         }
-        return $this->ajaxReturn(self::createReturn(true,$User));
+        return $this->ajaxReturn(self::createReturnList(true, $User, $page, $limit, $count, $total_page));
     }
 
 
@@ -130,10 +132,7 @@ class ManagementController extends AdminBase {
         }
     }
 
-    /**
-     *  管理员编辑页面
-     *  2020.3.6
-     */
+    //编辑管理员页面
     public function adminedit(){
         $this->display();
     }

@@ -31,56 +31,6 @@ class MemberController extends AdminBase {
     public function index() {
         $search = I("get.search", null);
         $where = [];
-        if ($search) {
-            //注册时间段
-            $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
-            $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d', time());
-            //开始时间
-            $where_start_time = strtotime($start_time) ? strtotime($start_time) : 0;
-            //结束时间
-            $where_end_time = strtotime($end_time) ? (strtotime($end_time) + 86400) : 0;
-            //开始时间大于结束时间，置换变量
-            if ($where_start_time > $where_end_time) {
-                $tmp = $where_start_time;
-                $where_start_time = $where_end_time;
-                $where_end_time = $tmp;
-                $tmptime = $start_time;
-                $start_time = $end_time;
-                $end_time = $tmptime;
-                unset($tmp, $tmptime);
-            }
-            //时间范围
-            if ($where_start_time) {
-                $where['regdate'] = array('between', array($where_start_time, $where_end_time));
-            }
-            $filter = I('get._filter');
-            $operator = I('get._operator');
-            $value = I('get._value');
-
-            if (is_array($filter)) {
-                foreach ($filter as $index => $k) {
-                    if ($value[$index] != '') {
-                        $filter[$index] = trim($filter[$index]);
-                        $operator[$index] = trim($operator[$index]);
-                        $value[$index] = trim($value[$index]);
-
-                        if (strtolower($operator[$index]) == 'like') {
-                            $where[$filter[$index]] = array($operator[$index], '%' . $value[$index] . '%');
-                        } else {
-                            $where[$filter[$index]] = array($operator[$index], $value[$index]);
-                        }
-                    }
-                }
-                $this->assign('_filter', $filter);
-                $this->assign('_operator', $operator);
-                $this->assign('_value', $value);
-            }
-        }
-        $page = I('get.page', 1);
-
-        $count = $this->member->where($where)->count();
-        $page = $this->page($count, 20, $page);
-        $data = $this->member->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("userid" => "DESC"))->select();
 
         foreach ($this->groupCache as $key => $g) {
             if (in_array($g['groupid'], array(8, 1, 7))) {
@@ -93,51 +43,23 @@ class MemberController extends AdminBase {
         foreach ($groupCache as $groupCache_v){
             $groupCache1[] =  $groupCache_v;
         }
+        //会员模型
+        foreach ($this->groupsModel as $m) {
+            $groupsModel[$m['modelid']] = $m['name'];
+        }
+        $groupsModel = json_encode($groupsModel);
         $groupCache = json_encode($groupCache1);
+        $this->assign('groupsModel', $groupsModel);
         $this->assign('groupCache1', $groupCache);
-        $this->assign("Page", $page->show('Admin'));
-        $this->assign("data", $data);
         $this->display();
     }
 
     //获取会员模型
     public function getGroupsModel(){
-        foreach ($this->groupsModel as $m) {
-            $groupsModel['id'] = $m['modelid'];
-            $groupsModel['label'] = $m['name'];
-        }
-        if(!$groupsModel) {
-            $groupsModel='';
-        }else {
-            $groupsModel = json_encode($groupsModel);
-        }
-        return $this->ajaxReturn(self::createReturn(true,$groupsModel));
+        $res = D('model')->field('modelid as id ,name as label')->select();
+        return $this->ajaxReturn(self::createReturn(true,$res));
     }
-    public function indexNew(){
-        //会员组
-        foreach ($this->groupCache as $key => $g) {
-            if (in_array($g['groupid'], array(8, 1, 7))) {
-                continue;
-            }
-            $groupCache[$key]['id'] = $g['groupid'];
-            $groupCache[$key]['label'] = $g['name'];
-        }
-        $groupCache1 = [];
-        foreach ($groupCache as $groupCache_v){
-            $groupCache1[] =  $groupCache_v;
-        }
 
-        //会员模型
-        foreach ($this->groupsModel as $m) {
-            $groupsModel['id'] = $m['modelid'];
-            $groupsModel['label'] = $m['name'];
-        }
-        $groupsModel = json_encode($groupsModel);
-        $groupCache = json_encode($groupCache1);
-        $this->assign('groupCache1', $groupCache);
-        $this->assign('groupsModel1', $groupsModel);
-        $this->display();
-    }
     //获取会员列表
     public function getMemberUser() {
         $search = I("get.search", null);
@@ -183,11 +105,14 @@ class MemberController extends AdminBase {
         }
 
         $page = I('get.page', 1);
+        $limit = I('get.limit', 20);
         $count = $this->member->where($where)->count();
-        $page = $this->page($count, 20, $page);
         $data = $this->member->where($where)
-            ->limit($page->firstRow . ',' . $page->listRows)
+            ->page($page)
+            ->limit($limit)
             ->order(array("userid" => "DESC"))->select();
+        //总页数
+        $total_page = ceil($count / $limit);
 
         foreach ($this->groupCache as $g) {
             $groupCache[$g['groupid']] = $g['name'];
@@ -195,15 +120,7 @@ class MemberController extends AdminBase {
         foreach ($this->groupsModel as $m) {
             $groupsModel[$m['modelid']] = $m['name'];
         }
-        $result['groupCache'] = $groupCache;
-        $result['groupsModel'] = $groupsModel;
-        $result['Page'] = $page;
-        $result['data'] = $data;
-        $result['total'] = $count;
-        $this->assign('groupCache', $groupCache);
-        $this->assign('groupsModel', $groupsModel);
-        $this->assign("data", $data);
-        return $this->ajaxReturn(self::createReturn(true, $result));
+        return $this->ajaxReturn(self::createReturnList(true, $data,$page,$limit,$count, $total_page));
     }
 
     //添加会员
@@ -410,6 +327,7 @@ class MemberController extends AdminBase {
         $userid = I('get.userid', 0, 'intval');
         //主表
         $data = $this->member->where(array("userid" => $userid))->find();
+
         if (empty($data)) {
             $this->error("该会员不存在！");
         }
@@ -420,6 +338,7 @@ class MemberController extends AdminBase {
         $modelid = $data['modelid'];
         //相应会员模型数据
         $modeldata = \Content\Model\ContentModel::getInstance($modelid)->where(array("userid" => $userid))->find();
+
         $content_output = new \content_output($modelid);
         $output_data = $content_output->get($modeldata);
         $modelField = cache('ModelField');

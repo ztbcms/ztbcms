@@ -245,4 +245,23 @@ class RbacService extends BaseService {
         return $ret;
     }
 
+    /**
+     * 获取所有角色列表
+     * @param array $where 条件数组
+     * @param int $page 指定的分页页码
+     * @param int $limit 指定显示的记录条数
+     * @return array
+     */
+    public function getRoleList($where=[],$page = 1, $limit = 1)
+    {
+        $db = D('Admin/Role');
+        //获取总记录数
+        $count = $db->where($where)->count();
+        //总页数
+        $total_page = ceil($count / $limit);
+        //获取到的数据
+        $data = $db->where($where)->page($page)->limit($limit)->order('id desc')->select();
+
+        return self::createReturnList(true, $data, $page, $limit, $count, $total_page);
+    }
 }
