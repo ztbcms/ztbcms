@@ -39,7 +39,63 @@ class ManagementController extends AdminBase {
         $User = D('Admin/User')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
         $this->assign("Userlist", $User);
         $this->assign("Page", $page->show());
+
         $this->display();
+
+    }
+    /**
+     *  获取管理员列表 API
+     *  @method get
+     */
+    public function getManager(){
+        $where = array();
+        $role_id = I('get.role_id', 0, 'intval');
+        if ($role_id) {
+            $where['role_id'] = $role_id;
+            $menuReturn = array(
+                'url' => U('Rbac/rolemanage'),
+                'name' => '返回角色管理',
+            );
+            $this->assign('menuReturn', $menuReturn);
+        } else {
+            if (!User::getInstance()->isAdministrator()) {
+                //如果非超级管理员，只能管理下级角色的成员
+                $res = D('Admin/Role')->field('id')->where(['parentid' => User::getInstance()->role_id])->select();
+                $role_ids = [];
+                foreach ($res as $val) {
+                    $role_ids[] = $val['id'];
+                }
+                //如果没有找到下级role_ids 则默认为0
+                $where['role_id'] = ['in', $role_ids ? $role_ids : '0'];
+            }
+        }
+        $count = D('Admin/User')->where($where)->count();
+        $page = $this->page($count, 20, I('page', 1));
+        $User = D('Admin/User')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
+        foreach ($User as $k => $User_value){
+            if($User_value['last_login_time'])
+                $User[$k]['last_login_time']= date("Y-m-d H:i:s",$User_value['last_login_time']);
+            $User[$k]['role_name'] = D('Admin/Role')->where('id='. $User[$k]['role_id'])->find()['name'];
+        }
+        return $this->ajaxReturn(self::createReturn(true,$User));
+    }
+
+
+    /**
+     *  获取管理员信息通过id
+     *  @param $id
+     *  @return Array
+     */
+    public function getManagerByid(){
+        $where = [];
+        if(IS_POST){
+            $id = I('id');
+            $where['id'] = $id;
+            $res = D('Admin/User')->where($where)->find();
+            $res['password'] = '';
+            if($res) return $this->ajaxReturn(createReturn(true,$res));
+        }
+        return $this->ajaxReturn(createReturn(false));
     }
 
     //编辑信息
@@ -72,6 +128,14 @@ class ManagementController extends AdminBase {
             $this->assign("data", $data);
             $this->display();
         }
+    }
+
+    /**
+     *  管理员编辑页面
+     *  2020.3.6
+     */
+    public function adminedit(){
+        $this->display();
     }
 
     //添加管理员

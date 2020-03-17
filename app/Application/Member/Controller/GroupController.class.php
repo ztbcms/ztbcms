@@ -33,6 +33,17 @@ class GroupController extends AdminBase {
 		$this->display();
 	}
 
+	//获取会员组信息
+	public function getInfoApi(){
+        $this->member = D('Member');
+        $data = $this->memberGroupModel->order(array("sort" => "ASC", "groupid" => "DESC"))->select();
+        foreach ($data as $k => $v) {
+            //统计会员总数
+            $data[$k]['_count'] = $this->member->where(array("groupid" => $v['groupid']))->count('userid');
+        }
+        return $this->ajaxReturn(self::createReturn(true,$data));
+    }
+
 	//添加会员组
 	public function add() {
 		if (IS_POST) {
@@ -51,6 +62,22 @@ class GroupController extends AdminBase {
 			$this->display();
 		}
 	}
+    //添加会员组Api
+    public function addApi() {
+        if (IS_POST) {
+            $post = $_POST;
+            $data = $this->memberGroupModel->create($post);
+            if ($data) {
+                if ($this->memberGroupModel->groupAdd($data)) {
+                    $this->success("添加成功！", U("Group/index"));
+                } else {
+                    $this->error("添加失败！");
+                }
+            } else {
+                $this->error($this->memberGroupModel->getError());
+            }
+        }
+    }
 
 	//编辑会员组
 	public function edit() {
@@ -78,6 +105,17 @@ class GroupController extends AdminBase {
 		}
 	}
 
+	//获取用户组信息
+	public function getGroupinfo(){
+        $groupid = I("get.groupid", 0, 'intval');
+        $data = $this->memberGroupModel->where(array("groupid" => $groupid))->find();
+        if (empty($data)) {
+            $this->error("该会员组不存在！", U("Group/index"));
+        }
+        $data['expand'] = unserialize($data['expand']);
+        return $this->ajaxReturn(self::createReturn(true,$data));
+    }
+
 	//删除会员组
 	public function delete() {
 		if (IS_POST) {
@@ -95,7 +133,7 @@ class GroupController extends AdminBase {
 		}
 	}
 
-	//排序
+	//会员组排序
 	public function sort() {
 		if (IS_POST) {
 			$sort = I('post.sort');
@@ -109,5 +147,23 @@ class GroupController extends AdminBase {
 			$this->error("请求方式错误！");
 		}
 	}
+
+	//会员组排序Api
+    public function sortApi(){
+        if (IS_POST) {
+            $sortlist = I('post.sortlist');
+            $grouplist = I('post.grouplist');
+            if (is_array($sortlist)) {
+                foreach ($sortlist as $gid => $pxid) {
+                    if( in_array($pxid['groupid'],$grouplist) ){
+                        $this->memberGroupModel->where(array("groupid" => $pxid['groupid']))->save(array("sort" => $pxid['value']));
+                    }
+                }
+            }
+            $this->success("排序更新成功！", U("Group/index"));
+        } else {
+            $this->error("请求方式错误！");
+        }
+    }
 
 }

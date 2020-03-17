@@ -11,9 +11,8 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>添加管理员</h3>
-            <el-row>
-                <el-col :span="8">
+            <el-row v-loading="loading">
+                <el-col :span="24">
                     <div class="grid-content ">
                         <el-form ref="form" :model="form" label-width="80px">
                             <el-form-item label="用户名">
@@ -86,7 +85,8 @@
                         role_id: '',
                         status: '1',
                     },
-                    role_list:[]
+                    role_list:[],
+                    loading:false
                 },
                 watch: {},
                 filters: {},
@@ -94,18 +94,22 @@
                     onSubmit: function(){
                         var that = this
                         $.ajax({
-                            url:"{:U('adminadd')}",
+                            url:"{:U('edit')}",
                             dataType:"json",
                             type:"post",
                             data:  that.form,
                             success(res){
                                 if(res.status){
                                     layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
-                                        window.location.reload();
+                                        //关闭弹窗
+                                        layer.close(index);
+                                        parent.layer.closeAll()
                                     });
+
                                 }else{
                                     that.$message.error(res.info);
                                 }
+                                console.log(res)
                             }
                         })
                     },
@@ -116,11 +120,14 @@
                     getroleList:function () {
                         var that = this
                         $.ajax({
-                            url:"{:U('Admin/Rbac/getrolemanage')}",
+                            url:"{:U('Admin/Rbac/getroleList')}",
                             type:"get",
                             dataType:"json",
                             success(res){
-                                that.role_list = res.data
+                                if(res.status){
+                                    that.role_list = res.data
+                                }
+
                             }
                         })
                     },
@@ -136,14 +143,19 @@
                                 id:id
                             },
                             success(res){
-                                that.form = res.data
+                                if(res.status){
+                                    that.form = res.data
+                                    that.loading = false
+                                }
                             }
                         })
                     }
                 },
                 mounted: function () {
                     this.getroleList()
+                    console.log(this.form)
                     if(this.form.id){
+                        this.loading = true
                         this.getManagerByid(this.form.id)
                     }
                 },

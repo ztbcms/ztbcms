@@ -5,7 +5,7 @@
         <el-card v-if="listQuery.tab == 1">
             <div class="filter-container">
                 <template>
-                    <el-tabs v-model="listQuery.tab" >
+                    <el-tabs v-model="listQuery.tab" @tab-click="clickTab">
                         <el-tab-pane v-for="(item,index) in tab" :key="index" :label="item.name"
                                      :name="item.id" ></el-tab-pane>
                     </el-tabs>
@@ -123,7 +123,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="模型昵称" align="center">
-                    <template slot-scope="scope" v-if="groupsModel != null">
+                    <template slot-scope="scope">
                         <span>{{ groupsModel[scope.row.modelid] }}</span>
                     </template>
                 </el-table-column>
@@ -154,7 +154,7 @@
                             查看详情
                         </el-button>
                         <el-button  size="mini" type="primary"
-                                   @click="editOpen(scope.row.userid)">
+                                   @click="jumpOpen(scope.row.userid)">
                             修改
                         </el-button>
                     </template>
@@ -200,7 +200,7 @@
         <el-card v-if="listQuery.tab == 2">
             <div class="filter-container">
                 <template>
-                    <el-tabs v-model="listQuery.tab" >
+                    <el-tabs v-model="listQuery.tab" @tab-click="clickTab">
                         <el-tab-pane v-for="(item,index) in tab" :key="index" :label="item.name"
                                      :name="item.id" ></el-tab-pane>
                     </el-tabs>
@@ -248,8 +248,8 @@
                             <el-input v-model="form.point" style="width:70px"></el-input>
                             &nbsp;请输入积分点数，积分点数将影响会员用户组
                         </el-form-item>
-                        <template v-if="groupsModel1 != '' ">
                         <el-form-item label="会员模型">
+                            <template v-if="groupsModel1 != '' ">
                                 <el-select v-model="form.modelid" clearable placeholder="请选择">
                                     <el-option
                                             v-for="item in groupsModel1"
@@ -258,8 +258,8 @@
                                             :value="item.id">
                                     </el-option>
                                 </el-select>
+                            </template>
                         </el-form-item>
-                        </template>
                         <el-form-item>
                             <el-button type="primary" @click="onSubmit">保存</el-button>
                         </el-form-item>
@@ -350,10 +350,13 @@
                         email: '',
                         nickname: '',
                         groupid: '',
+                        modelid: '',
                         point: '0',
                     },
                     checkList:[],
-                    groupsModel1:[],
+                    groupsModel1:[
+                        {$groupsModel1}
+                    ],
                     groupCache1:{$groupCache1}
                 },
                 watch: {},
@@ -363,11 +366,11 @@
                         this.getList();
                     },
                     //修改页面
-                    editOpen:function(id){
+                    jumpOpen:function(id){
                         var url = "{:U('edit')}";
                         if (id !== 0) {
                             url += '&userid=' + id
-                            Ztbcms.openNewIframeByUrl('修改会员信息', url)
+                            window.open(url)
                         }
                     },
                     //个人详情
@@ -380,7 +383,7 @@
                             type: 2,
                             title: '会员详情',
                             content: url,
-                            area: ['4   0%', '80%'],
+                            area: ['50%', '80%'],
                         })
                     },
                     //选中的列表人
@@ -500,7 +503,7 @@
                     getList: function () {
                         var that = this;
                         $.ajax({
-                            url:"{:U('getMemberUser')}",
+                            url:"{:U('indexApi')}",
                             dataType:"json",
                             type:"get",
                             data: that.listQuery ,
@@ -510,9 +513,9 @@
                                 that.total = res.data.Page.Total_Size;
                                 that.Page_size = res.data.Page.Page_size;
                                 that.listQuery.page = res.data.Page.Current_page;
+                                // console.log(res.data.data)
                             }
                         })
-                        this.getGroupsModel()
                     },
                     //添加会员
                     onSubmit: function(){
@@ -525,8 +528,11 @@
                             success(res){
                                 if(res.status){
                                     layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
-                                        window.location.reload()
+                                        //关闭弹窗
+                                        layer.close(index);
+                                        parent.layer.closeAll()
                                     });
+                                    that.listQuery.tab = '1'
                                 }else{
                                     that.$message.error(res.info);
                                 }
@@ -534,24 +540,33 @@
                         })
                     },
 
-                    //获取会员模型
-                    getGroupsModel:function(tab, event) {
+                    clickTab:function(tab, event) {
+                        // console.log(tab, event);
+                        // if(tab.index == 1){
+                        //     url = "{:U('add')}"
+                        //     window.open(url)
+                        // }
+                    },
+                    handleClick: function () {
+                        this.getList();
+                    },
+                    handleDelete: function (index) {
                         var that = this;
-                        $.ajax({
-                            url:"{:U('getGroupsModel')}",
-                            dataType:"json",
-                            type:"get",
-                            success(res){
-                                that.groupsModel1 = res.data
-                                if(that.groupsModel1){
-                                    that.form.modelid = ''
-                                }
-                            }
-                        })
+                        layer.confirm('是否确定删除该内容吗？', {
+                            btn: ['确认', '取消'] //按钮
+                        }, function () {
+                            that.list.splice(index, 1);
+                            layer.closeAll();
+                        }, function () {
+                            layer.closeAll();
+                        });
                     },
                 },
                 mounted: function () {
+                    console.log(this.listQuery.checked)
                     this.getList();
+                    // console.log(this.groupsModel1)
+                    // console.log(this.groupCache1)
                 },
             })
         })
