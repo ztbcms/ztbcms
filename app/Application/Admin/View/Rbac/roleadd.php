@@ -3,7 +3,7 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>添加角色</h3>
+            <h3>编辑角色</h3>
             <el-row>
                 <el-col :span="8">
                     <div class="grid-content ">
@@ -73,13 +73,14 @@
                             data:  that.form,
                             success(res){
                                 if(res.status){
-                                    layer.alert(res.info, { icon: 1, closeBtn: 0 }, function (index) {
-                                        //关闭弹窗
-                                        layer.close(index);
-                                        parent.layer.closeAll()
-                                    });
+                                    that.$message.success(res.msg);
+                                    if (window !== window.parent) {
+                                        setTimeout(function () {
+                                            window.parent.layer.closeAll();
+                                        }, 1000);
+                                    }
                                 }else{
-                                    that.$message.error(res.info);
+                                    that.$message.error(res.msg);
                                 }
                             }
                         })
@@ -106,7 +107,7 @@
                     getroleList:function () {
                         var that = this
                         $.ajax({
-                            url:"<?php echo U('Admin/Rbac/getrolemanage');?>",
+                            url:"/Admin/Rbac/getrolemanage",
                             type:"get",
                             dataType:"json",
                             success(res){

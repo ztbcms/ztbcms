@@ -145,29 +145,51 @@
                     },
                     //权限组管理
                     getRoleAccessGroup: function (id) {
-                        url = "{:U('Admin/AccessGroup/accessGroupRoleSetting')}";
+                        var url = "{:U('Admin/AccessGroup/accessGroupRoleSetting')}";
                         url = url + '&roleid=' + id
-                        console.log(url)
 
-                        Ztbcms.openNewIframeByUrl('权限组管理', url)
+                        layer.open({
+                            type: 2,
+                            title: '权限组管理',
+                            content: url,
+                            area: ['100%', '100%'],
+                            end:function () {
+                            }
+                        })
                     },
                     //栏目管理
                     gotoAdminPage: function (id) {
-                        url = "{:U('Admin/Rbac/setting_cat_priv')}";
+                        var url = "{:U('Admin/Rbac/setting_cat_priv')}";
                         url = url + '&roleid=' + id
-                        Ztbcms.openNewIframeByUrl('栏目管理', url)
+
+                        layer.open({
+                            type: 2,
+                            title: '栏目管理',
+                            content: url,
+                            area: ['100%', '100%'],
+                            end:function () {
+                            }
+                        })
                     },
                     //成员管理
                     gotomanagerPage: function (id) {
-                        url = "{:U('Admin/Management/manager')}";
+                        var url = "{:U('Admin/Management/manager')}";
                         url = url + '&role_id=' + id
-                        Ztbcms.openNewIframeByUrl('成员管理', url)
+
+                        layer.open({
+                            type: 2,
+                            title: '成员管理',
+                            content: url,
+                            area: ['100%', '100%'],
+                            end:function () {
+                            }
+                        })
                     },
                     openAuth:function(id){
                         var that = this
                         var url = "{:U('Admin/Rbac/authorize')}";
                         url += '&id=' + id;
-                        //直接打开新页面
+
                         layer.open({
                             type: 2,
                             title: '权限配置',
@@ -217,8 +239,10 @@
                             dataType:"json",
                             success:function (res) {
                                 if(res.status){
-                                    console.log(res)
+                                    that.$message.success(res.msg);
                                     that.getList();
+                                } else {
+                                    that.$message.error(res.msg);
                                 }
                             }
 
