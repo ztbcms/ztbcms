@@ -1,39 +1,131 @@
- 
-<Admintemplate file="Common/Head"/>
-<body class="J_scroll_fixed">
-<div class="wrap J_check_wrap">
-  <Admintemplate file="Common/Nav"/>
-  <div class="h_a">角色信息</div>
-  <form class="J_ajaxForm" action="{:U("Rbac/roleadd")}" method="post" id="myform">
-  <div class="table_full">
-      <table width="100%">
-        <tr>
-          <th width="100">父角色</th>
-            <td><?php echo D('Admin/Role')->selectHtmlOption($userInfo['role_id'],'name="parentid"') ?></td>
-        </tr>
-        <tr>
-          <th width="100">角色名称</th>
-          <td><input type="text" name="name" value="{$data.name}" class="input" id="rolename"></input></td>
-        </tr>
-        <tr>
-          <th>角色描述</th>
-          <td><textarea name="remark" rows="2" cols="20" id="remark" class="inputtext" style="height:100px;width:500px;">{$data.remark}</textarea></td>
-        </tr>
-        <tr>
-          <th>是否启用</th>
-          <td><input type="radio" name="status" value="1"  <if condition="$data['status'] eq 1">checked</if>>启用<label>  &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="status" value="0" <if condition="$data['status'] eq 0">checked</if>>禁止</label></td>
-        </tr>
-      </table>
-      <input type="hidden" name="id" value="{$data.id}" />
-    
-  </div>
-  <div class="">
-      <div class="btn_wrap_pd">             
-        <button class="btn btn_submit mr10 J_ajax_submit_btn" type="submit">提交</button>
-      </div>
+<extend name="../../Admin/View/Common/element_layout"/>
+
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <h3>编辑角色</h3>
+            <el-row>
+                <el-col :span="8">
+                    <div class="grid-content ">
+                        <el-form ref="form" :model="form" label-width="80px">
+                            <el-form-item label="父角色">
+                            <el-select v-model="form.parentid" placeholder="请选择">
+                                <el-option
+                                        v-for="item in roleList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                            </el-form-item>
+                            <el-form-item label="角色名称">
+                                <el-input v-model="form.name"></el-input>
+                            </el-form-item>
+                            <el-form-item label="角色描述">
+                                <el-input type="textarea" v-model="form.remark" rows="3"></el-input>
+                            </el-form-item>
+                            <el-form-item label="是否启用">
+                                <el-radio-group v-model="form.status">
+                                    <el-radio label="1">开启</el-radio>
+                                    <el-radio label="0">关闭</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-col>
+                <el-col :span="16"><div class="grid-content "></div></el-col>
+            </el-row>
+
+
+        </el-card>
     </div>
-    </form>
-</div>
-<script src="{$config_siteurl}statics/js/common.js?v"></script>
-</body>
-</html>
+
+    <style>
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    form: {
+                        id:"{:I('get.id')}",
+                        name: '',
+                        remark: '',
+                        status: '1'
+                    },
+                    roleList:[]
+                },
+                watch: {},
+                filters: {},
+                methods: {
+                    onSubmit: function(){
+                        var that = this
+                        $.ajax({
+                            url:"{:U('roleadd')}",
+                            dataType:"json",
+                            type:"post",
+                            data:  that.form,
+                            success(res){
+                                if(res.status){
+                                    that.$message.success(res.msg);
+                                    if (window !== window.parent) {
+                                        setTimeout(function () {
+                                            window.parent.layer.closeAll();
+                                        }, 1000);
+                                    }
+                                }else{
+                                    that.$message.error(res.msg);
+                                }
+                            }
+                        })
+
+                    },
+                    onCancel: function(){
+                        this.$message.error('已取消');
+                    },
+                    getRoleInfo(id){
+                        var that = this
+                        $.ajax({
+                            url:"{:U('getRoleInfo')}",
+                            dataType:"json",
+                            type:"get",
+                            data: {id:id},
+                            success(res){
+                                if(res.status){
+                                    that.form = res.data;
+                                }
+                            }
+                        })
+                    },
+                    //获取所有角色
+                    getroleList:function () {
+                        var that = this
+                        $.ajax({
+                            url:"/Admin/Rbac/getrolemanage",
+                            type:"get",
+                            dataType:"json",
+                            success(res){
+                                if(res.status){
+                                    that.roleList = res.data
+                                }
+                            }
+                        })
+                    },
+                },
+                mounted: function () {
+                    this.getroleList()
+                    if(this.form.id){
+                        this.getRoleInfo(this.form.id);
+                    }
+                },
+
+            })
+        })
+    </script>
+</block>
