@@ -54,7 +54,7 @@
                 el: '#app',
                 data: {
                     form: {
-                        id:"{:I('get.id')}",
+                        parentid:'',
                         name: '',
                         remark: '',
                         status: '1'
@@ -89,20 +89,6 @@
                     onCancel: function(){
                         this.$message.error('已取消');
                     },
-                    getRoleInfo(id){
-                        var that = this
-                        $.ajax({
-                            url:"{:U('getRoleInfo')}",
-                            dataType:"json",
-                            type:"get",
-                            data: {id:id},
-                            success(res){
-                                if(res.status){
-                                    that.form = res.data;
-                                }
-                            }
-                        })
-                    },
                     //获取所有角色
                     getroleList:function () {
                         var that = this
@@ -120,9 +106,6 @@
                 },
                 mounted: function () {
                     this.getroleList()
-                    if(this.form.id){
-                        this.getRoleInfo(this.form.id);
-                    }
                 },
 
             })

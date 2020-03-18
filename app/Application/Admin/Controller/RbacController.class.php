@@ -6,6 +6,7 @@
 
 namespace Admin\Controller;
 
+use Admin\Service\RbacService;
 use Admin\Service\User;
 use Common\Controller\AdminBase;
 
@@ -56,15 +57,7 @@ class RbacController extends AdminBase {
     }
     // 获取角色列表 api
     public function getrolemanage(){
-        $roleList = D("Admin/Role")->select();
         $userInfo=User::getInstance()->getInfo();
-        $str = "<tr>
-          <td>\$id</td>
-          <td>\$spacer\$name</td>
-          <td>\$remark</td>
-          <td align='center'>\$status</td>
-          <td align='center'>\$operating</td>
-        </tr>";
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
         $myid=User::getInstance()->isAdministrator() ? 0 : $userInfo['role_id'];
         if($myid){
@@ -77,8 +70,27 @@ class RbacController extends AdminBase {
 
     // 获取所有角色列表 api
     public function getroleList(){
-        $roleList = D("Admin/Role")->select();
-        $this->ajaxReturn(self::createReturn(true, $roleList, '获取成功'));
+        $_page = I('page',1);
+        $_limit = I('limit',20);
+        $where = [];
+        $userInfo=User::getInstance()->getInfo();
+        //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
+        $myid=User::getInstance()->isAdministrator() ? 0 : $userInfo['role_id'];
+        if($myid){
+            $where['parentid'] = ['eq',$myid];
+        }
+        $db = D('Admin/Role');
+        //获取总记录数
+        $count = $db->where($where)->count();
+        //总页数
+        $total_page = ceil($count / $_limit);
+        $page = $this->page($count, $_limit, $_page);
+        //获取到的数据
+        $data = $db->where($where)
+            ->limit($page->firstRow . ',' . $page->listRows)
+            ->order('id desc')->select();
+
+        return $this->ajaxReturn(self::createReturnList(true, $data, $_page, $_limit, $count, $total_page));
     }
 
     //添加角色

@@ -56,8 +56,8 @@
                 <el-pagination
                     background
                     layout="prev, pager, next, jumper"
-                    :total="total"
-                    v-show="total>0"
+                    :total="listQuery.total"
+                    v-show="listQuery.total>0"
                     :current-page.sync="listQuery.page"
                     :page-size.sync="listQuery.limit"
                     @current-change="getList"
@@ -90,18 +90,10 @@
             new Vue({
                 el: '#app',
                 data: {
-                    tableKey: 0,
-                    list: [],
-                    total: 0,
-                    input_date: ['', ''],
                     listQuery: {
+                        total: 0,
                         page: 1,
-                        tab: '',
                         limit: 20,
-                        start_time: '',
-                        end_time: '',
-                        user_name: '{$user_name}',
-                        title: ''
                     },
                     Manager:[]
                 },
@@ -203,15 +195,16 @@
                     getList: function () {
                         var that = this;
                         $.ajax({
-                            url:"{:U('getrolemanage')}",
+                            url:"{:U('getroleList')}",
                             type: "get",
                             dataType:"json",
+                            data:that.listQuery,
                             success:function (res) {
-                                console.log(res.data)
                                 if(res.status){
-                                    that.Manager = res.data
+                                    that.Manager = res.data.items
+                                    that.listQuery.total = res.data.total_items;
+                                    that.listQuery.page = res.data.page;
                                 }
-                                console.log(that.Manager)
                             }
 
                         })

@@ -39,9 +39,7 @@ class ManagementController extends AdminBase {
         $User = D('Admin/User')->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
         $this->assign("Userlist", $User);
         $this->assign("Page", $page->show());
-
         $this->display();
-
     }
     /**
      *  获取管理员列表 API
@@ -87,7 +85,7 @@ class ManagementController extends AdminBase {
 
     /**
      *  获取管理员信息通过id
-     *
+     * @param  id
      * @return void
      */
     public function getManagerByid(){
@@ -141,7 +139,6 @@ class ManagementController extends AdminBase {
 
     /**
      *  管理员编辑页面
-     *  2020.3.6
      */
     public function adminedit(){
         $this->display();
