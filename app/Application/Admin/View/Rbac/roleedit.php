@@ -3,7 +3,7 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>添加角色</h3>
+            <h3>修改角色</h3>
             <el-row>
                 <el-col :span="8">
                     <div class="grid-content ">

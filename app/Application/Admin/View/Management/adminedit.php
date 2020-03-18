@@ -120,12 +120,12 @@
                     getroleList:function () {
                         var that = this
                         $.ajax({
-                            url:"{:U('Admin/Rbac/getroleList')}",
+                            url:"{:U('Admin/Rbac/getrolemanage')}",
                             type:"get",
                             dataType:"json",
                             success(res){
                                 if(res.status){
-                                    that.role_list = res.data
+                                    that.role_list = res.data.items
                                 }
 
                             }
