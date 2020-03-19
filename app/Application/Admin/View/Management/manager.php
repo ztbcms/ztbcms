@@ -134,6 +134,7 @@
                             data:{
                                 page: that.listQuery.page,
                                 limit: that.listQuery.limit,
+                                role_id: that.role_id,
                             },
                             success:function (res) {
                                 if(res.status){
