@@ -129,7 +129,7 @@ class IndexController extends MemberbaseController {
 		}
 		$key = \Libs\Util\Encrypt::authcode($getKey);
 		if (empty($key)) {
-			$this->error('验证失败，请从新提交密码找回申请！', U('Member/Index/lostpassword'));
+			$this->error('验证失败，请重新提交密码找回申请！', U('Member/Index/lostpassword'));
 		}
 		$userinfo = explode('|', $key);
 		$this->assign('userinfo', array(
@@ -149,7 +149,7 @@ class IndexController extends MemberbaseController {
 		}
 		$key = \Libs\Util\Encrypt::authcode($getKey);
 		if (empty($key)) {
-			$this->error('验证失败，请从新提交密码找回申请！', U('Index/login'));
+			$this->error('验证失败，请重新提交密码找回申请！', U('Index/login'));
 		}
 		$userinfo = explode('|', $key);
 		//取得用户资料

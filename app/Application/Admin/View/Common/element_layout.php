@@ -101,13 +101,13 @@
 
 </head>
 <body style="height: 100%;background-color: #F8F8F8">
-
+<!--内容-->
 <block name="content">
 
 </block>
 
 </body>
-
+<!--页脚-->
 <block name="footer"></block>
 
 </html>

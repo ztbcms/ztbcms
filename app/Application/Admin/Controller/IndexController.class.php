@@ -63,7 +63,7 @@ class IndexController extends AdminBase {
                                     $dirList[] = $dirName;
                                     //删除目录
                                     $Dir->delDir($path);
-                                    //防止超时，清理一个从新跳转一次
+                                    //防止超时，清理一个重新跳转一次
                                     $this->assign("waitSecond", 200);
                                     $this->success("清理缓存目录[{$dirName}]成功！", U('Index/cache', array('type' => 'site', 'dir' => implode(',', $dirList))));
                                     exit;

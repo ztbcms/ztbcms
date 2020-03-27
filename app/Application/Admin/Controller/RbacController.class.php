@@ -48,8 +48,37 @@ class RbacController extends AdminBase {
         $myid=User::getInstance()->isAdministrator() ? 0 : $userInfo['role_id'];
         $tree->init($roleList);
         $this->assign("role", $tree->get_tree($myid, $str));
+
+        $roleList = D("Admin/Role")->getTreeArray();
+        $userInfo=User::getInstance()->getInfo();
         $this->assign("data", D("Admin/Role")->order(array("listorder" => "asc", "id" => "desc"))->select())
                 ->display();
+    }
+    // 获取角色列表 api
+    public function getrolemanage(){
+        $roleList = D("Admin/Role")->select();
+        $userInfo=User::getInstance()->getInfo();
+        $str = "<tr>
+          <td>\$id</td>
+          <td>\$spacer\$name</td>
+          <td>\$remark</td>
+          <td align='center'>\$status</td>
+          <td align='center'>\$operating</td>
+        </tr>";
+        //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
+        $myid=User::getInstance()->isAdministrator() ? 0 : $userInfo['role_id'];
+        if($myid){
+            $data = D("Admin/Role")->where('parentid='.$myid)->select();
+        }else{
+            $data = D("Admin/Role")->select();
+        }
+        $this->ajaxReturn(self::createReturn(true, $data, '获取成功'));
+    }
+
+    // 获取所有角色列表 api
+    public function getroleList(){
+        $roleList = D("Admin/Role")->select();
+        $this->ajaxReturn(self::createReturn(true, $roleList, '获取成功'));
     }
 
     //添加角色
@@ -63,13 +92,13 @@ class RbacController extends AdminBase {
             }
             if (D("Admin/Role")->create($data)) {
                 if (D("Admin/Role")->add()) {
-                    $this->success("添加角色成功！", U("Rbac/rolemanage"));
+                    $this->ajaxReturn(self::createReturn(true, null, '添加角色成功'));
                 } else {
-                    $this->error("添加失败！");
+                    $this->ajaxReturn(self::createReturn(false, null, '添加失败'));
                 }
             } else {
                 $error = D("Admin/Role")->getError();
-                $this->error($error ? $error : '添加失败！');
+                $this->ajaxReturn(self::createReturn(false, null, $error ? $error : '添加失败！'));
             }
         } else {
             //向前端渲染登录信息
@@ -82,10 +111,10 @@ class RbacController extends AdminBase {
     public function roledelete() {
         $id = I('get.id', 0, 'intval');
         if (D("Admin/Role")->roleDelete($id)) {
-            $this->success("删除成功！", U('Rbac/rolemanage'));
+            $this->ajaxReturn(self::createReturn(true, null, '删除成功'));
         } else {
             $error = D("Admin/Role")->getError();
-            $this->error($error ? $error : '删除失败！');
+            $this->ajaxReturn(self::createReturn(false, null, $error ? $error : '删除失败'));
         }
     }
 
@@ -93,30 +122,39 @@ class RbacController extends AdminBase {
     public function roleedit() {
         $id = I('request.id', 0, 'intval');
         if (empty($id)) {
-            $this->error('请选择需要编辑的角色！');
+            $this->ajaxReturn(self::createReturn(false, null, '请选择需要编辑的角色'));
         }
         if (1 == $id) {
-            $this->error("超级管理员角色不能被修改！");
+            $this->ajaxReturn(self::createReturn(false, null, '超级管理员角色不能被修改'));
         }
         if (IS_POST) {
             if (D("Admin/Role")->create()) {
                 if (D("Admin/Role")->where(array('id' => $id))->save()) {
-                    $this->success("修改成功！", U('Rbac/rolemanage'));
+                    $this->ajaxReturn(self::createReturn(true, null, '修改成功'));
                 } else {
-                    $this->error("修改失败！");
+                    $this->ajaxReturn(self::createReturn(false, null, '修改失败'));
                 }
             } else {
                 $error = D("Admin/Role")->getError();
-                $this->error($error ? $error : '修改失败！');
+                $this->ajaxReturn(self::createReturn(false, null, $error ? $error : '修改失败'));
             }
         } else {
             $data = D("Admin/Role")->where(array("id" => $id))->find();
             if (empty($data)) {
-                $this->error("该角色不存在！", U('rolemanage'));
+                $this->ajaxReturn(self::createReturn(false, null,  '该角色不存在'));
             }
             $this->assign("data", $data)
                     ->display();
         }
+    }
+
+    /**
+     * 获取角色信息 API
+     */
+    public function getRoleInfo(){
+        $id = I('get.id');
+        $res =  D("Admin/Role")->where(array('id' => $id))->find();
+        $this->ajaxReturn(self::createReturn(true, $res, '获取成功'));
     }
 
     //角色授权

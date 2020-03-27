@@ -5,7 +5,7 @@
   <Admintemplate file="Common/Nav"/>
   <div class="h_a">温馨提示</div>
   <div class="prompt_text">
-    <p>数据操作会清空原有数据，进行从新建立，此操作不可恢复！</p>
+    <p>数据操作会清空原有数据，进行重新建立，此操作不可恢复！</p>
   </div>
   <div class="h_a">数据重建</div>
   <form action="{:U('create',array('delete'=>'1'))}" method="post">

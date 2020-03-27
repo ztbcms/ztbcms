@@ -236,7 +236,7 @@ class PositionModel extends Model {
 						if ($r) {
 							//是否同步编辑
 							if ($r['synedit'] == '0') {
-								//同步时，不从新设置排序值
+								//同步时，不重新设置排序值
 								unset($info['listorder']);
                                 $info['updatetime'] = time();
 								$pos_data->where(array('catid' => $catid,'id' => $d['id'], 'posid' => $pid))->data($info)->save();

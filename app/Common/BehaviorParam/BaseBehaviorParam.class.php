@@ -32,7 +32,7 @@ class BaseBehaviorParam {
         $class = get_called_class();
         $param = new $class;
         foreach ($data as $key => $val){
-            if(empty($param->$key)){
+            if(property_exists($param, $key)){
                 $param->$key = $val;
             }
         }
