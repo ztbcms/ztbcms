@@ -57,8 +57,8 @@
                 </el-table-column>
                 <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                     <template slot-scope="scope">
-                        <el-button @click="openDetail(scope.row.id)" >修改</el-button>
-                        <el-button @click="handleDelete(scope.row.id)">删除</el-button>
+                        <el-button type="primary" size="mini" @click="openDetail(scope.row.id)" >修改</el-button>
+                        <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
