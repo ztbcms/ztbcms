@@ -1,62 +1,155 @@
- 
-<Admintemplate file="Common/Head"/>
-<body class="J_scroll_fixed">
-<div class="wrap J_check_wrap">
-   <Admintemplate file="Common/Nav"/>
-   <form class="J_ajaxForm" action="{:U('Management/adminadd')}" method="post" id="myform">
-   <div class="h_a">基本属性</div>
-   <div class="table_full">
-   <table width="100%" class="table_form contentWrap">
-        <tbody>
-          <tr>
-            <th width="80">用户名</th>
-            <td><input type="test" name="username" class="input" id="username">
-              <span class="gray">请输入用户名</span></td>
-          </tr>
-          <tr>
-            <th>密码</th>
-            <td><input type="password" name="password" class="input" id="password" value="">
-              <span class="gray">请输入密码</span></td>
-          </tr>
-          <tr>
-            <th>确认密码</th>
-            <td><input type="password" name="pwdconfirm" class="input" id="pwdconfirm" value="">
-              <span class="gray">请输入确认密码</span></td>
-          </tr>
-          <tr>
-            <th>E-mail</th>
-            <td><input type="text" name="email" value="" class="input" id="email" size="30">
-              <span class="gray">请输入E-mail</span></td>
-          </tr>
-          <tr>
-            <th>昵称</th>
-            <td><input type="text" name="nickname" value="" class="input" id="realname"></td>
-          </tr>
-          <tr>
-          <th>备注</th>
-          <td><textarea name="remark" rows="2" cols="20" id="remark" class="inputtext" style="height:100px;width:500px;"></textarea></td>
-        </tr>
-          <tr>
-            <th>所属角色</th>
-            <td>{$role}</td>
-          </tr>
-          <tr>
-          <th>状态</td>
-          <td><select name="status">
-                <option value="1" selected>开启</option>
-                <option value="0">禁止</option>
-          </select></td>
-        </tr>
-        </tbody>
-      </table>
-   </div>
-   <div class="btn_wrap">
-      <div class="btn_wrap_pd">             
-        <button class="btn btn_submit mr10 J_ajax_submit_btn" type="submit">添加</button>
-      </div>
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2020/3/6
+ * Time: 12:42
+ */
+?>
+<extend name="../../Admin/View/Common/element_layout"/>
+
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <h3>编辑管理员</h3>
+            <el-row>
+                <el-col :span="8">
+                    <div class="grid-content ">
+                        <el-form ref="form" :model="form" label-width="80px">
+                            <el-form-item label="用户名">
+                                <el-input v-model="form.username"></el-input>
+                            </el-form-item>
+                            <el-form-item label="昵称">
+                                <el-input v-model="form.nickname"></el-input>
+                            </el-form-item>
+                            <el-form-item label="密码">
+                                <el-input type="password" v-model="form.password"></el-input>
+                            </el-form-item>
+                            <el-form-item label="确认密码">
+                                <el-input type="password" v-model="form.pwdconfirm"></el-input>
+                            </el-form-item>
+                            <el-form-item label="E-mail">
+                                <el-input v-model="form.email"></el-input>
+                            </el-form-item>
+
+                            <el-form-item label="所属角色">
+                                <template>
+                                    <el-select v-model="form.role_id" clearable placeholder="请选择">
+                                        <el-option
+                                            v-for="item in role_list"
+                                            :key="item.id"
+                                            :label="item.name"
+                                            :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </template>
+                            </el-form-item>
+                            <el-form-item label="备注">
+                                <el-input type="textarea" v-model="form.remark" rows="5"></el-input>
+                            </el-form-item>
+                            <el-form-item label="状态">
+                                <el-radio-group v-model="form.status">
+                                    <el-radio label="1">开启</el-radio>
+                                    <el-radio label="0">关闭</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-col>
+                <el-col :span="16"><div class="grid-content "></div></el-col>
+            </el-row>
+
+
+        </el-card>
     </div>
-    </form>
-</div>
-<script src="{$config_siteurl}statics/js/common.js"></script>
-</body>
-</html>
+
+    <style>
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    form: {
+                        id:'{$_GET["id"]}',
+                        username: '',
+                        password: '',
+                        pwdconfirm: '',
+                        email: '',
+                        nickname: '',
+                        remark: '',
+                        role_id: '',
+                        status: '1',
+                    },
+                    role_list:[]
+                },
+                watch: {},
+                filters: {},
+                methods: {
+                    onSubmit: function(){
+                        var that = this
+                        $.ajax({
+                            url:"{:U('adminadd')}",
+                            dataType:"json",
+                            type:"post",
+                            data:  that.form,
+                            success(res){
+                                if(res.status){
+                                    that.$message.success(res.msg);
+                                    if (window !== window.parent) {
+                                        setTimeout(function () {
+                                            window.parent.layer.closeAll();
+                                        }, 1000);
+                                    }
+                                }else{
+                                    that.$message.error(res.msg);
+                                }
+                            }
+                        })
+                    },
+                    //获取所有角色
+                    getroleList:function () {
+                        var that = this
+                        $.ajax({
+                            url:"{:U('Admin/Rbac/getrolemanage')}",
+                            type:"get",
+                            dataType:"json",
+                            success(res){
+                                that.role_list = res.data
+                            }
+                        })
+                    },
+
+                    //获取信息
+                    getManagerByid:function (id) {
+                        var that = this
+                        $.ajax({
+                            url:"{:U('Admin/Management/getManagerByid')}",
+                            type:"post",
+                            dataType:"json",
+                            data:{
+                                id:id
+                            },
+                            success(res){
+                                that.form = res.data
+                            }
+                        })
+                    }
+                },
+                mounted: function () {
+                    this.getroleList()
+                    if(this.form.id){
+                        this.loading = true
+                        this.getManagerByid(this.form.id)
+                    }
+                },
+
+            })
+        })
+    </script>
+</block>
