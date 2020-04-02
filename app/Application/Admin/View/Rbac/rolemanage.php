@@ -6,64 +6,32 @@
             <div class="filter-container">
                     <h3>角色列表</h3>
             </div>
-            <el-table
-                :data="Manager"
-                highlight-current-row
-                style="width: 100%;"
-            >
-                <el-table-column label="ID" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.id }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="角色名称" align="">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.name }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="角色描述" align="">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.remark }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="启用状态" align="center">
-                    <template slot-scope="scope">
-                        <div v-if="scope.row.status == 1" class="el-icon-success"
-                             style="color: #409EFF;font-size: 1.5rem"></div>
-                        <div v-else class="el-icon-error" style="font-size: 1.5rem"></div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" align="center" width="530" class-name="small-padding fixed-width">
-                    <template slot-scope="scope">
-                        <span>
-                        <el-button type="primary" class="itembtn" size="mini" @click="getRoleAccessGroup(scope.row.id)" v-if="scope.row.id != 1">权限组设置</el-button>
-                        <el-button type="primary" class="itembtn"  size="mini" @click="openAuth(scope.row.id)"  :disabled="scope.row.id == 1">
-                            权限设置
-                        </el-button>
-                            <el-button type="primary" class="itembtn"size="mini" @click="gotoAdminPage(scope.row.id)" v-if="scope.row.id != 1">栏目权限</el-button>
-                        <el-button type="primary" class="itembtn"size="mini" @click="gotomanagerPage(scope.row.id)">成员管理</el-button>
-                        <el-button type="primary" class="itembtn"size="mini" @click="openDetail(scope.row.id)" :disabled="scope.row.id == 1">修改</el-button>
-                        <el-button type="danger" class="itembtn"size="mini" @click="handleDelete(scope.row.id)" :disabled="scope.row.id == 1">删除</el-button>
-                        </span>
-
-
-                    </template>
-
-                </el-table-column>
-            </el-table>
-
-            <div class="pagination-container">
-                <el-pagination
-                    background
-                    layout="prev, pager, next, jumper"
-                    :total="total"
-                    v-show="total>0"
-                    :current-page.sync="listQuery.page"
-                    :page-size.sync="listQuery.limit"
-                    @current-change="getList"
-                >
-                </el-pagination>
-            </div>
+            <table class="el-table el-table--fit el-table--enable-row-hover el-table--enable-row-transition">
+                <thead class="has-gutter">
+                <tr class="">
+                    <th colspan="1" rowspan="1" class="el-table_2_column_1  is-center   is-leaf">
+                        <div class="cell">ID</div>
+                    </th>
+                    <th colspan="1" rowspan="1" class="el-table_2_column_2   is-center  is-leaf">
+                        <div class="cell">角色名称</div>
+                    </th>
+                    <th colspan="1" rowspan="1" class="el-table_2_column_3  is-center   is-leaf">
+                        <div class="cell">角色描述</div>
+                    </th>
+                    <th colspan="1" rowspan="1" class="el-table_2_column_4  is-center   is-leaf">
+                        <div class="cell">启用状态</div>
+                    </th>
+                    <th colspan="1" rowspan="1"
+                        class="el-table_2_column_5  is-center small-padding fixed-width  is-leaf">
+                        <div class="cell">操作</div>
+                    </th>
+                    <th class="gutter" style="width: 0px; display: none;"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {$role}
+                </tbody>
+            </table>
 
         </el-card>
     </div>
@@ -71,7 +39,6 @@
     <style>
         .itembtn{
             margin-top: 10px;
-
         }
         .el-button+.el-button{
             margin-left: 1px;
@@ -79,7 +46,9 @@
         .filter-container {
             padding-bottom: 10px;
         }
-
+        .el-table:before{
+            background-color: #fff;
+        }
         .pagination-container {
             padding: 32px 16px;
         }
@@ -108,10 +77,7 @@
                 watch: {},
                 filters: {},
                 methods: {
-                    search: function () {
-                        this.getList();
-                    },
-                    //编辑功能未完善
+                    //编辑角色
                     openDetail: function (id) {
                         var that = this
                         var url = "{:U('Admin/Rbac/roleedit')}";
@@ -125,10 +91,11 @@
                             content: url,
                             area: ['100%', '100%'],
                             end:function () {
-                                that.getList()
+                                window.location.reload()
                             }
                         })
                     },
+                    //添加角色
                     openAdd:function(){
                         var that = this
                         var url = "{:U('Admin/Rbac/roleadd')}";
@@ -139,7 +106,7 @@
                             content: url,
                             area: ['100%', '100%'],
                             end:function () {
-                                that.getList()
+                                window.location.reload()
                             }
                         })
                     },
@@ -154,6 +121,7 @@
                             content: url,
                             area: ['100%', '100%'],
                             end:function () {
+                                window.location.reload()
                             }
                         })
                     },
@@ -168,6 +136,7 @@
                             content: url,
                             area: ['100%', '100%'],
                             end:function () {
+                                window.location.reload()
                             }
                         })
                     },
@@ -196,26 +165,9 @@
                             content: url,
                             area: ['100%', '100%'],
                             end:function () {
-                                that.getList()
+                                window.location.reload()
                             }
                         })
-                    },
-                    getList: function () {
-                        var that = this;
-                        $.ajax({
-                            url:"{:U('getrolemanage')}",
-                            type: "get",
-                            dataType:"json",
-                            success:function (res) {
-                                if(res.status){
-                                    that.Manager = res.data
-                                }
-                            }
-
-                        })
-                    },
-                    handleClick: function () {
-                        this.getList();
                     },
                     handleDelete: function (index) {
                         var that = this;
@@ -238,17 +190,15 @@
                             success:function (res) {
                                 if(res.status){
                                     that.$message.success(res.msg);
-                                    that.getList();
+                                    window.location.reload()
                                 } else {
                                     that.$message.error(res.msg);
                                 }
                             }
-
                         })
                     }
                 },
                 mounted: function () {
-                    this.getList();
                 },
             })
         })

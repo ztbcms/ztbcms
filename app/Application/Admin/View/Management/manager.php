@@ -67,8 +67,8 @@
                 <el-pagination
                         background
                         layout="prev, pager, next, jumper"
-                        :total="listQuery.total"
-                        v-show="listQuery.total > 0"
+                        :total="total"
+                        v-show="total > 0"
                         :current-page.sync="listQuery.page"
                         :page-size.sync="listQuery.limit"
                         @current-change="getList"
@@ -101,10 +101,9 @@
                     listQuery: {
                         page: 1,
                         limit: 20,
-                        total: 0
+                        role_id:"{:I('get.role_id')}"
                     },
                     Manager:[],
-                    role_id:"{:I('get.role_id')}"
                 },
                 watch: {},
                 filters: {},
@@ -131,10 +130,7 @@
                             url:"{:U('getManager')}",
                             type: "get",
                             dataType:"json",
-                            data:{
-                                page: that.listQuery.page,
-                                limit: that.listQuery.limit,
-                            },
+                            data: that.listQuery,
                             success:function (res) {
                                 if(res.status){
                                     that.Manager = res.data.items

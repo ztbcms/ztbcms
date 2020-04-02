@@ -93,8 +93,13 @@
                 methods: {
                     onSubmit: function(){
                         var that = this
+                        if(that.form.id){
+                            url = "{:U('edit')}"
+                        }else{
+                            url = "{:U('adminadd')}"
+                        }
                         $.ajax({
-                            url:"{:U('adminadd')}",
+                            url: url,
                             dataType:"json",
                             type:"post",
                             data:  that.form,
