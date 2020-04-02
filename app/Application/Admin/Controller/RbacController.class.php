@@ -20,19 +20,6 @@ class RbacController extends AdminBase {
         $userInfo=User::getInstance()->getInfo();
         foreach ($roleList as $k => $rs) {
             $operating = '';
-//            if ($rs['id'] == 1) {
-//                //超级管理员
-//                $operating = '<font color="#cccccc">权限设置</font> | <a href="' . U('Management/manager', array('role_id' => $rs['id'])) . '">成员管理</a> | <font color="#cccccc">修改</font> | <font color="#cccccc">删除</font>';
-//            } else {
-//                //其他管理员
-//                $operating = '<a href="' . U("Admin/AccessGroup/accessGroupRoleSetting", ['role_id' => $rs['id']]) . '">权限组设置</a> | ';
-//                $operating .= '<a href="' . U("Rbac/authorize", array("id" => $rs["id"])) . '">权限设置</a> | <a href="' . U("Rbac/setting_cat_priv", array("roleid" => $rs["id"])) . '">栏目权限</a> | <a href="' . U('Management/manager', array('role_id' => $rs['id'])) . '">成员管理</a> | <a href="' . U('Rbac/roleedit', array('id' => $rs['id'])) . '">修改</a> | <a class="J_ajax_del" href="' . U('Rbac/roledelete', array('id' => $rs['id'])) . '">删除</a>';
-//            }
-//            if ($rs['status'] == 1) {
-//                $status = "<font color='red'>√</font>";
-//            } else {
-//                $status = "<font color='red'>×</font>";
-//            }
             if ($rs['id'] == 1) {
                 //超级管理员
                 $operating = '<el-button class="itembtn" type="primary"  size="mini" @click="openAuth('.$rs['id'].')" disabled>权限设置</el-button> <el-button class="itembtn" type="primary"  size="mini" @click="gotomanagerPage('.$rs['id'].')">成员管理</el-button> <el-button class="itembtn" type="primary"  size="mini" @click="openDetail('.$rs['id'].')" disabled>修改</el-button> <el-button class="itembtn" type="primary"  size="mini" type="danger" @click="handleDelete('.$rs['id'].')" disabled>删除</el-button>';
