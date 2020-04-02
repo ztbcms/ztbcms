@@ -567,7 +567,8 @@ INSERT INTO `cms_menu` VALUES (115, '缓存更新', 0, 'Admin', 'Index', 'cache'
 INSERT INTO `cms_menu` VALUES (116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '');
-INSERT INTO `cms_menu` VALUES (119, '获取角色列表', 26, 'Admin', 'Rbac', 'getrolemanage', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (119, '获取角色列表api', 26, 'Admin', 'Rbac', 'getrolemanage', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (120, '获取管理员列表api', 21, 'Admin', 'Management', 'getManager', '', 1, 0, '', 0, '');
 
 
 -- ----------------------------
