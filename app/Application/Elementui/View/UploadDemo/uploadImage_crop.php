@@ -29,6 +29,9 @@
                         <div class="img-preview preview-sm"></div>
                         <div class="img-preview preview-xs"></div>
                     </div>
+                    <div id="imgCanvasRes" style="display: none;">
+
+                    </div>
 
                 </div>
             </div>
@@ -197,8 +200,8 @@
         $("#SaveImage").on("click",function () {
             var $image = $('.img-container > img');
             var result = $image.cropper('getCroppedCanvas', "");
-            $('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
-            var obj = $('.modal-body').find('canvas')[0]
+            $('#imgCanvasRes').html(result);
+            var obj = $('#imgCanvasRes').find('canvas')[0]
             var saveImage =  obj.toDataURL(); // 得到base64数据
             var b64 = saveImage.substring(22);
 
@@ -218,7 +221,7 @@
                 contentType: false,
                 success(res){
                     if(res.status == true){
-                        // layer.msg('保存成功，图片地址为'+res.data.url, {time: 3000})
+                        layer.msg('保存成功，图片地址为'+res.data.url, {time: 3000})
                         backUrl =  res.data.url;
                     }else{
                         layer.msg('保存失败', {time: 1000})
