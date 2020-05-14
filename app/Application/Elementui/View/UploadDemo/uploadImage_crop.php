@@ -9,7 +9,7 @@
 </block>
 
 <block name="content">
-    <h3 style="margin-left: 30px;">cropper 插件 <small>【鼠标左键可以重新选区】</small></h3>
+
 
     <div class="htmleaf-container">
         <!-- Content -->
@@ -158,6 +158,8 @@
     <!--触发getImageCanvas是后台保存图片  inputImage是更换图片按钮-->
     <!--返回的是base64格式图片-->
     <script>
+        var backUrl = "";
+
         //将base64转换为file
         function dataURLtoFile(dataurl, filename) {
             var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -216,12 +218,22 @@
                 contentType: false,
                 success(res){
                     if(res.status == true){
-                        layer.msg('保存成功，图片地址为'+res.data.url, {time: 3000})
+                        // layer.msg('保存成功，图片地址为'+res.data.url, {time: 3000})
+                        backUrl =  res.data.url;
                     }else{
                         layer.msg('保存失败', {time: 1000})
                     }
                 }
             })
+
         });
+
+        var callbackdata = function () {
+            var data = {
+                name : new Date()+'.jpg',
+                url: backUrl
+            };
+            return data;
+        }
     </script>
 </block>
