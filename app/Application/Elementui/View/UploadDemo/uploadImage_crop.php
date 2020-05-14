@@ -223,6 +223,11 @@
                     if(res.status == true){
                         layer.msg('保存成功，图片地址为'+res.data.url, {time: 3000})
                         backUrl =  res.data.url;
+                        //传递元素到父页面
+                        parent.$('#saveImgUrl').val(backUrl);
+
+                        //关闭页面
+                        parent.layer.closeAll()
                     }else{
                         layer.msg('保存失败', {time: 1000})
                     }
@@ -231,6 +236,7 @@
 
         });
 
+        //回调数组 cancel
         var callbackdata = function () {
             var data = {
                 name : new Date()+'.jpg',

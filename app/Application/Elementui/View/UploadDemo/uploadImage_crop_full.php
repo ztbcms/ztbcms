@@ -9,7 +9,7 @@
 </block>
 
 <block name="content">
-    <<h3 style="margin-left: 30px;">cropper 插件 <small>【鼠标左键可以重新选区】</small></h3>
+    <h3 style="margin-left: 30px;">cropper 插件 <small>【鼠标左键可以重新选区】</small></h3>
     <div class="htmleaf-container">
         <!-- Content -->
         <div class="container">

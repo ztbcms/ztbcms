@@ -35,6 +35,7 @@
                 </template>
             </div>
 
+            <input type="hidden" value="" id="saveImgUrl">
             <el-button type="primary" @click="onUploadImageChanged">选择图片</el-button>
 <!--            <input type="file" accept="image/*" v-on:change="onUploadFileChanged"/>-->
 
@@ -141,22 +142,27 @@
                             area: ['80%', '80%'],
                             cancel:function(index,layero){ //回调函数
                                 //当点击‘确定’按钮的时候，获取弹出层返回的值
-                                var res = window["layui-layer-iframe" + index].callbackdata();
-                                //打印返回的值，看是否有我们想返回的值。
-                                console.log(res);
+                                // var res = window["layui-layer-iframe" + index].callbackdata();
+                                // //打印返回的值，看是否有我们想返回的值。
+                                // if(res.url){
+                                //     that.uploadedFileCutList.push({
+                                //         name: res.name,
+                                //         url: res.url,
+                                //     })
+                                // }
 
-                                if(res.url){
-                                    that.uploadedFileCutList.push({
-                                        name: res.name,
-                                        url: res.url,
-                                    })
-                                }
                                 //最后关闭弹出层
                                 // layer.close(index);
                             },
-                            end: function(index,layero){
-                                // console.log('end',index)
-                                // console.log('end',layero)
+                            end: function(){
+                                var saveImgUrl = $("#saveImgUrl").val();
+                                if(saveImgUrl){
+                                    var obj = {
+                                        name: new Date(),
+                                        url:saveImgUrl
+                                    };
+                                    that.uploadedFileCutList.push(obj)
+                                }
                             },
                         })
                     }
