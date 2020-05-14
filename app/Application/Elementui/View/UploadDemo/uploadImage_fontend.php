@@ -131,6 +131,8 @@
 
                     // 上传框
                     onUploadImageChanged(){
+                        $("#saveImgUrl").val('');
+
                         var that = this
                         var url = "/Elementui/UploadDemo/uploadImage_crop";
                         //直接打开新页面
