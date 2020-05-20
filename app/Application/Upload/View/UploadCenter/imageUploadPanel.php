@@ -184,7 +184,7 @@
             new Vue({
                 el: '#app',
                 data: {
-                    activeName: 'gallery',
+                    activeName: 'uploadLocal',
                     uploadConfig: {
                         uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
                         max_upload: 6,//同时上传文件数
