@@ -25,7 +25,43 @@
 
             <el-tab-pane label="图库" name="gallery">
                 <el-row>
-                    <el-col :span="6">
+                    <el-col :span="4">
+                        <ul role="menubar" class="el-menu">
+                            <li class="el-menu-item-group">
+                                <ul>
+                                    <li class="el-menu-item" style="padding: 0 20px;"  @click="selectGroup('all')"
+                                        :class="[now_group == 'all' ? 'group_active el-menu-item' : 'el-menu-item']"
+                                    >
+                                        全部
+                                    </li>
+                                    <li class="el-menu-item" style="padding: 0 20px;"  @click="selectGroup(0)"
+                                        :class="[now_group == 0 ? 'group_active el-menu-item' : 'el-menu-item']"
+                                    >
+                                        未分组
+                                    </li>
+                                    <div v-for="item in galleryGroupList" style="position: relative;">
+
+                                        <li class="el-menu-item" style="padding: 0 20px;"
+                                            @click="selectGroup(item.group_id)"
+                                            :class="[now_group == item.group_id ? 'group_active el-menu-item' : 'el-menu-item']"
+                                        >
+                                            {{item.group_name}}
+                                        </li>
+                                        <a href="#" style="color: #000;">
+                                            <i :class="[now_group == item.group_id ? 'el-input__icon el-icon-edit group_edit_icon group_active' : 'el-input__icon el-icon-edit group_edit_icon']"
+                                            @click="showEditGroupDialog(item.group_id,item.group_name)"></i>
+                                        </a>
+                                        <a href="#" style="color: #000;"><i :class="[now_group == item.group_id ? 'el-input__icon el-icon-circle-close group_close group_active' : 'el-input__icon el-icon-circle-close group_close']"
+                                           @click="handleClose(item.group_id)"></i></a>
+                                    </div>
+                                    <div class="grid-content" style="padding: 19px;">
+                                        <el-button type="primary" @click="addGroup" size="mini">新增分组</el-button>
+                                    </div>
+                                </ul>
+                            </li>
+                        </ul>
+                    </el-col>
+                    <el-col :span="6" style="display: none;">
                         <!--分组列表-->
                         <div class="grid-content bg-purple" @click="selectGroup('all')" style="position: relative;">
                                     <span :class="[now_group == 'all' ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']" >                                  全部
@@ -49,7 +85,7 @@
                         </div>
                     </el-col>
 
-                    <el-col :span="18">
+                    <el-col :span="20">
                         <input type="file" style="display:none;" id="upload_input" ref="inputFile" @change="listenInputImage">
                         <el-button size="small" type="" id="upload_btn" @click="$refs.inputFile.click()"><i class="el-icon-plus"></i>上传图片</el-button>
 
@@ -82,7 +118,7 @@
                                         background
                                         layout="prev, pager, next"
                                         @current-change="getGalleryGroupList"
-                                        style="margin-top: 10px"
+                                        style="margin-top: 10px;float: right;padding-right: 50px;"
                                 ></el-pagination>
                             </div>
                         </div>
@@ -92,6 +128,18 @@
             </el-tab-pane>
 
         </el-tabs>
+
+        <el-dialog title="修改分组名称" :visible.sync="showEditGroup">
+            <el-form label-width="80px" >
+                <el-form-item label="分组名称" >
+                    <el-input v-model="edit_group_name" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="showEditGroup = false">取 消</el-button>
+                <el-button type="primary" @click="editGroup">确 定</el-button>
+            </div>
+        </el-dialog>
 
         <div class="footer">
             <el-button type="primary" @click="confirm">确定</el-button>
@@ -158,6 +206,30 @@
         }
 
         /*图库*/
+        .el-menu{
+            border: none;
+            padding-right: 20px;
+        }
+        .el-menu-item:focus{
+            outline: none;
+            background-color: #ecf5ff;
+        }
+        .group_close{
+            position: absolute;
+            right: 5%;
+            top: 2px;
+            font-size: 15px;
+        }
+        .group_edit_icon{
+            position: absolute;
+            right: 20%;
+            top: 2px;
+            font-size: 15px;
+        }
+        .group_active{
+            /*background-color: #409eff;*/
+            color: #409eff;
+        }
         .group_item{
             width: 85%;
             margin: 3px 10px;
@@ -168,15 +240,7 @@
             color: #409eff;
             height: 36px;
         }
-        .group_active{
-            background-color: #409eff;
-            color: #fff;
-        }
-        .group_close{
-            position: absolute;
-            right: 16%;
-            top: 13px;
-        }
+
     </style>
 
     <script>
@@ -184,7 +248,7 @@
             new Vue({
                 el: '#app',
                 data: {
-                    activeName: 'uploadLocal',
+                    activeName: 'gallery',
                     uploadConfig: {
                         uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
                         max_upload: 6,//同时上传文件数
@@ -201,7 +265,10 @@
                     galleryGroupList: [], //图库分组
 
                     now_group: 'all', // 当前分类
-                    move_group_id: '',   // 移动至分类
+                    move_group_id: '',    // 移动至分类
+                    showEditGroup: false, // 显示修改分组名称框
+                    edit_group_id: 0,     // 当前修改的id
+                    edit_group_name: '',  // 当前修改的名称
 
                     form: {
                         search_date: [],
@@ -383,6 +450,41 @@
                             })
                         }).catch(() => {
                         });
+                    },
+                    // 显示修改分类名称框
+                    showEditGroupDialog(group_id,group_name){
+                        this.edit_group_id = group_id
+                        this.edit_group_name = group_name
+                        this.showEditGroup = true
+                    },
+                    // 修改分类名称
+                    editGroup(){
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/editGalleryGroup')}",
+                            dataType:"json",
+                            type:"post",
+                            data:{
+                                group_id: that.edit_group_id,
+                                group_name: that.edit_group_name,
+                            },
+                            success(res){
+                                if(res.status){
+                                    that.getGalleryGroup()
+                                    that.$message({
+                                        type: 'success',
+                                        message: res.msg
+                                    });
+                                    that.showEditGroup = false
+
+                                }else{
+                                    that.$message({
+                                        type: 'false',
+                                        message: res.msg
+                                    });
+                                }
+                            }
+                        })
                     },
 
                     // 删除分类

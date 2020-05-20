@@ -200,6 +200,25 @@ class UploadAdminApiController extends AdminApiBaseController
     }
 
     /**
+     * 修改图片类型分组名称
+     */
+    function editGalleryGroup(){
+        $group_name = I('group_name','');
+        $group_id = I('group_id','');
+        if(empty($group_name) || empty($group_id)){
+            $this->ajaxReturn(self::createReturn(false,[],'请输入分类名称'));
+        }
+        $data = [
+            'group_name' => $group_name,
+            'update_time' => time()
+        ];
+        $AttachmentGroupModel = new AttachmentGroupModel;
+        $res = $AttachmentGroupModel->where(['group_id'=>$group_id])->save($data);
+        if($res) $this->ajaxReturn(self::createReturn(true,[],'修改成功'));
+        $this->ajaxReturn(self::createReturn(false,[],'修改失败'));
+    }
+
+    /**
      * 删除图片类型分组
      */
     function delGalleryGroup(){
