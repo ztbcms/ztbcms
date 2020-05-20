@@ -76,7 +76,8 @@ class AttachmentModel extends Model {
         $isthumb = 0,
         $isadmin = 0,
         $userid = 0,
-        $time = 0
+        $time = 0,
+        $group_id = 0
     ) {
         if (empty($info) || !is_array($info)) {
             return false;
@@ -120,6 +121,8 @@ class AttachmentModel extends Model {
             "status" => 0,
             //附件hash
             "authcode" => $info['hash'],
+            //附件分组id
+            "group_id" => $group_id
         );
 
         return $this->add($data);

@@ -40,8 +40,12 @@ class UploadAdminApiController extends AdminApiBaseController
             $upuserid = $userInfo['id'];
             //取得栏目ID
             $catid = I('post.catid', 0, 'intval');
+
+            $group_id = I('post.group_id', 0 );
+            if($group_id == 'all') $group_id = 0;
+
             //获取附件服务
-            $Attachment = service("Attachment", array('module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid));
+            $Attachment = service("Attachment", array('module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid , 'group_id'=> $group_id));
             //开始上传
             $info = $Attachment->upload($Callback);
             if ($info) {

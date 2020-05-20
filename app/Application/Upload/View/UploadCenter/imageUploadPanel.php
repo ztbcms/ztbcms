@@ -50,7 +50,10 @@
                     </el-col>
 
                     <el-col :span="18">
-                        <div class="grid-content bg-purple-light">
+                        <input type="file" style="display:none;" id="upload_input" ref="inputFile" @change="listenInputImage">
+                        <el-button size="small" type="" id="upload_btn" @click="$refs.inputFile.click()"><i class="el-icon-plus"></i>上传图片</el-button>
+
+                        <div class="grid-content bg-purple-light" style="margin-top: 10px;">
                             <div>
                                 <template v-for="(img,index) in galleryList">
                                     <div :key="index"
@@ -78,7 +81,7 @@
                                         v-show="pagination.total_items > 0"
                                         background
                                         layout="prev, pager, next"
-                                        @current-change="getGalleryList"
+                                        @current-change="getGalleryGroupList"
                                         style="margin-top: 10px"
                                 ></el-pagination>
                             </div>
@@ -181,7 +184,7 @@
             new Vue({
                 el: '#app',
                 data: {
-                    activeName: 'uploadLocal',
+                    activeName: 'gallery',
                     uploadConfig: {
                         uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
                         max_upload: 6,//同时上传文件数
@@ -255,7 +258,7 @@
                         }
 
                         if (this.activeName == 'gallery') {
-                            this.getGalleryList();
+                            this.getGalleryGroupList();
                         }
                     },
                     handleRemove: function () {
@@ -288,7 +291,6 @@
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
-                                console.log(res)
                                 var data = res.data;
                                 that.pagination.page = data.page;
                                 that.pagination.limit = data.limit;
@@ -329,7 +331,6 @@
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
-                                console.log(res)
                                 var data = res.data;
                                 that.pagination.page = data.page;
                                 that.pagination.limit = data.limit;
@@ -514,10 +515,44 @@
                             type: 'post',
                             success: function (res) {
                                 layer.msg(res.msg)
-                                that.getGalleryList()
+                                that.getGalleryGroupList()
                             }
                         })
+                    },
+
+                    // 监听上传图片后上传
+                    listenInputImage(){
+                        var file = $("#upload_input")[0].files[0]
+
+                        if (file) {
+                            var group_id = this.now_group
+                            var that = this;
+                            var formData = new FormData();
+                            formData.append("file", file);
+                            formData.append("group_id", group_id);
+
+                            $.ajax({
+                                url: "{:U('Upload/UploadAdminApi/uploadImage')}",
+                                data: formData,
+                                dataType: 'json',
+                                type: 'post',
+                                // 不要去处理发送的数据
+                                processData: false,
+                                // 不要去设置Content-Type请求头
+                                contentType: false,
+                                success: function (res) {
+                                    if (res.status) {
+                                        layer.msg(res.msg)
+                                        that.getGalleryGroupList()
+                                    } else {
+                                        layer.msg(res.msg)
+                                    }
+                                    $("#upload_input").val("")
+                                }
+                            })
+                        }
                     }
+
                 },
                 mounted: function () {
                     this.getWatermarkConfig()
