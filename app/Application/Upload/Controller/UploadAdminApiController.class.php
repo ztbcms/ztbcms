@@ -10,6 +10,7 @@ namespace Upload\Controller;
 
 use Admin\Controller\AdminApiBaseController;
 use Admin\Service\User;
+use Attachment\Model\AttachmentGroupModel;
 use Attachment\Model\AttachmentModel;
 use Upload\Service\WatermarkService;
 
@@ -41,7 +42,6 @@ class UploadAdminApiController extends AdminApiBaseController
             $catid = I('post.catid', 0, 'intval');
             //获取附件服务
             $Attachment = service("Attachment", array('module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid));
-
             //开始上传
             $info = $Attachment->upload($Callback);
             if ($info) {
@@ -146,6 +146,103 @@ class UploadAdminApiController extends AdminApiBaseController
             ];
         }
 
+        $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
+    }
+
+    /**
+     * 获取图片分组
+     */
+    function getGalleryGroup(){
+        $AttachmentGroupModel = new AttachmentGroupModel;
+        $where = [
+            'is_delete' => 0,
+            'group_type' => 'image',
+        ];
+        $list = $AttachmentGroupModel->where($where)->field('group_id,group_name')->order('sort desc')->select();
+        $this->ajaxReturn(self::createReturn(true,$list));
+    }
+
+    /**
+     * 批量移动图片分组
+     */
+    function moveGralleryGroup(){
+        $files = I('post.files');
+        $group_id = I('post.group_id');
+        $AttachmentModel = new AttachmentModel;
+        foreach ($files as $file) {
+            $AttachmentModel->where(['aid' => ['EQ', $file['aid']]])->save(['group_id' => $group_id ]);
+        }
+        $this->ajaxReturn(self::createReturn(true, null, '操作成功'));
+    }
+
+    /**
+     * 添加图片类型分组
+     */
+    function addGalleryGroup(){
+        $group_name = I('group_name','');
+        if(empty($group_name)){
+            $this->ajaxReturn(self::createReturn(false,[],'请输入分类名称'));
+        }
+        $data = [
+            'group_type' => 'image',
+            'group_name' => $group_name,
+            'create_time' => time()
+        ];
+        $AttachmentGroupModel = new AttachmentGroupModel;
+        $AttachmentGroupModel->create($data);
+        $res = $AttachmentGroupModel->add();
+        if($res) $this->ajaxReturn(self::createReturn(true,[],'添加成功'));
+        $this->ajaxReturn(self::createReturn(false,[],'添加失败'));
+    }
+
+    /**
+     * 删除图片类型分组
+     */
+    function delGalleryGroup(){
+        $group_id = I('group_id','');
+        if(empty($group_id)){
+            $this->ajaxReturn(self::createReturn(false,[],'操作失败'));
+        }
+        $AttachmentGroupModel = new AttachmentGroupModel;
+        $res = $AttachmentGroupModel->delete($group_id);
+        if($res) $this->ajaxReturn(self::createReturn(true,[],'删除成功'));
+        $this->ajaxReturn(self::createReturn(false,[],'删除失败'));
+    }
+
+    /**
+     * 获取图像通过分组id获取
+     */
+    function getGalleryByGroupIdList()
+    {
+        $page = I('page', 1);
+        $limit = I('limit', 20);
+        $group_id = I('group_id', 'all');
+        $userInfo = User::getInstance()->getInfo();
+        $userid = $userInfo['id'];
+
+        $db = M('Attachment');
+        $where = [
+            'module' => self::MODULE_IMAGE,
+            'userid' => $userid,
+            'isadmin' => 1,
+            'delete_status' => AttachmentModel::DELETE_STATUS_NO,
+        ];
+        if($group_id != 'all'){
+            $where['group_id'] = $group_id;
+        }
+        $total_items = $db->where($where)->count();
+        $total_page = ceil($total_items / $limit);
+        $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
+
+        $return_list = [];
+        foreach ($list as $index => $item) {
+            $return_list [] = [
+                'aid' => $item['aid'],
+                'name' => $item['filename'],
+                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'filepath' => $item['filepath'],
+            ];
+        }
         $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
     }
 

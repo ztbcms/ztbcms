@@ -24,33 +24,68 @@
             </el-tab-pane>
 
             <el-tab-pane label="图库" name="gallery">
-                <div>
-                    <template v-for="(img,index) in galleryList">
-                        <div :key="index"
-                             class="imgListItme">
-                            <img :src="img.url"
-                                    style="width:80px;height: 80px;"
-                                    @click="selectImgEvent(index)">
-                            <div v-if="img.is_select" class="is_check" @click="selectImgEvent(index)">
-                                <span style="line-height: 80px;" class="el-icon-check"></span>
-                            </div>
-
+                <el-row>
+                    <el-col :span="6">
+                        <!--分组列表-->
+                        <div class="grid-content bg-purple" @click="selectGroup('all')" style="position: relative;">
+                                    <span :class="[now_group == 'all' ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']" >                                  全部
+                                    </span>
                         </div>
-                    </template>
-                    <div>
-                        <el-button v-show="selectdImageList.length > 0" type="danger" size="small"  @click="clickDeleteSelected">删除选中</el-button>
-                        <el-button v-show="selectdImageList.length > 0" type="primary" size="small" @click="clickCancelSelected">取消选中</el-button>
-                    </div>
-                    <el-pagination
-                            :page-size="pagination.limit"
-                            :current-page.sync="pagination.page"
-                            :total="pagination.total_items"
-                            background
-                            layout="prev, pager, next"
-                            @current-change="getGalleryList"
-                            style="margin-top: 10px"
-                    ></el-pagination>
-                </div>
+                        <div class="grid-content bg-purple" @click="selectGroup(0)" style="position: relative;">
+                                    <span :class="[now_group == 0 ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']" >                                       未分组
+                                    </span>
+                        </div>
+                        <div class="grid-content bg-purple" v-for="item in galleryGroupList" style="position: relative;">
+                                <span :class="[now_group == item.group_id ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']"
+                                      @click="selectGroup(item.group_id)" >
+                                    {{item.group_name}}
+                                </span>
+                            <i :class="[now_group == item.group_id ? 'el-tag__close el-icon-close group_close group_active' : 'el-tag__close el-icon-close group_close'] "
+
+                               @click="handleClose(item.group_id)"></i>
+                        </div>
+                        <div class="grid-content" style="padding: 10px;">
+                            <el-link type="primary" @click="addGroup" >新增分组</el-link>
+                        </div>
+                    </el-col>
+
+                    <el-col :span="18">
+                        <div class="grid-content bg-purple-light">
+                            <div>
+                                <template v-for="(img,index) in galleryList">
+                                    <div :key="index"
+                                         class="imgListItme">
+                                        <img :src="img.url"
+                                             style="width:80px;height: 80px;"
+                                             @click="selectImgEvent(index)">
+                                        <div v-if="img.is_select" class="is_check" @click="selectImgEvent(index)">
+                                            <span style="line-height: 80px;" class="el-icon-check"></span>
+                                        </div>
+
+                                    </div>
+                                </template>
+                                <div>
+                                    <el-button v-show="selectdImageList.length > 0" type="danger" size="small"  @click="clickDeleteSelected">删除选中</el-button>
+                                    <el-button v-show="selectdImageList.length > 0" type="primary" size="small" @click="clickCancelSelected">取消选中</el-button>
+                                    <el-select v-show="selectdImageList.length > 0" v-model="move_group_id" placeholder="移动至" style="width:130px;" size="small" @change="moveGroup" >
+                                        <el-option :label="item.group_name" :value="item.group_id" v-for="item in galleryGroupList">{{item.group_name}}</el-option>
+                                    </el-select>
+                                </div>
+                                <el-pagination
+                                        :page-size="pagination.limit"
+                                        :current-page.sync="pagination.page"
+                                        :total="pagination.total_items"
+                                        v-show="pagination.total_items > 0"
+                                        background
+                                        layout="prev, pager, next"
+                                        @current-change="getGalleryList"
+                                        style="margin-top: 10px"
+                                ></el-pagination>
+                            </div>
+                        </div>
+                    </el-col>
+                </el-row>
+
             </el-tab-pane>
 
         </el-tabs>
@@ -120,6 +155,25 @@
         }
 
         /*图库*/
+        .group_item{
+            width: 85%;
+            margin: 3px 10px;
+            padding: 4px 10px;
+            font-size: 13px;
+            background-color: #fff;
+            border-color: #b3d8ff;
+            color: #409eff;
+            height: 36px;
+        }
+        .group_active{
+            background-color: #409eff;
+            color: #fff;
+        }
+        .group_close{
+            position: absolute;
+            right: 16%;
+            top: 13px;
+        }
     </style>
 
     <script>
@@ -141,6 +195,11 @@
                         total_items: 0,
                     },
                     galleryList: [], //图库
+                    galleryGroupList: [], //图库分组
+
+                    now_group: 'all', // 当前分类
+                    move_group_id: '',   // 移动至分类
+
                     form: {
                         search_date: [],
                         uid: '',
@@ -216,6 +275,7 @@
                     handleExceed: function(){
                         ELEMENT.Message.error('上传文件数量超限制');
                     },
+                    // 获取图片列表
                     getGalleryList: function () {
                         var that = this;
                         var where = {
@@ -228,6 +288,7 @@
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
+                                console.log(res)
                                 var data = res.data;
                                 that.pagination.page = data.page;
                                 that.pagination.limit = data.limit;
@@ -242,6 +303,151 @@
                             }
                         })
                     },
+                    // 获取分组列表
+                    getGalleryGroup(){
+                        var that = this
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/getGalleryGroup')}",
+                            dataType: 'json',
+                            type: 'get',
+                            success: function (res) {
+                                that.galleryGroupList = res.data
+                            }
+                        })
+                    },
+                    // 获取分组图片列表
+                    getGalleryGroupList: function () {
+                        var that = this;
+                        var where = {
+                            page: this.pagination.page,
+                            limit: this.pagination.limit,
+                            group_id: this.now_group,
+                        };
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/getGalleryByGroupIdList')}",
+                            data: where,
+                            dataType: 'json',
+                            type: 'post',
+                            success: function (res) {
+                                console.log(res)
+                                var data = res.data;
+                                that.pagination.page = data.page;
+                                that.pagination.limit = data.limit;
+                                that.pagination.total_pages = data.total_pages;
+                                that.pagination.total_items = data.total_items;
+                                var list = [];
+                                data.items.map(function (item) {
+                                    item.is_select = false;
+                                    list.push(item);
+                                })
+                                that.galleryList = list
+                            }
+                        })
+                    },
+
+                    // 获取指定分类的图片
+                    selectGroup(group_id){
+                        this.now_group = group_id
+                        this.getGalleryGroupList()
+                    },
+
+                    // 添加分类
+                    addGroup(){
+                        this.$prompt('请输入分组名称', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        }).then(({ value }) => {
+                            var that = this;
+                            $.ajax({
+                                url: "{:U('Upload/UploadAdminApi/addGalleryGroup')}",
+                                dataType:"json",
+                                type:"post",
+                                data:{
+                                    group_name:value
+                                },
+                                success(res){
+                                    if(res.status){
+                                        that.getGalleryGroup()
+                                        that.$message({
+                                            type: 'success',
+                                            message: res.msg
+                                        });
+                                    }else{
+                                        that.$message({
+                                            type: 'false',
+                                            message: res.msg
+                                        });
+                                    }
+                                }
+                            })
+                        }).catch(() => {
+                        });
+                    },
+
+                    // 删除分类
+                    handleClose(group_id) {
+                        var that = this
+                        layer.confirm('是否确定删除该分类吗？', {
+                            btn: ['确认', '取消'] //按钮
+                        }, function () {
+                            that.toDeleteGroup(group_id);
+                            layer.closeAll();
+                        }, function () {
+                            layer.closeAll();
+                        });
+                    },
+                    // 删除分类
+                    toDeleteGroup(group_id){
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/delGalleryGroup')}",
+                            dataType:"json",
+                            type:"post",
+                            data:{
+                                group_id:group_id
+                            },
+                            success(res){
+                                if(res.status){
+                                    that.getGalleryGroup()
+                                    that.$message({
+                                        type: 'success',
+                                        message: res.msg
+                                    });
+                                }else{
+                                    that.$message({
+                                        type: 'false',
+                                        message: res.msg
+                                    });
+                                }
+                            }
+                        })
+                    },
+
+                    // 移动分组
+                    moveGroup:function () {
+                        var that = this;
+                        console.log(this.move_group_id)
+                        var form = {
+                            files: [],
+                            group_id: this.move_group_id
+                        }
+                        for (var i = 0; i < this.selectdImageList.length; i++) {
+                            form['files'].push(this.selectdImageList[i])
+                        }
+
+                        $.ajax({
+                            url: "{:U('Upload/UploadAdminApi/moveGralleryGroup')}",
+                            data: form,
+                            dataType: 'json',
+                            type: 'post',
+                            success: function (res) {
+                                layer.msg(res.msg)
+                                that.getGalleryGroupList()
+                                that.move_group_id = ""
+                            }
+                        })
+                    },
+
                     selectImgEvent: function (index) {
                         this.galleryList[index].is_select = !this.galleryList[index].is_select
                     },
@@ -315,6 +521,10 @@
                 },
                 mounted: function () {
                     this.getWatermarkConfig()
+
+                    this.getGalleryGroup();
+                    this.getGalleryGroupList();
+
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
                 }
             })
