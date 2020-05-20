@@ -83,7 +83,7 @@
                                 <div>
                                     <el-button v-show="selectdImageList.length > 0" type="danger" size="small"  @click="clickDeleteSelected">删除选中</el-button>
                                     <el-button v-show="selectdImageList.length > 0" type="primary" size="small" @click="clickCancelSelected">取消选中</el-button>
-                                    <el-select v-show="selectdImageList.length > 0" v-model="move_group_id" placeholder="移动至" style="width:130px;" size="small" @change="moveGroup" >
+                                    <el-select v-show="selectdImageList.length > 0" v-model="move_group_id" placeholder="移动至" style="width:130px;margin-left: 10px;" size="small" @change="moveGroup" >
                                         <el-option :label="item.group_name" :value="item.group_id" v-for="item in galleryGroupList">{{item.group_name}}</el-option>
                                     </el-select>
                                 </div>
