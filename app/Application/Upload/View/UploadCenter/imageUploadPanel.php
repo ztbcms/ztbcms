@@ -1,7 +1,7 @@
 <extend name="../../Admin/View/Common/element_layout"/>
 
 <block name="content">
-    <div id="app" style="" v-cloak>
+    <div id="app" style="" v-cloak  v-loading="loading">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleTabClick">
             <el-tab-pane label="本地上传" name="uploadLocal">
                 <p>支持同时上传 <span style="color: orangered;">{{uploadConfig.max_upload}}</span> 个文件 支持格式：<span style="color: orangered;">jpg,jpeg,gif,png,bmp</span></p>
@@ -60,29 +60,6 @@
                                 </ul>
                             </li>
                         </ul>
-                    </el-col>
-                    <el-col :span="6" style="display: none;">
-                        <!--分组列表-->
-                        <div class="grid-content bg-purple" @click="selectGroup('all')" style="position: relative;">
-                                    <span :class="[now_group == 'all' ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']" >                                  全部
-                                    </span>
-                        </div>
-                        <div class="grid-content bg-purple" @click="selectGroup(0)" style="position: relative;">
-                                    <span :class="[now_group == 0 ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']" >                                       未分组
-                                    </span>
-                        </div>
-                        <div class="grid-content bg-purple" v-for="item in galleryGroupList" style="position: relative;">
-                                <span :class="[now_group == item.group_id ? 'group_active input- el-tag el-tag--plain group_item ' : 'input- el-tag el-tag--plain group_item ']"
-                                      @click="selectGroup(item.group_id)" >
-                                    {{item.group_name}}
-                                </span>
-                            <i :class="[now_group == item.group_id ? 'el-tag__close el-icon-close group_close group_active' : 'el-tag__close el-icon-close group_close'] "
-
-                               @click="handleClose(item.group_id)"></i>
-                        </div>
-                        <div class="grid-content" style="padding: 10px;">
-                            <el-link type="primary" @click="addGroup" >新增分组</el-link>
-                        </div>
                     </el-col>
 
                     <el-col :span="20">
@@ -281,7 +258,8 @@
                     },
                     watermarkConfig: {
                         enable: '0'
-                    }
+                    },
+                    loading: true
                 },
                 watch: {},
                 computed: {
@@ -386,6 +364,7 @@
                     },
                     // 获取分组图片列表
                     getGalleryGroupList: function () {
+                        this.loading = true
                         var that = this;
                         var where = {
                             page: this.pagination.page,
@@ -409,6 +388,7 @@
                                     list.push(item);
                                 })
                                 that.galleryList = list
+                                that.loading = false
                             }
                         })
                     },
