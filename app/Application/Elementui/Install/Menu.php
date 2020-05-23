@@ -47,16 +47,10 @@ return array(
                         "name" => "前台图片上传",
                     ),
                     array(
-                        "route" => "Elementui/UploadDemo/uploadImage_crop_full",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "上传图片裁剪",
-                    ),
-                    array(
                         "route" => "Elementui/UploadDemo/uploadImage_crop",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "上传图片裁剪组件",
+                        "name" => "图片裁剪示例",
                     ),
                 )
             ),

@@ -19,27 +19,6 @@
             <input type="file" accept="image/*" v-on:change="onUploadFileChanged"/>
 
         </el-card>
-
-        <br>
-        <el-card>
-            <h3>前台图片上传裁剪示例</h3>
-
-            <div>
-                <template v-for="(file, index) in uploadedFileCutList">
-                    <div class="imgListItem">
-                        <img :src="file.url" :alt="file.name" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteCutItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
-                        </div>
-                    </div>
-                </template>
-            </div>
-
-            <input type="hidden" value="" id="saveImgUrl">
-            <el-button type="primary" @click="onUploadImageChanged">选择图片</el-button>
-<!--            <input type="file" accept="image/*" v-on:change="onUploadFileChanged"/>-->
-
-        </el-card>
     </div>
 
     <style>
@@ -84,7 +63,6 @@
                         //     url: "/d/file/module_upload_images/2019/03/5c7e4cf7dd1cd.png"
                         // },
                     ],
-                    uploadedFileCutList:[]
                 },
                 watch: {},
                 filters: {
@@ -97,9 +75,6 @@
                 methods: {
                     deleteItem: function (index) {
                         this.uploadedFileList.splice(index, 1)
-                    },
-                    deleteCutItem: function (index) {
-                        this.uploadedFileCutList.splice(index, 1)
                     },
                     onUploadFileChanged: function (event) {
                         var that = this
@@ -128,46 +103,6 @@
                             })
                         }
                     },
-
-                    // 上传框
-                    onUploadImageChanged(){
-                        $("#saveImgUrl").val('');
-
-                        var that = this
-                        var url = "/Elementui/UploadDemo/uploadImage_crop";
-                        //直接打开新页面
-
-                        layer.open({
-                            type: 2,
-                            title: '上传框',
-                            content: url,
-                            area: ['80%', '80%'],
-                            cancel:function(index,layero){ //回调函数
-                                //当点击‘确定’按钮的时候，获取弹出层返回的值
-                                // var res = window["layui-layer-iframe" + index].callbackdata();
-                                // //打印返回的值，看是否有我们想返回的值。
-                                // if(res.url){
-                                //     that.uploadedFileCutList.push({
-                                //         name: res.name,
-                                //         url: res.url,
-                                //     })
-                                // }
-
-                                //最后关闭弹出层
-                                // layer.close(index);
-                            },
-                            end: function(){
-                                var saveImgUrl = $("#saveImgUrl").val();
-                                if(saveImgUrl){
-                                    var obj = {
-                                        name: new Date(),
-                                        url:saveImgUrl
-                                    };
-                                    that.uploadedFileCutList.push(obj)
-                                }
-                            },
-                        })
-                    }
                 },
                 mounted: function () {
 
