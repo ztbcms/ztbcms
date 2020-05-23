@@ -22,6 +22,12 @@ return array(
                 "status" => 1,
                 "name" => "水印配置",
             ),
+            array(
+                "route" => "Upload/UploadCropImage/cropImage",
+                "type" => 1,
+                "status" => 1,
+                "name" => "图片裁剪",
+            ),
         ),
     ),
 );

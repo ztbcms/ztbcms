@@ -1,248 +1,191 @@
 <extend name="../../Admin/View/Common/element_layout"/>
 
-<block name="header">
-    <link rel="stylesheet" type="text/css" href="{$config_siteurl}statics/base64/css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="{$config_siteurl}statics/base64/css/default.css">
-    <link href="{$config_siteurl}statics/base64/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{$config_siteurl}statics/base64/dist/cropper.css" rel="stylesheet">
-    <link href="{$config_siteurl}statics/base64/css/main.css" rel="stylesheet">
-</block>
-
 <block name="content">
-
-
-    <div class="htmleaf-container">
-        <!-- Content -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-9">
-                    <!-- <h3 class="page-header">Demo:</h3> -->
-                    <div class="img-container">
-                        <img src="{$config_siteurl}statics/base64/img/picture.jpg" alt="Picture">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <!-- <h3 class="page-header">Preview:</h3> -->
-                    <div class="docs-preview clearfix">
-                        <div class="img-preview preview-lg"></div>
-                        <div class="img-preview preview-md"></div>
-                        <div class="img-preview preview-sm"></div>
-                        <div class="img-preview preview-xs"></div>
-                    </div>
-                    <div id="imgCanvasRes" style="display: none;">
-
-                    </div>
-
-                </div>
-            </div>
-            <!--按钮组-->
-            <div class="row">
-                <div class="col-md-9 docs-buttons">
-                    <!-- <h3 class="page-header">Toolbar:</h3> -->
-                    <div class="btn-group">
-
-                        <button class="btn btn-primary" data-method="rotate" data-option="-45" type="button"
-                                title="Rotate Left">
-                            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;rotate&quot;, -45)">
-                              <span class="icon icon-rotate-left"></span>
-                            </span>
-                        </button>
-                        <button class="btn btn-primary" data-method="rotate" data-option="45" type="button"
-                                title="Rotate Right">
-                            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;rotate&quot;, 45)">
-                              <span class="icon icon-rotate-right"></span>
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-primary" data-method="clear" type="button" title="Clear">
-                            <span class="docs-tooltip" data-toggle="tooltip">
-                              <span class="icon icon-remove"></span>
-                                清除选区
-                            </span>
-                        </button>
-                        <button class="btn btn-primary" data-method="setDragMode" data-option="crop" type="button"
-                                title="Crop">
-                            <span class="docs-tooltip" data-toggle="tooltip"
-                                  title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
-                              <span class="icon icon-crop"></span>
-                                点击开始选区
-                            </span>
-                        </button>
-                        <button class="btn btn-primary" data-method="reset" type="button" title="Reset">
-                            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;reset&quot;)">
-                              <span class="icon icon-refresh"></span>
-                                重置
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="btn-group btn-group-crop">
-                        <button class="btn btn-primary" data-method="getCroppedCanvas" type="button">
-                            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getCroppedCanvas&quot;)"
-                                  id="getImageCanvas">
-                              预览裁剪后
-                            </span>
-                        </button>
-                    </div>
-
-                    <label class="btn btn-success btn-upload" for="inputImage">
-                        <input class="sr-only" id="inputImage" name="file" type="file" accept="image/*">
-                        <span class="docs-tooltip" data-toggle="tooltip" title="选择图片">
-                            <span class="icon icon-upload"></span>
-                            <span>选择图片</span>
-                        </span>
-                    </label>
-
-                    <button class="btn btn-primary" type="button">
-                      <span class="docs-tooltip" id="SaveImage">
-                          保存
-                      </span>
-                    </button>
-
-                    <!-- Show the cropped image in modal -->
-                    <div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true"
-                         aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button class="close" data-dismiss="modal" type="button" aria-hidden="true">
-                                        &times;
-                                    </button>
-                                    <h4 class="modal-title" id="getCroppedCanvasTitle">图片预览</h4>
-                                </div>
-                                <div class="modal-body"></div>
-                                <!-- <div class="modal-footer">
-                                  <button class="btn btn-primary" data-dismiss="modal" type="button">Close</button>
-                                </div> -->
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <h3>图片上传裁剪示例</h3>
+            <div>
+                <template v-for="(file, index) in uploadedFileCutList">
+                    <div class="imgListItem">
+                        <img :src="file.url" :alt="file.name" style="width: 128px;height: 128px;">
+                        <div class="Mask">
+                            <div class="deleteMask" @click="deleteCutItem(index)">
+                                <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                            </div>
+                            <div class="editMask" @click="editCutItem(index)">
+                                <span style="line-height: 128px;font-size: 22px" class="el-icon-edit"></span>
                             </div>
                         </div>
-                    </div><!-- /.modal -->
-
-
-                </div><!-- /.docs-buttons -->
-
-                <!--鼠标左键可以重新选区-->
-                <div class="col-md-3 docs-toggles">
-                    <!-- <h3 class="page-header">Toggles:</h3> -->
-                    <div class="btn-group btn-group-justified" data-toggle="buttons">
-                        <label class="btn btn-primary active" data-method="setAspectRatio"
-                               data-option="1.7777777777777777" title="Set Aspect Ratio">
-                            <input class="sr-only" id="aspestRatio1" name="aspestRatio" value="1.7777777777777777"
-                                   type="radio">
-                            <span class="docs-tooltip" data-toggle="tooltip"
-                                  title="$().cropper(&quot;setAspectRatio&quot;, 16 / 9)">
-                              16:9
-                            </span>
-                        </label>
-                        </label>
-                        <label class="btn btn-primary" data-method="setAspectRatio" data-option="NaN"
-                               title="Set Aspect Ratio">
-                            <input class="sr-only" id="aspestRatio5" name="aspestRatio" value="NaN" type="radio">
-                            <span class="docs-tooltip" data-toggle="tooltip"
-                                  title="$().cropper(&quot;setAspectRatio&quot;, NaN)">
-                              自由裁剪
-                            </span>
-                        </label>
                     </div>
-
-                </div><!-- /.docs-toggles -->
+                </template>
             </div>
-        </div>
+            <el-button type="primary" @click="onUploadImageChanged(0,-1)">选择图片</el-button>
+        </el-card>
     </div>
 
-</block>
-<block name="footer">
-    <script src="{$config_siteurl}statics/base64/js/jquery.min.js"></script>
-    <script src="{$config_siteurl}statics/base64/js/bootstrap.min.js"></script>
-    <script src="{$config_siteurl}statics/base64/dist/cropper.js"></script>
-    <script src="{$config_siteurl}statics/base64/js/main.js"></script>
-    <!--触发getImageCanvas是后台保存图片  inputImage是更换图片按钮-->
-    <!--返回的是base64格式图片-->
+    <style>
+        .imgListItem {
+            height: 128px;
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            display: inline-flex;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            cursor: pointer;
+            vertical-align: top;
+        }
+
+        .Mask{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 128px;
+            height: 128px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 40px;
+            opacity: 0;
+        }
+        .Mask:hover {
+            opacity: 1;
+        }
+        .deleteMask{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 64px;
+            height: 128px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 40px;
+        }
+        .editMask{
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 64px;
+            height: 128px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 40px;
+        }
+    </style>
+
     <script>
-        var backUrl = "";
-
-        //将base64转换为file
-        function dataURLtoFile(dataurl, filename) {
-            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-            while(n--){
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new File([u8arr], filename, {type:mime});
-        }
-
-        // base64 转 blob
-        function dataURItoBlob(base64Data) {
-            //console.log(base64Data);//data:image/png;base64,
-            var byteString;
-            if(base64Data.split(',')[0].indexOf('base64') >= 0)
-                byteString = atob(base64Data.split(',')[1]);//base64 解码
-            else{
-                byteString = unescape(base64Data.split(',')[1]);
-            }
-            var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];//mime类型 -- image/png
-
-            // var arrayBuffer = new ArrayBuffer(byteString.length); //创建缓冲数组
-            // var ia = new Uint8Array(arrayBuffer);//创建视图
-            var ia = new Uint8Array(byteString.length);//创建视图
-            for(var i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            var blob = new Blob([ia], {
-                type: mimeString
-            });
-            return blob;
-        }
-
-        // 保存图片
-        $("#SaveImage").on("click",function () {
-            var $image = $('.img-container > img');
-            var result = $image.cropper('getCroppedCanvas', "");
-            $('#imgCanvasRes').html(result);
-            var obj = $('#imgCanvasRes').find('canvas')[0]
-            var saveImage =  obj.toDataURL(); // 得到base64数据
-            var b64 = saveImage.substring(22);
-
-            var imgFile = dataURItoBlob(saveImage,'upload_img');
-
-            // 构建Form
-            var form = new FormData();
-            let fileOfBlob = new File([imgFile], new Date()+'.jpg'); // 重命名
-            form.append("file", fileOfBlob);
-            // 上传后台
-            $.ajax({
-                url:"{:U('Upload/UploadPublicApi/uploadImage')}",
-                data: form,
-                dataType:"json",
-                type:"post",
-                processData:false,
-                contentType: false,
-                success(res){
-                    if(res.status == true){
-                        layer.msg('保存成功，图片地址为'+res.data.url, {time: 3000})
-                        backUrl =  res.data.url;
-                        //传递元素到父页面
-                        parent.$('#saveImgUrl').val(backUrl);
-
-                        //关闭页面
-                        parent.layer.closeAll()
-                    }else{
-                        layer.msg('保存失败', {time: 1000})
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    uploadedFileCutList:[]
+                },
+                watch: {},
+                filters: {
+                    formatTime(timestamp) {
+                        var date = new Date();
+                        date.setTime(parseInt(timestamp) * 1000);
+                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
                     }
-                }
+                },
+                methods: {
+                    deleteCutItem: function (index) {
+                        this.uploadedFileCutList.splice(index, 1)
+                    },
+                    //编辑
+                    editCutItem:function(index){
+                        this.onUploadImageChanged(this.uploadedFileCutList[index].url,index)
+                    },
+                    //图片裁剪框
+                    onUploadImageChanged(img_url,img_index){
+                        var url = "Upload/UploadCropImage/cropImage";
+
+                        //传入img
+                        if(img_url != 0){
+                            url = url + '?url=' + img_url
+                        }
+
+                        //替换图片index
+                        if(img_index != -1){
+                            url = url + '&img_index=' + img_index
+                        }
+
+                        //直接打开新页面
+                        layer.open({
+                            type: 2,
+                            title: '图片裁剪',
+                            content: url,
+                            area: ['75%', '80%']
+                        })
+                    },
+                    // 接收回调
+                    onUploadedFile(event){
+                        var that = this;
+                        var img_base64 = event.detail.img_base64
+                        var img_index = event.detail.img_index
+                        if (img_base64) {
+                            that.doUpload(img_base64,img_index)       // 上传图片
+                        }
+                    },
+                    doUpload(img_base64,img_index){
+                        // 上传后台
+                        var that = this;
+                        var img_blob = this.dataURItoBlob(img_base64);
+                        var form = new FormData();
+                        let fileOfBlob = new File([img_blob], new Date()+'.jpg'); // 重命名
+                        form.append("file", fileOfBlob);
+                        $.ajax({
+                            url:"{:U('Upload/UploadAdminApi/uploadImage')}",
+                            data: form,
+                            dataType:"json",
+                            type:"post",
+                            processData:false,
+                            contentType: false,
+                            success(res){
+                                if(res.status == true){
+                                    // layer.msg('保存成功', {time: 3000})
+                                    backUrl =  res.data.url;
+                                    if(img_index != ""){ // 编辑后替换原图片
+                                        that.uploadedFileCutList[img_index].url= backUrl
+                                    }else{
+                                        that.uploadedFileCutList.push({
+                                            name: res.data.savename,
+                                            url: backUrl,
+                                        })
+                                    }
+                                }else{
+                                    layer.msg('保存失败', {time: 1000})
+                                }
+                            }
+                        })
+                    },
+                    // base64 转 blob
+                    dataURItoBlob(base64Data) {
+                        var byteString;
+                        if(base64Data.split(',')[0].indexOf('base64') >= 0)
+                            byteString = atob(base64Data.split(',')[1]);//base64 解码
+                        else{
+                            byteString = unescape(base64Data.split(',')[1]);
+                        }
+                        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];//mime类型 -- image/png
+
+                        var ia = new Uint8Array(byteString.length);//创建视图
+                        for(var i = 0; i < byteString.length; i++) {
+                            ia[i] = byteString.charCodeAt(i);
+                        }
+                        var blob = new Blob([ia], {
+                            type: mimeString
+                        });
+                        return blob;
+                    }
+                },
+                mounted: function () {
+                    window.addEventListener('ZTBCMS_IMAGE_CROP_FILE', this.onUploadedFile.bind(this));
+                },
+
             })
-
-        });
-
-        //回调数组 cancel
-        var callbackdata = function () {
-            var data = {
-                name : new Date()+'.jpg',
-                url: backUrl
-            };
-            return data;
-        }
+        })
     </script>
 </block>
