@@ -96,13 +96,11 @@
                     },
                     //编辑
                     editCutItem:function(index){
-                        console.log(index)
-                        console.log(this.uploadedFileCutList[index])
                         this.onUploadImageChanged(this.uploadedFileCutList[index].url,index)
                     },
                     //图片裁剪框
                     onUploadImageChanged(img_url,img_index){
-                        var url = "/Upload/UploadCropImage/cropImage";
+                        var url = "Upload/UploadCropImage/cropImage";
 
                         //传入img
                         if(img_url != 0){
@@ -127,7 +125,6 @@
                         var that = this;
                         var img_base64 = event.detail.img_base64
                         var img_index = event.detail.img_index
-                        console.log(event.detail)
                         if (img_base64) {
                             that.doUpload(img_base64,img_index)       // 上传图片
                         }
@@ -140,7 +137,7 @@
                         let fileOfBlob = new File([img_blob], new Date()+'.jpg'); // 重命名
                         form.append("file", fileOfBlob);
                         $.ajax({
-                            url:"{:U('Upload/UploadPublicApi/uploadImage')}",
+                            url:"{:U('Upload/UploadAdminApi/uploadImage')}",
                             data: form,
                             dataType:"json",
                             type:"post",
@@ -150,12 +147,11 @@
                                 if(res.status == true){
                                     // layer.msg('保存成功', {time: 3000})
                                     backUrl =  res.data.url;
-                                    console.log(img_index)
                                     if(img_index != ""){ // 编辑后替换原图片
                                         that.uploadedFileCutList[img_index].url= backUrl
                                     }else{
                                         that.uploadedFileCutList.push({
-                                            name:"",
+                                            name: res.data.savename,
                                             url: backUrl,
                                         })
                                     }
