@@ -83,33 +83,26 @@
                     uploadedFileCutList:[]
                 },
                 watch: {},
-                filters: {
-                    formatTime(timestamp) {
-                        var date = new Date();
-                        date.setTime(parseInt(timestamp) * 1000);
-                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
-                    }
-                },
+                filters: {},
                 methods: {
+                    //删除
                     deleteCutItem: function (index) {
                         this.uploadedFileCutList.splice(index, 1)
                     },
                     //编辑
                     editCutItem:function(index){
-                        this.onUploadImageChanged(this.uploadedFileCutList[index].url,index)
+                        this.onUploadImageChanged(this.uploadedFileCutList[index].url)
                     },
                     //图片裁剪框
-                    onUploadImageChanged(img_url,img_index){
+                    onUploadImageChanged(img_url){
                         var url = "Upload/UploadCropImage/cropImage";
 
                         //传入img
                         if(img_url != 0){
-                            url = url + '?url=' + img_url
-                        }
-
-                        //替换图片index
-                        if(img_index != -1){
-                            url = url + '&img_index=' + img_index
+                            url = url + '?url=' + img_url;
+                            // 可以传入宽高比
+                            url = url + '&width=' + 1920;
+                            url = url + '&height=' + 1080
                         }
 
                         //直接打开新页面
@@ -147,14 +140,10 @@
                                 if(res.status == true){
                                     // layer.msg('保存成功', {time: 3000})
                                     backUrl =  res.data.url;
-                                    if(img_index != ""){ // 编辑后替换原图片
-                                        that.uploadedFileCutList[img_index].url= backUrl
-                                    }else{
-                                        that.uploadedFileCutList.push({
-                                            name: res.data.savename,
-                                            url: backUrl,
-                                        })
-                                    }
+                                    that.uploadedFileCutList.push({
+                                        name: res.data.savename,
+                                        url: backUrl,
+                                    })
                                 }else{
                                     layer.msg('保存失败', {time: 1000})
                                 }
@@ -170,7 +159,6 @@
                             byteString = unescape(base64Data.split(',')[1]);
                         }
                         var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];//mime类型 -- image/png
-
                         var ia = new Uint8Array(byteString.length);//创建视图
                         for(var i = 0; i < byteString.length; i++) {
                             ia[i] = byteString.charCodeAt(i);
