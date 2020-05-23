@@ -83,14 +83,9 @@
                     uploadedFileCutList:[]
                 },
                 watch: {},
-                filters: {
-                    formatTime(timestamp) {
-                        var date = new Date();
-                        date.setTime(parseInt(timestamp) * 1000);
-                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
-                    }
-                },
+                filters: {},
                 methods: {
+                    //删除
                     deleteCutItem: function (index) {
                         this.uploadedFileCutList.splice(index, 1)
                     },

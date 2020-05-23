@@ -128,13 +128,13 @@
                     //初始化
                     init(){
                         this.myCropper = new Cropper(this.$refs.image, {
-                            viewMode: 1,            //限制裁剪框不能超出图片的范围
-                            dragMode: 'crop',       // 拖拽图片模式 : 形成新的裁剪框
-                            initialAspectRatio: NaN,  // 裁剪框宽高比的初始值
-                            preview: '.preview',    //预览
-                            background: false,      //是否在容器内显示网格状的背景 默认true
-                            autoCropArea: 0.6,      //设置裁剪区域占图片的大小 值为 0-1 默认 0.8 表示 80%的区域
-                            zoomOnWheel: false,     //是否可以通过鼠标滚轮缩放图片 默认true
+                            viewMode: 1,                //限制裁剪框不能超出图片的范围
+                            dragMode: 'crop',           // 拖拽图片模式 : 形成新的裁剪框
+                            initialAspectRatio: NaN,    // 裁剪框宽高比的初始值
+                            preview: '.preview',        //预览
+                            background: false,          //是否在容器内显示网格状的背景 默认true
+                            autoCropArea: 0.6,          //设置裁剪区域占图片的大小 值为 0-1 默认 0.8 表示 80%的区域
+                            zoomOnWheel: false,         //是否可以通过鼠标滚轮缩放图片 默认true
                         })
                     },
                     //监听输入 宽
