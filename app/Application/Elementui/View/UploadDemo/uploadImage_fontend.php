@@ -19,6 +19,8 @@
             <input type="file" accept="image/*" v-on:change="onUploadFileChanged"/>
 
         </el-card>
+
+
     </div>
 
     <style>
@@ -63,6 +65,7 @@
                         //     url: "/d/file/module_upload_images/2019/03/5c7e4cf7dd1cd.png"
                         // },
                     ],
+
                 },
                 watch: {},
                 filters: {
@@ -102,7 +105,7 @@
                                 }
                             })
                         }
-                    },
+                    }
                 },
                 mounted: function () {
 

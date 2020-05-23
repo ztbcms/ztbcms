@@ -7,8 +7,6 @@
  */
 
 namespace Upload\Controller;
-
-
 use Common\Controller\AdminBase;
 
 /**

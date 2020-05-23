@@ -192,6 +192,7 @@
                     this.init(); // 初始化
                     // 若有传入则更换url，否则为空
                     this.img_url = this.getUrlQuery('url') || "";
+                    // 若是编辑模式，则将返回图片index
                     this.img_index = this.getUrlQuery('img_index') || "";
                     if(this.img_url != ""){
                         this.myCropper.replace(this.img_url)
