@@ -19,7 +19,7 @@
                     </div>
                 </template>
             </div>
-            <el-button type="primary" @click="onUploadImageChanged(0,-1)">选择图片</el-button>
+            <el-button type="primary" @click="onUploadImageChanged(0)">选择图片</el-button>
         </el-card>
     </div>
 
@@ -80,10 +80,8 @@
             new Vue({
                 el: '#app',
                 data: {
-                    uploadedFileCutList:[]
+                    uploadedFileCutList:[]  // 上传图片列表
                 },
-                watch: {},
-                filters: {},
                 methods: {
                     //删除
                     deleteCutItem: function (index) {
@@ -108,7 +106,7 @@
                             area: ['75%', '80%']
                         })
                     },
-                    //接收截图后文件回调
+                    //接收截图后的图片回调
                     onUploadedFile(event){
                         var img_base64 = event.detail.img_base64
                         if (img_base64) {
@@ -164,7 +162,6 @@
                 mounted: function () {
                     window.addEventListener('ZTBCMS_IMAGE_CROP_FILE', this.onUploadedFile.bind(this));
                 },
-
             })
         })
     </script>
