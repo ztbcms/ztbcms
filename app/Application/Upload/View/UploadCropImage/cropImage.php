@@ -72,7 +72,6 @@
                         </el-button>
                     </el-button-group>
                 </div>
-
             </el-col>
         </el-row>
             <el-col :span="15" style="text-align: center;margin-top: 20px;">
@@ -100,11 +99,10 @@
                     <input class="sr-only" id="inputImage" name="file" type="file" accept="image/*" style="display:none;"
                            v-on:change="changeImg">
                     <span>
-                        <i class="el-icon-upload2"></i>
-                        <span>选择图片</span>
+                        <i class="el-icon-upload2" style="font-size: 14px;"></i>
+                        <span style="font-size: 14px;">选择图片</span>
                     </span>
                 </label>
-
                 <el-button-group>
                     <el-button type="success" size="medium" @click="sureSava">
                         保存
@@ -132,15 +130,16 @@
                             dragMode: 'crop',           //拖拽图片模式 : 形成新的裁剪框
                             initialAspectRatio: NaN,    //裁剪框宽高比的初始值
                             preview: '.preview',        //预览
-                            background: false,          //是否在容器内显示网格状的背景 默认true
+                            background: true,           //是否在容器内显示网格状的背景 默认true
                             autoCropArea: 0.6,          //设置裁剪区域占图片的大小 值为 0-1 默认 0.8 表示 80%的区域
                             zoomOnWheel: false,         //是否可以通过鼠标滚轮缩放图片 默认true
                         })
                     },
-                    //监听输入 宽
+                    //宽比例
                     listenInputWidth(){
                         this.setAspectRatio(this.input_width,this.input_height)
                     },
+                    //高比例
                     listenInputHeight(){
                         this.setAspectRatio(this.input_width,this.input_height)
                     },
