@@ -109,7 +109,6 @@
                     </el-button>
                 </el-button-group>
             </el-col>
-
     </div>
 
     <script>
@@ -159,7 +158,7 @@
                     sureSava(){
                         this.save_img_url = this.myCropper.getCroppedCanvas({
                             imageSmoothingQuality: 'high'
-                        }).toDataURL('image/jpeg')
+                        }).toDataURL('image/jpeg');
                         //返回裁剪后的图片
                         var event = document.createEvent('CustomEvent');
                         event.initCustomEvent('ZTBCMS_IMAGE_CROP_FILE', true, true, {
@@ -188,6 +187,7 @@
                         var newsrc= this.getObjectURL(e.target.files[0]);
                         this.myCropper.replace(newsrc,false)
                     },
+                    //创建 URL 对象
                     getObjectURL(file) {
                         var url = null ;
                         if (window.createObjectURL!=undefined) { // basic
@@ -201,7 +201,8 @@
                     }
                 },
                 mounted: function () {
-                    this.init(); // 初始化
+                    // 初始化
+                    this.init();
                     // 传入指定图片url
                     this.img_url = this.getUrlQuery('url') || "";
                     if(this.img_url != ""){
