@@ -41,7 +41,7 @@
                                         <li class="el-menu-item" style="padding: 0 20px;"
                                             @click="selectGroup(item.group_id)"
                                             :class="[now_group == item.group_id ? 'group_active el-menu-item' : 'el-menu-item']">
-                                            {{item.group_name}}
+                                            <span style="word-break:break-all; white-space:normal; width:65%;line-height: 20px;vertical-align:middle;display:inline-block;">{{item.group_name}}</span>
                                         </li>
                                         <a href="#" style="color: #000;">
                                             <i :class="[now_group == item.group_id ? 'el-input__icon el-icon-edit group_edit_icon group_active' : 'el-input__icon el-icon-edit group_edit_icon']" @click="showEditGroupDialog(item.group_id,item.group_name)"></i>
@@ -180,6 +180,10 @@
         .el-menu{
             border: none;
             padding-right: 20px;
+        }
+        .el-menu-item{
+            height: auto;
+            min-height: 56px;
         }
         .el-menu-item:focus{
             outline: none;
