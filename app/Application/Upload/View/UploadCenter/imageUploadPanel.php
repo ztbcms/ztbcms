@@ -88,7 +88,7 @@
                                         v-show="pagination.total_items > 0"
                                         background
                                         layout="prev, pager, next"
-                                        @current-change="getGalleryGroupList"
+                                        @current-change="getGalleryByGroupIdList"
                                         style="margin-top: 10px;float: right;padding-right: 50px;"
                                 ></el-pagination>
                             </div>
@@ -294,7 +294,7 @@
 
                         }
                         if (this.activeName == 'gallery') {
-                            this.getGalleryGroupList();
+                            this.getGalleryByGroupIdList();
                         }
                     },
                     handleRemove: function () {
