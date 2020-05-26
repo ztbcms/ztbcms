@@ -19,7 +19,7 @@
                     </div>
                 </template>
             </div>
-            <el-button type="primary" @click="onUploadImageChanged(0,-1)">选择图片</el-button>
+            <el-button type="primary" @click="onUploadImageChanged(0)">选择图片</el-button>
         </el-card>
     </div>
 
