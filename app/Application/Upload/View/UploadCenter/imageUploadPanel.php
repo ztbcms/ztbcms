@@ -64,7 +64,7 @@
                             <div>
                                 <template v-for="(img,index) in galleryList">
                                     <div :key="index"
-                                         class="imgListItme">
+                                         class="imgListItem">
                                         <img :src="img.url"
                                              style="width:80px;height: 80px;"
                                              @click="selectImgEvent(index)">
@@ -149,7 +149,7 @@
         }
 
         /*图库*/
-        .imgListItme {
+        .imgListItem {
             width: 82px;
             height: 82px;
             border: 1px dashed #d9d9d9;
