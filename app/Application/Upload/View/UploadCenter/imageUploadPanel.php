@@ -174,7 +174,6 @@
             font-size: 40px;
         }
 
-        /*图库*/
         .el-menu{
             border: none;
             padding-right: 20px;
@@ -476,7 +475,6 @@
                     // 移动分组
                     moveGroup:function () {
                         var that = this;
-                        console.log(this.move_group_id);
                         var form = {
                             files: [],
                             group_id: this.move_group_id
