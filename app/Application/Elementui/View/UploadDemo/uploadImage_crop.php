@@ -96,15 +96,10 @@
                     //图片裁剪框
                     onUploadImageChanged(img_url){
                         var url = "Upload/UploadCropImage/cropImage";
-
-                        //传入img
+                        //传入图片地址
                         if(img_url != 0){
                             url = url + '?url=' + img_url;
-                            // 可以传入宽高比
-                            url = url + '&width=' + 1920;
-                            url = url + '&height=' + 1080
                         }
-
                         //直接打开新页面
                         layer.open({
                             type: 2,
@@ -113,17 +108,15 @@
                             area: ['75%', '80%']
                         })
                     },
-                    // 接收回调
+                    //接收截图后文件回调
                     onUploadedFile(event){
-                        var that = this;
                         var img_base64 = event.detail.img_base64
-                        var img_index = event.detail.img_index
                         if (img_base64) {
-                            that.doUpload(img_base64,img_index)       // 上传图片
+                            this.doUpload(img_base64)
                         }
                     },
-                    doUpload(img_base64,img_index){
-                        // 上传后台
+                    //上传图片
+                    doUpload(img_base64){
                         var that = this;
                         var img_blob = this.dataURItoBlob(img_base64);
                         var form = new FormData();
@@ -138,8 +131,7 @@
                             contentType: false,
                             success(res){
                                 if(res.status == true){
-                                    // layer.msg('保存成功', {time: 3000})
-                                    backUrl =  res.data.url;
+                                    var backUrl =  res.data.url;  //返回保存图片地址
                                     that.uploadedFileCutList.push({
                                         name: res.data.savename,
                                         url: backUrl,
