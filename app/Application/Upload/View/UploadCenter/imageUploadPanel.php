@@ -148,8 +148,6 @@
             display: none !important;
         }
 
-        /* 上传图片    */
-
         /*图库*/
         .imgListItme {
             width: 82px;
@@ -576,6 +574,11 @@
                         var file = $("#upload_input")[0].files[0];
 
                         if (file) {
+                            // 校验是否为图片
+                            if (!/\.(jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.type)) {
+                                layer.msg("请上传图片类型必须是jpeg,jpg,png中的一种");
+                                return false;
+                            }
                             var group_id = this.now_group;
                             var that = this;
                             var formData = new FormData();
