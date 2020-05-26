@@ -30,29 +30,23 @@
                             <li class="el-menu-item-group">
                                 <ul>
                                     <li class="el-menu-item" style="padding: 0 20px;"  @click="selectGroup('all')"
-                                        :class="[now_group == 'all' ? 'group_active el-menu-item' : 'el-menu-item']"
-                                    >
+                                        :class="[now_group == 'all' ? 'group_active el-menu-item' : 'el-menu-item']">
                                         全部
                                     </li>
                                     <li class="el-menu-item" style="padding: 0 20px;"  @click="selectGroup(0)"
-                                        :class="[now_group == 0 ? 'group_active el-menu-item' : 'el-menu-item']"
-                                    >
+                                        :class="[now_group == 0 ? 'group_active el-menu-item' : 'el-menu-item']">
                                         未分组
                                     </li>
                                     <div v-for="item in galleryGroupList" style="position: relative;">
-
                                         <li class="el-menu-item" style="padding: 0 20px;"
                                             @click="selectGroup(item.group_id)"
-                                            :class="[now_group == item.group_id ? 'group_active el-menu-item' : 'el-menu-item']"
-                                        >
+                                            :class="[now_group == item.group_id ? 'group_active el-menu-item' : 'el-menu-item']">
                                             {{item.group_name}}
                                         </li>
                                         <a href="#" style="color: #000;">
-                                            <i :class="[now_group == item.group_id ? 'el-input__icon el-icon-edit group_edit_icon group_active' : 'el-input__icon el-icon-edit group_edit_icon']"
-                                            @click="showEditGroupDialog(item.group_id,item.group_name)"></i>
+                                            <i :class="[now_group == item.group_id ? 'el-input__icon el-icon-edit group_edit_icon group_active' : 'el-input__icon el-icon-edit group_edit_icon']" @click="showEditGroupDialog(item.group_id,item.group_name)"></i>
                                         </a>
-                                        <a href="#" style="color: #000;"><i :class="[now_group == item.group_id ? 'el-input__icon el-icon-circle-close group_close group_active' : 'el-input__icon el-icon-circle-close group_close']"
-                                           @click="handleClose(item.group_id)"></i></a>
+                                        <a href="#" style="color: #000;"><i :class="[now_group == item.group_id ? 'el-input__icon el-icon-circle-close group_close group_active' : 'el-input__icon el-icon-circle-close group_close']" @click="handleClose(item.group_id)"></i></a>
                                     </div>
                                     <div class="grid-content" style="padding: 19px;">
                                         <el-button type="primary" @click="addGroup" size="mini">新增分组</el-button>
@@ -63,7 +57,7 @@
                     </el-col>
 
                     <el-col :span="20">
-                        <input type="file" style="display:none;" id="upload_input" ref="inputFile" @change="listenInputImage">
+                        <input type="file" style="display:none;" id="upload_input" ref="inputFile" @change="listenInputImage" accept="image/*">
                         <el-button size="small" type="" id="upload_btn" @click="$refs.inputFile.click()"><i class="el-icon-plus"></i>上传图片</el-button>
 
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
@@ -77,13 +71,13 @@
                                         <div v-if="img.is_select" class="is_check" @click="selectImgEvent(index)">
                                             <span style="line-height: 80px;" class="el-icon-check"></span>
                                         </div>
-
                                     </div>
                                 </template>
                                 <div>
                                     <el-button v-show="selectdImageList.length > 0" type="danger" size="small"  @click="clickDeleteSelected">删除选中</el-button>
                                     <el-button v-show="selectdImageList.length > 0" type="primary" size="small" @click="clickCancelSelected">取消选中</el-button>
                                     <el-select v-show="selectdImageList.length > 0" v-model="move_group_id" placeholder="移动至" style="width:130px;margin-left: 10px;" size="small" @change="moveGroup" >
+                                        <el-option label="0" value="0">未分组</el-option>
                                         <el-option :label="item.group_name" :value="item.group_id" v-for="item in galleryGroupList">{{item.group_name}}</el-option>
                                     </el-select>
                                 </div>
@@ -238,11 +232,11 @@
                         total_pages: 0,
                         total_items: 0,
                     },
-                    galleryList: [], //图库
+                    galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
 
-                    now_group: 'all', // 当前分类
-                    move_group_id: '',    // 移动至分类
+                    now_group: 'all',     // 当前分类ID
+                    move_group_id: '',    // 移动至分类ID
                     showEditGroup: false, // 显示修改分组名称框
                     edit_group_id: 0,     // 当前修改的id
                     edit_group_name: '',  // 当前修改的名称
@@ -273,7 +267,6 @@
                                 })
                             })
                         }
-
                         if (this.activeName == 'gallery') {
                             this.galleryList.forEach(function (file) {
                                 if (file.is_select) {
@@ -285,7 +278,6 @@
                                 }
                             })
                         }
-
                         return result;
                     }
                 },
@@ -301,7 +293,6 @@
                         if (this.activeName == 'uploadLocal') {
 
                         }
-
                         if (this.activeName == 'gallery') {
                             this.getGalleryGroupList();
                         }
@@ -323,33 +314,6 @@
                     handleExceed: function(){
                         ELEMENT.Message.error('上传文件数量超限制');
                     },
-                    // 获取图片列表
-                    getGalleryList: function () {
-                        var that = this;
-                        var where = {
-                            page: this.pagination.page,
-                            limit: this.pagination.limit,
-                        };
-                        $.ajax({
-                            url: "{:U('Upload/UploadAdminApi/getGalleryList')}",
-                            data: where,
-                            dataType: 'json',
-                            type: 'post',
-                            success: function (res) {
-                                var data = res.data;
-                                that.pagination.page = data.page;
-                                that.pagination.limit = data.limit;
-                                that.pagination.total_pages = data.total_pages;
-                                that.pagination.total_items = data.total_items;
-                                var list = [];
-                                data.items.map(function (item) {
-                                    item.is_select = false;
-                                    list.push(item);
-                                })
-                                that.galleryList = list
-                            }
-                        })
-                    },
                     // 获取分组列表
                     getGalleryGroup(){
                         var that = this
@@ -363,8 +327,8 @@
                         })
                     },
                     // 获取分组图片列表
-                    getGalleryGroupList: function () {
-                        this.loading = true
+                    getGalleryByGroupIdList: function () {
+                        this.loading = true;
                         var that = this;
                         var where = {
                             page: this.pagination.page,
@@ -386,8 +350,8 @@
                                 data.items.map(function (item) {
                                     item.is_select = false;
                                     list.push(item);
-                                })
-                                that.galleryList = list
+                                });
+                                that.galleryList = list;
                                 that.loading = false
                             }
                         })
@@ -395,8 +359,9 @@
 
                     // 获取指定分类的图片
                     selectGroup(group_id){
-                        this.now_group = group_id
-                        this.getGalleryGroupList()
+                        this.now_group = group_id;
+                        // 获取图片列表
+                        this.getGalleryByGroupIdList()
                     },
 
                     // 添加分类
@@ -415,7 +380,7 @@
                                 },
                                 success(res){
                                     if(res.status){
-                                        that.getGalleryGroup()
+                                        that.getGalleryGroup();
                                         that.$message({
                                             type: 'success',
                                             message: res.msg
@@ -450,7 +415,7 @@
                             },
                             success(res){
                                 if(res.status){
-                                    that.getGalleryGroup()
+                                    that.getGalleryGroup();
                                     that.$message({
                                         type: 'success',
                                         message: res.msg
@@ -469,7 +434,7 @@
 
                     // 删除分类
                     handleClose(group_id) {
-                        var that = this
+                        var that = this;
                         layer.confirm('是否确定删除该分类吗？', {
                             btn: ['确认', '取消'] //按钮
                         }, function () {
@@ -491,7 +456,7 @@
                             },
                             success(res){
                                 if(res.status){
-                                    that.getGalleryGroup()
+                                    that.getGalleryGroup();
                                     that.$message({
                                         type: 'success',
                                         message: res.msg
@@ -509,11 +474,11 @@
                     // 移动分组
                     moveGroup:function () {
                         var that = this;
-                        console.log(this.move_group_id)
+                        console.log(this.move_group_id);
                         var form = {
                             files: [],
                             group_id: this.move_group_id
-                        }
+                        };
                         for (var i = 0; i < this.selectdImageList.length; i++) {
                             form['files'].push(this.selectdImageList[i])
                         }
@@ -524,13 +489,14 @@
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
-                                layer.msg(res.msg)
-                                that.getGalleryGroupList()
+                                layer.msg(res.msg);
+                                // 获取图片列表
+                                that.getGalleryByGroupIdList()
                                 that.move_group_id = ""
                             }
                         })
                     },
-
+                    //选择图片
                     selectImgEvent: function (index) {
                         this.galleryList[index].is_select = !this.galleryList[index].is_select
                     },
@@ -570,22 +536,20 @@
                     },
                     // 删除选中
                     clickDeleteSelected: function(){
-                        var that = this
+                        var that = this;
                         layer.confirm('确认删除？', {
                             title: '提示',
                             btn: ['确认', '取消'] //按钮
                         }, function () {
                             //确认回掉
                             that.doDeleteSelected()
-                        }, function () {
-                            //取消回掉
                         });
                     },
                     doDeleteSelected: function(){
                         var that = this;
                         var form = {
                             files: []
-                        }
+                        };
                         for (var i = 0; i < this.selectdImageList.length; i++) {
                             form['files'].push(this.selectdImageList[i])
                         }
@@ -596,18 +560,19 @@
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
-                                layer.msg(res.msg)
-                                that.getGalleryGroupList()
+                                layer.msg(res.msg);
+                                //获取图片列表
+                                that.getGalleryByGroupIdList()
                             }
                         })
                     },
 
-                    // 监听上传图片后上传
+                    // 上传图片
                     listenInputImage(){
-                        var file = $("#upload_input")[0].files[0]
+                        var file = $("#upload_input")[0].files[0];
 
                         if (file) {
-                            var group_id = this.now_group
+                            var group_id = this.now_group;
                             var that = this;
                             var formData = new FormData();
                             formData.append("file", file);
@@ -624,12 +589,13 @@
                                 contentType: false,
                                 success: function (res) {
                                     if (res.status) {
-                                        layer.msg(res.msg)
-                                        that.getGalleryGroupList()
+                                        layer.msg(res.msg);
+                                        //获取图片列表
+                                        that.getGalleryByGroupIdList()
                                     } else {
                                         layer.msg(res.msg)
                                     }
-                                    $("#upload_input").val("")
+                                    $("#upload_input").val("")  //清空上传值
                                 }
                             })
                         }
@@ -637,10 +603,12 @@
 
                 },
                 mounted: function () {
-                    this.getWatermarkConfig()
-
+                    //获取水印设置
+                    this.getWatermarkConfig();
+                    //获取分组列表
                     this.getGalleryGroup();
-                    this.getGalleryGroupList();
+                    //获取图片列表
+                    this.getGalleryByGroupIdList();
 
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
                 }

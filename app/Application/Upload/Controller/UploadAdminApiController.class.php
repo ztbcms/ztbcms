@@ -219,7 +219,7 @@ class UploadAdminApiController extends AdminApiBaseController
     }
 
     /**
-     * 删除图片类型分组
+     * 删除图片分组
      */
     function delGalleryGroup(){
         $group_id = I('group_id','');
@@ -228,16 +228,20 @@ class UploadAdminApiController extends AdminApiBaseController
         }
         $AttachmentGroupModel = new AttachmentGroupModel;
         $res = $AttachmentGroupModel->delete($group_id);
+        // 重置图片到未分组
+        $AttachmentModel = new AttachmentModel();
+        $AttachmentModel->where(['group_id'=>$group_id])->save(['group_id'=>0]);
+
         if($res) $this->ajaxReturn(self::createReturn(true,[],'删除成功'));
         $this->ajaxReturn(self::createReturn(false,[],'删除失败'));
     }
 
     /**
-     * 获取图像通过分组id获取
+     * 通过分组id获取图片列表
      */
     function getGalleryByGroupIdList()
     {
-        $page = I('page', 1);
+        $page  = I('page', 1);
         $limit = I('limit', 20);
         $group_id = I('group_id', 'all');
         $userInfo = User::getInstance()->getInfo();
@@ -245,16 +249,17 @@ class UploadAdminApiController extends AdminApiBaseController
 
         $db = M('Attachment');
         $where = [
-            'module' => self::MODULE_IMAGE,
-            'userid' => $userid,
+            'module'  => self::MODULE_IMAGE,
+            'userid'  => $userid,
             'isadmin' => 1,
+            'isimage' => 1,
             'delete_status' => AttachmentModel::DELETE_STATUS_NO,
         ];
         if($group_id != 'all'){
             $where['group_id'] = $group_id;
         }
         $total_items = $db->where($where)->count();
-        $total_page = ceil($total_items / $limit);
+        $total_page  = ceil($total_items / $limit);
         $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
 
         $return_list = [];
