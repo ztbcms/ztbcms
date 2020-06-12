@@ -93,10 +93,10 @@
                     },
                     //图片裁剪框
                     onUploadImageChanged(img_url){
-                        var url = "Upload/UploadCropImage/cropImage";
+                        var url = "/Upload/UploadCropImage/cropImage";
                         //传入图片地址
                         if(img_url != 0){
-                            url = url + '?url=' + img_url;
+                            url = url + '?url=' + encodeURIComponent(img_url) + '&width=100&height=100';
                         }
                         //直接打开新页面
                         layer.open({

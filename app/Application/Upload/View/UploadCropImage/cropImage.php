@@ -261,7 +261,7 @@
                     // 初始化
                     this.init();
                     // 传入指定图片url
-                    this.img_url = this.getUrlQuery('url') || ""
+                    this.img_url = decodeURIComponent(this.getUrlQuery('url') || "")
                     if(this.img_url != ""){
                         this.myCropper.replace(this.img_url)
                     }
