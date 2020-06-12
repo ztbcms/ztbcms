@@ -20,6 +20,22 @@
                 </template>
             </div>
             <el-button type="primary" @click="onUploadImageChanged(0)">选择图片</el-button>
+            <p>打开编辑图片示例代码</p>
+            <pre>
+                var url = "/Upload/UploadCropImage/cropImage";
+                    //传入图片地址
+                    if(img_url != 0){
+                        // url 指定图片，可以为空 width/height分别指定需要裁剪的宽高比
+                        url = url + '?url=' + encodeURIComponent(img_url) + '&width=100&height=100';
+                    }
+                    //直接打开新页面
+                    layer.open({
+                        type: 2,
+                        title: '图片裁剪',
+                        content: url,
+                        area: ['80%', '75%']
+                    })
+            </pre>
         </el-card>
     </div>
 
