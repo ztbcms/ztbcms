@@ -28,3 +28,5 @@ layer.open({
     area: ['80%', '75%']
 })
 ```
+
+图片裁剪插件，来源地址：https://github.com/fengyuanchen/cropperjs/tree/master/dist
