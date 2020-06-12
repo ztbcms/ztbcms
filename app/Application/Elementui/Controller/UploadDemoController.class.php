@@ -27,4 +27,8 @@ class UploadDemoController extends AdminBase
         $this->display();
     }
 
+    function uploadImage_crop(){
+        $this->display();
+    }
+
 }
