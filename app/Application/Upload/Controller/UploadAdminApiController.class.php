@@ -158,8 +158,8 @@ class UploadAdminApiController extends AdminApiBaseController
     function getGalleryGroup(){
         $AttachmentGroupModel = new AttachmentGroupModel;
         $where = [
-            'is_delete' => 0,
-            'group_type' => 'image',
+            'is_delete' => AttachmentGroupModel::IS_DELETE_NO,
+            'group_type' => AttachmentGroupModel::GROUP_TYPE_IMAGE,
         ];
         $list = $AttachmentGroupModel->where($where)->field('group_id,group_name')->order('sort desc')->select();
         $this->ajaxReturn(self::createReturn(true,$list));
@@ -187,7 +187,7 @@ class UploadAdminApiController extends AdminApiBaseController
             $this->ajaxReturn(self::createReturn(false,[],'请输入分类名称'));
         }
         $data = [
-            'group_type' => 'image',
+            'group_type' => AttachmentGroupModel::GROUP_TYPE_IMAGE,
             'group_name' => $group_name,
             'create_time' => time()
         ];

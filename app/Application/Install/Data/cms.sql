@@ -80,11 +80,10 @@ CREATE TABLE `cms_attachment_group` (
   `group_type` varchar(255) NOT NULL DEFAULT '' COMMENT '分类类型',
   `group_name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
   `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  `is_delete` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `is_delete` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除 0否1是',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `pid` int(11) DEFAULT NULL COMMENT '父ID',
-  `type` varchar(255) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
 

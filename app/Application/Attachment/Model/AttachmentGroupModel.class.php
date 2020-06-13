@@ -18,4 +18,10 @@ use Common\Model\Model;
 class AttachmentGroupModel extends Model
 {
     protected $tableName = 'attachment_group';
+
+    //是否删除 0否1是
+    const IS_DELETE_NO = 0;
+    const IS_DELETE_YES = 1;
+    // 图片分类
+    const GROUP_TYPE_IMAGE = 'image';
 }
