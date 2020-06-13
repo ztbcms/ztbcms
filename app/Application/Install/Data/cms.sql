@@ -84,6 +84,7 @@ CREATE TABLE `cms_attachment_group` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   `pid` int(11) DEFAULT NULL COMMENT '父ID',
+  `type` varchar(255) DEFAULT NULL COMMENT '类型',
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
 
