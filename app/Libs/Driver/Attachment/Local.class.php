@@ -37,6 +37,8 @@ class Local extends Attachment {
 			'time' => time(),
 			//上传目录创建规则
 			'dateFormat' => 'Y/m',
+			//分组id
+			'group_id' => '0',
 		), $options);
 		$this->options = $options;
 		//附件访问地址
@@ -98,7 +100,7 @@ class Local extends Attachment {
 				if ($this->handler->thumb && $this->handler->thumbRemoveOrigin) {
 					$info[$i]['savename'] = $value['savename'] = $this->handler->thumbPrefix . $value['savename'];
 				}
-				$aid = D('Attachment/Attachment')->fileInfoAdd($value, $this->options['module'], $this->options['catid'], $this->options['thumb'], $this->options['isadmin'], $this->options['userid'], $this->options['time']);
+				$aid = D('Attachment/Attachment')->fileInfoAdd($value, $this->options['module'], $this->options['catid'], $this->options['thumb'], $this->options['isadmin'], $this->options['userid'], $this->options['time'], $this->options['group_id']);
 				if ($aid) {
 					$filePath = $value['savepath'] . $value['savename'];
 					$info[$i]['aid'] = $aid;
@@ -272,7 +274,7 @@ class Local extends Attachment {
 					"hash" => md5(str_replace($this->options['uploadfilepath'], "", $this->options['savePath'] . $filename)),
 				);
 				$info['url'] = $this->options['sitefileurl'] . str_replace($this->options['uploadfilepath'], '', $info['savepath'] . $info['savename']);
-				$aid = D('Attachment/Attachment')->fileInfoAdd($info, $this->options['module'], $this->options['catid'], $this->options['thumb'], $this->options['isadmin'], $this->options['userid'], $this->options['time']);
+				$aid = D('Attachment/Attachment')->fileInfoAdd($info, $this->options['module'], $this->options['catid'], $this->options['thumb'], $this->options['isadmin'], $this->options['userid'], $this->options['time'],$this->options['group_id']);
 				//设置标识
 				$this->upload_json($aid, $info['url'], $filename);
 			}
