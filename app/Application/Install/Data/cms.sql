@@ -54,6 +54,7 @@ CREATE TABLE `cms_attachment` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '附件使用状态',
   `authcode` varchar(32) NOT NULL DEFAULT '' COMMENT '附件路径MD5值',
   `delete_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态 0未删除 1已删除',
+  `group_id` int(11) DEFAULT '0',
   PRIMARY KEY (`aid`),
   KEY `authcode` (`authcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
@@ -72,6 +73,19 @@ CREATE TABLE `cms_attachment_index` (
   KEY `keyid` (`keyid`),
   KEY `aid` (`aid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件关系表';
+
+DROP TABLE IF EXISTS `cms_attachment_group`;
+CREATE TABLE `cms_attachment_group` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_type` varchar(255) NOT NULL DEFAULT '' COMMENT '分类类型',
+  `group_name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
+  `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `is_delete` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `pid` int(11) DEFAULT NULL COMMENT '父ID',
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
 
 -- ----------------------------
 -- Records of cms_attachment_index
