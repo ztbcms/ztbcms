@@ -17,5 +17,5 @@ use Common\Model\Model;
  */
 class AttachmentGroupModel extends Model
 {
-
+    protected $tableName = 'attachment_group';
 }
