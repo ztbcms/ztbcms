@@ -25,38 +25,39 @@
 
             <el-tab-pane label="图库" name="gallery">
                 <el-row>
-                    <el-col :span="4">
+                    <el-col :span="6">
                         <ul role="menubar" class="el-menu">
                             <li class="el-menu-item-group">
-                                <ul>
-                                    <li class="el-menu-item" style="padding: 0 20px;"  @click="selectGroup('all')"
-                                        :class="[now_group == 'all' ? 'group_active el-menu-item' : 'el-menu-item']">
+                                <ul class="group_list">
+                                    <li class="el-menu-item" style="padding: 0 8px;"  @click="selectGroup('all')"
+                                        :class="{'group_active' : now_group == 'all'}">
                                         全部
                                     </li>
-                                    <li class="el-menu-item" style="padding: 0 20px;"  @click="selectGroup(0)"
-                                        :class="[now_group == 0 ? 'group_active el-menu-item' : 'el-menu-item']">
+                                    <li class="el-menu-item" style="padding: 0 8px;"  @click="selectGroup(0)"
+                                        :class="{'group_active' : now_group == 0}">
                                         未分组
                                     </li>
-                                    <div v-for="item in galleryGroupList" style="position: relative;">
-                                        <li class="el-menu-item" style="padding: 0 20px;"
+                                    <template v-for="item in galleryGroupList">
+                                        <li class="el-menu-item" style="padding: 0 8px;position: relative;"
                                             @click="selectGroup(item.group_id)"
-                                            :class="[now_group == item.group_id ? 'group_active el-menu-item' : 'el-menu-item']">
-                                            <span style="word-break:break-all; white-space:normal; width:65%;line-height: 20px;vertical-align:middle;display:inline-block;">{{item.group_name}}</span>
+                                            :class="{'group_active' : now_group == item.group_id }">
+                                            <span style="word-break:break-all; white-space:normal; width:75%;line-height: 20px;vertical-align:middle;display:inline-block;">{{item.group_name}}</span>
+
+                                            <i class="el-input__icon el-icon-edit group_edit_icon" @click="showEditGroupDialog(item.group_id,item.group_name)"></i>
+                                            <i class="el-input__icon el-icon-circle-close group_close" @click="handleClose(item.group_id)"></i>
                                         </li>
-                                        <a href="#" style="color: #000;">
-                                            <i :class="[now_group == item.group_id ? 'el-input__icon el-icon-edit group_edit_icon group_active' : 'el-input__icon el-icon-edit group_edit_icon']" @click="showEditGroupDialog(item.group_id,item.group_name)"></i>
-                                        </a>
-                                        <a href="#" style="color: #000;"><i :class="[now_group == item.group_id ? 'el-input__icon el-icon-circle-close group_close group_active' : 'el-input__icon el-icon-circle-close group_close']" @click="handleClose(item.group_id)"></i></a>
-                                    </div>
-                                    <div class="grid-content" style="padding: 19px;">
-                                        <el-button type="primary" @click="addGroup" size="mini">新增分组</el-button>
-                                    </div>
+
+                                    </template>
+
                                 </ul>
+                                <div class="grid-content" style="padding: 19px;">
+                                    <el-button type="primary" @click="addGroup" size="mini">新增分组</el-button>
+                                </div>
                             </li>
                         </ul>
                     </el-col>
 
-                    <el-col :span="20">
+                    <el-col :span="18">
                         <input type="file" style="display:none;" id="upload_input" ref="inputFile" @change="listenInputImage" accept="image/*">
                         <el-button size="small" type="" id="upload_btn" @click="$refs.inputFile.click()"><i class="el-icon-plus"></i>上传图片</el-button>
 
@@ -107,8 +108,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="showEditGroup = false">取 消</el-button>
-                <el-button type="primary" @click="editGroup">确 定</el-button>
+                <el-button @click="showEditGroup = false">取消</el-button>
+                <el-button type="primary" @click="editGroup">确定</el-button>
             </div>
         </el-dialog>
 
@@ -174,29 +175,30 @@
             font-size: 40px;
         }
 
+        .group_list {
+            height: 330px;
+            overflow: scroll;
+            border-bottom: 1px solid gainsboro;
+        }
         .el-menu{
             border: none;
             padding-right: 20px;
         }
         .el-menu-item{
-            height: auto;
-            min-height: 56px;
+            height: 30px;
+            line-height: 30px;
         }
         .el-menu-item:focus{
             outline: none;
             background-color: #ecf5ff;
         }
         .group_close{
-            position: absolute;
-            right: 5%;
-            top: 2px;
             font-size: 15px;
+            line-height: 30px;
         }
         .group_edit_icon{
-            position: absolute;
-            right: 20%;
-            top: 2px;
             font-size: 15px;
+            line-height: 30px;
         }
         .group_active{
             /*background-color: #409eff;*/
@@ -212,6 +214,13 @@
             color: #409eff;
             height: 36px;
         }
+        .el-menu-item i {
+            color: #303133;
+            opacity: 0;
+        }
+        .el-menu-item:hover i {
+            opacity: 0.9;
+        }
 
     </style>
 
@@ -220,7 +229,7 @@
             new Vue({
                 el: '#app',
                 data: {
-                    activeName: 'gallery',
+                    activeName: '{:I("activeName", "gallery")}', // 可以根据路由
                     uploadConfig: {
                         uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
                         max_upload: 6,//同时上传文件数
@@ -436,7 +445,7 @@
                     // 删除分类
                     handleClose(group_id) {
                         var that = this;
-                        layer.confirm('是否确定删除该分类吗？', {
+                        layer.confirm('是否确定删除该分组吗？', {
                             btn: ['确认', '取消'] //按钮
                         }, function () {
                             that.toDeleteGroup(group_id);
@@ -569,19 +578,20 @@
 
                     // 上传图片
                     listenInputImage(){
-                        var file = $("#upload_input")[0].files[0];
+                        var file = $("#upload_input")[0].files[0]
 
                         if (file) {
                             // 校验是否为图片
-                            if (!/\.(jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.type)) {
-                                layer.msg("请上传图片类型必须是jpeg,jpg,png中的一种");
-                                return false;
+                            var file_type = file.type.toLowerCase()
+                            if (!/(jpg|jpeg|png|gif)$/.test(file_type)) {
+                                layer.msg("请上传图片格式为 jpeg,jpg,png,gif")
+                                return false
                             }
-                            var group_id = this.now_group;
-                            var that = this;
-                            var formData = new FormData();
-                            formData.append("file", file);
-                            formData.append("group_id", group_id);
+                            var group_id = parseInt(this.now_group) ? this.now_group : 0
+                            var that = this
+                            var formData = new FormData()
+                            formData.append("file", file)
+                            formData.append("group_id", group_id)
 
                             $.ajax({
                                 url: "{:U('Upload/UploadAdminApi/uploadImage')}",
