@@ -10,15 +10,23 @@
 1. 后台：上传时可以选择是否添加水印
 2. 前台：是否添加水印取决于后台配置
 
-### 图片裁剪
 
-1. Elementui 模块的图片裁剪示例，调用的是后台上传接口
-2. 参数：url  String  
-   值：要进行截图的图片地址
-3. 设置宽高比  
-    参数：width   类型：`Int`  
-    参数：height  类型：`Int`
+### 调起图片裁剪
 
+```javascript
+var url = "/Upload/UploadCropImage/cropImage";
+//传入图片地址
+if(img_url != 0){
+    // url 指定图片，可以为空 width/height分别指定需要裁剪的宽高比
+    url = url + '?url=' + encodeURIComponent(img_url) + '&width=100&height=100';
+}
+//直接打开新页面
+layer.open({
+    type: 2,
+    title: '图片裁剪',
+    content: url,
+    area: ['80%', '75%']
+})
 ```
-http://localhost/Upload/UploadCropImage/cropImage?url=/d/file/module_upload_images/2020/05/5ec8b849f1413.jpg&width=1920&height=1080
-```
+
+图片裁剪插件，来源地址：https://github.com/fengyuanchen/cropperjs/tree/master/dist

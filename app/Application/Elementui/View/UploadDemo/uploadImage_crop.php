@@ -20,6 +20,22 @@
                 </template>
             </div>
             <el-button type="primary" @click="onUploadImageChanged(0)">选择图片</el-button>
+            <p>打开编辑图片示例代码</p>
+            <pre>
+                var url = "/Upload/UploadCropImage/cropImage";
+                    //传入图片地址
+                    if(img_url != 0){
+                        // url 指定图片，可以为空 width/height分别指定需要裁剪的宽高比
+                        url = url + '?url=' + encodeURIComponent(img_url) + '&width=100&height=100';
+                    }
+                    //直接打开新页面
+                    layer.open({
+                        type: 2,
+                        title: '图片裁剪',
+                        content: url,
+                        area: ['80%', '75%']
+                    })
+            </pre>
         </el-card>
     </div>
 
@@ -93,74 +109,29 @@
                     },
                     //图片裁剪框
                     onUploadImageChanged(img_url){
-                        var url = "Upload/UploadCropImage/cropImage";
+                        var url = "/Upload/UploadCropImage/cropImage";
                         //传入图片地址
                         if(img_url != 0){
-                            url = url + '?url=' + img_url;
+                            url = url + '?url=' + encodeURIComponent(img_url) + '&width=100&height=100';
                         }
                         //直接打开新页面
                         layer.open({
                             type: 2,
                             title: '图片裁剪',
                             content: url,
-                            area: ['75%', '80%']
+                            area: ['80%', '75%']
                         })
                     },
                     //接收截图后的图片回调
-                    onUploadedFile(event){
-                        var img_base64 = event.detail.img_base64
-                        if (img_base64) {
-                            this.doUpload(img_base64)
-                        }
-                    },
-                    //上传图片
-                    doUpload(img_base64){
-                        var that = this;
-                        var img_blob = this.dataURItoBlob(img_base64);
-                        var form = new FormData();
-                        let fileOfBlob = new File([img_blob], new Date()+'.jpg'); // 重命名
-                        form.append("file", fileOfBlob);
-                        $.ajax({
-                            url:"{:U('Upload/UploadAdminApi/uploadImage')}",
-                            data: form,
-                            dataType:"json",
-                            type:"post",
-                            processData:false,
-                            contentType: false,
-                            success(res){
-                                if(res.status == true){
-                                    var backUrl =  res.data.url;  //返回保存图片地址
-                                    that.uploadedFileCutList.push({
-                                        name: res.data.savename,
-                                        url: backUrl,
-                                    })
-                                }else{
-                                    layer.msg('保存失败', {time: 1000})
-                                }
-                            }
+                    onCropedFile(event){
+                        this.uploadedFileCutList.push({
+                            name: event.detail.savename, // 名称
+                            url: event.detail.url, // 图片地址
                         })
                     },
-                    // base64 转 blob
-                    dataURItoBlob(base64Data) {
-                        var byteString;
-                        if(base64Data.split(',')[0].indexOf('base64') >= 0)
-                            byteString = atob(base64Data.split(',')[1]);//base64 解码
-                        else{
-                            byteString = unescape(base64Data.split(',')[1]);
-                        }
-                        var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];//mime类型 -- image/png
-                        var ia = new Uint8Array(byteString.length);//创建视图
-                        for(var i = 0; i < byteString.length; i++) {
-                            ia[i] = byteString.charCodeAt(i);
-                        }
-                        var blob = new Blob([ia], {
-                            type: mimeString
-                        });
-                        return blob;
-                    }
                 },
                 mounted: function () {
-                    window.addEventListener('ZTBCMS_IMAGE_CROP_FILE', this.onUploadedFile.bind(this));
+                    window.addEventListener('ZTBCMS_IMAGE_CROP_FILE', this.onCropedFile.bind(this));
                 },
             })
         })
