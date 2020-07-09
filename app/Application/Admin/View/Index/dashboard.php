@@ -22,24 +22,28 @@
                     >
                         <div v-for="(item, index) in navData" :key="item.id">
                             <el-menu-item v-if="item.items.length === 0" :index="item.id" @click="goUrl([item.name], item)">
-                                <i class="iconfont el-icon-location"></i>
+                                <i v-html="item.icon_html"></i>
                                 <span slot="title">{{item.name}}</span>
                             </el-menu-item>
                             <el-submenu v-else :index="item.id">
                                 <template slot="title">
-                                    <i class="iconfont el-icon-location"></i>
-                                    <span>{{item.name}}</span>
+                                    <i v-html="item.icon_html"></i>
+                                    <span class="title">{{item.name}}</span>
                                 </template>
                                 <div v-for="(val, j) in item.items" :key="val.id">
                                     <el-menu-item v-if="val.items.length === 0" :index="val.id" @click="goUrl([item.name, val.name], val)">
-                                        <span slot="title">{{val.name}}</span>
+                                        <template slot="title">
+                                            <span class="title">{{val.name}}</span>
+                                        </template>
                                     </el-menu-item>
                                     <el-submenu :index="val.id" v-else>
                                         <template slot="title">
-                                            <span>{{val.name}}</span>
+                                            <span class="title">{{val.name}}</span>
                                         </template>
                                         <el-menu-item v-for="(sub, v) in val.items" :key="sub.id" :index="sub.id" @click="goUrl([item.name, val.name, sub.name], sub)">
-                                            <span slot="title">{{sub.name}}</span>
+                                            <template slot="title">
+                                                <span class="title">{{sub.name}}</span>
+                                            </template>
                                         </el-menu-item>
                                     </el-submenu>
                                 </div>
@@ -95,7 +99,7 @@
                 </ul>
             </div>
             <section class="app-main">
-                <iframe :src="iframeUrl" frameborder="0" class="iframe" id="iframe" ref="iframe"></iframe>
+                <iframe v-if="iframeUrl" :src="iframeUrl" frameborder="0" class="iframe" id="iframe" ref="iframe"></iframe>
             </section>
         </div>
         <div class="mask" v-show="!minHid" @click="maskClick"></div>
@@ -119,7 +123,6 @@
             top: 0;
             bottom: 0;
             left: 0px;
-            z-index: 1001;
             overflow: hidden;
             background: rgb(48, 65, 86);
             z-index: 11;
@@ -207,6 +210,10 @@
             overflow: hidden;
         }
 
+        .el-submenu__title .title{
+            color: rgb(191, 203, 217);
+        }
+
         .el-menu--collapse {
             width: 36px;
         }
@@ -260,7 +267,8 @@
         }
 
         .iconfont {
-            /* width: 15px; */
+            font-size: 16px;
+            margin-right: 4px;
         }
 
         .navbar .left .nav {
@@ -444,10 +452,11 @@
                 minHid: false,
                 windowSize: 1920,
                 navData: [],
-                iframeUrl: 'http://sha.hb.ztbweb.cn/index.php?m=Main&menuid=1',
+                iframeUrl: '',
                 tags: [
                     // {name: '概括', url: 'http://sha.hb.ztbweb.cn/index.php?m=Main&menuid=1', breadcrumb: ['概括'], defaultActive: '1Admin'}
                 ],
+                temData: {}
             },
             methods: {
                 // url点击事件
@@ -498,15 +507,17 @@
                     var index = this.tags.findIndex(function(item) {
                         return item.url === data.url
                     })
-                    if (this.tags.length > 1) {
-                        this.tags.splice(index, 1)
-                        // 判断当前显示的页面是不是要被删除的页面
-                        if (this.iframeUrl === data.url) {
-                            // tag定位到前一个
+                    this.tags.splice(index, 1)
+                    // 判断当前显示的页面是不是要被删除的页面
+                    if (this.iframeUrl === data.url) {
+                        // tag定位到前一个
+                        if(index > 0){
                             this.tagClick(this.tags[index-1], index-1)
-                            var tagList = this.$refs.tagList
-                            this.setTagScroll(tagList.clientWidth)
+                        } else {
+                            this.iframeUrl = ''
                         }
+                        var tagList = this.$refs.tagList
+                        this.setTagScroll(tagList.clientWidth)
                     }
                 },
                 setTagScroll: function(x) {
@@ -563,15 +574,19 @@
                 },
                 // 关闭其他
                 urlOther: function() {
+                    var that = this
                     var index = this.tags.findIndex(function(item){
-                        return item.url === this.temData.url
+                        return item.url === that.temData.url
                     })
-                    this.iframeUrl = this.tags[index].url
+                    if(this.iframeUrl !== this.tags[index].url){
+                        this.iframeUrl = this.tags[index].url
+                    }
                     this.tags = [this.tags[index]]
                 },
                 // 关闭全部
                 endAll: function() {
-                    location.reload()
+                    this.iframeUrl = ''
+                    this.tags = []
                 },
                 // 初始化
                 init: function(){
@@ -599,8 +614,6 @@
                         }, false)
                     }
                 },
-
-
                 // 获取菜单
                 getMenuList() {
                     var that = this
@@ -611,13 +624,11 @@
                     }).then(function(res) {
                         console.log(res)
                         if (res.status) {
-                            // this.addRoleAccessList(res.data.roleAccessList)
-                            // this.addMenus(res.data.menuList)
-                            // that.navData = res.data.menuList
-                            var menu = [];
                             var _menuList = res.data.menuList
                             for(var i=0;i<_menuList.length;i++){
-                                _menuList[i]['icon_html'] = ' <i class="iconfont icon-'+_menuList[i]['icon']+'"></i>'
+                                // 默认icon
+                                var icon = _menuList[i]['icon'] || 'dashboard'
+                                _menuList[i]['icon_html'] = ' <i class="iconfont icon-'+ icon +'"></i>'
                             }
                             that.navData = _menuList
                             if(_menuList && _menuList[0]){
@@ -636,7 +647,6 @@
                                     }
                                 }
                             }
-
                         } else {
                             layer.msg(res.msg)
                         }
@@ -648,7 +658,7 @@
                     window.addEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
                     window.__adminOpenNewFrame = function(config) {
                         var title = config.title || ''
-                        var router_path = '/' + md5(config.url)
+                        var router_path = config.url || ''
                         var url = config.url || ''
                         var event = new CustomEvent('adminOpenNewFrame', {
                             detail: {
@@ -664,9 +674,6 @@
                     window.__adminOpenNewFrame = null
                     window.removeEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
                     window.removeEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
-                },
-                handleClickOutside() {
-                    this.$store.dispatch('closeSideBar', { withoutAnimation: false })
                 },
                 // 获取管理员信息
                 getAdminUserInfo() {
@@ -696,24 +703,15 @@
                 },
                 // 打开新窗口
                 handleEvent_adminOpenNewFrame(event) {
-                    var title = event.detail.title || ''
-                    var router_path = event.detail.router_path || ''
-                    var url = event.detail.url || ''
-                    this.openNewFrame(title, router_path, url)
-                    //{name: data.name, url: data.url, breadcrumb, defaultActive: data.id}
-                    this.openNewFrame([event.detail.title], {
-                        name: event.detail.name,
+                    this.goUrl([event.detail.title], {
+                        name: event.detail.title,
                         url: event.detail.url,
                         id: event.detail.url,
                     })
                 },
                 // 刷新窗口
                 handleEvent_adminRefreshFrame(event) {
-                    var refreshView = event.detail.refreshView
-                    console.log('handleEvent_adminRefreshFrame', refreshView)
-                    if (refreshView) {
-                        document.getElementById(refreshView.name).src = refreshView.meta.url
-                    }
+                    this.urlRefresh()
                 }
             },
             computed: {
