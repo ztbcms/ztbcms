@@ -65,12 +65,20 @@
                         </el-breadcrumb>
                     </div>
                     <el-dropdown>
-                        <span class="el-dropdown-link">
-                            admin（超级管理员）<i class="el-icon-arrow-down el-icon--right"></i>
+                        <span class="el-dropdown-link" >
+                            <template v-if="adminUserInfo && adminUserInfo.name">
+                            {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i class="el-icon-arrow-down el-icon--right"></i>
+                            </template>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>设置</el-dropdown-item>
-                            <el-dropdown-item>退出</el-dropdown-item>
+                            <el-dropdown-item v-if="hasPermission_cleanCache" >
+                                <span @click="click_cleancache">清理缓存</span>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <span @click="click_logout">
+                                    注销
+                                </span>
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -456,7 +464,14 @@
                 tags: [
                     // {name: '概括', url: 'http://sha.hb.ztbweb.cn/index.php?m=Main&menuid=1', breadcrumb: ['概括'], defaultActive: '1Admin'}
                 ],
-                temData: {}
+                temData: {},
+                //用户等级
+                adminUserInfo: {
+                    role_name: '',
+                    name: '',
+                },
+                // 角色权限列表
+                roleAccessList: []
             },
             methods: {
                 // url点击事件
@@ -600,10 +615,10 @@
                     }
                     // tag的滚动事件
                     var container = this.$refs.tagScroll
-                    let isFF = /FireFox/i.test(navigator.userAgent)
+                    var isFF = /FireFox/i.test(navigator.userAgent)
                     if (!isFF) {
                         container.addEventListener("mousewheel", function(e) {
-                            let v = -e.wheelDelta / 2
+                            var v = -e.wheelDelta / 2
                             container.scrollLeft += v
                             e.preventDefault()
                         }, false)
@@ -622,8 +637,8 @@
                         method: 'get',
                         params: {}
                     }).then(function(res) {
-                        console.log(res)
                         if (res.status) {
+                            that.roleAccessList = res.data.roleAccessList
                             var _menuList = res.data.menuList
                             for(var i=0;i<_menuList.length;i++){
                                 // 默认icon
@@ -652,7 +667,7 @@
                         }
                     })
                 },
-                //注册时间
+                //注册事件
                 registerEvent() {
                     window.addEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
                     window.addEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
@@ -677,16 +692,15 @@
                 },
                 // 获取管理员信息
                 getAdminUserInfo() {
+                    var that = this
                     $.ajax({
                         url: '/Admin/AdminApi/getAdminUserInfo',
                         method: 'get',
                         params: {}
                     }).then(function(res){
                         if (res.status) {
-                            // this.$store.commit('SET_ROLES', [res.data.role_id])
-                            // this.$store.commit('SET_NAME', res.data.nickname)
-                            // this.$store.commit('SET_AVATAR', res.data.avatar)
-                            // this.$store.commit('SET_LOGIN_USER_INFO', res.data)
+                            that.adminUserInfo.name = res.data.username
+                            that.adminUserInfo.role_name = res.data.role_name
                         } else {
                             layer.msg(res.msg)
                         }
@@ -695,23 +709,85 @@
                 /**
                  * 打开新窗口
                  * @param title 标题
-                 * @param router_path 路由(相对路径)
                  * @param url 对应的URL
                  */
-                openNewFrame(title, router_path, url) {
-
+                openNewFrame(title, url) {
+                    this.goUrl([title], {
+                        name: title,
+                        url: url,
+                    })
                 },
                 // 打开新窗口
                 handleEvent_adminOpenNewFrame(event) {
-                    this.goUrl([event.detail.title], {
-                        name: event.detail.title,
-                        url: event.detail.url,
-                        id: event.detail.url,
-                    })
+                    this.openNewFrame(event.detail.title, event.detail.url)
                 },
                 // 刷新窗口
                 handleEvent_adminRefreshFrame(event) {
                     this.urlRefresh()
+                },
+                /**
+                 * 检测是否存在权限
+                 * @param access_router 访问的路由，格式必须是：/module/controller/action   (与后台的权限配置时一致的)
+                 * @returns {boolean}
+                 */
+                hasRolePermission: function(access_router) {
+                    var roleAccessList = this.roleAccessList
+
+                    var access_router_arr = access_router.split('/')
+
+                    if (access_router_arr.length < 4) {
+                        return false
+                    }
+                    var module = access_router_arr[1]
+                    var controller = access_router_arr[2]
+                    var action = access_router_arr[3]
+
+                    // 检测 module 是否有权限
+                    for (var i = 0; i < roleAccessList.length; i++) {
+
+                        if (roleAccessList[i].app === '%') {
+                            return true
+                        }
+                        if (roleAccessList[i].app === module) {
+                            // 检测 controller 是否有权限
+                            if (roleAccessList[i].controller === '%') {
+                                return true
+                            }
+                            if (roleAccessList[i].controller === controller) {
+                                // 检测 action 是否有权限
+                                if (roleAccessList[i].action === '%') {
+                                    return true
+                                }
+                                if (roleAccessList[i].action === action) {
+                                    return true
+                                }
+                            }
+                        }
+                    }
+
+                    return false
+                },
+                // 点击清理缓存
+                click_cleancache: function(){
+                    this.openNewFrame('缓存更新', '/Admin/Index/cache')
+                },
+                // 点击退出
+                click_logout: function(){
+                    var that = this
+                    $.ajax({
+                        url: '/Admin/AdminApi/logout',
+                        method: 'get',
+                        params: {}
+                    }).then(function(res){
+                        if (res.status) {
+                            layer.msg(res.msg)
+                            setTimeout(function(){
+                                window.location.replace(res.data.redirect)
+                            }, 700)
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
                 }
             },
             computed: {
@@ -724,6 +800,10 @@
                         breadcrumb: data.breadcrumb,
                         defaultActive: data.defaultActive
                     }
+                },
+                // 是否有清理缓存权限
+                hasPermission_cleanCache: function() {
+                    return this.hasRolePermission('/Admin/Index/cache')
                 }
             },
             created () {
