@@ -1,129 +1,826 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset=utf-8>
-    <meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
-    <meta name=renderer content=webkit>
-    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <title>管理平台</title>
-    <link rel="shortcut icon" href=/statics/admin/pages/dashboard/favicon.ico>
-    <link href=/statics/admin/pages/dashboard/static/css/chunk-elementUI.fd758e0b.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/chunk-libs.336c0876.css rel=stylesheet>
-    <link href=/statics/admin/pages/dashboard/static/css/app.0092c034.css rel=stylesheet>
-</head>
-<body>
-<div id=app></div>
-<!--引入iconfont-->
-<script src=//at.alicdn.com/t/font_130644_m500t1u48k.js></script>
-<script>!function (e) {
-        function t(t) {
-            for (var n, o, i = t[0], c = t[1], l = t[2], s = 0, d = []; s < i.length; s++) o = i[s], a[o] && d.push(a[o][0]), a[o] = 0;
-            for (n in c) Object.prototype.hasOwnProperty.call(c, n) && (e[n] = c[n]);
-            for (f && f(t); d.length;) d.shift()();
-            return u.push.apply(u, l || []), r()
+<extend name="../../Admin/View/Common/element_layout"/>
+
+<block name="header">
+    <link href=/statics/admin/pages/dashboard/static/css/reset.css rel=stylesheet>
+</block>
+
+<block name="content">
+
+    <div id="app" v-cloak>
+        <!-- 导航 -->
+        <div class="sidebar-container" ref="nav">
+            <el-row class="tac">
+                <el-col class="scroll-Y">
+                    <el-menu
+                            default-active="2"
+                            class="el-menu-vertical-demo"
+                            text-color="rgb(191, 203, 217)"
+                            active-text-color="#409eff"
+                            :collapse="isnavHid"
+                            :default-active="tagData.defaultActive"
+                            :class="{hid : minHid}"
+                    >
+                        <div v-for="(item, index) in navData" :key="item.id">
+                            <el-menu-item v-if="item.items.length === 0" :index="item.id" @click="goUrl([item.name], item)">
+                                <i v-html="item.icon_html"></i>
+                                <span slot="title">{{item.name}}</span>
+                            </el-menu-item>
+                            <el-submenu v-else :index="item.id">
+                                <template slot="title">
+                                    <i v-html="item.icon_html"></i>
+                                    <span class="title">{{item.name}}</span>
+                                </template>
+                                <div v-for="(val, j) in item.items" :key="val.id">
+                                    <el-menu-item v-if="val.items.length === 0" :index="val.id" @click="goUrl([item.name, val.name], val)">
+                                        <template slot="title">
+                                            <span class="title">{{val.name}}</span>
+                                        </template>
+                                    </el-menu-item>
+                                    <el-submenu :index="val.id" v-else>
+                                        <template slot="title">
+                                            <span class="title">{{val.name}}</span>
+                                        </template>
+                                        <el-menu-item v-for="(sub, v) in val.items" :key="sub.id" :index="sub.id" @click="goUrl([item.name, val.name, sub.name], sub)">
+                                            <template slot="title">
+                                                <span class="title">{{sub.name}}</span>
+                                            </template>
+                                        </el-menu-item>
+                                    </el-submenu>
+                                </div>
+                            </el-submenu>
+                        </div>
+                    </el-menu>
+                </el-col>
+            </el-row>
+        </div>
+        <!-- 内容 -->
+        <div class="centent" :class="{hid : !isnavHid}">
+            <div class="navbar">
+                <div class="left">
+                    <div class="nav">
+                        <i class="el-icon-s-fold navicon" @click="navShow()" :class="{navShow : isnavHid}"></i>
+                        <el-breadcrumb separator="/">
+                            <el-breadcrumb-item v-for="(item, index) in tagData.breadcrumb" :key="index">{{item}}
+                            </el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
+                    <el-dropdown>
+                        <span class="el-dropdown-link" >
+                            <template v-if="adminUserInfo && adminUserInfo.name">
+                            {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i class="el-icon-arrow-down el-icon--right"></i>
+                            </template>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-if="hasPermission_cleanCache" >
+                                <span @click="click_cleancache">清理缓存</span>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <span @click="click_logout">
+                                    注销
+                                </span>
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+                <div class="tag" ref="tagScroll">
+                    <div class="list" ref="tagList">
+                        <div
+                                class="tag-item"
+                                :class="{show : item.url === iframeUrl}"
+                                v-for="(item, index) in tags"
+                                :key="item.name"
+                                :ref="'tag-' + index"
+                                @click="tagClick(item, index)"
+                                @contextmenu.prevent="openMenu($event, item)"
+                        >
+                            <div class="chebox"></div>
+                            {{item.name}}
+                            <i class="el-icon-close" @click.stop="closeTag(item, index)"></i>
+                        </div>
+                    </div>
+                </div>
+                <ul class="contextmenu" ref="contextmenu">
+                    <li @click="urlRefresh">刷新</li>
+                    <li @click="closeTag(temData)">关闭</li>
+                    <li @click="urlOther">关闭其他</li>
+                    <li @click="endAll">关闭所有</li>
+                </ul>
+            </div>
+            <section class="app-main">
+                <iframe v-if="iframeUrl" :src="iframeUrl" frameborder="0" class="iframe" id="iframe" ref="iframe"></iframe>
+            </section>
+        </div>
+        <div class="mask" v-show="!minHid" @click="maskClick"></div>
+    </div>
+
+    <style>
+        [v-cloak]{
+            display: none;
         }
 
-        function r() {
-            for (var e, t = 0; t < u.length; t++) {
-                for (var r = u[t], n = !0, o = 1; o < r.length; o++) {
-                    var c = r[o];
-                    0 !== a[c] && (n = !1)
-                }
-                n && (u.splice(t--, 1), e = i(i.s = r[0]))
+        #app {
+            /* display: flex; */
+        }
+
+        .sidebar-container {
+            transition: .23s;
+            width: max-content;
+            height: 100%;
+            position: fixed;
+            font-size: 0;
+            top: 0;
+            bottom: 0;
+            left: 0px;
+            overflow: hidden;
+            background: rgb(48, 65, 86);
+            z-index: 11;
+        }
+
+        .el-dropdown-link {
+            cursor: pointer;
+        }
+
+        .sidebar-container .tac {
+            position: relative;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .sidebar-container .el-col {
+            height: 100%;
+        }
+
+        .scroll-Y {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .scroll-Y::-webkit-scrollbar {
+            display: none
+        }
+
+        .sidebar-container .el-menu {
+            border-right: 0;
+            background: inherit;
+        }
+
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 180px;
+            min-height: 400px;
+        }
+
+        .sidebar-container .el-menu-item:hover,
+        .sidebar-container .el-submenu__title:hover,
+        .el-menu-item:hover {
+            background-color: #001528 !important;
+        }
+
+        .centent {
+            position: relative;
+            height: 100%;
+            margin-left: 36px;
+            flex: 1;
+            transition: .23s ease-in;
+            z-index: 10;
+        }
+
+        .centent .navicon {
+            transition: .23s;
+            transform: rotate(0deg);
+            cursor: pointer;
+        }
+
+        .centent .navShow {
+            transform: rotate(-90deg);
+        }
+
+        .centent .el-breadcrumb__inner {
+            color: #333 !important;
+        }
+
+        .centent .el-breadcrumb__item:last-of-type .el-breadcrumb__inner {
+            color: #97a8be !important;
+        }
+
+        .el-submenu .el-menu--inline {
+            background-color: #1f2d3d;
+        }
+
+        .el-submenu {
+            transition: .23s;
+        }
+
+        .el-menu-item:focus {
+            background-color: initial;
+        }
+
+        .el-submenu__title {
+            overflow: hidden;
+        }
+
+        .el-submenu__title .title{
+            color: rgb(191, 203, 217);
+        }
+
+        .el-menu--collapse {
+            width: 36px;
+        }
+        .el-menu--collapse.hid{
+            width: 0px;
+        }
+
+        .el-menu--collapse .el-submenu__title>span,
+        .el-menu--collapse .el-submenu__title .el-icon-arrow-right {
+            height: 0;
+            width: 0;
+            overflow: hidden;
+            visibility: hidden;
+            display: inline-block;
+        }
+
+        .el-menu--collapse .el-menu-item {
+            padding: 0 !important;
+        }
+
+        .el-menu--collapse .el-submenu__title,
+        .el-menu--collapse .el-tooltip {
+            padding-left: 10px !important;
+        }
+
+        .el-menu--collapse .el-submenu__title:hover {
+            background-color: rgb(38, 52, 69) !important;
+        }
+
+        .el-menu--popup-right-start {
+            background-color: #304156;
+        }
+
+        .el-submenu__title:focus,
+        .el-submenu__title:hover {
+            background-color: #001528 !important;
+        }
+
+        .navbar {
+            width: 100%;
+            height: 85px;
+            border-bottom: 1px solid #d8dce5;
+            background: #fff;
+        }
+
+        .navbar .left {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .iconfont {
+            font-size: 16px;
+            margin-right: 4px;
+        }
+
+        .navbar .left .nav {
+            display: flex;
+            align-items: center;
+            height: 50px;
+        }
+
+        .navbar .tag {
+            margin-left: 10px;
+            overflow-x: auto;
+        }
+
+        .navbar .list {
+            display: flex;
+            width: max-content;
+        }
+
+        .navbar .tag::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .navbar .tag::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0);
+            transition: 1s;
+        }
+
+        .navbar .tag:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, .2);
+        }
+
+        .navbar .tag .el-tag {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .navbar .el-icon-s-fold {
+            font-size: 26px;
+            margin-right: 10px;
+        }
+
+        .navbar .right {
+            margin: 10px 20px 0;
+            cursor: pointer;
+        }
+
+        .app-main {
+            height: calc(100% - 86px);
+            background: #fff;
+        }
+
+        .iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar-container.hid {
+            width: 0px;
+            /* left: -180px; */
+        }
+
+        .mask {
+            position: fixed;
+            background-color: rgba(0, 0, 0, .2);
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .centent.hid {
+            margin-left: 180px;
+        }
+
+        .tag-item {
+            display: inline-flex;
+            position: relative;
+            cursor: pointer;
+            height: 26px;
+            border: 1px solid #d8dce5;
+            color: #495060;
+            background: #fff;
+            padding: 0 8px;
+            font-size: 12px;
+            margin-left: 5px;
+            margin-top: 4px;
+            border-radius: 4px;
+            align-items: center;
+        }
+        .tag-item.show{
+            background-color: #2196f3;
+            color: #fff;
+            border-color: #2196f3;
+        }
+        .tag-item.show .chebox{
+            display: inline-block;
+        }
+        .tag-item .chebox{
+            display: none;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .tag-item .el-icon-close{
+            width: 15px;
+            height: 15px;
+            text-align: center;
+            line-height: 15px;
+            font-size: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+            transition: .3s;
+        }
+        .tag-item .el-icon-close:hover{
+            background-color: #b4bccc;
+            color: #fff;
+        }
+
+        .contextmenu {
+            display: none;
+            position: fixed;
+            margin: 0;
+            background: #fff;
+            z-index: 100;
+            position: absolute;
+            list-style-type: none;
+            padding: 5px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #333;
+            -webkit-box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+            box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+        }
+
+        .contextmenu li {
+            margin: 0;
+            padding: 7px 16px;
+            cursor: pointer;
+            min-width: 80px;
+        }
+
+        .contextmenu li:hover {
+            background: #eee;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .centent {
+                margin-left: 0 !important;
+                display: block;
             }
-            return e
+            .mask {
+                z-index: 10 !important;
+            }
         }
 
-        var n = {}, o = {runtime: 0}, a = {runtime: 0}, u = [];
-
-        function i(t) {
-            if (n[t]) return n[t].exports;
-            var r = n[t] = {i: t, l: !1, exports: {}};
-            return e[t].call(r.exports, r, r.exports, i), r.l = !0, r.exports
+        @media screen and (max-width: 1200px) {
+            .centent {
+                margin-left: 36px;
+            }
+            .sidebar-container {
+                left: 0;
+            }
+            .mask {
+                z-index: -10;
+            }
         }
+    </style>
+</block>
 
-        i.e = function (e) {
-            var t = [];
-            o[e] ? t.push(o[e]) : 0 !== o[e] && {"chunk-506d": 1}[e] && t.push(o[e] = new Promise(function (t, r) {
-                for (var n = "static/css/" + ({}[e] || e) + "." + {"chunk-506d": "db293919"}[e] + ".css", o = i.p + n, a = document.getElementsByTagName("link"), u = 0; u < a.length; u++) {
-                    var c = (s = a[u]).getAttribute("data-href") || s.getAttribute("href");
-                    if ("stylesheet" === s.rel && (c === n || c === o)) return t()
-                }
-                var l = document.getElementsByTagName("style");
-                for (u = 0; u < l.length; u++) {
-                    var s;
-                    if ((c = (s = l[u]).getAttribute("data-href")) === n || c === o) return t()
-                }
-                var f = document.createElement("link");
-                f.rel = "stylesheet", f.type = "text/css", f.onload = t, f.onerror = function (t) {
-                    var n = t && t.target && t.target.src || o, a = new Error("Loading CSS chunk " + e + " failed.\n(" + n + ")");
-                    a.request = n, r(a)
-                }, f.href = o, document.getElementsByTagName("head")[0].appendChild(f)
-            }).then(function () {
-                o[e] = 0
-            }));
-            var r = a[e];
-            if (0 !== r) if (r) t.push(r[2]); else {
-                var n = new Promise(function (t, n) {
-                    r = a[e] = [t, n]
-                });
-                t.push(r[2] = n);
-                var u, c = document.getElementsByTagName("head")[0], l = document.createElement("script");
-                l.charset = "utf-8", l.timeout = 120, i.nc && l.setAttribute("nonce", i.nc), l.src = function (e) {
-                    return i.p + "static/js/" + ({}[e] || e) + "." + {"chunk-506d": "4d9ab8f4"}[e] + ".js"
-                }(e), u = function (t) {
-                    l.onerror = l.onload = null, clearTimeout(s);
-                    var r = a[e];
-                    if (0 !== r) {
-                        if (r) {
-                            var n = t && ("load" === t.type ? "missing" : t.type), o = t && t.target && t.target.src,
-                                u = new Error("Loading chunk " + e + " failed.\n(" + n + ": " + o + ")");
-                            u.type = n, u.request = o, r[1](u)
+
+<block name="footer">
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isnavHid: false,
+                minHid: false,
+                windowSize: 1920,
+                // 左侧菜单
+                navData: [],
+                // 当前iframe内容页
+                iframeUrl: '',
+                // 标签列表
+                tags: [
+                    // {name: '概括', url: 'http://ztbweb.cn', breadcrumb: ['概括'], defaultActive: '1Admin'}
+                ],
+                temData: {},
+                //用户等级
+                adminUserInfo: {
+                    role_name: '',
+                    name: '',
+                },
+                // 角色权限列表
+                roleAccessList: []
+            },
+            methods: {
+                // url点击事件
+                goUrl: function(breadcrumb, data) {
+                    var that = this
+                    this.iframeUrl = data.url
+                    // 判断tags里面是否包含了当前点击的url
+                    var tagIndex = this.tags.findIndex(function(item) {
+                        return item.url === data.url
+                    })
+                    if (tagIndex === -1) {
+                        // 把点击的导航添加到tag
+                        this.tags.push({
+                            name: data.name,
+                            url: data.url,
+                            breadcrumb,
+                            defaultActive: data.id
+                        })
+                        setTimeout(function() {
+                            var tagList = that.$refs.tagList
+                            that.setTagScroll(tagList.clientWidth)
+                        }, 100)
+                        // 判断是否来自小屏的点击
+                        if (this.windowSize <= 1024) {
+                            this.minHid = true
+                            this.isnavHid = true
                         }
-                        a[e] = void 0
+                    } else {
+                        // 获取tag当前位置的offsetLeft值，并且赋值到导航条上
+                        var tag = this.$refs['tag-' + tagIndex]
+                        if (tag) {
+                            tag = tag[0]
+                            var container = this.$refs.tagScroll
+                            container.scrollTo(tag.$el.offsetLeft - 10, 0)
+                        }
                     }
-                };
-                var s = setTimeout(function () {
-                    u({type: "timeout", target: l})
-                }, 12e4);
-                l.onerror = l.onload = u, c.appendChild(l)
+                },
+                // 点击tag
+                tagClick: function(data, index) {
+                    if(data){
+                        this.iframeUrl = data.url
+                    } else {
+                        this.iframeUrl = ''
+                    }
+                },
+                // tag删除事件
+                closeTag: function(data) {
+                    var index = this.tags.findIndex(function(item) {
+                        return item.url === data.url
+                    })
+                    this.tags.splice(index, 1)
+                    // 判断当前显示的页面是不是要被删除的页面
+                    if (this.iframeUrl === data.url) {
+                        // tag定位到前一个
+                        if(index > 0){
+                            this.tagClick(this.tags[index-1], index-1)
+                        } else {
+                            this.iframeUrl = ''
+                        }
+                        var tagList = this.$refs.tagList
+                        this.setTagScroll(tagList.clientWidth)
+                    }
+                },
+                setTagScroll: function(x) {
+                    var container = this.$refs.tagScroll
+                    container.scrollTo(x, 0)
+                },
+                // 弹出左侧导航icon,小屏和大屏区分操作
+                navShow: function() {
+                    this.isnavHid = !this.isnavHid
+                    if (this.windowSize <= 1024) {
+                        this.minHid = !this.minHid
+                    }
+                },
+                // 点击左侧菜单弹出时的浮层，关闭左侧菜单
+                maskClick: function () {
+                    this.minHid = !this.minHid
+                    this.isnavHid = !this.isnavHid
+                },
+                // 判断当前浏览器的大小做左边导航的适配
+                onresize: function() {
+                    var clientWidth = document.documentElement.clientWidth
+                    if (clientWidth <= 1024) {
+                        this.minHid = true
+                        this.isnavHid = true
+                        this.windowSize = 1024
+                    } else if (clientWidth <= 1200) {
+                        this.minHid = false
+                        this.isnavHid = true
+                        this.windowSize = 1200
+                    } else {
+                        this.isnavHid = false
+                        // this.minHid = false
+                        this.windowSize = 1920
+                    }
+                },
+                // 右键弹出菜单
+                openMenu: function(e, data) {
+                    this.temData = data
+                    var navWidth = this.$refs.nav.offsetWidth
+                    var pageX = e.pageX - navWidth
+                    var pageY = e.pageY
+                    this.$refs.contextmenu.style.display = 'block'
+                    this.$refs.contextmenu.style.left = pageX + 'px'
+                    this.$refs.contextmenu.style.top = pageY + 'px'
+                },
+                // 刷新
+                urlRefresh: function() {
+                    var that = this
+                    var iframeUrl = this.iframeUrl
+                    this.$refs.iframe.src = ''
+                    setTimeout(function(el) {
+                        that.$refs.iframe.src = iframeUrl
+                    }, 50)
+                },
+                // 关闭其他
+                urlOther: function() {
+                    var that = this
+                    var index = this.tags.findIndex(function(item){
+                        return item.url === that.temData.url
+                    })
+                    if(this.iframeUrl !== this.tags[index].url){
+                        this.iframeUrl = this.tags[index].url
+                    }
+                    this.tags = [this.tags[index]]
+                },
+                // 关闭全部
+                endAll: function() {
+                    this.iframeUrl = ''
+                    this.tags = []
+                },
+                // 初始化
+                init: function(){
+                    var that = this
+                    window.onresize = function() {
+                        that.onresize()
+                    }
+                    // 关闭tag上下文菜单
+                    document.onclick = function(){
+                        that.$refs.contextmenu.style.display = 'none'
+                    }
+                    // tag的滚动事件
+                    var container = this.$refs.tagScroll
+                    var isFF = /FireFox/i.test(navigator.userAgent)
+                    if (!isFF) {
+                        container.addEventListener("mousewheel", function(e) {
+                            var v = -e.wheelDelta / 2
+                            container.scrollLeft += v
+                            e.preventDefault()
+                        }, false)
+                    } else {
+                        container.addEventListener("DOMMouseScroll", function(e) {
+                            container.scrollLeft += e.detail * 80
+                            e.preventDefault()
+                        }, false)
+                    }
+                },
+                // 获取菜单
+                getMenuList() {
+                    var that = this
+                    $.ajax({
+                        url: '/Admin/AdminApi/getPermissionInfo',
+                        method: 'get',
+                        params: {}
+                    }).then(function(res) {
+                        if (res.status) {
+                            that.roleAccessList = res.data.roleAccessList
+                            var _menuList = res.data.menuList
+                            for(var i=0;i<_menuList.length;i++){
+                                // 默认icon
+                                var icon = _menuList[i]['icon'] || 'dashboard'
+                                _menuList[i]['icon_html'] = ' <i class="iconfont icon-'+ icon +'"></i>'
+                            }
+                            that.navData = _menuList
+                            if(_menuList && _menuList[0]){
+                                var menu1 = _menuList[0]
+                                if(menu1['items'].length === 0){
+                                    that.goUrl([menu1['name']], menu1)
+                                } else {
+                                    var menu2 = menu1['items'][0]
+                                    if(menu2['items'].length === 0){
+                                        that.goUrl([menu1['name'], menu2['name']], menu2)
+                                    } else {
+                                        var menu3 = menu2['items'][0]
+                                        if(menu2['items'].length === 0){
+                                            that.goUrl([menu1['name'], menu2['name'], menu3['name']], menu3)
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                },
+                //注册事件
+                registerEvent() {
+                    window.addEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
+                    window.addEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
+                    window.__adminOpenNewFrame = function(config) {
+                        var title = config.title || ''
+                        var router_path = config.url || ''
+                        var url = config.url || ''
+                        var event = new CustomEvent('adminOpenNewFrame', {
+                            detail: {
+                                title: title,
+                                router_path: router_path,
+                                url: url
+                            }
+                        })
+                        window.parent.dispatchEvent(event)
+                    }
+                },
+                unregisterEvent() {
+                    window.__adminOpenNewFrame = null
+                    window.removeEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
+                    window.removeEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
+                },
+                // 获取管理员信息
+                getAdminUserInfo() {
+                    var that = this
+                    $.ajax({
+                        url: '/Admin/AdminApi/getAdminUserInfo',
+                        method: 'get',
+                        params: {}
+                    }).then(function(res){
+                        if (res.status) {
+                            that.adminUserInfo.name = res.data.username
+                            that.adminUserInfo.role_name = res.data.role_name
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                },
+                /**
+                 * 打开新窗口
+                 * @param title 标题
+                 * @param url 对应的URL
+                 */
+                openNewFrame(title, url) {
+                    this.goUrl([title], {
+                        name: title,
+                        url: url,
+                    })
+                },
+                // 打开新窗口
+                handleEvent_adminOpenNewFrame(event) {
+                    this.openNewFrame(event.detail.title, event.detail.url)
+                },
+                // 刷新窗口
+                handleEvent_adminRefreshFrame(event) {
+                    this.urlRefresh()
+                },
+                /**
+                 * 检测是否存在权限
+                 * @param access_router 访问的路由，格式必须是：/module/controller/action   (与后台的权限配置时一致的)
+                 * @returns {boolean}
+                 */
+                hasRolePermission: function(access_router) {
+                    var roleAccessList = this.roleAccessList
+
+                    var access_router_arr = access_router.split('/')
+
+                    if (access_router_arr.length < 4) {
+                        return false
+                    }
+                    var module = access_router_arr[1]
+                    var controller = access_router_arr[2]
+                    var action = access_router_arr[3]
+
+                    // 检测 module 是否有权限
+                    for (var i = 0; i < roleAccessList.length; i++) {
+
+                        if (roleAccessList[i].app === '%') {
+                            return true
+                        }
+                        if (roleAccessList[i].app === module) {
+                            // 检测 controller 是否有权限
+                            if (roleAccessList[i].controller === '%') {
+                                return true
+                            }
+                            if (roleAccessList[i].controller === controller) {
+                                // 检测 action 是否有权限
+                                if (roleAccessList[i].action === '%') {
+                                    return true
+                                }
+                                if (roleAccessList[i].action === action) {
+                                    return true
+                                }
+                            }
+                        }
+                    }
+
+                    return false
+                },
+                // 点击清理缓存
+                click_cleancache: function(){
+                    this.openNewFrame('缓存更新', '/Admin/Index/cache')
+                },
+                // 点击退出
+                click_logout: function(){
+                    var that = this
+                    $.ajax({
+                        url: '/Admin/AdminApi/logout',
+                        method: 'get',
+                        params: {}
+                    }).then(function(res){
+                        if (res.status) {
+                            layer.msg(res.msg)
+                            setTimeout(function(){
+                                window.location.replace(res.data.redirect)
+                            }, 700)
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                }
+            },
+            computed: {
+                tagData: function() {
+                    var that = this
+                    var data = this.tags.find(function(item) {
+                        return item.url === that.iframeUrl
+                    }) || {}
+                    return {
+                        breadcrumb: data.breadcrumb,
+                        defaultActive: data.defaultActive
+                    }
+                },
+                // 是否有清理缓存权限
+                hasPermission_cleanCache: function() {
+                    return this.hasRolePermission('/Admin/Index/cache')
+                }
+            },
+            created () {
+                this.onresize()
+            },
+            mounted () {
+                this.init()
+                this.registerEvent()
+                this.getMenuList()
+                this.getAdminUserInfo()
+            },
+            unmount: function(){
+                this.unregisterEvent()
             }
-            return Promise.all(t)
-        }, i.m = e, i.c = n, i.d = function (e, t, r) {
-            i.o(e, t) || Object.defineProperty(e, t, {enumerable: !0, get: r})
-        }, i.r = function (e) {
-            "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, {value: "Module"}), Object.defineProperty(e, "__esModule", {value: !0})
-        }, i.t = function (e, t) {
-            if (1 & t && (e = i(e)), 8 & t) return e;
-            if (4 & t && "object" == typeof e && e && e.__esModule) return e;
-            var r = Object.create(null);
-            if (i.r(r), Object.defineProperty(r, "default", {
-                enumerable: !0,
-                value: e
-            }), 2 & t && "string" != typeof e) for (var n in e) i.d(r, n, function (t) {
-                return e[t]
-            }.bind(null, n));
-            return r
-        }, i.n = function (e) {
-            var t = e && e.__esModule ? function () {
-                return e.default
-            } : function () {
-                return e
-            };
-            return i.d(t, "a", t), t
-        }, i.o = function (e, t) {
-            return Object.prototype.hasOwnProperty.call(e, t)
-        }, i.p = "/statics/admin/pages/dashboard/", i.oe = function (e) {
-            throw console.error(e), e
-        };
-        var c = window.webpackJsonp = window.webpackJsonp || [], l = c.push.bind(c);
-        c.push = t, c = c.slice();
-        for (var s = 0; s < c.length; s++) t(c[s]);
-        var f = l;
-        r()
-    }([]);</script>
-<script src=/statics/admin/pages/dashboard/static/js/chunk-elementUI.70b6a4f6.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/chunk-libs.6675385e.js></script>
-<script src=/statics/admin/pages/dashboard/static/js/app.78823727.js></script>
-</body>
-</html>
+        })
+    </script>
+</block>
