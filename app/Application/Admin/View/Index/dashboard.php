@@ -459,10 +459,13 @@
                 isnavHid: false,
                 minHid: false,
                 windowSize: 1920,
+                // 左侧菜单
                 navData: [],
+                // 当前iframe内容页
                 iframeUrl: '',
+                // 标签列表
                 tags: [
-                    // {name: '概括', url: 'http://sha.hb.ztbweb.cn/index.php?m=Main&menuid=1', breadcrumb: ['概括'], defaultActive: '1Admin'}
+                    // {name: '概括', url: 'http://ztbweb.cn', breadcrumb: ['概括'], defaultActive: '1Admin'}
                 ],
                 temData: {},
                 //用户等级
