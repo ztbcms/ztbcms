@@ -18,6 +18,7 @@ window.Ztbcms = {
     },
     /**
      * 打开内容页
+     * @deprecated 废弃中，请使用 openNewIframeByUrl
      * @param title
      * @param url
      */
