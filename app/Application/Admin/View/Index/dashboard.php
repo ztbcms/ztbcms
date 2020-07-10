@@ -486,13 +486,13 @@
                 goUrl: function(breadcrumb, data) {
                     var that = this
                     this.iframeUrl = data.url
-                    this.iframeUrls.push(data.url)
                     // 判断tags里面是否包含了当前点击的url
                     var tagIndex = this.tags.findIndex(function(item) {
                         return item.url === data.url
                     })
                     if (tagIndex === -1) {
                         // 把点击的导航添加到tag
+                        this.iframeUrls.push(data.url)
                         this.tags.push({
                             name: data.name,
                             url: data.url,
