@@ -90,24 +90,26 @@
                                 v-for="(item, index) in tags"
                                 :key="item.name"
                                 :ref="'tag-' + index"
-                                @click="tagClick(item, index)"
-                                @contextmenu.prevent="openMenu($event, item)"
+                                @click="clickTag(item, index)"
+                                @contextmenu.prevent="openContextMenu($event, item, index)"
                         >
                             <div class="chebox"></div>
                             {{item.name}}
-                            <i class="el-icon-close" @click.stop="closeTag(item, index)"></i>
+                            <i class="el-icon-close" @click.stop="closeTag(index)"></i>
                         </div>
                     </div>
                 </div>
                 <ul class="contextmenu" ref="contextmenu">
-                    <li @click="urlRefresh">刷新</li>
-                    <li @click="closeTag(temData)">关闭</li>
-                    <li @click="urlOther">关闭其他</li>
-                    <li @click="endAll">关闭所有</li>
+                    <li @click="refreshTag(tempIndex)">刷新</li>
+                    <li @click="closeTag(tempIndex)">关闭本页</li>
+                    <li @click="closeOtherTag(tempIndex)">关闭其他</li>
+                    <li @click="closeAllTag">关闭所有</li>
                 </ul>
             </div>
             <section class="app-main">
-                <iframe v-if="iframeUrl" :src="iframeUrl" frameborder="0" class="iframe" id="iframe" ref="iframe"></iframe>
+                <template v-for="(url, index) in iframeUrls">
+                    <iframe :id="'iframe-'+index" :src="url" :key="url" frameborder="0" class="iframe" :style="{display: iframeUrl == url ? 'block': 'none'}"></iframe>
+                </template>
             </section>
         </div>
         <div class="mask" v-show="!minHid" @click="maskClick"></div>
@@ -400,7 +402,6 @@
 
         .contextmenu {
             display: none;
-            position: fixed;
             margin: 0;
             background: #fff;
             z-index: 100;
@@ -463,11 +464,15 @@
                 navData: [],
                 // 当前iframe内容页
                 iframeUrl: '',
+                iframeUrls:[],
                 // 标签列表
                 tags: [
                     // {name: '概括', url: 'http://ztbweb.cn', breadcrumb: ['概括'], defaultActive: '1Admin'}
                 ],
+                // 单线右键选中项
                 temData: {},
+                // 单线右键选中项序号
+                tempIndex: -1,
                 //用户等级
                 adminUserInfo: {
                     role_name: '',
@@ -481,6 +486,7 @@
                 goUrl: function(breadcrumb, data) {
                     var that = this
                     this.iframeUrl = data.url
+                    this.iframeUrls.push(data.url)
                     // 判断tags里面是否包含了当前点击的url
                     var tagIndex = this.tags.findIndex(function(item) {
                         return item.url === data.url
@@ -513,7 +519,7 @@
                     }
                 },
                 // 点击tag
-                tagClick: function(data, index) {
+                clickTag: function(data, index) {
                     if(data){
                         this.iframeUrl = data.url
                     } else {
@@ -522,15 +528,14 @@
                 },
                 // tag删除事件
                 closeTag: function(data) {
-                    var index = this.tags.findIndex(function(item) {
-                        return item.url === data.url
-                    })
+                    var tag = this.tags[index]
                     this.tags.splice(index, 1)
+                    this.iframeUrls.splice(index, 1)
                     // 判断当前显示的页面是不是要被删除的页面
-                    if (this.iframeUrl === data.url) {
+                    if (this.iframeUrl === tag.url) {
                         // tag定位到前一个
                         if(index > 0){
-                            this.tagClick(this.tags[index-1], index-1)
+                            this.clickTag(this.tags[index-1], index-1)
                         } else {
                             this.iframeUrl = ''
                         }
@@ -545,7 +550,7 @@
                 // 弹出左侧导航icon,小屏和大屏区分操作
                 navShow: function() {
                     this.isnavHid = !this.isnavHid
-                    if (this.windowSize <= 1024) {
+                    if (this.windowSize <= 960) {
                         this.minHid = !this.minHid
                     }
                 },
@@ -557,10 +562,10 @@
                 // 判断当前浏览器的大小做左边导航的适配
                 onresize: function() {
                     var clientWidth = document.documentElement.clientWidth
-                    if (clientWidth <= 1024) {
+                    if (clientWidth <= 960) {
                         this.minHid = true
                         this.isnavHid = true
-                        this.windowSize = 1024
+                        this.windowSize = 960
                     } else if (clientWidth <= 1200) {
                         this.minHid = false
                         this.isnavHid = true
@@ -572,8 +577,9 @@
                     }
                 },
                 // 右键弹出菜单
-                openMenu: function(e, data) {
+                openContextMenu: function(e, data, index) {
                     this.temData = data
+                    this.tempIndex = index
                     var navWidth = this.$refs.nav.offsetWidth
                     var pageX = e.pageX - navWidth
                     var pageY = e.pageY
@@ -582,29 +588,26 @@
                     this.$refs.contextmenu.style.top = pageY + 'px'
                 },
                 // 刷新
-                urlRefresh: function() {
-                    var that = this
-                    var iframeUrl = this.iframeUrl
-                    this.$refs.iframe.src = ''
-                    setTimeout(function(el) {
-                        that.$refs.iframe.src = iframeUrl
-                    }, 50)
+                refreshTag: function(index = 0) {
+                    if(index >= 0){
+                        var iframeUrl = this.iframeUrls[index]
+                        document.getElementById('iframe-'+index).contentWindow.location.href = iframeUrl
+                    }
                 },
                 // 关闭其他
-                urlOther: function() {
+                closeOtherTag: function() {
                     var that = this
-                    var index = this.tags.findIndex(function(item){
-                        return item.url === that.temData.url
-                    })
                     if(this.iframeUrl !== this.tags[index].url){
                         this.iframeUrl = this.tags[index].url
                     }
                     this.tags = [this.tags[index]]
+                    this.iframeUrls = [this.iframeUrls[index]]
                 },
                 // 关闭全部
-                endAll: function() {
+                closeAllTag: function() {
                     this.iframeUrl = ''
                     this.tags = []
+                    this.iframeUrls = []
                 },
                 // 初始化
                 init: function(){
@@ -673,15 +676,12 @@
                 //注册事件
                 registerEvent() {
                     window.addEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
-                    window.addEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
                     window.__adminOpenNewFrame = function(config) {
                         var title = config.title || ''
-                        var router_path = config.url || ''
                         var url = config.url || ''
                         var event = new CustomEvent('adminOpenNewFrame', {
                             detail: {
                                 title: title,
-                                router_path: router_path,
                                 url: url
                             }
                         })
@@ -691,7 +691,6 @@
                 unregisterEvent() {
                     window.__adminOpenNewFrame = null
                     window.removeEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
-                    window.removeEventListener('adminRefreshFrame', this.handleEvent_adminRefreshFrame.bind(this))
                 },
                 // 获取管理员信息
                 getAdminUserInfo() {
@@ -723,10 +722,6 @@
                 // 打开新窗口
                 handleEvent_adminOpenNewFrame(event) {
                     this.openNewFrame(event.detail.title, event.detail.url)
-                },
-                // 刷新窗口
-                handleEvent_adminRefreshFrame(event) {
-                    this.urlRefresh()
                 },
                 /**
                  * 检测是否存在权限
