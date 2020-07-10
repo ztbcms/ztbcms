@@ -18,16 +18,15 @@ window.Ztbcms = {
     },
     /**
      * 打开内容页
+     * @deprecated 废弃中，请使用 openNewIframeByUrl
      * @param title
-     * @param router
      * @param url
      */
-    openNewIframeByRouter: function(title, router, url){
+    openNewIframeByRouter: function(title, url){
         if (parent.window !== window) {
             var event = document.createEvent('CustomEvent');
             event.initCustomEvent('adminOpenNewFrame', true, true, {
                 title: title,
-                router_path: router,
                 url: url
             });
             window.parent.dispatchEvent(event)
