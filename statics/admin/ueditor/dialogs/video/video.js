@@ -14,9 +14,9 @@
         uploadFile;
 
     window.onload = function(){
-        $focus($G("videoUrl"));
+        //$focus($G("videoUrl"));
         initTabs();
-        initVideo();
+        //initVideo();
         initUpload();
     };
 
