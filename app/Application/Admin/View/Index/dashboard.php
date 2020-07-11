@@ -90,7 +90,7 @@
                                 v-for="(item, index) in tags"
                                 :key="item.name"
                                 :ref="'tag-' + index"
-                                @click="clickTag(item, index)"
+                                @click="clickTag(index)"
                                 @contextmenu.prevent="openContextMenu($event, item, index)"
                         >
                             <div class="chebox"></div>
@@ -519,15 +519,16 @@
                     }
                 },
                 // 点击tag
-                clickTag: function(data, index) {
-                    if(data){
-                        this.iframeUrl = data.url
+                clickTag: function(index) {
+                    var tag = this.tags[index]
+                    if(tag){
+                        this.iframeUrl = tag.url
                     } else {
                         this.iframeUrl = ''
                     }
                 },
                 // tag删除事件
-                closeTag: function(data) {
+                closeTag: function(index) {
                     var tag = this.tags[index]
                     this.tags.splice(index, 1)
                     this.iframeUrls.splice(index, 1)
@@ -535,7 +536,7 @@
                     if (this.iframeUrl === tag.url) {
                         // tag定位到前一个
                         if(index > 0){
-                            this.clickTag(this.tags[index-1], index-1)
+                            this.clickTag(index-1)
                         } else {
                             this.iframeUrl = ''
                         }
