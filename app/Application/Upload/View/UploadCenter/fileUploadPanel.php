@@ -179,6 +179,7 @@
                 },
                 mounted: function () {
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
+                    this.uploadConfig.accept = this.getUrlQuery('accept') || this.uploadConfig.accept;
                 }
             })
         })
