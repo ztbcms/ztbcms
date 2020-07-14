@@ -305,9 +305,9 @@ INSERT INTO `cms_config` VALUES ('4', 'siteemail', '站点邮箱', '1', 'ad@qq.c
 INSERT INTO `cms_config` VALUES ('6', 'siteinfo', '网站介绍', '1', 'cms网站管理系统,是一款完全开源免费的PHP+MYSQL系统.核心采用了Thinkphp框架等众多开源软件,同时核心功能也作为开源软件发布');
 INSERT INTO `cms_config` VALUES ('7', 'sitekeywords', '网站关键字', '1', 'cms内容管理系统');
 INSERT INTO `cms_config` VALUES ('8', 'uploadmaxsize', '允许上传附件大小', '1', '20480');
-INSERT INTO `cms_config` VALUES ('9', 'uploadallowext', '允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip');
+INSERT INTO `cms_config` VALUES ('9', 'uploadallowext', '允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip|mp4');
 INSERT INTO `cms_config` VALUES ('10', 'qtuploadmaxsize', '前台允许上传附件大小', '1', '20480');
-INSERT INTO `cms_config` VALUES ('11', 'qtuploadallowext', '前台允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip');
+INSERT INTO `cms_config` VALUES ('11', 'qtuploadallowext', '前台允许上传附件类型', '1', 'jpg|jpeg|gif|bmp|png|doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rar|zip|mp4');
 INSERT INTO `cms_config` VALUES ('12', 'watermarkenable', '是否开启图片水印', '1', '0');
 INSERT INTO `cms_config` VALUES ('13', 'watermarkminwidth', '水印-宽', '1', '227');
 INSERT INTO `cms_config` VALUES ('14', 'watermarkminheight', '水印-高', '1', '78');
