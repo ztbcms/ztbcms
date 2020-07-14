@@ -15,5 +15,5 @@ CREATE TABLE `cms_admin_message` (
   `read_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读时间',
   `read_num` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '已阅读的人数',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

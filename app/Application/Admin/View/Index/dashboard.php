@@ -850,9 +850,9 @@
                         }
                     })
 
-                    // setTimeout(function () {
-                    //     that.getAdminMessage()
-                    // },1000)
+                    setTimeout(function () {
+                        that.getAdminMessage()
+                    },10000)
                 },
                 // 显示消息框
                 doShowMsg:function(){
