@@ -13,7 +13,7 @@ use AdminMessage\Service\AdminMessageService;
 use Common\Controller\AdminBase;
 
 /**
- * 后台信息管理
+ * 后台消息管理
  * Class AdminMessageController
  * @package AdminMessage\Controller
  */
@@ -50,7 +50,7 @@ class IndexController extends AdminBase
         $target_type = '来源类型';
         $sender = '发送者';
         $sender_type =  '发送者类型';
-        $receiver = 0 ;
+        $receiver = 0 ;  // 接收者userId
         $receiver_type = '接收者类型' ;
         $res = AdminMessageService::createAdminMessage($title,$content,$target,$target_type,$sender,$sender_type,$receiver,$receiver_type);
 
@@ -109,7 +109,7 @@ class IndexController extends AdminBase
     }
 
     /**
-     * 更新当前页面
+     * 阅读当前页面所有信息
      */
     public function readMsgPage(){
         $page = I('post.page', 1);
