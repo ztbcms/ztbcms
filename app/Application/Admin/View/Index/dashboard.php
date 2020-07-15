@@ -79,7 +79,7 @@
                                 </span>
                             </div>
                             <div style="text-align: center" @click="toShowMsg">
-                                <p style="color:#000;" >查看所有通知 >></p>
+                                <a style="color:#000;" href="javascript:void(0)">查看所有通知 >></a>
                             </div>
                             <div slot="reference" @click="doShowMsg" style="display: inline-block;margin-right: 20px;">
                                 <span style="position: relative">
