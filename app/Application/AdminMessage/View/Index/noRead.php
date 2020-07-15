@@ -81,9 +81,7 @@
                         read_status:'0' // 未读
                     },
                 },
-                watch: {
-
-                },
+                watch: {},
                 filters: {
                     parseTime: function (time,format) {
                         return Ztbcms.formatTime(time, format)
@@ -119,14 +117,13 @@
                         $.ajax({
                             url: '{:U("AdminMessage/Index/readMsg")}',
                             data: {
-                                'id': id
+                                'ids': id
                             },
                             type: 'post',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
@@ -135,7 +132,7 @@
                     readAll: function () {
                         var that = this;
                         layer.confirm('确定将所有的消息标记为已读？', {title:'提示'}, function(index){
-                            that.doReadAll()
+                            that.doReadAll();
                             layer.close(index);
                         });
                     },
@@ -149,7 +146,6 @@
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
@@ -158,26 +154,31 @@
                     readNowPage: function () {
                         var that = this;
                         layer.confirm('确定将本页的消息标记为已读？', {title:'提示'}, function(index){
-                            that.doReadNowPage()
+                            that.doReadNowPage();
                             layer.close(index);
                         });
                     },
                     // 本页已读
                     doReadNowPage:function(){
                         var that = this;
+                        var ids  = [];
+                        for(var item in that.tableData){
+                            ids.push(that.tableData[item]['id']);
+                        }
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/readMsgPage")}',
-                            data: that.where,
+                            url: '{:U("AdminMessage/Index/readMsg")}',
+                            data: {
+                                ids:ids
+                            },
                             type: 'post',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
-                    },
+                    }
                 },
                 mounted: function () {
                     this.getList();

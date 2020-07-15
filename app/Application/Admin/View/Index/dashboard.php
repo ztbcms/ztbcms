@@ -899,7 +899,7 @@
                         url: '/AdminMessage/index/readMsg',
                         method: 'post',
                         data: {
-                            id: id,
+                            ids: id,
                         }
                     }).then(function(res){
                         if (res.status) {

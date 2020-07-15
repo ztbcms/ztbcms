@@ -30,7 +30,7 @@
                     <template slot-scope="scope">
                         <div @click="read(scope.row.id)" style="padding-left: 10px;">
                             <i class="el-icon-s-opportunity" style="color: red;" v-if="scope.row.read_status == 0"></i>
-                            <span >{{ scope.row.content | ellipsis }}</span>
+                            <span>{{ scope.row.content | ellipsis }}</span>
                             <span style="float: right"><i class="el-icon-time"></i> {{ scope.row.create_time | parseTime('{m}-{d} {h}:{i}') }}</span>
                         </div>
                     </template>
@@ -81,8 +81,7 @@
                         type: ""
                     },
                 },
-                watch: {
-                },
+                watch: {},
                 filters: {
                     parseTime: function (time,format) {
                         return Ztbcms.formatTime(time, format)
@@ -118,14 +117,13 @@
                         $.ajax({
                             url: '{:U("AdminMessage/Index/readMsg")}',
                             data: {
-                                'id': id
+                                'ids': id
                             },
                             type: 'post',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
@@ -134,7 +132,7 @@
                     readAll: function () {
                         var that = this;
                         layer.confirm('确定将所有的消息标记为已读？', {title:'提示'}, function(index){
-                            that.doReadAll()
+                            that.doReadAll();
                             layer.close(index);
                         });
                     },
@@ -148,7 +146,6 @@
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
@@ -164,19 +161,24 @@
                     // 本页已读
                     doReadNowPage:function(){
                         var that = this;
+                        var ids  = [];
+                        for(var item in that.tableData){
+                            ids.push(that.tableData[item]['id']);
+                        }
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/readMsgPage")}',
-                            data: that.where,
+                            url: '{:U("AdminMessage/Index/readMsg")}',
+                            data: {
+                                ids:ids
+                            },
                             type: 'post',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
-                    },
+                    }
                 },
                 mounted: function () {
                     this.getList();

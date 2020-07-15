@@ -4,7 +4,10 @@
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
             <el-row>
-                <el-col :span="5"><h3>系统通知</h3></el-col>
+                <el-col :span="5">
+                    <h3>系统通知</h3>
+                    <pre>* 系统通知类型 type 为 'system' </pre>
+                </el-col>
                 <el-col :span="19">
                     <div style="float: right">
                         <el-button class="filter-item" type="primary"  @click="readAll">
@@ -81,9 +84,7 @@
                         type:'system' // 系统类型的通知
                     },
                 },
-                watch: {
-
-                },
+                watch: {},
                 filters: {
                     parseTime: function (time,format) {
                         return Ztbcms.formatTime(time, format)
@@ -119,14 +120,13 @@
                         $.ajax({
                             url: '{:U("AdminMessage/Index/readMsg")}',
                             data: {
-                                'id': id
+                                'ids': id
                             },
                             type: 'post',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
@@ -149,7 +149,6 @@
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
@@ -158,26 +157,31 @@
                     readNowPage: function () {
                         var that = this;
                         layer.confirm('确定将本页的消息标记为已读？', {title:'提示'}, function(index){
-                            that.doReadNowPage()
+                            that.doReadNowPage();
                             layer.close(index);
                         });
                     },
                     // 本页已读
                     doReadNowPage:function(){
                         var that = this;
+                        var ids  = [];
+                        for(var item in that.tableData){
+                            ids.push(that.tableData[item]['id']);
+                        }
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/readMsgPage")}',
-                            data: that.where,
+                            url: '{:U("AdminMessage/Index/readMsg")}',
+                            data: {
+                                ids:ids
+                            },
                             type: 'post',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.status) {
                                     that.getList()
-                                } else {
                                 }
                             }
                         });
-                    },
+                    }
                 },
                 mounted: function () {
                     this.getList();
