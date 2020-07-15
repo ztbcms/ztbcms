@@ -65,7 +65,7 @@
                         </el-breadcrumb>
                     </div>
 
-                    <div class="el-dropdown">
+                    <div class="nav_right">
                         <el-popover
                                 placement="bottom"
                                 width="400"
@@ -81,32 +81,33 @@
                             <div style="text-align: center" @click="toShowMsg">
                                 <p style="color:#000;" >查看所有通知 >></p>
                             </div>
-
-                            <div slot="reference" @click="doShowMsg">
-                                    <span style="position: relative">
-                                        <svg style="width: 1.6rem;height: 1.6rem;" t="1594714631615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1137" width="200" height="200"><path d="M889.92 749.728c-1.184-1.632-119.232-166.144-119.232-287.392 0-168.448-76.16-254.784-162.688-287.008V160c0-52.928-43.072-96-96-96s-96 43.072-96 96v16.576c-10.784 7.904-16.096 21.792-11.808 35.232 5.376 16.832 23.424 26.048 40.224 20.736 17.76-5.664 36.928-8.544 56.896-8.544h21.376c115.232 0 184 89.088 184 238.304 0 108.032 72.896 235.392 110.176 293.504C759.488 781.984 633.824 832 512 832c-121.504 0-247.424-50.368-304.832-76.64 37.312-57.984 110.144-185.024 110.144-293.056 0-62.432 11.616-114.208 34.528-153.92 8.832-15.328 3.584-34.88-11.712-43.712-15.392-8.864-34.88-3.584-43.712 11.712-28.608 49.536-43.104 112.096-43.104 185.92 0 121.216-118.016 285.248-119.2 286.88a32.13 32.13 0 0 0-5.312 25.952c2.048 8.96 7.872 16.672 16 21.024 5.664 3.072 107.392 57.28 233.536 84.512C399.744 947.072 452.16 992 512 992s112.256-44.928 133.632-111.296c126.112-27.104 227.84-80.992 233.504-84.032 8.128-4.352 14.016-12.032 16.064-21.024s0.128-18.432-5.28-25.92zM501.312 160c-7.264 0-14.208 0.992-21.312 1.568V160c0-17.632 14.368-32 32-32s32 14.368 32 32v0.928a252.138 252.138 0 0 0-21.312-0.928h-21.376zM512 928c-22.336 0-43.136-13.408-57.984-35.296C473.216 894.72 492.608 896 512 896s38.784-1.28 57.984-3.296C555.136 914.624 534.304 928 512 928z" p-id="1138"></path></svg>
-                                    </span>
-                                    <el-badge class="mark" :value="msgListTotal" v-if="msgListTotal > 0" style="position: absolute;"/>
-                                </div>
+                            <div slot="reference" @click="doShowMsg" style="display: inline-block;margin-right: 20px;">
+                                <span style="position: relative">
+                                    <svg style="width: 1.5rem;height: 1.5rem;" t="1594714631615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1137" width="200" height="200"><path d="M889.92 749.728c-1.184-1.632-119.232-166.144-119.232-287.392 0-168.448-76.16-254.784-162.688-287.008V160c0-52.928-43.072-96-96-96s-96 43.072-96 96v16.576c-10.784 7.904-16.096 21.792-11.808 35.232 5.376 16.832 23.424 26.048 40.224 20.736 17.76-5.664 36.928-8.544 56.896-8.544h21.376c115.232 0 184 89.088 184 238.304 0 108.032 72.896 235.392 110.176 293.504C759.488 781.984 633.824 832 512 832c-121.504 0-247.424-50.368-304.832-76.64 37.312-57.984 110.144-185.024 110.144-293.056 0-62.432 11.616-114.208 34.528-153.92 8.832-15.328 3.584-34.88-11.712-43.712-15.392-8.864-34.88-3.584-43.712 11.712-28.608 49.536-43.104 112.096-43.104 185.92 0 121.216-118.016 285.248-119.2 286.88a32.13 32.13 0 0 0-5.312 25.952c2.048 8.96 7.872 16.672 16 21.024 5.664 3.072 107.392 57.28 233.536 84.512C399.744 947.072 452.16 992 512 992s112.256-44.928 133.632-111.296c126.112-27.104 227.84-80.992 233.504-84.032 8.128-4.352 14.016-12.032 16.064-21.024s0.128-18.432-5.28-25.92zM501.312 160c-7.264 0-14.208 0.992-21.312 1.568V160c0-17.632 14.368-32 32-32s32 14.368 32 32v0.928a252.138 252.138 0 0 0-21.312-0.928h-21.376zM512 928c-22.336 0-43.136-13.408-57.984-35.296C473.216 894.72 492.608 896 512 896s38.784-1.28 57.984-3.296C555.136 914.624 534.304 928 512 928z" p-id="1138"></path></svg>
+                                </span>
+                                <el-badge class="mark" :value="msgListTotal" v-if="msgListTotal > 0" style="position: absolute;"/>
+                            </div>
                         </el-popover>
-                    </div>
-                    <el-dropdown>
+
+                        <el-dropdown>
                         <span class="el-dropdown-link" >
                             <template v-if="adminUserInfo && adminUserInfo.name">
                             {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i class="el-icon-arrow-down el-icon--right"></i>
                             </template>
                         </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-if="hasPermission_cleanCache" >
-                                <span @click="click_cleancache">清理缓存</span>
-                            </el-dropdown-item>
-                            <el-dropdown-item>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item v-if="hasPermission_cleanCache" >
+                                    <span @click="click_cleancache">清理缓存</span>
+                                </el-dropdown-item>
+                                <el-dropdown-item>
                                 <span @click="click_logout">
                                     注销
                                 </span>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+
                 </div>
                 <div class="tag" ref="tagScroll">
                     <div class="list" ref="tagList">
@@ -230,6 +231,20 @@
             color: #97a8be !important;
         }
 
+        .el-badge__content {
+            background-color: #F56C6C;
+            border-radius: 10px;
+            color: #FFF;
+            display: inline-block;
+            font-size: 6px;
+            height: 14px;
+            line-height: 14px;
+            padding: 0 5px;
+            text-align: center;
+            white-space: nowrap;
+            border: 1px solid #FFF;
+        }
+
         .el-submenu .el-menu--inline {
             background-color: #1f2d3d;
         }
@@ -350,6 +365,12 @@
         .navbar .right {
             margin: 10px 20px 0;
             cursor: pointer;
+        }
+
+        .navbar .nav_right{
+            display: flex;
+            align-items: center;
+            height: 50px;
         }
 
         .app-main {
@@ -829,6 +850,7 @@
                 },
                 // 获取后台消息数量
                 getAdminMessage:function(){
+                    window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                     var that = this;
                     $.ajax({
                         url: '/AdminMessage/index/getAdminMsgList',
