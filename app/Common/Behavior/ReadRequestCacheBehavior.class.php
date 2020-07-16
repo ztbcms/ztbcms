@@ -22,7 +22,6 @@ class ReadRequestCacheBehavior extends BaseBehavior
             $result = $service->enableRequestCache();
             if ($result['status']) {
                 $cache_data = $service->getCacheData();
-                $cache_data['expire_date'] = date('Y-m-d H:i:s', $cache_data['expire']);
                 // 存在缓存
                 if ($cache_data && isset($cache_data['data'])) {
                     $service->ajaxReturn($cache_data['data'], $cache_data['type']);

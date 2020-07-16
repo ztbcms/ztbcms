@@ -17,25 +17,50 @@ use System\Service\BaseService;
  */
 class RequestCacheService extends BaseService
 {
+    // 路由key的版本号后缀
+    const ROUTER_KEY_VERSION_SUFFIX = 'updated_at';
+
+    static function generateRouteKey($module, $controller, $action)
+    {
+        return strtolower($module.'/'.$controller.'/'.$action);
+    }
+
     /**
      * 生成路由的缓存key
      *
-     * @param $module
-     * @param $controller
-     * @param $action
+     * @param $route
      * @param  array  $param_data
+     *
+     * @param  array  $rule
      *
      * @return string
      */
-    static function generateRouterCacheKey($module, $controller, $action, $param_data = [])
+    static function generateRouteCacheKey($route, $param_data = [], $rule = [])
     {
         //key=action+md5(params)
-        $route = strtolower($module.'/'.$controller.'/'.$action);
         $params = '';
         foreach ($param_data as $k => $v) {
             $params .= strtolower($k.'='.$v);
         }
+
+        // 处理订阅
+        if ($rule && isset($rule['subscribe'])) {
+            foreach ($rule['subscribe'] as $index => $value) {
+                $v = cache(self::generateRouterVersionKey($value)) ?: '';
+                $params .= self::generateRouterVersionKey($value).'='.$v;
+            }
+        }
         return $route.':'.md5($params);
+    }
+
+    static function generateRouterVersionKey($route)
+    {
+        return strtolower($route).':'.self::ROUTER_KEY_VERSION_SUFFIX;
+    }
+
+    private function makeRouteKey()
+    {
+        return self::generateRouteKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME);
     }
 
     /**
@@ -43,10 +68,12 @@ class RequestCacheService extends BaseService
      *
      * @return string
      */
-    private function makeCacheKey()
+    private function makeRouteCacheKey()
     {
         $param_data = I('');
-        return self::generateRouterCacheKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME, $param_data);
+        $route = self::generateRouteKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME);
+        $rule = $this->getRuleByRouter($route);
+        return self::generateRouteCacheKey($route, $param_data, $rule);
     }
 
     /**
@@ -66,13 +93,20 @@ class RequestCacheService extends BaseService
         if (empty($ajax_return_type)) {
             $ajax_return_type = C('DEFAULT_AJAX_RETURN');
         }
+
         $cache_data = [
-            'key'    => $this->makeCacheKey(),
+            'key'    => $this->makeRouteCacheKey(),
             'type'   => $ajax_return_type,
             'expire' => NOW_TIME + intval($expire),
             'data'   => $data
         ];
-        return cache($cache_data['key'], json_encode($cache_data), ['expire' => $expire]);
+        $route_key = $this->makeRouteKey();
+        $route_version_key = self::generateRouterVersionKey($route_key);
+        // 缓存数据
+        cache($cache_data['key'], json_encode($cache_data), ['expire' => $expire]);
+        // 路由的最后更新时间
+        cache($route_version_key, NOW_TIME);
+        return true;
     }
 
     /**
@@ -84,7 +118,7 @@ class RequestCacheService extends BaseService
      */
     function getCacheData($default = null)
     {
-        $cache = cache($this->makeCacheKey());
+        $cache = cache($this->makeRouteCacheKey());
         if ($cache) {
             return json_decode($cache, true);
         }
@@ -93,22 +127,24 @@ class RequestCacheService extends BaseService
 
     function getRuleByRouter($route)
     {
+        $route = strtolower($route);
         // 读取静态规则
         $rules = C('REQUEST_CACHE_RULES');
         $rule = null;
         if (!empty($rules)) {
-            if (isset($rules[$route])) {
-                $rule = $rules[$route];
+            $rule_map = C('REQUEST_CACHE_RULES'.'CACHE');
+            if (empty($rule_map)) {
+                foreach ($rules as $rule_name => $v) {
+                    $rule_map[strtolower($rule_name)] = $v;
+                }
+                C('REQUEST_CACHE_RULES'.'CACHE', $rule_map);
+            }
+
+            if (isset($rule_map[$route])) {
+                $rule = $rule_map[$route];
             } else {
                 if (isset($rules['*'])) {
-                    $rule = $rules['*'];
-                } else {
-                    foreach ($rules as $rule_name => $v) {
-                        if (strtolower($rule_name) == $route) {
-                            $rule = $v;
-                            break;
-                        }
-                    }
+                    $rule = $rule_map['*'];
                 }
             }
         }
