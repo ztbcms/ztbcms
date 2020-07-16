@@ -6,6 +6,7 @@
 
 namespace Common\Controller;
 
+use Common\Service\RequestCacheService;
 use Libs\System\Components;
 use \Think\Controller;
 
@@ -111,7 +112,14 @@ class CMS extends Controller {
 		if (empty($type)) {
 			$type = C('DEFAULT_AJAX_RETURN');
 		}
-
+        // 请求缓存
+        if (C('REQUEST_CACHE_ON')) {
+            $service = new RequestCacheService();
+            $result = $service->enableRequestCache();
+            if ($result['status']) {
+                $service->setCacheData($data, $result['data']['expire'], $type);
+            }
+        }
 		switch (strtoupper($type)) {
 			case 'JSON':
 				// 返回JSON数据格式到客户端 包含状态信息
