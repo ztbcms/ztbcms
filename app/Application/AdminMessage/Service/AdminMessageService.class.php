@@ -161,22 +161,10 @@ class AdminMessageService extends BaseService {
      * @param $read_status
      * @return array
      */
-    static function readAdminAllMessage($where , $read_status){
+    static function readAllAdminMessage($where , $read_status){
         return self::update('AdminMessage',$where,['read_status'=>$read_status,'read_time'=>time()]);
     }
 
-    /**
-     *
-     * 已读所有
-     *
-     * @param $ids
-     * @param $receiver
-     * @param $read_status
-     * @return array
-     */
-    static function readAdminMessageByIds($ids, $receiver, $read_status){
-        return self::update('AdminMessage',['id'=> ['in',$ids],'receiver'=>$receiver],['read_status'=>$read_status,'read_time'=>time()]);
-    }
 
     /**
      * 删除消息

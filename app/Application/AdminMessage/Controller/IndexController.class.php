@@ -47,7 +47,7 @@ class IndexController extends AdminBase
         $title = '标题';
         $content = '内容';
         $receiver = 1 ;  // 接收者Id
-        $res = AdminMessageService::createMessage($title,$content,$receiver);
+        $res = AdminMessageService::createMessage($title, $content, $receiver);
         $this->ajaxReturn($res);
     }
 
@@ -57,7 +57,7 @@ class IndexController extends AdminBase
     public function createGroupMessage(){
         $title = '群发标题';
         $content = '群发内容';
-        $res = AdminMessageService::createGroupMessage($title,$content);
+        $res = AdminMessageService::createGroupMessage($title, $content);
         $this->ajaxReturn($res);
     }
 
@@ -67,7 +67,7 @@ class IndexController extends AdminBase
     public function createSystemMessage(){
         $title = '系统公告';
         $content = '这是系统通知的内容';
-        $res = AdminMessageService::createSystemMessage($title,$content);
+        $res = AdminMessageService::createSystemMessage($title, $content);
         $this->ajaxReturn($res);
     }
 
@@ -91,7 +91,7 @@ class IndexController extends AdminBase
         }
 
         $order = 'read_status ASC,create_time DESC';
-        $list = AdminMessageService::getAdminMessageList($where,$order,$page,$limit);
+        $list = AdminMessageService::getAdminMessageList($where, $order, $page, $limit);
         $this->ajaxReturn($list);
     }
 
@@ -120,7 +120,7 @@ class IndexController extends AdminBase
         if($type){
             $where['type'] = $type;
         }
-        $res = AdminMessageService::readAdminAllMessage( $where, $read_status);
+        $res = AdminMessageService::readAllAdminMessage($where, $read_status);
         $this->ajaxReturn($res);
     }
 
