@@ -581,6 +581,13 @@ INSERT INTO `cms_menu` VALUES (115, '缓存更新', 0, 'Admin', 'Index', 'cache'
 INSERT INTO `cms_menu` VALUES (116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '');
+INSERT INTO `cms_menu` VALUES (119, '消息', 0, 'Admin', 'AdminMessage', '%', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (120, '所有消息', 119, 'Admin', 'AdminMessage', 'index', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (121, '未读消息', 119, 'Admin', 'AdminMessage', 'noRead', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (122, '系统消息', 119, 'Admin', 'AdminMessage', 'system', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (123, '获取消息列表', 119, 'Admin', 'AdminMessage', 'getAdminMsgList', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (124, '阅读消息', 119, 'Admin', 'AdminMessage', 'readMsg', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (125, '阅读全部消息', 119, 'Admin', 'AdminMessage', 'readMsgAll', '', 1, 0, '', 0, '');
 
 
 -- ----------------------------
@@ -944,3 +951,22 @@ CREATE TABLE `cms_access_group_items` (
   `access_id` int(11) NOT NULL COMMENT '所属权限表ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组的权限';
+
+-- ----------------------------
+-- Table structure for cms_admin_message
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_admin_message`;
+CREATE TABLE `cms_admin_message` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `content` varchar(255) NOT NULL DEFAULT '' COMMENT '内容',
+  `target` varchar(255) NOT NULL DEFAULT '' COMMENT '消息来源',
+  `target_type` varchar(255) NOT NULL DEFAULT '' COMMENT '消息源类型',
+  `receiver` varchar(255) NOT NULL DEFAULT '' COMMENT '接收者',
+  `receiver_type` varchar(255) NOT NULL DEFAULT '' COMMENT '接收者类型',
+  `type` varchar(255) NOT NULL DEFAULT '' COMMENT '消息类型',
+  `read_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读时间',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息管理';

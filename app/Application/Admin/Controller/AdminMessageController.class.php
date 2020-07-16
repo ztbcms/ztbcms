@@ -6,10 +6,10 @@
  * Time: 11:34
  */
 
-namespace AdminMessage\Controller;
+namespace Admin\Controller;
 
-use AdminMessage\Model\AdminMessageModel;
-use AdminMessage\Service\AdminMessageService;
+use Admin\Model\AdminMessageModel;
+use Admin\Service\AdminMessageService;
 use Common\Controller\AdminBase;
 
 /**
@@ -17,7 +17,7 @@ use Common\Controller\AdminBase;
  * Class AdminMessageController
  * @package AdminMessage\Controller
  */
-class IndexController extends AdminBase
+class AdminMessageController extends AdminBase
 {
     /**
      * 所有通知
@@ -46,7 +46,7 @@ class IndexController extends AdminBase
     public function createMessage(){
         $title = '标题';
         $content = '内容';
-        $receiver = 1 ;  // 接收者Id
+        $receiver = $this->uid ;  // 接收者Id
         $res = AdminMessageService::createMessage($title, $content, $receiver);
         $this->ajaxReturn($res);
     }

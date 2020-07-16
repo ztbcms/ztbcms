@@ -4,9 +4,9 @@
  * created: 2020-07-14 11:33:14
  */
 
-namespace AdminMessage\Service;
+namespace Admin\Service;
 
-use AdminMessage\Model\AdminMessageModel;
+use Admin\Model\AdminMessageModel;
 use System\Service\BaseService;
 
 /**

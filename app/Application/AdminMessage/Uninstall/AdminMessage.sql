@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS `cms_admin_message`;

@@ -865,7 +865,7 @@
                     window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                     var that = this;
                     $.ajax({
-                        url: '/AdminMessage/index/getAdminMsgList',
+                        url: '/Admin/AdminMessage/getAdminMsgList',
                         method: 'get',
                         data: {
                             page: 1,
@@ -896,7 +896,7 @@
                 readMsg:function (id) {
                     var that = this;
                     $.ajax({
-                        url: '/AdminMessage/index/readMsg',
+                        url: '/Admin/AdminMessage/readMsg',
                         method: 'post',
                         data: {
                             ids: id,
@@ -909,7 +909,7 @@
                 },
                 // 跳转到消息列表
                 toShowMsg:function () {
-                    this.openNewFrame('所有消息', '/AdminMessage/Index/index')
+                    this.openNewFrame('所有消息', '/Admin/AdminMessage/index')
                     this.showMsg = false;
                 }
             },

@@ -98,7 +98,7 @@
                     getList: function () {
                         var that = this;
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/getAdminMsgList")}',
+                            url: '{:U("Admin/AdminMessage/getAdminMsgList")}',
                             data: that.where,
                             type: 'get',
                             dataType: 'json',
@@ -115,7 +115,7 @@
                     read:function(id){
                         var that = this;
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/readMsg")}',
+                            url: '{:U("Admin/AdminMessage/readMsg")}',
                             data: {
                                 'ids': id
                             },
@@ -139,7 +139,7 @@
                     doReadAll:function(){
                         var that = this;
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/readMsgAll")}',
+                            url: '{:U("Admin/AdminMessage/readMsgAll")}',
                             data: {},
                             type: 'post',
                             dataType: 'json',
@@ -166,7 +166,7 @@
                             ids.push(that.tableData[item]['id']);
                         }
                         $.ajax({
-                            url: '{:U("AdminMessage/Index/readMsg")}',
+                            url: '{:U("Admin/AdminMessage/readMsg")}',
                             data: {
                                 ids:ids
                             },

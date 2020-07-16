@@ -5,7 +5,7 @@
  * created: 2020-07-14 11:33:11
  */
 
-namespace AdminMessage\Model;
+namespace Admin\Model;
 
 use Common\Model\Model;
 
