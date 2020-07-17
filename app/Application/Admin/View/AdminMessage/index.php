@@ -117,7 +117,7 @@
                         $.ajax({
                             url: '{:U("Admin/AdminMessage/readMsg")}',
                             data: {
-                                'ids': id
+                                'ids': [id]
                             },
                             type: 'post',
                             dataType: 'json',

@@ -1,8 +1,8 @@
 <?php
-
 /**
- * author: Devtool
- * created: 2020-07-14 11:33:11
+ * User: FHYI
+ * Date: 2020/7/14
+ * Time: 11:34
  */
 
 namespace Admin\Model;

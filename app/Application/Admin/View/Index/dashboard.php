@@ -863,7 +863,7 @@
                 // 获取后台未读消息
                 getAdminMessage:function(){
                     window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
-                    var that = this;
+                    var that = this
                     $.ajax({
                         url: '/Admin/AdminMessage/getAdminMsgList',
                         method: 'get',
@@ -878,9 +878,8 @@
                             that.msgListTotal = res.data.total_items
                             if(res.data.total_items > 0){
                             }else{
-                                that.showMsg = false;
+                                that.showMsg = false
                             }
-                        } else {
                         }
                     })
                 },
@@ -889,7 +888,7 @@
                     if(this.msgListTotal > 0){
                         this.showMsg = !this.showMsg
                     }else{
-                        this.showMsg = false;
+                        this.showMsg = false
                     }
                 },
                 // 已读信息
@@ -899,7 +898,7 @@
                         url: '/Admin/AdminMessage/readMsg',
                         method: 'post',
                         data: {
-                            ids: id,
+                            ids: [id]
                         }
                     }).then(function(res){
                         if (res.status) {
@@ -910,7 +909,7 @@
                 // 跳转到消息列表
                 toShowMsg:function () {
                     this.openNewFrame('所有消息', '/Admin/AdminMessage/index')
-                    this.showMsg = false;
+                    this.showMsg = false
                 }
             },
             computed: {

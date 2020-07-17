@@ -17,6 +17,7 @@
                     </div>
                 </el-col>
             </el-row>
+
             <el-table
                 :key="tableKey"
                 :data="tableData"
@@ -29,8 +30,7 @@
                     <template slot-scope="scope">
                         <div @click="read(scope.row.id)" style="padding-left: 10px;">
                             <i class="el-icon-s-opportunity" style="color: red;" v-if="scope.row.read_status == 0"></i>
-                            <span >{{ scope.row.content | ellipsis }}</span>
-
+                            <span>{{ scope.row.content | ellipsis }}</span>
                             <span style="float: right"><i class="el-icon-time"></i> {{ scope.row.create_time | parseTime('{m}-{d} {h}:{i}') }}</span>
                         </div>
                     </template>
@@ -117,7 +117,7 @@
                         $.ajax({
                             url: '{:U("Admin/AdminMessage/readMsg")}',
                             data: {
-                                'ids': id
+                                'ids': [id]
                             },
                             type: 'post',
                             dataType: 'json',

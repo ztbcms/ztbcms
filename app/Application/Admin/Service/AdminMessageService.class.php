@@ -1,7 +1,8 @@
 <?php
 /**
- * author: Devtool
- * created: 2020-07-14 11:33:14
+ * User: FHYI
+ * Date: 2020/7/14
+ * Time: 11:34
  */
 
 namespace Admin\Service;
@@ -47,15 +48,19 @@ class AdminMessageService extends BaseService {
      * @param string $title               消息标题
      * @param string $content             消息内容
      * @param string $receiver            接收者
+     * @param string $sender              发送者
+     * @param string $sender_type         发送者类型
      * @param string $target              消息来源
      * @param string $target_type         消息来源类型
      * @param string $receiver_type       接收者类型
      * @return array
      */
-    static function createMessage($title, $content, $receiver, $target = "system", $target_type = "system", $receiver_type = "admin_user_id") {
+    static function createMessage($title, $content, $receiver, $sender = "system", $sender_type = "system", $target = "system", $target_type = "system", $receiver_type = "admin_user_id") {
         $data = [
             'title'         => $title,
             'content'       => $content,
+            'sender'        => $sender,
+            'sender_type'   => $sender_type,
             'target'        => $target,
             'target_type'   => $target_type,
             'receiver'      => $receiver,
@@ -71,18 +76,22 @@ class AdminMessageService extends BaseService {
      *
      * @param string $title               消息标题
      * @param string $content             消息内容
-     * @param string $target              消息来源
-     * @param string $target_type         消息来源类型
+     * @param string $sender              发送者
+     * @param string $sender_type         发送者类型
+     * @param string $target              消息源
+     * @param string $target_type         消息源类型
      * @param string $receiver_type       接收者类型
      * @return array
      */
-    static function createSystemMessage($title, $content, $target = "system", $target_type = "system", $receiver_type = "admin_user_id") {
+    static function createSystemMessage($title, $content, $sender = "system", $sender_type = "system", $target = "system", $target_type = "system", $receiver_type = "admin_user_id") {
         $admin_ids = M('user')->where(['status'=>1])->getField('id',true);
         if($admin_ids){
             foreach ($admin_ids as $uid){
                 $data = [
                     'title'         => $title,
                     'content'       => $content,
+                    'sender'        => $sender,
+                    'sender_type'   => $sender_type,
                     'target'        => $target,
                     'target_type'   => $target_type,
                     'receiver'      => $uid,
@@ -102,24 +111,28 @@ class AdminMessageService extends BaseService {
      *
      * @param string $title               消息标题
      * @param string $content             消息内容
-     * @param string $target              消息来源
-     * @param string $target_type         消息来源类型
+     * @param string $sender              发送者
+     * @param string $sender_type         发送者类型
+     * @param string $target              消息源
+     * @param string $target_type         消息源类型
      * @param string $receiver_type       接收者类型
      * @return array
      */
-    static function createGroupMessage($title, $content, $target="system", $target_type="system", $receiver_type = "admin_user_id") {
+    static function createGroupMessage($title, $content, $sender = "system", $sender_type = "system", $target="system", $target_type="system", $receiver_type = "admin_user_id" ) {
         // 对所有管理员，发送消息
         $admin_ids = M('user')->where(['status'=>1])->getField('id',true);
         if($admin_ids){
             foreach ($admin_ids as $uid){
                 $data = [
-                    'title' => $title,
-                    'content' => $content,
-                    'target' => $target,
-                    'target_type' => $target_type,
-                    'receiver' => $uid,
+                    'title'         => $title,
+                    'content'       => $content,
+                    'sender'        => $sender,
+                    'sender_type'   => $sender_type,
+                    'target'        => $target,
+                    'target_type'   => $target_type,
+                    'receiver'      => $uid,
                     'receiver_type' => $receiver_type,
-                    'create_time' => time(),
+                    'create_time'   => time(),
                 ];
                 self::create('AdminMessage', $data);
             }
