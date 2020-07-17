@@ -24,7 +24,7 @@ class ReadRequestCacheBehavior extends BaseBehavior
                 $cache_data = $service->getCacheData();
                 // 存在缓存
                 if ($cache_data && isset($cache_data['data'])) {
-                    $service->ajaxReturn($cache_data['data'], $cache_data['type']);
+                    $service->responseContent($cache_data['data'], $cache_data['type']);
                 }
             }
         }

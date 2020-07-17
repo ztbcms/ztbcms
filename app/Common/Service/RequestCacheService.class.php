@@ -58,7 +58,7 @@ class RequestCacheService extends BaseService
         return strtolower($route).':'.self::ROUTER_KEY_VERSION_SUFFIX;
     }
 
-    private function makeRouteKey()
+    function makeRouteKey()
     {
         return self::generateRouteKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME);
     }
@@ -68,7 +68,7 @@ class RequestCacheService extends BaseService
      *
      * @return string
      */
-    private function makeRouteCacheKey()
+    function makeRouteCacheKey()
     {
         $param_data = I('');
         $route = self::generateRouteKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME);
@@ -79,13 +79,13 @@ class RequestCacheService extends BaseService
     /**
      * 设置缓存
      *
-     * @param  array  $data
+     * @param  string  $data
      * @param  null  $expire
      * @param  string  $ajax_return_type
      *
      * @return mixed
      */
-    function setCacheData(array $data, $expire = null, $ajax_return_type = '')
+    function setCacheData($data, $expire = null, $ajax_return_type = '')
     {
         if (empty($expire)) {
             $expire = C('REQUEST_CACHE_TIME');
@@ -139,7 +139,6 @@ class RequestCacheService extends BaseService
                 }
                 C('REQUEST_CACHE_RULES'.'CACHE', $rule_map);
             }
-
             if (isset($rule_map[$route])) {
                 $rule = $rule_map[$route];
             } else {
@@ -148,7 +147,7 @@ class RequestCacheService extends BaseService
                 }
             }
         }
-        if ($rule && !isset($rule['expire'])) {
+        if (!is_null($rule) && !isset($rule['expire'])) {
             $rule['expire'] = C('REQUEST_CACHE_TIME');
         }
 
@@ -161,7 +160,7 @@ class RequestCacheService extends BaseService
      */
     function enableRequestCache()
     {
-        $route = strtolower(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
+        $route = $this->makeRouteKey();
         // 读取静态规则
         $rule = $this->getRuleByRouter($route);
 
@@ -174,32 +173,34 @@ class RequestCacheService extends BaseService
     /**
      * 返回内容
      *
-     * @param $data array|null 数据
+     * @param $content string 数据
      * @param  string  $type  ajax 返回类型
      */
-    function ajaxReturn($data, $type = '')
+    function responseContent($content, $type = 'HTML')
     {
-        if (empty($type)) {
-            $type = C('DEFAULT_AJAX_RETURN');
-        }
         switch (strtoupper($type)) {
             case 'JSON':
                 // 返回JSON数据格式到客户端 包含状态信息
                 header('Content-Type:text/json; charset=utf-8');
-                exit(json_encode($data));
+                break;
             case 'XML':
                 // 返回xml格式数据
                 header('Content-Type:text/xml; charset=utf-8');
-                exit(xml_encode($data));
+                break;
             case 'JSONP':
                 // 返回JSON数据格式到客户端 包含状态信息
                 header('Content-Type:application/json; charset=utf-8');
-                $handler = isset($_GET[C('VAR_JSONP_HANDLER')]) ? $_GET[C('VAR_JSONP_HANDLER')] : C('DEFAULT_JSONP_HANDLER');
-                exit($handler.'('.json_encode($data).');');
+                break;
             default:
-                // 返回JSON数据格式到客户端 包含状态信息
-                header('Content-Type:text/json; charset=utf-8');
-                exit(json_encode($data));
+                // 默认 HTML
+                if(empty($charset))  $charset = C('DEFAULT_CHARSET');
+                if(empty($contentType)) $contentType = C('TMPL_CONTENT_TYPE');
+                // 网页字符编码
+                header('Content-Type:'.$contentType.'; charset='.$charset);
+                header('Cache-control: '.C('HTTP_CACHE_CONTROL'));  // 页面缓存控制
         }
+        // 输出模板文件
+        echo $content;
+        exit;
     }
 }
