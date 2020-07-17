@@ -141,15 +141,34 @@ class ManagementController extends AdminBase {
 
     /**
      *  管理员编辑页面
-     *  2020.3.6
      */
     public function adminedit(){
         $this->display();
     }
 
-    //添加管理员
+    /**
+     * 添加/编辑 管理员信息
+     */
     public function adminadd() {
         if (IS_POST) {
+            $id = I('request.id', 0, 'intval');
+            // 编辑管理员
+            if (!empty($id)) {
+                //判断是否修改本人，在此方法，不能修改本人相关信息
+                if (User::getInstance()->id == $id) {
+                    $this->ajaxReturn(createReturn(false, null, '修改当前登录用户信息请进入[我的面板]中进行修改'));
+                }
+                if (1 == $id) {
+                    $this->ajaxReturn(createReturn(false, null, '该帐号不允许修改'));
+                }
+                if (false !== D('Admin/User')->amendManager($_POST)) {
+                    $this->ajaxReturn(createReturn(true, null, '更新成功'));
+                } else {
+                    $error = D('Admin/User')->getError();
+                    $this->ajaxReturn(createReturn(false, null, '修改失败'));
+                }
+            }
+            // 创建管理员
             if (D('Admin/User')->createManager($_POST)) {
                 $this->ajaxReturn(createReturn(true, null, '添加管理员成功'));
             } else {
