@@ -134,7 +134,8 @@ VALUES
     (19, 'content_check_end', '内容审核后的行为调用', '内容审核后的行为调用', 1, 1, 1, '', 1381023560),
     (20, 'content_delete_begin', '内容删除前的行为调用', '内容删除前的行为调用', 1, 1, 1, '', 1381023560),
     (21, 'content_delete_end', '内容删除后的行为调用', '内容删除后的行为调用', 1, 1, 1, '', 1381023560),
-    (22, 'content_model_edit_field', '模型字段编辑', '模型字段编辑', 1, 1, 1, '', 1381023560);
+    (22, 'content_model_edit_field', '模型字段编辑', '模型字段编辑', 1, 1, 1, '', 1381023560),
+    (23, 'ajax_return', 'ajax请求完成', 'ajax请求完成', 1, 1, 1, '', 1381023560);
 
 -- ----------------------------
 -- Table structure for cms_behavior_log
@@ -181,6 +182,9 @@ INSERT INTO `cms_behavior_rule` VALUES ('7', '1', '1', '', '', 'phpfile:AppInitB
 INSERT INTO `cms_behavior_rule` VALUES ('8', '3', '1', '', '', 'phpfile:AppBeginBehavior|module:Common', '0', '1381021954');
 INSERT INTO `cms_behavior_rule` VALUES ('9', '6', '1', '', '', 'phpfile:ViewBeginBehavior|module:Common', '0', '1381021954');
 INSERT INTO `cms_behavior_rule` VALUES ('10', '22', '1', '', '', 'phpfile:ContentModelEditFieldBehavior|module:Content', '0', '1381021954');
+INSERT INTO `cms_behavior_rule` VALUES ('11', '3', '1', '', '', 'phpfile:ReadRequestCacheBehavior|module:Common', '0', '1381021954');
+INSERT INTO `cms_behavior_rule` VALUES ('12', '9', '1', '', '', 'phpfile:WriteRequestCacheBehavior|module:Common', '0', '1381021954');
+INSERT INTO `cms_behavior_rule` VALUES ('13', '23', '1', '', '', 'phpfile:WriteRequestCacheBehavior|module:Common', '0', '1381021954');
 
 -- ----------------------------
 -- Table structure for cms_cache
@@ -581,6 +585,14 @@ INSERT INTO `cms_menu` VALUES (115, '缓存更新', 0, 'Admin', 'Index', 'cache'
 INSERT INTO `cms_menu` VALUES (116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '');
+INSERT INTO `cms_menu` VALUES (119, '消息', 0, 'Admin', 'AdminMessage', '%', '', 1, 1, '', 0, 'icon-test');
+INSERT INTO `cms_menu` VALUES (120, '所有消息', 119, 'Admin', 'AdminMessage', 'index', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (121, '未读消息', 119, 'Admin', 'AdminMessage', 'noRead', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (122, '系统消息', 119, 'Admin', 'AdminMessage', 'system', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (123, '获取消息列表', 119, 'Admin', 'AdminMessage', 'getAdminMsgList', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (124, '阅读消息', 119, 'Admin', 'AdminMessage', 'readMsg', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (125, '阅读全部消息', 119, 'Admin', 'AdminMessage', 'readMsgAll', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (126, '概览页接口', 1, 'Admin', 'MainApi', '%', '', 1, 0, '', 0, '');
 
 
 -- ----------------------------
@@ -944,3 +956,24 @@ CREATE TABLE `cms_access_group_items` (
   `access_id` int(11) NOT NULL COMMENT '所属权限表ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组的权限';
+
+-- ----------------------------
+-- Table structure for cms_admin_message
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_admin_message`;
+CREATE TABLE `cms_admin_message` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `content` varchar(255) NOT NULL DEFAULT '' COMMENT '内容',
+  `target` varchar(255) NOT NULL DEFAULT '' COMMENT '消息源',
+  `target_type` varchar(255) NOT NULL DEFAULT '' COMMENT '消息源类型',
+  `sender` varchar(255) NOT NULL DEFAULT '' COMMENT '发送者',
+  `sender_type` varchar(255) NOT NULL DEFAULT '' COMMENT '发送者类型',
+  `receiver` varchar(255) NOT NULL DEFAULT '' COMMENT '接收者',
+  `receiver_type` varchar(255) NOT NULL DEFAULT '' COMMENT '接收者类型',
+  `type` varchar(255) NOT NULL DEFAULT '' COMMENT '消息类型',
+  `read_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读时间',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台消息';

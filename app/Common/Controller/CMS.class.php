@@ -6,6 +6,7 @@
 
 namespace Common\Controller;
 
+use Common\Service\RequestCacheService;
 use Libs\System\Components;
 use \Think\Controller;
 
@@ -106,35 +107,40 @@ class CMS extends Controller {
 	 * @param int $json_option 传递给json_encode的option参数
 	 * @return void
 	 */
-	protected function ajaxReturn($data, $type = '', $json_option = 0) {
-		$data['state'] = $data['status'] ? "success" : "fail";
-		if (empty($type)) {
-			$type = C('DEFAULT_AJAX_RETURN');
-		}
-
-		switch (strtoupper($type)) {
-			case 'JSON':
-				// 返回JSON数据格式到客户端 包含状态信息
-				header('Content-Type:text/json; charset=utf-8');
-				exit(json_encode($data, $json_option));
-			case 'XML':
-				// 返回xml格式数据
-				header('Content-Type:text/xml; charset=utf-8');
-				exit(xml_encode($data));
-			case 'JSONP':
-				// 返回JSON数据格式到客户端 包含状态信息
-				header('Content-Type:application/json; charset=utf-8');
-				$handler = isset($_GET[C('VAR_JSONP_HANDLER')]) ? $_GET[C('VAR_JSONP_HANDLER')] : C('DEFAULT_JSONP_HANDLER');
-				exit($handler . '(' . json_encode($data, $json_option) . ');');
-			case 'EVAL':
-				// 返回可执行的js脚本
-				header('Content-Type:text/html; charset=utf-8');
-				exit($data);
-			default:
-				// 用于扩展其他返回格式数据
-				tag('ajax_return', $data);
-		}
-	}
+    protected function ajaxReturn($data, $type = '', $json_option = 0) {
+        $data['state'] = $data['status'] ? "success" : "fail";
+        if (empty($type)) {
+            $type = C('DEFAULT_AJAX_RETURN');
+        }
+        // 请求返回类型
+        define('REQUEST_RETURN_TYPE', $type);
+        switch (strtoupper($type)) {
+            case 'XML':
+                // 返回xml格式数据
+                header('Content-Type:text/xml; charset=utf-8');
+                $content = xml_encode($data);
+                break;
+            case 'JSONP':
+                // 返回JSON数据格式到客户端 包含状态信息
+                header('Content-Type:application/json; charset=utf-8');
+                $handler = isset($_GET[C('VAR_JSONP_HANDLER')]) ? $_GET[C('VAR_JSONP_HANDLER')] : C('DEFAULT_JSONP_HANDLER');
+                $content = $handler.'('.json_encode($data, $json_option).');';
+                break;
+            case 'EVAL':
+                // 返回可执行的js脚本
+                header('Content-Type:text/html; charset=utf-8');
+                $content = $data;
+                break;
+            case 'JSON':
+            default:
+                // 返回JSON数据格式到客户端 包含状态信息
+                header('Content-Type:text/json; charset=utf-8');
+                $content = json_encode($data, $json_option);
+        }
+        echo $content;
+        \Think\Hook::listen('ajax_return', $content);
+        exit;
+    }
 
 	/**
 	 * 分页输出

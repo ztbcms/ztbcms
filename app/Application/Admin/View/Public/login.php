@@ -198,6 +198,10 @@
         inputs[i].addEventListener('input', inputChange);
     }
 
+    if (!!window.ActiveXObject || "ActiveXObject" in window){
+        alert('建议使用IE11及以上的浏览器');
+    }
+
     function inputChange() {
         var index = 0;
 
