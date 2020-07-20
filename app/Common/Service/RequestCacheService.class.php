@@ -90,7 +90,7 @@ class RequestCacheService extends BaseService
     {
         $param_data = I('');
         $route = self::generateRouteKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME);
-        $rule = $this->getRuleByRouter($route);
+        $rule = $this->getRuleByRoute($route);
         return self::generateRouteCacheKey($route, $param_data, $rule);
     }
 
@@ -143,7 +143,13 @@ class RequestCacheService extends BaseService
         return $default;
     }
 
-    function getRuleByRouter($route)
+    /**
+     * 根据路由
+     * @param $route
+     *
+     * @return mixed|null
+     */
+    function getRuleByRoute($route)
     {
         $route = strtolower($route);
         // 读取静态规则
@@ -180,7 +186,7 @@ class RequestCacheService extends BaseService
     {
         $route = $this->makeRouteKey();
         // 读取静态规则
-        $rule = $this->getRuleByRouter($route);
+        $rule = $this->getRuleByRoute($route);
 
         if ($rule) {
             return self::createReturn(true, $rule);
