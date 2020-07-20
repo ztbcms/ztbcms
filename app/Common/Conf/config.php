@@ -182,4 +182,9 @@ return array(
       // 定义格式2 字符串方式
       //'*' => '{$_SERVER.REQUEST_URI|md5}',
     ),
+    // 请求缓存
+    'REQUEST_CACHE_ON'    => false, // 开启静态缓存
+    'REQUEST_CACHE_TIME'  => 30*60,   // 全局静态缓存有效期（秒）
+    // 定义静态缓存规则 ['路由规则'  =>  ['expire'=> 10, 'subscribe'=>['路由1','路由2']]],
+    'REQUEST_CACHE_RULES' => array(),
 );
