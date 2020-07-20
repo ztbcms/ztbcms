@@ -170,7 +170,21 @@ return array(
 	),
 	/* 上传路径配置 */
 	"UPLOADFILEPATH" => SITE_PATH . 'd/file/', //上传附件路径
-	'HTML_FILE_SUFFIX' => '', // 设置静态缓存文件后缀
 	'COMPONENTS' => array(
 	),
+    // 静态缓存，适用于页面缓存。建议是在模块配置文件中为不同的模块定义静态缓存规则。文档：https://www.kancloud.cn/manual/thinkphp/1839
+    'HTML_CACHE_ON'    => false, // 开启静态缓存
+    'HTML_CACHE_TIME'  => 60,   // 全局静态缓存有效期（秒）
+    'HTML_FILE_SUFFIX' => '.shtml', // 设置静态缓存文件后缀
+    'HTML_CACHE_RULES' => array(  // 定义静态缓存规则
+      // 定义格式1 数组方式
+      //     '静态地址'    =>     array('静态规则', '有效期', '附加规则'),
+      // 定义格式2 字符串方式
+      //'*' => '{$_SERVER.REQUEST_URI|md5}',
+    ),
+    // 请求缓存
+    'REQUEST_CACHE_ON'    => false, // 开启静态缓存
+    'REQUEST_CACHE_TIME'  => 30*60,   // 全局静态缓存有效期（秒）
+    // 定义静态缓存规则 ['路由规则'  =>  ['expire'=> 10, 'subscribe'=>['路由1','路由2']]],
+    'REQUEST_CACHE_RULES' => array(),
 );
