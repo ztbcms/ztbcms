@@ -135,6 +135,7 @@ VALUES
     (20, 'content_delete_begin', '内容删除前的行为调用', '内容删除前的行为调用', 1, 1, 1, '', 1381023560),
     (21, 'content_delete_end', '内容删除后的行为调用', '内容删除后的行为调用', 1, 1, 1, '', 1381023560),
     (22, 'content_model_edit_field', '模型字段编辑', '模型字段编辑', 1, 1, 1, '', 1381023560);
+    (23, 'ajax_return', 'ajax请求完成', 'ajax请求完成', 1, 1, 1, '', 1381023560);
 
 -- ----------------------------
 -- Table structure for cms_behavior_log
@@ -181,6 +182,9 @@ INSERT INTO `cms_behavior_rule` VALUES ('7', '1', '1', '', '', 'phpfile:AppInitB
 INSERT INTO `cms_behavior_rule` VALUES ('8', '3', '1', '', '', 'phpfile:AppBeginBehavior|module:Common', '0', '1381021954');
 INSERT INTO `cms_behavior_rule` VALUES ('9', '6', '1', '', '', 'phpfile:ViewBeginBehavior|module:Common', '0', '1381021954');
 INSERT INTO `cms_behavior_rule` VALUES ('10', '22', '1', '', '', 'phpfile:ContentModelEditFieldBehavior|module:Content', '0', '1381021954');
+INSERT INTO `cms_behavior_rule` VALUES ('11', '3', '1', '', '', 'phpfile:ReadRequestCacheBehavior|module:Common', '0', '1381021954');
+INSERT INTO `cms_behavior_rule` VALUES ('12', '9', '1', '', '', 'phpfile:WriteRequestCacheBehavior|module:Common', '0', '1381021954');
+INSERT INTO `cms_behavior_rule` VALUES ('13', '23', '1', '', '', 'phpfile:WriteRequestCacheBehavior|module:Common', '0', '1381021954');
 
 -- ----------------------------
 -- Table structure for cms_cache
