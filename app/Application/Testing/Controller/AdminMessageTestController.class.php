@@ -5,7 +5,7 @@
  * Time: 10:32
  */
 
-namespace Test\Controller;
+namespace Testing\Controller;
 
 use Admin\Service\AdminMessageService;
 use Common\Controller\AdminBase;
