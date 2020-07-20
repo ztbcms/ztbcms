@@ -205,22 +205,19 @@ class RequestCacheService extends BaseService
         switch (strtoupper($type)) {
             case 'JSON':
                 // 返回JSON数据格式到客户端 包含状态信息
-                header('Content-Type:text/json; charset=utf-8');
+                header('Content-Type: text/json;charset=UTF-8');
                 break;
             case 'XML':
                 // 返回xml格式数据
-                header('Content-Type:text/xml; charset=utf-8');
+                header('Content-Type: text/xml;charset=UTF-8');
                 break;
             case 'JSONP':
                 // 返回JSON数据格式到客户端 包含状态信息
-                header('Content-Type:application/json; charset=utf-8');
+                header('Content-Type: application/json;charset=UTF-8');
                 break;
             default:
                 // 默认 HTML
-                if(empty($charset))  $charset = C('DEFAULT_CHARSET');
-                if(empty($contentType)) $contentType = C('TMPL_CONTENT_TYPE');
-                // 网页字符编码
-                header('Content-Type:'.$contentType.'; charset='.$charset);
+                header('Content-Type: text/html;charset=UTF-8');
                 header('Cache-control: '.C('HTTP_CACHE_CONTROL'));  // 页面缓存控制
         }
         // 输出模板文件
