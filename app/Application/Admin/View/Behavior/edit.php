@@ -1,4 +1,4 @@
- 
+
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
 <div class="wrap">
@@ -36,7 +36,20 @@
                 <ul id="J_ul_list_addItem" class="J_ul_list_public" style="margin-left:0px;">
                   <li><span style="width:40px;">规则ID</span><span style="width:40px;">排序</span><span>规则</span></li>
                 <volist name="info.ruleList" id="vo">
-                  <li><span style="width:40px;">{$vo.ruleid}</span><span style="width:40px;"><input type="test" name="listorder[{$vo.ruleid}]" class="input" value="{$vo.listorder}" style="width:35px;"></span><span style="width:500px;"><input type="test" name="rule[{$vo.ruleid}]" class="input" value="{$vo.rule}" style="width:450px;"><if condition=" $vo['system'] eq 0 ">&nbsp;<a href="" class="J_ul_list_remove">删除</a></if></span></li>
+                  <li>
+                      <span style="width:40px;">{$vo.ruleid}</span>
+                      <span style="width:40px;">
+                          <input type="test" name="listorder[{$vo.ruleid}]" class="input" value="{$vo.listorder}" style="width:35px;">
+                      </span>
+                      <span style="width:700px;">
+                          <input type="test" name="rule[{$vo.ruleid}]" class="input" value="{$vo.rule}" style="width:450px;">
+                          <if condition=" $vo['system'] eq 0 ">&nbsp;
+                              <a href="" class="J_ul_list_remove">删除</a>
+                                <else />
+                              <span style="float: none">* 系统行为，无法编辑、排序、删除</span>
+                          </if>
+                      </span>
+                  </li>
                 </volist>
                 </ul>
               </div>
