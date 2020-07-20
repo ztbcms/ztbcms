@@ -20,6 +20,14 @@ class RequestCacheService extends BaseService
     // 路由key的版本号后缀
     const ROUTER_KEY_VERSION_SUFFIX = 'updated_at';
 
+    /**
+     * 生成路由key
+     * @param $module
+     * @param $controller
+     * @param $action
+     *
+     * @return string
+     */
     static function generateRouteKey($module, $controller, $action)
     {
         return strtolower($module.'/'.$controller.'/'.$action);
@@ -53,11 +61,21 @@ class RequestCacheService extends BaseService
         return $route.':'.md5($params);
     }
 
+    /**
+     * 生成路由版本key
+     * @param $route
+     *
+     * @return string
+     */
     static function generateRouterVersionKey($route)
     {
         return strtolower($route).':'.self::ROUTER_KEY_VERSION_SUFFIX;
     }
 
+    /**
+     * 创建路由key
+     * @return string
+     */
     function makeRouteKey()
     {
         return self::generateRouteKey(MODULE_NAME, CONTROLLER_NAME, ACTION_NAME);
@@ -103,7 +121,7 @@ class RequestCacheService extends BaseService
         $route_key = $this->makeRouteKey();
         $route_version_key = self::generateRouterVersionKey($route_key);
         // 缓存数据
-        cache($cache_data['key'], json_encode($cache_data), ['expire' => $expire]);
+        cache($cache_data['key'], serialize($cache_data), ['expire' => $expire]);
         // 路由的最后更新时间
         cache($route_version_key, NOW_TIME);
         return true;
@@ -120,7 +138,7 @@ class RequestCacheService extends BaseService
     {
         $cache = cache($this->makeRouteCacheKey());
         if ($cache) {
-            return json_decode($cache, true);
+            return unserialize($cache);
         }
         return $default;
     }
