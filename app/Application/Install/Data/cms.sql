@@ -585,13 +585,14 @@ INSERT INTO `cms_menu` VALUES (115, '缓存更新', 0, 'Admin', 'Index', 'cache'
 INSERT INTO `cms_menu` VALUES (116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '');
 INSERT INTO `cms_menu` VALUES (118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '');
-INSERT INTO `cms_menu` VALUES (119, '消息', 0, 'Admin', 'AdminMessage', '%', '', 1, 1, '', 0, '');
+INSERT INTO `cms_menu` VALUES (119, '消息', 0, 'Admin', 'AdminMessage', '%', '', 1, 1, '', 0, 'icon-test');
 INSERT INTO `cms_menu` VALUES (120, '所有消息', 119, 'Admin', 'AdminMessage', 'index', '', 1, 1, '', 0, '');
 INSERT INTO `cms_menu` VALUES (121, '未读消息', 119, 'Admin', 'AdminMessage', 'noRead', '', 1, 1, '', 0, '');
 INSERT INTO `cms_menu` VALUES (122, '系统消息', 119, 'Admin', 'AdminMessage', 'system', '', 1, 1, '', 0, '');
 INSERT INTO `cms_menu` VALUES (123, '获取消息列表', 119, 'Admin', 'AdminMessage', 'getAdminMsgList', '', 1, 0, '', 0, '');
 INSERT INTO `cms_menu` VALUES (124, '阅读消息', 119, 'Admin', 'AdminMessage', 'readMsg', '', 1, 0, '', 0, '');
 INSERT INTO `cms_menu` VALUES (125, '阅读全部消息', 119, 'Admin', 'AdminMessage', 'readMsgAll', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (126, '概览页接口', 1, 'Admin', 'MainApi', '%', '', 1, 0, '', 0, '');
 
 
 -- ----------------------------
