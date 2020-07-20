@@ -24,6 +24,7 @@
                             </el-form-item>
                             <el-form-item label="密码">
                                 <el-input type="password" v-model="form.password"></el-input>
+                                <span>* 不填写则不修改</span>
                             </el-form-item>
                             <el-form-item label="确认密码">
                                 <el-input type="password" v-model="form.pwdconfirm"></el-input>
