@@ -11,6 +11,7 @@
         <div class="sidebar-container" ref="nav">
             <el-row class="tac">
                 <el-col class="scroll-Y">
+                    <!-- 左侧菜单  -->
                     <el-menu
                             default-active="2"
                             class="el-menu-vertical-demo"
@@ -64,23 +65,53 @@
                             </el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
-                    <el-dropdown>
-                        <span class="el-dropdown-link" >
-                            <template v-if="adminUserInfo && adminUserInfo.name">
-                            {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i class="el-icon-arrow-down el-icon--right"></i>
-                            </template>
-                        </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-if="hasPermission_cleanCache" >
-                                <span @click="click_cleancache">清理缓存</span>
-                            </el-dropdown-item>
-                            <el-dropdown-item>
+
+                    <div class="nav_right">
+                        <!--  消息列表 -->
+                        <el-popover
+                                class="message-list"
+                                placement="bottom"
+                                width="400"
+                                trigger="hover"
+                                v-model="showMsg"
+                        >
+                            <div v-for="item in msgList" style="margin-bottom: 10px;" @click="readMsg(item.id)" >
+                                <div class="message-item">
+                                    <i class="el-icon-s-opportunity" style="color: red;" v-if="item.read_status == 0"></i>
+                                    <span>{{item.content | ellipsis}}</span>
+                                </div>
+                            </div>
+                            <div style="text-align: center" @click="toShowMsg">
+                                <a style="color:#000;" href="javascript:void(0)">查看所有通知 >></a>
+                            </div>
+                            <div slot="reference" @click="doShowMsg" style="display: inline-block;margin-right: 20px;">
+                                <span style="position: relative">
+                                    <i class="el-icon-bell" style="font-size: 22px;"></i>
+                                </span>
+                                <el-badge class="mark" :value="msgListTotal" v-if="msgListTotal > 0" style="position: absolute;"/>
+                            </div>
+                        </el-popover>
+
+                        <!--  操作下拉框 -->
+                        <el-dropdown>
+                            <span class="el-dropdown-link" >
+                                <template v-if="adminUserInfo && adminUserInfo.name">
+                                {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i class="el-icon-arrow-down el-icon--right"></i>
+                                </template>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item v-if="hasPermission_cleanCache" >
+                                    <span @click="click_cleancache">清理缓存</span>
+                                </el-dropdown-item>
+                                <el-dropdown-item>
                                 <span @click="click_logout">
                                     注销
                                 </span>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+
                 </div>
                 <div class="tag" ref="tagScroll">
                     <div class="list" ref="tagList">
@@ -136,10 +167,6 @@
             overflow: hidden;
             background: rgb(48, 65, 86);
             z-index: 11;
-        }
-
-        .el-dropdown-link {
-            cursor: pointer;
         }
 
         .sidebar-container .tac {
@@ -202,6 +229,20 @@
 
         .centent .el-breadcrumb__item:last-of-type .el-breadcrumb__inner {
             color: #97a8be !important;
+        }
+
+        .el-badge__content {
+            background-color: #F56C6C;
+            border-radius: 10px;
+            color: #FFF;
+            display: inline-block;
+            font-size: 6px;
+            height: 14px;
+            line-height: 14px;
+            padding: 0 5px;
+            text-align: center;
+            white-space: nowrap;
+            border: 1px solid #FFF;
         }
 
         .el-submenu .el-menu--inline {
@@ -326,6 +367,12 @@
             cursor: pointer;
         }
 
+        .navbar .nav_right{
+            display: flex;
+            align-items: center;
+            height: 50px;
+        }
+
         .app-main {
             height: calc(100% - 86px);
             background: #fff;
@@ -448,6 +495,18 @@
                 z-index: -10;
             }
         }
+
+        /*顶栏消息部分*/
+        .el-dropdown-link {
+            cursor: pointer;
+        }
+        .message-list{
+            margin-right: 4px;
+        }
+        .message-item:hover {
+            color: #66b1ff;
+        }
+        /*顶栏消息部分 END*/
     </style>
 </block>
 
@@ -479,7 +538,20 @@
                     name: '',
                 },
                 // 角色权限列表
-                roleAccessList: []
+                roleAccessList: [],
+                // 信息列表
+                msgList: [],
+                showMsg: false,
+                msgListTotal: 0
+            },
+            filters: {
+                ellipsis(value) {
+                    if (!value) return "";
+                    if (value.length > 70) {
+                        return value.slice(0, 70) + "...";
+                    }
+                    return value;
+                }
             },
             methods: {
                 // url点击事件
@@ -787,6 +859,57 @@
                             layer.msg(res.msg)
                         }
                     })
+                },
+                // 获取后台未读消息
+                getAdminMessage:function(){
+                    window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
+                    var that = this
+                    $.ajax({
+                        url: '/Admin/AdminMessage/getAdminMsgList',
+                        method: 'get',
+                        data: {
+                            page: 1,
+                            limit: 10,
+                            read_status: 0
+                        }
+                    }).then(function(res){
+                        if (res.status) {
+                            that.msgList = res.data.items
+                            that.msgListTotal = res.data.total_items
+                            if(res.data.total_items > 0){
+                            }else{
+                                that.showMsg = false
+                            }
+                        }
+                    })
+                },
+                // 显示消息框
+                doShowMsg:function(){
+                    if(this.msgListTotal > 0){
+                        this.showMsg = !this.showMsg
+                    }else{
+                        this.showMsg = false
+                    }
+                },
+                // 已读信息
+                readMsg:function (id) {
+                    var that = this;
+                    $.ajax({
+                        url: '/Admin/AdminMessage/readMsg',
+                        method: 'post',
+                        data: {
+                            ids: [id]
+                        }
+                    }).then(function(res){
+                        if (res.status) {
+                            that.getAdminMessage()
+                        }
+                    })
+                },
+                // 跳转到消息列表
+                toShowMsg:function () {
+                    this.openNewFrame('所有消息', '/Admin/AdminMessage/index')
+                    this.showMsg = false
                 }
             },
             computed: {
@@ -809,10 +932,17 @@
                 this.onresize()
             },
             mounted () {
+                var that = this
                 this.init()
                 this.registerEvent()
                 this.getMenuList()
                 this.getAdminUserInfo()
+
+                // 轮询消息
+                this.getAdminMessage()
+                setInterval(function () {
+                    that.getAdminMessage()
+                }, 15*1000)
             },
             unmount: function(){
                 this.unregisterEvent()
