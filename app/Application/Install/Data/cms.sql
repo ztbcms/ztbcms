@@ -975,4 +975,4 @@ CREATE TABLE `cms_admin_message` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息管理';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台消息';
