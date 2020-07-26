@@ -1,7 +1,11 @@
+## ZTBCMS
 
+> 基于 ThinkPHP 的高性能、模块化、快速开发框架 
+
+> High-performance, modular and rapid development framework based on ThinkPHP
 <p align="center"><a href="http://ztbcms.com" target="_blank"><img width="100" src="favicon.ico"></a></p>
  
-[在线文档](http://ztbcms.com)
+[ZTBCMS在线文档](http://ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp/content) 
 
 <a href="http://www.phptherightway.com">
     <img src="http://www.phptherightway.com/images/banners/leaderboard-728x90.png" alt="PHP: The Right Way"/>
