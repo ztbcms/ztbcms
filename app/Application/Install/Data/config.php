@@ -29,6 +29,10 @@ $default = array(
 
 	/* 数据缓存设置 */
 	'DATA_CACHE_PREFIX' => '#DATA_CACHE_PREFIX#', // 缓存前缀
+
+    # Redis 配置
+    'REDIS_HOST' => '',
+    'REDIS_PORT' => '',
 );
 
 $config =  array_merge($default, $local_dataconfig);
