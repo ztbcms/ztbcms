@@ -154,11 +154,11 @@
                         <th width="140">数据缓存类型:</th>
                         <td><select name="DATA_CACHE_TYPE" id="DATA_CACHE_TYPE" >
                                 <option value="File" <if condition="$addition['DATA_CACHE_TYPE'] eq 'File' "> selected</if>>File</option>
+                                <option value="Redis" <if condition="$addition['DATA_CACHE_TYPE'] eq 'Redis' "> selected</if>>Redis</option>
                                 <option value="Memcache" <if condition="$addition['DATA_CACHE_TYPE'] eq 'Memcache' "> selected</if>>Memcache</option>
-								<option value="Redis" <if condition="$addition['DATA_CACHE_TYPE'] eq 'Redis' "> selected</if>>Redis</option>
 								<option value="Xcache" <if condition="$addition['DATA_CACHE_TYPE'] eq 'Xcache' "> selected</if>>Xcache</option>
                             </select>
-                            <span class="gray">数据缓存类型,支持:File|Memcache</span></td>
+                            <span class="gray">数据缓存类型,支持:File|Redis|Memcache|Xcache</span></td>
                     </tr>
                     <tr>
                         <th width="140">子目录缓存:</th>
