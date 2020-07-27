@@ -711,11 +711,16 @@
                 // 获取菜单
                 getMenuList() {
                     var that = this
+                    var PermissionInLoading = this.$loading({
+                        lock: true,
+                        text: ''
+                    });
                     $.ajax({
                         url: '/Admin/AdminApi/getPermissionInfo',
                         method: 'get',
                         params: {}
                     }).then(function(res) {
+                        PermissionInLoading.close()
                         if (res.status) {
                             that.roleAccessList = res.data.roleAccessList
                             var _menuList = res.data.menuList
