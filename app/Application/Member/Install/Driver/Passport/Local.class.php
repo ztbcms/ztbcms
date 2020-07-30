@@ -303,8 +303,8 @@ swfobject.addDomLoadEvent(function () {
 	public function userDelete($uid) {
 		$modelid = M("Member")->where(array("userid" => $uid))->getField("modelid");
 		if (empty($modelid)) {
-			$this->error = '该会员不存在！';
-			return false;
+//			$this->error = '该会员不存在！';
+//			return false;
 		}
 		$Model_Member = cache("Model_Member");
 		$tablename = ucwords($Model_Member[$modelid]['tablename']);
