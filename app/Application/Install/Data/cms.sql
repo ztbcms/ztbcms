@@ -593,6 +593,8 @@ INSERT INTO `cms_menu` VALUES (123, '获取消息列表', 119, 'Admin', 'AdminMe
 INSERT INTO `cms_menu` VALUES (124, '阅读消息', 119, 'Admin', 'AdminMessage', 'readMsg', '', 1, 0, '', 0, '');
 INSERT INTO `cms_menu` VALUES (125, '阅读全部消息', 119, 'Admin', 'AdminMessage', 'readMsgAll', '', 1, 0, '', 0, '');
 INSERT INTO `cms_menu` VALUES (126, '概览页接口', 1, 'Admin', 'MainApi', '%', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (127, '角色基本权限(必选)', 26, 'Admin', 'Rbac', '%', '', 1, 0, '', 0, '');
+INSERT INTO `cms_menu` VALUES (128, '管理员基本权限(必选)', 21, 'Admin', 'Management', '%', '', 1, 0, '', 0, '');
 
 
 -- ----------------------------
