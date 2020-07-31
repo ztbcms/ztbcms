@@ -106,8 +106,7 @@
                                     that.$message.success(res.msg);
                                     if (window !== window.parent) {
                                         setTimeout(function () {
-                                            window.parent.layer.closeAll();
-                                            window.location.href = "{:U('manager')}"
+                                            window.parent.layer.closeAll()
                                         }, 1000);
                                     }
                                 }else{
