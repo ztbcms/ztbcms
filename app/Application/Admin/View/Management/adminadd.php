@@ -10,7 +10,7 @@
 
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
-        <el-card>
+        <el-card  v-loading="loading">
             <h3>编辑管理员</h3>
             <el-row>
                 <el-col :span="8">
@@ -24,7 +24,7 @@
                             </el-form-item>
                             <el-form-item label="密码">
                                 <el-input type="password" v-model="form.password"></el-input>
-                                <span>* 不填写则不修改</span>
+                                <span v-show="is_edit">* 不填写则不修改</span>
                             </el-form-item>
                             <el-form-item label="确认密码">
                                 <el-input type="password" v-model="form.pwdconfirm"></el-input>
@@ -87,6 +87,8 @@
                         role_id: '',
                         status: '1',
                     },
+                    loading: false,
+                    is_edit: false,
                     role_list:[]
                 },
                 watch: {},
@@ -104,7 +106,7 @@
                                     that.$message.success(res.msg);
                                     if (window !== window.parent) {
                                         setTimeout(function () {
-                                            window.parent.layer.closeAll();
+                                            window.parent.layer.closeAll()
                                         }, 1000);
                                     }
                                 }else{
@@ -137,7 +139,10 @@
                                 id:id
                             },
                             success(res){
-                                that.form = res.data
+                                if(res.status){
+                                    that.form = res.data
+                                }
+                                that.loading = false
                             }
                         })
                     }
@@ -146,6 +151,7 @@
                     this.getroleList()
                     if(this.form.id){
                         this.loading = true
+                        this.is_edit = true
                         this.getManagerByid(this.form.id)
                     }
                 },
