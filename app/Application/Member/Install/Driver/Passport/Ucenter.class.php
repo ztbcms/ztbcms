@@ -143,8 +143,8 @@ class Ucenter extends Passport {
 	public function userDelete($uid) {
 		$modelid = M("Member")->where(array("userid" => $uid))->getField("modelid");
 		if (empty($modelid)) {
-			$this->error = '该用户不存在，删除失败！';
-			return false;
+//			$this->error = '该用户不存在，删除失败！';
+//			return false;
 		}
 		$Model_Member = cache("Model_Member");
 		$tablename = ucwords($Model_Member[$modelid]['tablename']);
