@@ -87,8 +87,8 @@
                         role_id: '',
                         status: '1',
                     },
-                    loading:"",
-                    is_edit:false,
+                    loading: false,
+                    is_edit: false,
                     role_list:[]
                 },
                 watch: {},
