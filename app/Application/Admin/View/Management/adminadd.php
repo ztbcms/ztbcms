@@ -142,8 +142,8 @@
                             success(res){
                                 if(res.status){
                                     that.form = res.data
-                                    that.loading = false
                                 }
+                                that.loading = false
                             }
                         })
                     }
