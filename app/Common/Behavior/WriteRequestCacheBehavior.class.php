@@ -27,7 +27,6 @@ class WriteRequestCacheBehavior extends BaseBehavior
         if (C('REQUEST_CACHE_ON')) {
             $service = new RequestCacheService();
             $result = $service->enableRequestCache();
-            Log::record('cache=>'.$service->makeRouteCacheKey(), Log::INFO);
             if ($result['status']) {
                 defined('REQUEST_RETURN_TYPE') or define('REQUEST_RETURN_TYPE', 'HTML');
                 $service->setCacheData($content, $result['data']['expire'], REQUEST_RETURN_TYPE);
