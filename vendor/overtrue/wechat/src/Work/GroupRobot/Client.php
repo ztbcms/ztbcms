@@ -34,9 +34,6 @@ class Client extends BaseClient
     }
 
     /**
-     * @param string $key
-     * @param array  $message
-     *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -44,6 +41,8 @@ class Client extends BaseClient
      */
     public function send(string $key, array $message)
     {
+        $this->accessToken = null;
+
         return $this->httpPostJson('cgi-bin/webhook/send', $message, ['key' => $key]);
     }
 }
