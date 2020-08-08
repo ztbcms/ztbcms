@@ -47,6 +47,8 @@ class RequestCacheService extends BaseService
     {
         //key=action+md5(params)
         $params = '';
+        //key升序排序
+        ksort($param_data);
         foreach ($param_data as $k => $v) {
             $params .= strtolower($k.'='.$v);
         }
