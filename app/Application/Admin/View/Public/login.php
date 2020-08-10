@@ -150,6 +150,7 @@
 </head>
 <body>
 <div class="main">
+    <form class="mainmenu" onsubmit='return false;' onkeydown="submitByEnter();">
     <div class="logo-box flex-between">
         <div class="title">{$Config.sitename}</div>
     </div>
@@ -173,6 +174,7 @@
     <div class="btn-box">
         <button class="default" onclick="doLogin()" disabled>登录</button>
     </div>
+    </form>
 </div>
 <div class="footer">
     <p>当前版本 v{:C('APPLIATION_VERSION')}</p>
@@ -230,6 +232,16 @@
 
     refreshs();
 
+    //按enter的时候触发点击效果
+    function submitByEnter()
+    {
+        if(event.keyCode == 13)
+        {
+            $(".default").click();
+        }
+    }
+
+    //登录请求
     function doLogin() {
         var username = $('input#username').val();
         var password = $('input#password').val();
@@ -239,7 +251,7 @@
             username: username,
             password: password,
             code: code,
-        }
+        };
         var plain_text = JSON.stringify(data);
 
         var encrypted_data = window.Ztbcms.AES.encrypt(plain_text, __crypto_key__)
@@ -252,12 +264,14 @@
                 form: encrypted_data
             },
             success: function (res) {
+                //刷新二维码
+                refreshs();
                 if (!res.status) {
-                    var msg = res.info
+                    var msg = res.info;
                     layer.msg(msg)
                 } else {
-                    var msg = res.info
-                    layer.msg(msg)
+                    var msg = res.info;
+                    layer.msg(msg);
                     setTimeout(function () {
                         window.location.replace(res.url)
                     }, 1500)

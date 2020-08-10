@@ -23,12 +23,12 @@
                     >
                         <div v-for="(item, index) in navData" :key="item.id">
                             <el-menu-item v-if="item.items.length === 0" :index="item.id" @click="goUrl([item.name], item)">
-                                <i v-html="item.icon_html"></i>
+                                <i style="vertical-align:unset;" v-html="item.icon_html"></i>
                                 <span slot="title">{{item.name}}</span>
                             </el-menu-item>
                             <el-submenu v-else :index="item.id">
                                 <template slot="title">
-                                    <i v-html="item.icon_html"></i>
+                                    <i style="vertical-align:unset;" v-html="item.icon_html"></i>
                                     <span class="title">{{item.name}}</span>
                                 </template>
                                 <div v-for="(val, j) in item.items" :key="val.id">
