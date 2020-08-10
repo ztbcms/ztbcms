@@ -152,4 +152,21 @@ class ConfigController extends AdminBase {
         }
     }
 
+    /**
+     * 删除配置项
+     */
+    public function extendDel(){
+        $action = I('post.action');
+        if ($action == 'delete') {
+            $fid = I('post.fid', 0, 'intval');
+            if ($this->Config->extendDel($fid)) {
+                cache('Config', NULL);
+                $this->success("扩展配置项删除成功！");
+            } else {
+                $error = $this->Config->getError();
+                $this->error($error ? $error : "扩展配置项删除失败！");
+            }
+        }
+    }
+
 }
