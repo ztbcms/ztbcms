@@ -1,54 +1,149 @@
- 
-<Admintemplate file="Common/Head"/>
-<body class="J_scroll_fixed">
-<div class="wrap J_check_wrap">
-  <Admintemplate file="Common/Nav"/>
-  <div class="h_a">搜索</div>
-  <form method="post" action="{:U('logs')}">
-  <div class="search_type cc mb10">
-    <div class="mb10"> <span class="mr20"> 搜索类型：
-      <select class="select_2" name="type" style="width:70px;">
-        <option value="ruleid" <if condition="$type eq 'ruleid'">selected</if>>行为ID</option>
-        <option value="guid" <if condition="$type eq 'guid'">selected</if>>标识</option>
-      </select>
-      关键字：
-      <input type="text" class="input length_5" name="keyword" size='10' value="{$keyword}" placeholder="关键字">
-      <button class="btn">搜索</button>
-      <?php
-	  if(D('Admin/Access')->isCompetence('deletelog')){
-	  ?>
-      <input type="button" class="btn" name="del_log_4" value="删除一月前数据" onClick="location='{:U("Logs/deletelog")}'"  />
-      <?php
-	  }
-	  ?>
-      </span> </div>
-  </div>
-    <div class="table_list">
-      <table width="100%" cellspacing="0">
-        <thead>
-          <tr>
-            <td align="center" width="100">ID</td>
-            <td align="center" width="100" >行为ID</td>
-            <td align="center">标识</td>
-            <td align="center" width="150">时间</td>
-          </tr>
-        </thead>
-        <tbody>
-          <volist name="data" id="vo">
-            <tr>
-              <td align="center">{$vo.id}</td>
-              <td align="center">{$vo.ruleid}</td>
-              <td align="">{$vo.guid}</td>
-              <td align="center">{$vo.create_time|date="Y-m-d H:i:s",###}</td>
-            </tr>
-          </volist>
-        </tbody>
-      </table>
-      <div class="p10">
-        <div class="pages"> {$Page} </div>
-      </div>
+<extend name="../../Admin/View/Common/element_layout"/>
+
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <div class="filter-container">
+                <h3>行为日志</h3>
+            </div>
+
+            <div class="filter-container">
+                <div style="margin-bottom: 15px;">
+
+                    <el-select size="small" v-model="listQuery.type" style="width: 250px;" placeholder="请选择">
+                        <el-option label="行为ID" value="ruleid"></el-option>
+                        <el-option label="标识" value="guid"></el-option>
+                    </el-select>
+
+                    <el-input size="small" v-model="listQuery.keyword" placeholder="关键词"
+                              style="width: 250px;" class="filter-item">
+                    </el-input>
+
+                    <el-button @click="doSearch" size="small" type="primary" icon="el-icon-search">
+                        搜索
+                    </el-button>
+
+                    <el-button @click="handleDelete" size="small" type="danger">
+                        删除一月前数据
+                    </el-button>
+                </div>
+            </div>
+
+            <el-table
+                    :key="tableKey"
+                    :data="list"
+                    highlight-current-row
+                    style="width: 100%;"
+            >
+                <el-table-column label="ID" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="行为ID" align="">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.ruleid }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="标识" align="">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.guid }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="时间" align="">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.create_time  }}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div class="pagination-container">
+                <el-pagination
+                        background
+                        layout="prev, pager, next, jumper"
+                        :total="listQuery.total"
+                        v-show="listQuery.total > 0"
+                        :current-page.sync="listQuery.page"
+                        :page-size.sync="listQuery.limit"
+                        @current-change="getList"
+                >
+                </el-pagination>
+            </div>
+
+        </el-card>
     </div>
-</div>
-<script src="{$config_siteurl}statics/js/common.js"></script>
-</body>
-</html>
+
+    <style>
+        .filter-container {
+            padding-bottom: 10px;
+        }
+
+        .pagination-container {
+            padding: 32px 16px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    tableKey: 0,
+                    list: [],
+                    total: 0,
+                    listQuery: {
+                        page: 1,
+                        limit: 20,
+                        total: 0,
+                        type : 'ruleid',
+                        keyword: ''
+                    }
+                },
+                watch: {},
+                filters: {},
+                methods: {
+                    getList: function () {
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('logs')}",
+                            type: "get",
+                            dataType: "json",
+                            data: that.listQuery,
+                            success: function (res) {
+                                if (res.status) {
+                                    that.list = res.data.items;
+                                    that.listQuery.total = res.data.total_items;
+                                    that.listQuery.page = res.data.page;
+                                    that.listQuery.limit = res.data.limit;
+                                }
+                            }
+                        })
+                    },
+                    doSearch: function () {
+                        var that = this;
+                        that.listQuery.page = 1;
+                        that.getList();
+                    },
+                    handleDelete: function () {
+                        var that = this;
+                        var url = '{:U("Logs/deletelog")}';
+                        layer.confirm('您确定需要删除？', {
+                            btn: ['确定','取消'] //按钮
+                        }, function(){
+                            var data = {};
+                            that.httpPost(url, data, function(res){
+                                if(res.status){
+                                    layer.msg('操作成功', {icon: 1});
+                                    that.getList();
+                                }
+                            });
+                        });
+                    },
+                },
+                mounted: function () {
+                    this.getList();
+                },
+            })
+        })
+    </script>
+</block>

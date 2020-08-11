@@ -20,22 +20,45 @@ class BehaviorController extends AdminBase {
 
     //行为列表
     public function index() {
-        $where = array();
-        //搜索行为标识
-        $keyword = I('get.keyword');
-        if (!empty($keyword)) {
-            $where['name'] = array('like', '%' . $keyword . '%');
-            $this->assign('keyword', $keyword);
-        }
-        //获取总数
-        $count = $this->behavior->where($where)->count('id');
-        $_page = I('get.page', 1);
-        $page = $this->page($count, 20, $_page);
-        $action = $this->behavior->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("id" => "desc"))->select();
 
-        $this->assign("Page", $page->show());
-        $this->assign('data', $action);
-        $this->display();
+        if(IS_AJAX) {
+
+            $where = array();
+
+            //搜索行为标识
+            $keyword = I('get.keyword');
+            if (!empty($keyword)) {
+                $where['name'] = array('like', '%' . $keyword . '%');
+                $this->assign('keyword', $keyword);
+            }
+
+            //获取总数
+            $count = $this->behavior->where($where)->count('id');
+            $_limit = 20;
+            $_page = I('get.page', 1);
+            $page = $this->page($count, $_limit, $_page);
+            $action = $this->behavior->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("id" => "desc"))->select();
+
+            $res = self::createReturnList(true,$action, $_page, $_limit, $count,ceil($count / $_limit));
+            $this->ajaxReturn($res);
+        } else {
+            $where = array();
+            //搜索行为标识
+            $keyword = I('get.keyword');
+            if (!empty($keyword)) {
+                $where['name'] = array('like', '%' . $keyword . '%');
+                $this->assign('keyword', $keyword);
+            }
+            //获取总数
+            $count = $this->behavior->where($where)->count('id');
+            $_page = I('get.page', 1);
+            $page = $this->page($count, 20, $_page);
+            $action = $this->behavior->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array("id" => "desc"))->select();
+
+            $this->assign("Page", $page->show());
+            $this->assign('data', $action);
+            $this->display();
+        }
     }
 
     //添加行为
@@ -73,7 +96,11 @@ class BehaviorController extends AdminBase {
                 $error = $this->behavior->getError();
                 $this->error($error ? $error : '该行为不存在！');
             }
-
+            foreach ($info['ruleList'] as $k => $v){
+                $ruleid[] = $v['ruleid'];
+            }
+            $ruleid = implode(',',$ruleid);
+            $this->assign('ruleid',$ruleid);
             $this->assign('info', $info);
             $this->display();
         }
@@ -81,7 +108,7 @@ class BehaviorController extends AdminBase {
 
     //删除行为
     public function delete() {
-        $id = I('get.id', 0, 'intval');
+        $id = I('id', 0, 'intval');
         if (empty($id)) {
             $this->error('请指定需要删除的行为！');
         }
@@ -96,32 +123,54 @@ class BehaviorController extends AdminBase {
 
     //行为日志
     public function logs() {
-        if(IS_POST){
-            $this->redirect('loginlog',$_POST);
-        }
-        $wehre = array();
-        $type = I('type', '', 'trim');
-        $keyword = I('keyword', '', 'trim');
-        if ($type) {
-            if ($type == 'guid') {
-                $wehre[$type] = array('LIKE', "%{$keyword}%");
-            } else {
-                $wehre[$type] = $keyword;
+        if(IS_AJAX){
+            $where = array();
+            $type = I('type', '', 'trim');
+            $keyword = I('keyword', '', 'trim');
+            if ($type) {
+                if ($type == 'guid') {
+                    $where[$type] = array('LIKE', "%{$keyword}%");
+                } else {
+                    $where[$type] = $keyword;
+                }
             }
-            $this->assign('type', $type);
-            $this->assign('keyword', $keyword);
-        }
-        $model = M('BehaviorLog');
-        $count = $model->where($wehre)->count();
-        $page = $this->page($count, 20,I('page',1));
-        $data = $model->where($wehre)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
-        $this->assign('Page', $page->show())
+
+            $_limit = 20;
+            $model = M('BehaviorLog');
+            $count = $model->where($where)->count();
+            $page = $this->page($count, 20,I('page',1));
+            $data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
+            foreach ($data as $k => $v){
+                $data[$k]['create_time'] = date("Y-m-d H:i",$v['create_time']);
+            }
+
+            $res = self::createReturnList(true,$data, $page, $_limit, $count,ceil($count / $_limit));
+            $this->ajaxReturn($res);
+        } else {
+            $where = array();
+            $type = I('type', '', 'trim');
+            $keyword = I('keyword', '', 'trim');
+            if ($type) {
+                if ($type == 'guid') {
+                    $where[$type] = array('LIKE', "%{$keyword}%");
+                } else {
+                    $where[$type] = $keyword;
+                }
+                $this->assign('type', $type);
+                $this->assign('keyword', $keyword);
+            }
+            $model = M('BehaviorLog');
+            $count = $model->where($where)->count();
+            $page = $this->page($count, 20,I('page',1));
+            $data = $model->where($where)->limit($page->firstRow . ',' . $page->listRows)->order(array('id' => 'DESC'))->select();
+            $this->assign('Page', $page->show())
                 ->display();
+        }
     }
 
     //状态转换
     public function status() {
-        $id = I('get.id', 0, 'intval');
+        $id = I('id', 0, 'intval');
         if (empty($id)) {
             $this->error('请指定需要状态转换的行为！');
         }

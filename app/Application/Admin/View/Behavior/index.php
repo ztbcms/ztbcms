@@ -1,52 +1,179 @@
- 
-<Admintemplate file="Common/Head"/>
-<body class="J_scroll_fixed">
-<div class="wrap">
-  <Admintemplate file="Common/Nav"/>
-  <div class="h_a">搜索</div>
-  <div class="search_type  mb10">
-    <form action="{$config_siteurl}index.php" method="get">
-      <input type="hidden" value="Admin" name="g">
-      <input type="hidden" value="Behavior" name="m">
-      <input type="hidden" value="index" name="a">
-      <div class="mb10">
-        <div class="mb10"> <span class="mr20"> 行为标识：
-          <input type="text" class="input length_2" name="keyword" style="width:200px;" value="{$keyword}" placeholder="请输入标识关键字...">
-          <button class="btn">搜索</button>
-          </span> </div>
-      </div>
-    </form>
-  </div>
-    <div class="table_list">
-      <table width="100%">
-        <thead>
-          <tr>
-            <td align="center">编号</td>
-            <td>行为标识</td>
-            <td>行为名称</td>
-            <td align="center">规则说明</td>
-            <td align="center">类型</td>
-            <td align="center">状态</td>
-            <td align="center">操作</td>
-          </tr>
-        </thead>
-        <volist name="data" id="vo">
-          <tr>
-            <td align="center">{$vo.id}</td>
-            <td>{$vo.name}</td>
-            <td>{$vo.title}</td>
-            <td>{$vo.remark}</td>
-            <td align="center"><if condition="$vo['type'] eq 1">控制器<elseif condition="$vo['type'] eq 2"/>视图</if></td>
-            <td align="center"><if condition="$vo['status']">正常<else /><font color="#FF0000">禁用</font></if></td>
-            <td align="center"><a href="{:U('Behavior/edit',array('id'=>$vo['id']))}">编辑</a> | <if condition="$vo['status']"><a href="{:U('Behavior/status',array('id'=>$vo['id']))}">禁用</a><else /><font color="#FF0000"><a href="{:U('Behavior/status',array('id'=>$vo['id']))}">启用</a></font></if> | <a href="{:U('Behavior/delete',array('id'=>$vo['id']))}" class="J_ajax_del">删除</a></td>
-          </tr>
-        </volist>
-      </table>
-      <div class="p10">
-        <div class="pages"> {$Page} </div>
-      </div>
+<extend name="../../Admin/View/Common/element_layout"/>
+
+<block name="content">
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <div class="filter-container">
+                <h3>行为列表</h3>
+            </div>
+
+            <div class="filter-container">
+                <div style="margin-bottom: 15px;">
+                    <el-input size="small" v-model="listQuery.keyword" placeholder="行为标识"
+                              style="width: 350px;" class="filter-item">
+                    </el-input>
+
+                    <el-button @click="doSearch" size="small" type="primary" icon="el-icon-search">
+                        搜索
+                    </el-button>
+                </div>
+            </div>
+
+            <el-table
+                    :key="tableKey"
+                    :data="list"
+                    highlight-current-row
+                    style="width: 100%;"
+            >
+                <el-table-column label="编号" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="行为标识" align="">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.name }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="行为名称" align="">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.title }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="规则说明" align="">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.remark }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="类型" align="">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.type === '1'">控制器</span>
+                        <span v-if="scope.row.type === '2'">视图</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="状态" width="150px" align="center">
+                    <template slot-scope="{row}">
+                        <el-switch @change="updateShow(row.id,row.status)" v-model="row.status" size="small" active-value="1" inactive-value="0">
+                        </el-switch>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="openDetail(scope.row.id)">修改</el-button>
+                        <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div class="pagination-container">
+                <el-pagination
+                        background
+                        layout="prev, pager, next, jumper"
+                        :total="listQuery.total"
+                        v-show="listQuery.total > 0"
+                        :current-page.sync="listQuery.page"
+                        :page-size.sync="listQuery.limit"
+                        @current-change="getList"
+                >
+                </el-pagination>
+            </div>
+
+        </el-card>
     </div>
-</div>
-<script src="{$config_siteurl}statics/js/common.js?v"></script>
-</body>
-</html>
+
+    <style>
+        .filter-container {
+            padding-bottom: 10px;
+        }
+
+        .pagination-container {
+            padding: 32px 16px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            new Vue({
+                el: '#app',
+                data: {
+                    tableKey: 0,
+                    list: [],
+                    total: 0,
+                    listQuery: {
+                        page: 1,
+                        limit: 20,
+                        total: 0,
+                        keyword: ''
+                    }
+                },
+                watch: {},
+                filters: {},
+                methods: {
+                    getList: function () {
+                        var that = this;
+                        $.ajax({
+                            url: "{:U('index')}",
+                            type: "get",
+                            dataType: "json",
+                            data: that.listQuery,
+                            success: function (res) {
+                                if (res.status) {
+                                    that.list = res.data.items;
+                                    that.listQuery.total = res.data.total_items;
+                                    that.listQuery.page = res.data.page;
+                                    that.listQuery.limit = res.data.limit;
+                                }
+                            }
+                        })
+                    },
+                    doSearch: function () {
+                        var that = this;
+                        that.listQuery.page = 1;
+                        that.getList();
+                    },
+                    handleDelete: function (index) {
+
+                        var that = this;
+                        var url = '{:U("Behavior/delete")}';
+                        layer.confirm('您确定需要删除？', {
+                            btn: ['确定','取消'] //按钮
+                        }, function(){
+                            var data = {
+                                "id": index
+                            };
+                            that.httpPost(url, data, function(res){
+                                if(res.status){
+                                    layer.msg('操作成功', {icon: 1});
+                                    that.getList();
+                                }
+                            });
+                        });
+                    },
+                    updateShow: function(id, value){
+                        var that = this;
+                        var url = '{:U("Behavior/status")}';
+                        var data = {
+                            id: id
+                        };
+                        that.httpPost(url, data, function(res){
+                            if(res.status){
+                                that.$message.success('修改成功');
+                                that.getList();
+                            } else {
+                                layer.msg(res.info);
+                            }
+                        });
+                    },
+                    openDetail: function (id) {
+                        Ztbcms.openNewIframeByUrl('订单详情', '/index.php?g=Admin&m=Behavior&a=edit&id='+ id)
+                    }
+                },
+                mounted: function () {
+                    this.getList();
+                },
+            })
+        })
+    </script>
+</block>
