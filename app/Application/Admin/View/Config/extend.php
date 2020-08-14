@@ -2,12 +2,12 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="16" :md="12">
+            <el-col :sm="18" :md="18">
                 <!--                插入template 文件-->
                 <template>
                     <div>
-                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px"
-                                 label-position="top">
+                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="200px"
+                                 label-position="left">
                             <el-form-item label="键名 " prop="fieldname">
                                 <el-input v-model="formData.fieldname" placeholder="请输入键名 " clearable
                                           :style="{width: '100%'}">

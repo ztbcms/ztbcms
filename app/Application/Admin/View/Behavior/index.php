@@ -167,7 +167,7 @@
                         });
                     },
                     openDetail: function (id) {
-                        Ztbcms.openNewIframeByUrl('订单详情', '/index.php?g=Admin&m=Behavior&a=edit&id='+ id)
+                        Ztbcms.openNewIframeByUrl('编辑', '/index.php?g=Admin&m=Behavior&a=edit&id='+ id)
                     }
                 },
                 mounted: function () {

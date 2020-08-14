@@ -3,7 +3,7 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="16" :md="8" >
+            <el-col :sm="18" :md="18" >
                 <!--                插入template 文件-->
 
             </el-col>

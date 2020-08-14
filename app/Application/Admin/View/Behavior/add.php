@@ -3,12 +3,12 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="16" :md="12">
+            <el-col :sm="12" :md="12">
                 <!--                插入template 文件-->
                 <template>
                     <div>
-                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px"
-                                 label-position="top">
+                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="200px"
+                                 label-position="left">
                             <el-form-item label="行为标识" prop="name">
                                 <el-input v-model="formData.name" placeholder="请输入单行文本行为标识" clearable
                                           :style="{width: '100%'}">
