@@ -57,7 +57,7 @@ class MenuController extends AdminBase {
         $tree = new \Tree();
         $menu = $tree->getTree($menu);
         foreach($menu as $k => $v){
-            $menu[$k]['name'] = str_repeat(' -- ', $v['level']).$v['name'];
+            $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']).' '.$v['name'];
         }
         $this->ajaxReturn(createReturn(true,$menu));
     }

@@ -3,12 +3,11 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="12" :md="12">
-                <!--                插入template 文件-->
+            <el-col :sm="24" :md="18">
+
                 <template>
                     <div>
-                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="200px"
-                                 label-position="left">
+                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="120px">
                             <el-form-item label="行为标识" prop="name">
                                 <el-input v-model="formData.name" placeholder="请输入单行文本行为标识" clearable
                                           :style="{width: '100%'}">
@@ -42,18 +41,18 @@
                                         <li>
                                             <span style="width:40px;">{$vo.ruleid}</span>
                                             <span style="width:40px;">
-                          <input type="test" name="listorder[{$vo.ruleid}]" class="input" value="{$vo.listorder}"
-                                 style="width:35px;">
-                      </span>
+                                              <input type="test" name="listorder[{$vo.ruleid}]" class="input" value="{$vo.listorder}"
+                                                     style="width:35px;">
+                                          </span>
                                             <span style="width:700px;">
-                          <input type="test" name="rule[{$vo.ruleid}]" class="input" value="{$vo.rule}"
-                                 style="width:450px;">
-                          <if condition=" $vo['system'] eq 0 ">&nbsp;
-                              <a href="" class="J_ul_list_remove">删除</a>
-                                <else/>
-                              <span style="float: none">* 系统行为，无法编辑、排序、删除</span>
-                          </if>
-                      </span>
+                                              <input type="test" name="rule[{$vo.ruleid}]" class="input" value="{$vo.rule}"
+                                                     style="width:450px;">
+                                              <if condition=" $vo['system'] eq 0 ">&nbsp;
+                                                  <a href="" class="J_ul_list_remove">删除</a>
+                                                    <else/>
+                                                  <span style="float: none">* 系统行为，无法编辑、排序、删除</span>
+                                              </if>
+                                          </span>
                                         </li>
                                     </volist>
                                 </ul>
@@ -80,15 +79,15 @@
                 data() {
                     return {
                         formData: {
-                            id : "{$info.id}",
+                            id: "{$info.id}",
                             name: "{$info.name}",
                             title: "{$info.title}",
                             type: "{$info.type}",
                             remark: "{$info.remark}",
                             listorder: {},
                             rule: {},
-                            newlistorder : [],
-                            newrule : []
+                            newlistorder: [],
+                            newrule: []
                         },
                         rules: {
                             name: [{
@@ -129,11 +128,10 @@
                             if (!valid) return;
                             var ruleid = "{$ruleid}";
                             ruleid = ruleid.split(",");
-                            for (i=0;i<ruleid.length ;i++ )
-                            {
-                                if(ruleid[i] > 0) {
+                            for (i = 0; i < ruleid.length; i++) {
+                                if (ruleid[i] > 0) {
                                     var listorderval = $("input[name='listorder[" + ruleid[i] + "]']").val();
-                                    var ruleval = $("input[name='rule["+ruleid[i]+"]']").val();
+                                    var ruleval = $("input[name='rule[" + ruleid[i] + "]']").val();
                                     if (listorderval) {
                                         that.formData.listorder[ruleid[i]] = listorderval;
                                     }

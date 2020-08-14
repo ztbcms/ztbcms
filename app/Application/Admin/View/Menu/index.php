@@ -15,6 +15,13 @@
                     highlight-current-row
                     style="width: 100%;"
             >
+                <el-table-column label="排序" width="80px" align="center">
+                    <template slot-scope="{row}">
+                        {{ row.listorder }}
+                        <i @click="updateSort(row.id, row.listorder)" class="el-icon-edit update-sort"></i>
+                    </template>
+                </el-table-column>
+
                 <el-table-column label="ID" align="center" width="100px">
                     <template slot-scope="scope">
                         <span>{{ scope.row.id }}</span>
@@ -23,41 +30,27 @@
 
                 <el-table-column label="菜单名称" align="">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.name }}  | {{scope.row.app}} / {{scope.row.controller}} / {{scope.row.action}}</span>
+                        <span>{{ scope.row.name }}  | {{scope.row.app}}/{{scope.row.controller}}/{{scope.row.action}}</span>
                     </template>
                 </el-table-column>
-
-                <el-table-column label="备注" align="" width="100px">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.remark }}</span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column label="类型" align="" width="100px">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.remark }}</span>
-                    </template>
-                </el-table-column>
-
-                <el-table-column label="排序" width="150px" align="center">
+                
+                <el-table-column label="状态" width="100px" align="center">
                     <template slot-scope="{row}">
-                        {{ row.listorder }}
-                        <i @click="updateSort(row.id, row.listorder)" class="el-icon-edit update-sort"></i>
-                    </template>
-                </el-table-column>
+                        <template v-if="row.status == 1">
+                            <span style="color:green">显示</span>
+                        </template>
+                        <template v-else>
+                            <span style="color:gray">不显示</span>
+                        </template>
 
-                <el-table-column label="状态" width="150px" align="center">
-                    <template slot-scope="{row}">
-                        <el-switch @change="updateShow(row.id,row.status)" v-model="row.status" size="small" active-value="1" inactive-value="0">
-                        </el-switch>
                     </template>
                 </el-table-column>
 
                 <el-table-column label="操作" align="center" width="280" class-name="small-padding fixed-width">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="linkMenuAdd(scope.row.id)">添加子菜单</el-button>
-                        <el-button type="primary" size="mini" @click="linkMenuEdit(scope.row.id)">修改</el-button>
-                        <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                        <el-button type="text" size="mini" @click="linkMenuAdd(scope.row.id)">添加子菜单</el-button>
+                        <el-button type="text" size="mini" @click="linkMenuEdit(scope.row.id)">修改</el-button>
+                        <el-button type="text" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
