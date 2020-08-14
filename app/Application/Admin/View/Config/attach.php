@@ -4,12 +4,10 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="18" :md="18" >
-                <!--                插入template 文件-->
+            <el-col :sm="24" :md="18">
                 <template>
                     <div>
-                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="200px"
-                                 label-position="left">
+                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
                             <el-form-item label="网站存储方案" prop="attachment_driver">
                                 <el-select v-model="formData.attachment_driver" placeholder="请选择网站存储方案" clearable
                                            :style="{width: '100%'}">

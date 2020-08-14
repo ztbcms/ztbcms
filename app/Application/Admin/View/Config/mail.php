@@ -3,12 +3,11 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="18" :md="18" >
-                <!--                插入template 文件-->
+            <el-col :sm="24" :md="18" >
+
                 <template>
                     <div>
-                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="200px"
-                                 label-position="left">
+                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
                             <el-form-item label="SMTP 函数发送" prop="mail_type">
                                 <el-radio-group v-model="formData.mail_type" size="medium">
                                     <el-radio v-for="(item, index) in mail_typeOptions" :key="index" :label="item.value" :disabled="item.disabled">{{item.label}}</el-radio>

@@ -2,12 +2,11 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="18" :md="18">
-                <!--                插入template 文件-->
+            <el-col :sm="24" :md="18">
+
                 <template>
                     <div>
-                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="200px"
-                                 label-position="left">
+                        <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="80px">
                             <el-form-item label="键名 " prop="fieldname">
                                 <el-input v-model="formData.fieldname" placeholder="请输入键名 " clearable
                                           :style="{width: '100%'}">
@@ -64,7 +63,7 @@
                                                     <span @click="extendDel({$vo['fid']})"
                                                             class="J_ajax_del" title="删除该项配置" style="color:#F00">X</span>
 
-                                                    <span class="gray"><br/>键名：{$vo.fieldname}</span>
+                                                    <span class=""><br/>键名：{$vo.fieldname}</span>
                                                 </th>
 
                                                 <th class="y-bg">
@@ -98,7 +97,7 @@
                                                                    value="{$Site[$vo['fieldname']]}">
                                                         </case>
                                                     </switch>
-                                                    <span class="gray"> {$setting.tips}</span>
+                                                    <span class=""> {$setting.tips}</span>
                                                 </th>
                                             </tr>
                                         </volist>
@@ -121,6 +120,12 @@
             </el-col>
         </el-card>
     </div>
+
+    <style>
+        .table_full th {
+            font-weight: 400 !important;
+        }
+    </style>
 
     <script>
         $(document).ready(function () {
