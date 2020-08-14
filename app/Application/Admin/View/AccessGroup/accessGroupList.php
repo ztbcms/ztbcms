@@ -1,54 +1,62 @@
-<extend name="../../Admin/View/Common/base_layout"/>
+<extend name="../../Admin/View/Common/element_layout"/>
 
 <block name="content">
-    <div id="app" style="padding-left: 20px;padding-top: 20px;" v-cloak>
-        <h4>权限组 <a class="btn btn-success" href="{:U('Admin/AccessGroup/createAccessGroup')}">添加</a></h4>
-        <hr>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>名称</th>
-                        <th>启用</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <template v-for="(item, index) in accessGroupList">
-                        <tr>
-                            <th scope="row" style="width: 40px;">{{ item['id'] }}</th>
-                            <td>
-                                <template v-for="i in item['level']*4"><span>&nbsp;</span></template>
-                                |—{{ item['name'] }}
-                            </td>
-                            <td>
-                                <template v-if="item.status == 1">
-                                    <span style="color: green;">√</span>
-                                </template>
-                                <template v-if="item.status != 1">
-                                    <span style="color: red;">X</span>
-                                </template>
-                            </td>
-                            <td>
-                                <a class="btn btn-primary" :href="'{:U('Admin/AccessGroup/editAccessGroup')}&id=' + item.id">编辑</a>
-                                <button class="btn btn-danger" @click="clickDelteItem(index, item)">删除</button>
-                            </td>
-                        </tr>
-                    </template>
-                    </tbody>
-                </table>
+    <div id="app" style="padding: 8px;" v-cloak>
+        <el-card>
+            <el-col :sm="24" :md="24" >
+                <!--                插入template 文件-->
 
-                <div style="position: fixed; bottom: 0;left: 0;right: 0;background: white;padding: 10px 40px;border-top: 1px solid gainsboro;">
-<!--                    <button class="btn btn-primary" @click="selectAll">全选</button>-->
-<!--                    <button class="btn btn-primary" @click="unSelectAll">全不选</button>-->
-<!--                    <button class="btn btn-success" @click="confirmSelect">确认选择</button>-->
+                <div id="app" style="padding-left: 20px;padding-top: 20px;" v-cloak>
+
+                    <div class="filter-container">
+                        <div style="margin-bottom: 15px;">
+                            <el-button @click="newDetail()" size="small" type="success">
+                                添加
+                            </el-button>
+                        </div>
+                    </div>
+
+
+                    <el-table
+                            style="margin-bottom: 30px;"
+                            :data="accessGroupList"
+                            highlight-current-row
+                            style="width: 100%;"
+                    >
+                        <el-table-column label="ID" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.id }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="名称" align="">
+                            <template slot-scope="scope">
+                                <template v-for="i in scope.row.level * 4"><span>&nbsp;</span></template>
+                                |—
+                                <span>{{ scope.row.name }}</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="启用" width="150px" align="center">
+                            <template slot-scope="{row}">
+                                <span v-if="row.status == '1'">启用</span>
+                                <span v-else>关闭</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini" @click="openDetail(scope.row.id)">修改</el-button>
+                                <el-button type="danger" size="mini" @click="clickDelteItem(scope.row.id)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+
                 </div>
-            </div>
-        </div>
-
+            </el-col>
+        </el-card>
     </div>
+
     <script>
         $(document).ready(function(){
             var App = new Vue({
@@ -106,31 +114,33 @@
                             that.accessGroupList[index]['checked'] = false;
                         });
                     },
-                    clickDelteItem: function(index, item){
+                    clickDelteItem: function(group_id){
                         var that = this;
 
-                        layer.confirm('确认要删除?', function(index){
+                        layer.confirm('确认要删除?', function(){
                             $.ajax({
                                 url: "{:U('Admin/AccessGroup/deleteAccessGroup')}",
                                 type: "post",
                                 data:{
-                                    group_id: item.id
+                                    group_id: group_id
                                 },
                                 dataType: "json",
                                 success: function(res){
-                                    layer.close(index);
-
                                     if(res.status){
                                         layer.msg('操作成功');
-                                        setTimeout(function(){
-                                            window.location.reload();
-                                        }, 700);
+                                        that.fetchData();
                                     }else{
                                         layer.msg('操作繁忙，请稍后再试')
                                     }
                                 }
                             })
                         });
+                    },
+                    openDetail: function (id) {
+                        Ztbcms.openNewIframeByUrl('编辑', '/index.php?g=Admin&m=AccessGroup&a=editAccessGroup&id='+ id)
+                    },
+                    newDetail:function () {
+                        Ztbcms.openNewIframeByUrl('新增', '/index.php?g=Admin&m=AccessGroup&a=createAccessGroup');
                     }
                 },
                 mounted: function(){
@@ -139,5 +149,12 @@
             })
         });
     </script>
+
+    <extend name="../../Admin/View/Common/base_layout"/>
+    <link href="/statics/css/admin_style.css" rel="stylesheet" />
+    <style>
+
+    </style>
 </block>
+
 

@@ -48,6 +48,36 @@ class MenuController extends AdminBase {
         $this->display();
     }
 
+    /**
+     * 获取菜单列表
+     */
+    public function indexAjax(){
+        $MenuTable = D("Admin/Menu");
+        $menu = $MenuTable->order(array("listorder" => "ASC"))->select();
+        $tree = new \Tree();
+        $menu = $tree->getTree($menu);
+        foreach($menu as $k => $v){
+            $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']).' '.$v['name'];
+        }
+        $this->ajaxReturn(createReturn(true,$menu));
+    }
+
+
+    /**
+     * 公共编辑
+     */
+    public function updateTable(){
+        $MenuTable = D("Admin/Menu");
+        $field = I('field','','trim'); //字段
+        $value = I('value','','trim'); //值
+        $where_name = I('where_name','trim'); //条件名称
+        $where_value = I('where_value','','trim'); //添加的内容
+        $save[$field] = $value;
+        $where[$where_name] = $where_value;
+        $MenuTable->where($where)->save($save);
+        $this->ajaxReturn(self::createReturn(true, '','保存成功'));
+    }
+
     //添加菜单
     public function add() {
         if (IS_POST) {
@@ -108,7 +138,7 @@ class MenuController extends AdminBase {
 
     //删除
     public function delete() {
-        $id = I('get.id', 0, 'intval');
+        $id = I('id', 0, 'intval');
         $count = D("Admin/Menu")->where(array("parentid" => $id))->count();
         if ($count > 0) {
             $this->error("该菜单下还有子菜单，无法删除！");
