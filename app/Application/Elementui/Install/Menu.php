@@ -62,6 +62,12 @@ return array(
                 "name" => "页面",
                 "child" => array(
                     array(
+                        "route" => "Elementui/FormDemo/form_generator",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "表单生成器",
+                    ),
+                    array(
                         "route" => "Elementui/ElementDemo/common_table",
                         "type" => 1,
                         "status" => 1,
