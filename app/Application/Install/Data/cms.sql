@@ -463,6 +463,7 @@ CREATE TABLE `cms_menu` (
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `listorder` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序ID',
   `icon` varchar(255) NOT NULL DEFAULT '' COMMENT '图标',
+  `is_tp6` int(11) DEFAULT '0' COMMENT '是否tp6模块',
   PRIMARY KEY (`id`),
   KEY `parentid` (`parentid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台菜单表';
@@ -921,6 +922,7 @@ CREATE TABLE `cms_user` (
   `info` text NOT NULL COMMENT '信息',
   `avatar` varchar(256) NOT NULL DEFAULT '' COMMENT '头像链接',
   `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
+  `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
@@ -928,6 +930,19 @@ CREATE TABLE `cms_user` (
 -- ----------------------------
 -- Records of cms_user
 -- ----------------------------
+
+DROP TABLE IF EXISTS `cms_user_token`;
+CREATE TABLE `cms_user_token` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(128) DEFAULT '' COMMENT '登录sessionid',
+  `token` varchar(128) DEFAULT '' COMMENT '登录加密的tokenid',
+  `user_id` int(11) DEFAULT '0' COMMENT '登录用户id',
+  `expire_time` int(11) DEFAULT '0' COMMENT '过期时间',
+  `create_time` int(11) DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
 
 CREATE TABLE `cms_access_group` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

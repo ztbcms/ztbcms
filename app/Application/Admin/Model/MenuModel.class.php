@@ -8,7 +8,8 @@ namespace Admin\Model;
 
 use Common\Model\Model;
 
-class MenuModel extends Model {
+class MenuModel extends Model
+{
 
     //自动验证
     protected $_validate = array(
@@ -25,7 +26,8 @@ class MenuModel extends Model {
      * 获取菜单
      * @return array
      */
-    public function getMenuList() {
+    public function getMenuList()
+    {
 //        $items['0changyong'] = array(
 //            "id" => "",
 //            "name" => "常用菜单",
@@ -58,14 +60,15 @@ class MenuModel extends Model {
 
     /**
      * 按父ID查找菜单子项
-     * @param integer $parentid   父菜单ID  
-     * @param boolean $with_self  是否包括他自己
+     * @param integer $parentid 父菜单ID
+     * @param boolean $with_self 是否包括他自己
      * @return array
      *
      */
-    public function adminMenu($parentid, $with_self = false) {
+    public function adminMenu($parentid, $with_self = false)
+    {
         //父节点ID
-        $parentid = (int) $parentid;
+        $parentid = (int)$parentid;
         $result = $this->where(array('parentid' => $parentid, 'status' => 1))->order('listorder ASC,id ASC')->select();
         if (empty($result)) {
             $result = array();
@@ -111,14 +114,15 @@ class MenuModel extends Model {
 
     /**
      * 按父ID查找菜单子项
-     * @param integer $parentid   父菜单ID
-     * @param boolean $with_self  是否包括他自己
+     * @param integer $parentid 父菜单ID
+     * @param boolean $with_self 是否包括他自己
      * @return array
      *
      */
-    public function adminMenu2($role_id, $parentid, $with_self = false) {
+    public function adminMenu2($role_id, $parentid, $with_self = false)
+    {
         //父节点ID
-        $parentid = (int) $parentid;
+        $parentid = (int)$parentid;
         $result = $this->where(array('parentid' => $parentid, 'status' => 1))->order('listorder ASC,id ASC')->select();
         if (empty($result)) {
             $result = array();
@@ -169,7 +173,8 @@ class MenuModel extends Model {
      * @param int $Level
      * @return array
      */
-    function getAdminUserMenuTree($role_id, $parentid = 0, $Level = 1){
+    function getAdminUserMenuTree($role_id, $parentid = 0, $Level = 1)
+    {
         $data = $this->adminMenu2($role_id, $parentid);
         $Level++;
         $ret = array();
@@ -184,11 +189,17 @@ class MenuModel extends Model {
                 if ($a['parameter']) {
                     $fu = "?" . $a['parameter'];
                 }
+                if (!empty($a['is_tp6'])) {
+                    //如果是tp6 返回 /home/module/controller/action 格式
+                    $url = strtolower("/home/{$name}/{$controller}/{$action}{$fu}");
+                } else {
+                    $url = U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id));
+                }
                 $array = array(
                     "icon" => $a['icon'],
                     "id" => $id . $name,
                     "name" => $a['name'],
-                    "url" => U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id)),
+                    "url" => $url,
                     "path" => "/{$id}{$name}/{$controller}/{$action}",
                     "items" => []
                 );
@@ -199,7 +210,7 @@ class MenuModel extends Model {
                     $array['items'] = $child;
                 }
 
-                $ret []= $array;
+                $ret [] = $array;
             }
         }
         return $ret;
@@ -212,7 +223,8 @@ class MenuModel extends Model {
      * @param integer $Level
      * @return array
      */
-    public function getTree($myid, $parent = "", $Level = 1) {
+    public function getTree($myid, $parent = "", $Level = 1)
+    {
         $data = $this->adminMenu($myid);
         $Level++;
         $ret = array();
@@ -251,7 +263,8 @@ class MenuModel extends Model {
      * @param $parent_menu_id
      * @return array
      */
-    function getMenuListWithoutTree($parent_menu_id){
+    function getMenuListWithoutTree($parent_menu_id)
+    {
         $ret = array();
         $data = M('menu')->where(['parentid' => $parent_menu_id])->select();
         if (is_array($data)) {
@@ -272,7 +285,8 @@ class MenuModel extends Model {
      * 获取菜单导航
      * @return array
      */
-    public function getMenu() {
+    public function getMenu()
+    {
         $menuid = I('get.menuid', 0, 'intval');
         $menuid = $menuid ? $menuid : cookie("menuid", "", array("prefix" => ""));
         $info = $this->where(array("id" => $menuid))->getField("id,action,app,controller,parentid,parameter,type,name");
@@ -282,7 +296,7 @@ class MenuModel extends Model {
         } else {
             $find = $info;
         }
-        if($find){
+        if ($find) {
             foreach ($find as $k => $v) {
                 $find[$k]['parameter'] = "menuid={$menuid}&{$find[$k]['parameter']}";
             }
@@ -291,7 +305,8 @@ class MenuModel extends Model {
     }
 
     // 写入数据前的回调方法 包括新增和更新
-    protected function _before_write(&$data) {
+    protected function _before_write(&$data)
+    {
         if ($data['app']) {
             $data['app'] = ucwords($data['app']);
         }
@@ -312,7 +327,8 @@ class MenuModel extends Model {
      * @param int $parentid 父菜单ID
      * @return boolean
      */
-    public function installModuleMenu(array $data, array $config, $parentid = 0) {
+    public function installModuleMenu(array $data, array $config, $parentid = 0)
+    {
         if (empty($data) || !is_array($data)) {
             $this->error = '没有数据！';
             return false;
@@ -322,16 +338,16 @@ class MenuModel extends Model {
             return false;
         }
         //默认安装时父级ID
-        $defaultMenuParentid = $this->where(array('app' => 'Admin', 'controller' => 'Module', 'action' => 'local'))->getField('id')? : 42;
+        $defaultMenuParentid = $this->where(array('app' => 'Admin', 'controller' => 'Module', 'action' => 'local'))->getField('id') ?: 42;
         //安装模块名称
-        $moduleNama = $config['module'];
+        $isTp6 = empty($config['is_tp6']) ? false : true;
         foreach ($data as $rs) {
             if (empty($rs['route'])) {
                 $this->error = '菜单信息配置有误，route 不能为空！';
                 return false;
             }
-            $route = $this->menuRoute($rs['route']);
-            $pid = $parentid ? : ((is_null($rs['parentid']) || !isset($rs['parentid'])) ? (int) $defaultMenuParentid : $rs['parentid']);
+            $route = $this->menuRoute($rs['route'], $isTp6);
+            $pid = $parentid ?: ((is_null($rs['parentid']) || !isset($rs['parentid'])) ? (int)$defaultMenuParentid : $rs['parentid']);
             $newData = array_merge(array(
                 'name' => $rs['name'],
                 'parentid' => $pid,
@@ -359,20 +375,35 @@ class MenuModel extends Model {
 
     /**
      * 把模块安装时，Menu.php中配置的route进行转换
-     * @param string $route route内容
-     * @param string $moduleNama 安装模块名称
+     * @param $route
+     * @param bool $isTp6
      * @return array
      */
-    private function menuRoute($route, $moduleNama = '') {
-        $route = explode('/', $route, 3);
-        if (count($route) < 3) {
-            array_unshift($route, $moduleNama);
+    private function menuRoute($route, $isTp6 = false)
+    {
+        if ($isTp6) {
+            // 判断是否tp6模块
+            $route = explode('/', $route, 4);
+            if (count($route) < 4) {
+                array_unshift($route, $route[0]);
+            }
+            $data = array(
+                'app' => $route[1],
+                'controller' => $route[2],
+                'action' => $route[3],
+                'is_tp6' => 1
+            );
+        } else {
+            $route = explode('/', $route, 3);
+            if (count($route) < 3) {
+                array_unshift($route, $route[0]);
+            }
+            $data = array(
+                'app' => $route[0],
+                'controller' => $route[1],
+                'action' => $route[2],
+            );
         }
-        $data = array(
-            'app' => $route[0],
-            'controller' => $route[1],
-            'action' => $route[2],
-        );
         return $data;
     }
 
@@ -380,7 +411,8 @@ class MenuModel extends Model {
      * 更新缓存
      * @return array|boolean
      */
-    public function menu_cache() {
+    public function menu_cache()
+    {
         $data = $this->select();
         if (empty($data)) {
             return false;

@@ -6,7 +6,8 @@
 
 namespace Admin\Service;
 
-class User {
+class User
+{
 
     //存储用户uid的Key
     const userUidKey = 'spf_userid';
@@ -21,7 +22,8 @@ class User {
      * @staticvar \Admin\Service\Cache $systemHandier
      * @return \Admin\Service\User
      */
-    static public function getInstance() {
+    static public function getInstance()
+    {
         static $handier = NULL;
         if (empty($handier)) {
             $handier = new User();
@@ -34,7 +36,8 @@ class User {
      * @param string $name
      * @return null
      */
-    public function __get($name) {
+    public function __get($name)
+    {
         //从缓存中获取
         if (isset(self::$userInfo[$name])) {
             return self::$userInfo[$name];
@@ -49,9 +52,10 @@ class User {
 
     /**
      * 获取当前登录用户资料
-     * @return array 
+     * @return array
      */
-    public function getInfo() {
+    public function getInfo()
+    {
         if (empty(self::$userInfo)) {
             self::$userInfo = $this->getUserInfo($this->isLogin());
         }
@@ -62,16 +66,18 @@ class User {
      * 检验用户是否已经登录
      * @return boolean|int 失败返回false，成功返回当前登录用户基本信息
      */
-    public function isLogin() {
+    public function isLogin()
+    {
         $userId = \Libs\Util\Encrypt::authcode(session(self::userUidKey), 'DECODE');
         if (empty($userId)) {
             return false;
         }
-        return (int) $userId;
+        return (int)$userId;
     }
 
     //登录后台
-    public function login($identifier, $password) {
+    public function login($identifier, $password)
+    {
         if (empty($identifier) || empty($password)) {
             return false;
         }
@@ -93,7 +99,8 @@ class User {
      * 检查当前用户是否超级管理员
      * @return boolean
      */
-    public function isAdministrator() {
+    public function isAdministrator()
+    {
         $userInfo = $this->getInfo();
         if (!empty($userInfo) && $userInfo['role_id'] == self::administratorRoleId) {
             return true;
@@ -105,7 +112,8 @@ class User {
      * 注销登录状态
      * @return boolean
      */
-    public function logout() {
+    public function logout()
+    {
         session('[destroy]');
         return true;
     }
@@ -116,7 +124,8 @@ class User {
      * @param string $password 密码
      * @param int $status
      */
-    private function record($identifier, $password, $status = 0) {
+    private function record($identifier, $password, $status = 0)
+    {
         //登录日志
         D('Admin/Loginlog')->addLoginLogs(array(
             "username" => $identifier,
@@ -130,13 +139,22 @@ class User {
      * 注册用户登录状态
      * @param array $userInfo 用户信息
      */
-    private function registerLogin(array $userInfo) {
+    private function registerLogin(array $userInfo)
+    {
         //写入session
-        session(self::userUidKey, \Libs\Util\Encrypt::authcode((int) $userInfo['id'], ''));
+        $token = \Libs\Util\Encrypt::authcode((int)$userInfo['id'], '');
+        session(self::userUidKey, $token);
+        M('UserToken')->add([
+            'session_id' => session_id(),
+            'token' => $token,
+            'user_id' => (int)$userInfo['id'],
+            'expire_time' => time() + 7 * 86400,
+            'create_time' => time()
+        ]);
         //更新状态
-        D('Admin/User')->loginStatus((int) $userInfo['id']);
+        D('Admin/User')->loginStatus((int)$userInfo['id']);
         //注册权限
-        \Libs\System\RBAC::saveAccessList((int) $userInfo['id']);
+        \Libs\System\RBAC::saveAccessList((int)$userInfo['id']);
     }
 
     /**
@@ -144,7 +162,8 @@ class User {
      * @param string $identifier 用户名或者用户ID
      * @return boolean|array
      */
-    private function getUserInfo($identifier, $password = NULL) {
+    private function getUserInfo($identifier, $password = NULL)
+    {
         if (empty($identifier)) {
             return false;
         }
