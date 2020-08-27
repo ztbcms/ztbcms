@@ -6,18 +6,14 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>系统后台</title>
-
     <!-- ztbcms 默认 iconfont -->
     <link rel="stylesheet" href="/statics/css/iconfont/iconfont.css">
-
     <!-- jQuery 2.x -->
     <script src="/statics/admin/theme/adminlte/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <!-- layer.js -->
     <script src="/statics/admin/layer/layer.js"></script>
-
     <!--  ztbcms工具类(必须在vue-commonn 前加载)  -->
     <script src="/statics/js/ztbcms/ztbcms.js"></script>
-
     <!-- vue.js -->
     <script src="/statics/js/vue/vue.js"></script>
     <script src="/statics/js/vue/vue-common.js"></script>
@@ -37,13 +33,11 @@
     <!-- 引入组件库 -->
     <script src="/statics/admin/theme/elementui/elementui_2.13.2/index.js"></script>
     <!--  Element UI END  -->
-
     <style>
         /* vue相关  */
         [v-cloak] {
             display: none;
         }
-
         * {
             font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
         }
@@ -52,8 +46,7 @@
         /**
          * js资源加载完后进行全局初始化
          */
-        ;(function () {
-
+        (function () {
             $(document).ready(function () {
                 //是否启用 loading
                 window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = true;
@@ -91,7 +84,6 @@
                     alert('建议使用IE11及以上的浏览器');
                 }
             });
-
         })(jQuery);
     </script>
 </head>
