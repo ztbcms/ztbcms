@@ -8,10 +8,15 @@ namespace Admin\Controller;
 
 use Common\Controller\AdminBase;
 
-class MenuController extends AdminBase {
+class MenuController extends AdminBase
+{
+
+    protected $appPath = APP_PATH;
+    protected $tpAppPath = SITE_PATH . "tp6/app/";
 
     //菜单首页
-    public function index() {
+    public function index()
+    {
         if (IS_POST) {
             $listorders = $_POST['listorders'];
             if (!empty($listorders)) {
@@ -51,35 +56,38 @@ class MenuController extends AdminBase {
     /**
      * 获取菜单列表
      */
-    public function indexAjax(){
+    public function indexAjax()
+    {
         $MenuTable = D("Admin/Menu");
         $menu = $MenuTable->order(array("listorder" => "ASC"))->select();
         $tree = new \Tree();
         $menu = $tree->getTree($menu);
-        foreach($menu as $k => $v){
-            $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']).' '.$v['name'];
+        foreach ($menu as $k => $v) {
+            $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']) . ' ' . $v['name'];
         }
-        $this->ajaxReturn(createReturn(true,$menu));
+        $this->ajaxReturn(createReturn(true, $menu));
     }
 
 
     /**
      * 公共编辑
      */
-    public function updateTable(){
+    public function updateTable()
+    {
         $MenuTable = D("Admin/Menu");
-        $field = I('field','','trim'); //字段
-        $value = I('value','','trim'); //值
-        $where_name = I('where_name','trim'); //条件名称
-        $where_value = I('where_value','','trim'); //添加的内容
+        $field = I('field', '', 'trim'); //字段
+        $value = I('value', '', 'trim'); //值
+        $where_name = I('where_name', 'trim'); //条件名称
+        $where_value = I('where_value', '', 'trim'); //添加的内容
         $save[$field] = $value;
         $where[$where_name] = $where_value;
         $MenuTable->where($where)->save($save);
-        $this->ajaxReturn(self::createReturn(true, '','保存成功'));
+        $this->ajaxReturn(self::createReturn(true, '', '保存成功'));
     }
 
     //添加菜单
-    public function add() {
+    public function add()
+    {
         if (IS_POST) {
             if (D("Admin/Menu")->create()) {
                 if (D("Admin/Menu")->add()) {
@@ -107,7 +115,8 @@ class MenuController extends AdminBase {
     }
 
     //编辑
-    public function edit() {
+    public function edit()
+    {
         if (IS_POST) {
             if (D("Admin/Menu")->create()) {
                 if (D("Admin/Menu")->save() !== false) {
@@ -137,7 +146,8 @@ class MenuController extends AdminBase {
     }
 
     //删除
-    public function delete() {
+    public function delete()
+    {
         $id = I('id', 0, 'intval');
         $count = D("Admin/Menu")->where(array("parentid" => $id))->count();
         if ($count > 0) {
@@ -151,49 +161,78 @@ class MenuController extends AdminBase {
     }
 
     //取得模块名称
-    public function public_getModule(){
+    public function public_getModule()
+    {
         //取得模块目录名称
-        $dirs = glob(APP_PATH . '*');
+        $dirs = glob($this->appPath . '*');
         $all_module = [];
+
+        //tp6下的模块
+        $tpDisrs = glob($this->tpAppPath . "*");
+        foreach ($tpDisrs as $path) {
+            if (is_dir($path) && file_exists($path . '/Config.inc.php')) {
+                $path = basename($path);
+                $all_module[] = [
+                    'name' => ucwords($path),
+                    'is_tp6' => 1
+                ];
+            }
+        }
+
         foreach ($dirs as $path) {
             if (is_dir($path)) {
                 //目录名称
                 $path = basename($path);
-                $all_module[] = $path;
+                $all_module[] = [
+                    'name' => $path,
+                    'is_tp6' => 0
+                ];
             }
         }
         $this->ajaxReturn(self::createReturn(true, $all_module));
     }
 
     //取得控制器名称
-    public function public_getController($module){
-        if(empty($module)) return null;
-        $module_path = APP_PATH . '/' . $module . '/Controller/';  //控制器路径
-        if(!is_dir($module_path)) return null;
-        $module_path .= '/*.class.php';
+    public function public_getController($module, $is_tp6 = 0)
+    {
+        if (empty($module)) return null;
+        if ($is_tp6 == 1) {
+            $module_path = $this->tpAppPath . strtolower($module . '/Controller') . '/';  //控制器路径
+            $module_path .= '/*.php';
+//            echo $module_path;
+        } else {
+            $module_path = $this->appPath . '/' . $module . '/Controller/';  //控制器路径
+            $module_path .= '/*.class.php';
+        }
+//        if (!is_dir($module_path)) return null;
         $ary_files = glob($module_path);
         $data = [];
         foreach ($ary_files as $file) {
             if (is_dir($file)) {
                 continue;
             } else {
-                $data[]  =  basename($file,  C('DEFAULT_C_LAYER').'.class.php');
+                if ($is_tp6 == 0) {
+                    $data[] = basename($file, C('DEFAULT_C_LAYER') . '.class.php');
+                } else {
+                    $data[] = basename($file, '.php');
+                }
             }
         }
         $this->ajaxReturn(self::createReturn(true, $data));
     }
 
     //取得方法名称
-    public function public_getAction($controller){
-        if(empty($controller)) return null;
+    public function public_getAction($controller)
+    {
+        if (empty($controller)) return null;
         $con = A($controller);
         $functions = get_class_methods($con);
         //排除部分方法
-        $inherents  =  array('_initialize','__construct','getActionName','isAjax','display','show','fetch','buildHtml','assign','__set','get','__get','__isset','__call','error','success','ajaxReturn','redirect','__destruct', '_empty', 'logo', 'page', 'createReturn', 'app', 'initSite', 'getModelObject', 'basePage', 'baseAdd', 'baseEdit', 'baseDelete', 'verify', 'theme');
+        $inherents = array('_initialize', '__construct', 'getActionName', 'isAjax', 'display', 'show', 'fetch', 'buildHtml', 'assign', '__set', 'get', '__get', '__isset', '__call', 'error', 'success', 'ajaxReturn', 'redirect', '__destruct', '_empty', 'logo', 'page', 'createReturn', 'app', 'initSite', 'getModelObject', 'basePage', 'baseAdd', 'baseEdit', 'baseDelete', 'verify', 'theme');
 
         $data = [];
-        foreach ($functions as $func){
-            if(!in_array($func, $inherents)){
+        foreach ($functions as $func) {
+            if (!in_array($func, $inherents)) {
                 $data[] = $func;
             }
         }

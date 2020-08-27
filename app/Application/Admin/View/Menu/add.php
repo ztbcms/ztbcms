@@ -3,7 +3,7 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="16" :md="12" >
+            <el-col :sm="16" :md="12">
                 <!--                插入template 文件-->
                 <div class="common-form" id="app">
                     <form method="post" class="J_ajaxForm" id="addEditForm">
@@ -27,14 +27,15 @@
                                     <td>
                                         <select name="app" id="app" @change="getControllerList()" v-model="module">
                                             <option value="">请选择模块</option>
-                                            <option v-for="item in moduleList" :value="item">{{item}}</option>
+                                            <option v-for="item in moduleList" :value="item.name">{{item.name}}</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>控制器:</td>
                                     <td>
-                                        <select name="controller" id="controller" @change="getActionList()" v-model="controller">
+                                        <select name="controller" id="controller" @change="getActionList()"
+                                                v-model="controller">
                                             <option value="%">%</option>
                                             <option v-for="item in controllerList" :value="item">{{item}}</option>
                                         </select>
@@ -44,16 +45,23 @@
                                 <tr>
                                     <td>方法:</td>
                                     <td>
-                                        <select name="action" id="action" v-model="action">
-                                            <option value="%">%</option>
-                                            <option v-for="item in actionList" :value="item">{{item}}</option>
-                                        </select>
+                                        <template v-if="actionList.length>0">
+                                            <select name="action" id="action" v-model="action">
+                                                <option value="%">%</option>
+                                                <option v-for="item in actionList" :value="item">{{item}}</option>
+                                            </select>
+                                        </template>
+                                        <template v-else>
+                                            <input class="input input-action" name="action" v-model="action" type="text"
+                                                   placeholder="">
+                                        </template>
                                         如果填 % 作为权限分配的时候就匹配控制器下所有的方法
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>参数:</td>
-                                    <td><input type="text" class="input length_5" name="parameter" value="">
+                                    <td><input type="text" class="input length_5 input-params" name="parameter"
+                                               value="">
                                         例:groupid=1&amp;type=2
                                     </td>
                                 </tr>
@@ -112,6 +120,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                isTp6: 0,
                 module: '',
                 moduleList: {},
                 controller: '%',
@@ -126,7 +135,15 @@
                     }, 'json');
                 },
                 getControllerList: function () {
-                    $.post('Admin/Menu/public_getController', {module: vm.module}, function (res) {
+                    console.log('e', vm.module);
+                    let moduleItem = this.moduleList.find(res => {
+                        return res.name == vm.module;
+                    });
+                    if (moduleItem) {
+                        console.log('moduleItem', moduleItem);
+                        vm.isTp6 = moduleItem.is_tp6;
+                    }
+                    $.post('Admin/Menu/public_getController', {module: vm.module, is_tp6: vm.isTp6}, function (res) {
                         vm.controllerList = res.data;
                     }, 'json');
                 },
@@ -138,6 +155,11 @@
                 saveBtn: function () {
                     var that = this;
                     var data = $('#addEditForm').serialize();
+                    if (parseInt(that.isTp6) === 1) {
+                        data += '&is_tp6=1';
+                    } else {
+                        data += '&is_tp6=0';
+                    }
                     $.ajax({
                         url: "{:U('Menu/add')}",
                         data: data,
@@ -161,5 +183,16 @@
         });
     </script>
 
-    <link href="/statics/css/admin_style.css" rel="stylesheet" />
+    <link href="/statics/css/admin_style.css" rel="stylesheet"/>
+    <style>
+        .input-action {
+            height: 20px;
+            width: 100px;
+        }
+
+        .input-params {
+            height: 20px;
+            width: 250px;
+        }
+    </style>
 </block>
