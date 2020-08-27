@@ -381,29 +381,16 @@ class MenuModel extends Model
      */
     private function menuRoute($route, $isTp6 = false)
     {
-        if ($isTp6) {
-            // 判断是否tp6模块
-            $route = explode('/', $route, 4);
-            if (count($route) < 4) {
-                array_unshift($route, $route[0]);
-            }
-            $data = array(
-                'app' => $route[1],
-                'controller' => $route[2],
-                'action' => $route[3],
-                'is_tp6' => 1
-            );
-        } else {
-            $route = explode('/', $route, 3);
-            if (count($route) < 3) {
-                array_unshift($route, $route[0]);
-            }
-            $data = array(
-                'app' => $route[0],
-                'controller' => $route[1],
-                'action' => $route[2],
-            );
+        $route = explode('/', $route, 3);
+        if (count($route) < 3) {
+            array_unshift($route, $route[0]);
         }
+        $data = array(
+            'app' => $route[0],
+            'controller' => $route[1],
+            'action' => $route[2],
+            'is_tp6' => $isTp6 ? 1 : 0 // tp6模块的标示字段
+        );
         return $data;
     }
 
