@@ -12,6 +12,9 @@
 // [ 应用入口文件 ]
 namespace think;
 
+//当前目录路径
+define('SITE_PATH', getcwd() . '/');
+
 require __DIR__ . '/tp6/vendor/autoload.php';
 
 
