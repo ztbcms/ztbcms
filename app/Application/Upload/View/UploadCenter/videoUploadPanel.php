@@ -282,7 +282,8 @@
                                 result.push({
                                     aid: file.aid,
                                     url: file.url,
-                                    name: file.name
+                                    name: file.name,
+                                    filethumb: file.filethumb,
                                 })
                             }
                         });
@@ -494,7 +495,7 @@
                         this.galleryList[index].is_select = !this.galleryList[index].is_select
                     },
                     confirm: function () {
-                        console.log('selectdVideoList', this.selectdVideoList);
+                        console.log('selectdVideoList', JSON.stringify(this.selectdVideoList));
                         var event = document.createEvent('CustomEvent');
                         event.initCustomEvent('ZTBCMS_UPLOAD_VIDEO', true, true, {
                             files: this.selectdVideoList

@@ -282,7 +282,8 @@
                                 result.push({
                                     aid: file.aid,
                                     url: file.url,
-                                    name: file.name
+                                    name: file.name,
+                                    filethumb: file.filethumb,
                                 })
                             }
                         });
@@ -496,7 +497,7 @@
                     confirm: function () {
                         console.log('selectdFileList', JSON.stringify(this.selectdFileList));
                         var event = document.createEvent('CustomEvent');
-                        event.initCustomEvent('ZTBCMS_UPLOAD_VIDEO', true, true, {
+                        event.initCustomEvent('ZTBCMS_UPLOAD_FILE', true, true, {
                             files: this.selectdFileList
                         });
                         window.parent.dispatchEvent(event);
