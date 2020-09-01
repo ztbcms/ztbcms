@@ -28,6 +28,16 @@ class UploadAdminApiController extends AdminApiBaseController
     const MODULE_VIDEO = 'module_upload_videos';
     const MODULE_FILE = 'module_upload_files';
 
+    const FILE_THUMB_ARRAY = [
+        'ppt' => '/statics/admin/upload/ppt.png',
+        'pptx' => '/statics/admin/upload/ppt.png',
+        'doc' => '/statics/admin/upload/doc.png',
+        'docx' => '/statics/admin/upload/doc.png',
+        'xls' => '/statics/admin/upload/xls.png',
+        'xlsx' => '/statics/admin/upload/xls.png',
+        'file' => '/statics/admin/upload/file.png',
+    ];
+
     /**
      * @param $module 文件所属模块
      * @param string $filethumb 文件缩略图
@@ -46,10 +56,20 @@ class UploadAdminApiController extends AdminApiBaseController
             $group_id = I('post.group_id', 0);
 
             //获取附件服务
-            $Attachment = service("Attachment", array('filethumb' => $filethumb,'module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid, 'group_id' => $group_id));
+            $Attachment = service("Attachment", array('filethumb' => $filethumb, 'module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid, 'group_id' => $group_id));
             //开始上传
             $info = $Attachment->upload($Callback);
             if ($info) {
+                $extension = $info[0]['extension'];
+                $aid = $info[0]['aid'];
+                if (!$filethumb) {
+                    if (!empty(self::FILE_THUMB_ARRAY[$extension])) {
+                        $filethumb = self::FILE_THUMB_ARRAY[$extension];
+                        M('Attachment')->where(['aid' => $aid])->save([
+                            'filethumb' => $filethumb
+                        ]);
+                    }
+                }
                 $data = [
                     'filethumb' => $filethumb, //文件缩略图，图片可以为空
                     'name' => $info[0]['name'],//名称
@@ -59,7 +79,7 @@ class UploadAdminApiController extends AdminApiBaseController
                     'savepath' => $info[0]['savepath'],// eg:"/root/project/ztbcms/d/file/module_upload_images/2019/09/"
                     'savename' => $info[0]['savename'],// eg:image/png
                     'hash' => $info[0]['hash'],// hash
-                    'aid' => $info[0]['aid'],// 附件ID
+                    'aid' => $aid,// 附件ID
                     'url' => $info[0]['url'],//上传文件路径, e.g: http://ztbcms.biz:8888/d/file/module_upload_images/2019/09/5d89d09186329.jpeg 、 或 /d/file/module_upload_images/2019/09/5d89d09186329.jpeg
                 ];
                 return self::createReturn(true, $data, '上传成功');
@@ -311,6 +331,45 @@ class UploadAdminApiController extends AdminApiBaseController
         $db = M('Attachment');
         $where = [
             'module' => self::MODULE_VIDEO,
+            'userid' => $userid,
+            'isadmin' => 1,
+            'isimage' => 0,
+            'delete_status' => AttachmentModel::DELETE_STATUS_NO,
+        ];
+        if ($group_id != 'all') {
+            $where['group_id'] = $group_id;
+        }
+        $total_items = $db->where($where)->count();
+        $total_page = ceil($total_items / $limit);
+        $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
+
+        $return_list = [];
+        foreach ($list as $index => $item) {
+            $return_list [] = [
+                'aid' => $item['aid'],
+                'name' => $item['filename'],
+                'filethumb' => $item['filethumb'],
+                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'filepath' => $item['filepath'],
+            ];
+        }
+        $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
+    }
+
+    /**
+     * 通过分组id获取文件列表
+     */
+    function getFilesByGroupIdList()
+    {
+        $page = I('page', 1);
+        $limit = I('limit', 20);
+        $group_id = I('group_id', 'all');
+        $userInfo = User::getInstance()->getInfo();
+        $userid = $userInfo['id'];
+
+        $db = M('Attachment');
+        $where = [
+            'module' => self::MODULE_FILE,
             'userid' => $userid,
             'isadmin' => 1,
             'isimage' => 0,

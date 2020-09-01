@@ -44,28 +44,30 @@
 
                     <el-col :span="18">
                         <el-upload
-                                :limit="1"
+                                :limit="10"
                                 :action="uploadConfig.uploadUrl"
-                                accept="video/*"
+                                :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
                                 :on-error="handleUploadError"
                                 :on-exceed="handleExceed"
                                 :data="uploadData"
                                 id="upload_input"
                                 ref="upload"
-                                :show-file-list="false"
-                                accept="image/*">
+                                :show-file-list="false">
                             <el-button size="small" type="default"><i class="el-icon-plus"></i>点击上传</el-button>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
                             <div>
-                                <template v-for="(img,index) in galleryList">
+                                <template v-for="(item,index) in galleryList">
                                     <div :key="index"
                                          class="imgListItem">
-                                        <img :src="img.filethumb"
-                                             style="width:80px;height: 80px;"
-                                             @click="selectImgEvent(index)">
-                                        <div v-if="img.is_select" class="is_check" @click="selectImgEvent(index)">
+                                        <el-tooltip class="item" effect="dark" :content="item.name"
+                                                    placement="bottom">
+                                            <img :src="item.filethumb"
+                                                 style="width:80px;height: 80px;"
+                                                 @click="selectImgEvent(index)">
+                                        </el-tooltip>
+                                        <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
                                             <span style="line-height: 80px;" class="el-icon-check"></span>
                                         </div>
                                     </div>

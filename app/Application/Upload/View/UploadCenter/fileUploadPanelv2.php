@@ -4,7 +4,7 @@
     <div id="app" style="" v-cloak v-loading="loading">
         <el-card>
             <div slot="header">
-                图片上传
+                文件上传
             </div>
             <div>
                 <el-row>
@@ -43,9 +43,8 @@
                     </el-col>
 
                     <el-col :span="18">
-
                         <el-upload
-                                :limit="uploadConfig.max_upload"
+                                :limit="10"
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
@@ -54,31 +53,33 @@
                                 :data="uploadData"
                                 id="upload_input"
                                 ref="upload"
-                                multiple
                                 :show-file-list="false">
                             <el-button size="small" type="default"><i class="el-icon-plus"></i>点击上传</el-button>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
                             <div>
-                                <template v-for="(img,index) in galleryList">
+                                <template v-for="(item,index) in galleryList">
                                     <div :key="index"
                                          class="imgListItem">
-                                        <img :src="img.url"
-                                             style="width:80px;height: 80px;"
-                                             @click="selectImgEvent(index)">
-                                        <div v-if="img.is_select" class="is_check" @click="selectImgEvent(index)">
+                                        <el-tooltip class="item" effect="dark" :content="item.name"
+                                                    placement="bottom">
+                                            <img :src="item.filethumb"
+                                                 style="width:80px;height: 80px;"
+                                                 @click="selectImgEvent(index)">
+                                        </el-tooltip>
+                                        <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
                                             <span style="line-height: 80px;" class="el-icon-check"></span>
                                         </div>
                                     </div>
                                 </template>
                                 <div>
-                                    <el-button v-show="selectdImageList.length > 0" type="danger" size="small"
+                                    <el-button v-show="selectdFileList.length > 0" type="danger" size="small"
                                                @click="clickDeleteSelected">删除选中
                                     </el-button>
-                                    <el-button v-show="selectdImageList.length > 0" type="primary" size="small"
+                                    <el-button v-show="selectdFileList.length > 0" type="primary" size="small"
                                                @click="clickCancelSelected">取消选中
                                     </el-button>
-                                    <el-select v-show="selectdImageList.length > 0" v-model="move_group_id"
+                                    <el-select v-show="selectdFileList.length > 0" v-model="move_group_id"
                                                placeholder="移动至" style="width:130px;margin-left: 10px;" size="small"
                                                @change="moveGroup">
                                         <el-option label="0" value="0">未分组</el-option>
@@ -238,9 +239,9 @@
                 el: '#app',
                 data: {
                     uploadConfig: {
-                        uploadUrl: "{:U('Upload/UploadAdminApi/uploadImage')}",
+                        uploadUrl: "{:U('Upload/UploadAdminApi/uploadFile')}",
                         max_upload: 9,//同时上传文件数
-                        accept: 'image/*', //接收的文件类型，请看：https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
+                        accept: '.xls,.doc,.ppt,.xlsx,.docx,.pptx,.pdf', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
                     pagination: {
                         page: 1,
@@ -274,7 +275,7 @@
                 },
                 watch: {},
                 computed: {
-                    selectdImageList: function () {
+                    selectdFileList: function () {
                         var result = [];
                         this.galleryList.forEach(function (file) {
                             if (file.is_select) {
@@ -328,7 +329,7 @@
                             group_id: this.now_group,
                         };
                         $.ajax({
-                            url: "{:U('Upload/UploadAdminApi/getGalleryByGroupIdList')}",
+                            url: "{:U('Upload/UploadAdminApi/getFilesByGroupIdList')}",
                             data: where,
                             dataType: 'json',
                             type: 'post',
@@ -471,8 +472,8 @@
                             files: [],
                             group_id: this.move_group_id
                         };
-                        for (var i = 0; i < this.selectdImageList.length; i++) {
-                            form['files'].push(this.selectdImageList[i])
+                        for (var i = 0; i < this.selectdFileList.length; i++) {
+                            form['files'].push(this.selectdFileList[i])
                         }
 
                         $.ajax({
@@ -493,11 +494,12 @@
                         this.galleryList[index].is_select = !this.galleryList[index].is_select
                     },
                     confirm: function () {
+                        console.log('selectdFileList', JSON.stringify(this.selectdFileList));
                         var event = document.createEvent('CustomEvent');
-                        event.initCustomEvent('ZTBCMS_UPLOAD_IMAGE', true, true, {
-                            files: this.selectdImageList
+                        event.initCustomEvent('ZTBCMS_UPLOAD_VIDEO', true, true, {
+                            files: this.selectdFileList
                         });
-                        window.parent.dispatchEvent(event)
+                        window.parent.dispatchEvent(event);
                         this.closePanel();
                     },
                     closePanel: function () {
@@ -541,8 +543,8 @@
                         var form = {
                             files: []
                         };
-                        for (var i = 0; i < this.selectdImageList.length; i++) {
-                            form['files'].push(this.selectdImageList[i])
+                        for (var i = 0; i < this.selectdFileList.length; i++) {
+                            form['files'].push(this.selectdFileList[i])
                         }
 
                         $.ajax({

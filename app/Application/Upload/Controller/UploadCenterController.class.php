@@ -30,7 +30,7 @@ class UploadCenterController extends AdminBase
 
     function fileUploadPanel()
     {
-        $this->display();
+        $this->display('fileUploadPanelv2');
     }
 
     //编辑水印配置
