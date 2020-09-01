@@ -17,17 +17,25 @@ use Common\Controller\AdminBase;
  */
 class UploadCenterController extends AdminBase
 {
-    function imageUploadPanel(){
+    function imageUploadPanel()
+    {
 
         $this->display('imageUploadPanelv2');
     }
 
-    function fileUploadPanel(){
+    function videoUploadPanel()
+    {
+        $this->display();
+    }
+
+    function fileUploadPanel()
+    {
         $this->display();
     }
 
     //编辑水印配置
-    function editWatermarkConfig(){
+    function editWatermarkConfig()
+    {
         $this->display();
     }
 

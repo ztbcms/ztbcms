@@ -43,6 +43,7 @@ CREATE TABLE `cms_attachment` (
   `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
   `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
   `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
+  `filethumb` varchar(256) DEFAULT NULL COMMENT '文件缩略图',
   `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
   `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
   `isimage` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为图片 1为图片',

@@ -8,7 +8,8 @@ namespace Attachment\Model;
 
 use Common\Model\Model;
 
-class AttachmentModel extends Model {
+class AttachmentModel extends Model
+{
 
     //上传目录
     public $dateFormat = 'Y/m';
@@ -19,7 +20,8 @@ class AttachmentModel extends Model {
     const DELETE_STATUS_YES = 1;
     const DELETE_STATUS_NO = 0;
 
-    protected function _initialize() {
+    protected function _initialize()
+    {
         parent::_initialize();
         $this->time = time();
     }
@@ -32,7 +34,8 @@ class AttachmentModel extends Model {
      * @param int $time
      * @return string 成功返回网站路径，失败返回false
      */
-    public function getFilePath($module, $dateFormat = '', $time = 0) {
+    public function getFilePath($module, $dateFormat = '', $time = 0)
+    {
         $filePath = C("UPLOADFILEPATH") . strtolower(trim($module)) . '/' . date($dateFormat ? $dateFormat : $this->dateFormat,
                 $time ? $time : $this->time) . '/';
         //检测目录是否存在，不存在创建
@@ -50,7 +53,7 @@ class AttachmentModel extends Model {
     /**
      * 记录上传的附件信息入库
      *
-     * @param array  $info    文件信息，数组
+     * @param array $info 文件信息，数组
      *                        array(
      *                        'name' => '6.jpg',//上传文件名
      *                        'type' => 'application/octet-stream',//文件类型
@@ -61,12 +64,12 @@ class AttachmentModel extends Model {
      *                        'savename' => '5002ba343fc9d.jpg',//保存文件名
      *                        'hash' => '77b5118c1722da672b0ddce3c4388e64',
      *                        )
-     * @param string $module  模块
-     * @param int    $catid   栏目id
-     * @param int    $isthumb 是否缩略图
-     * @param int    $isadmin 是否后台
-     * @param int    $userid  用户id
-     * @param int    $time    时间戳
+     * @param string $module 模块
+     * @param int $catid 栏目id
+     * @param int $isthumb 是否缩略图
+     * @param int $isadmin 是否后台
+     * @param int $userid 用户id
+     * @param int $time 时间戳
      * @return boolean|int
      */
     public function fileInfoAdd(
@@ -77,8 +80,10 @@ class AttachmentModel extends Model {
         $isadmin = 0,
         $userid = 0,
         $time = 0,
-        $group_id = 0
-    ) {
+        $group_id = 0,
+        $filethumb = ""
+    )
+    {
         if (empty($info) || !is_array($info)) {
             return false;
         }
@@ -97,6 +102,8 @@ class AttachmentModel extends Model {
             "module" => strtolower($module),
             //栏目ID
             "catid" => (int)$catid,
+            //文件缩略图
+            "filethumb" => $filethumb,
             //附件名称
             "filename" => $info['name'],
             //附件路径
