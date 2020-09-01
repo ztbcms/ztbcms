@@ -18,7 +18,8 @@ use Common\Controller\AdminBase;
 class UploadCenterController extends AdminBase
 {
     function imageUploadPanel(){
-        $this->display();
+
+        $this->display('imageUploadPanelv2');
     }
 
     function fileUploadPanel(){
