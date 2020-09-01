@@ -51,7 +51,7 @@
                                 :on-success="handleUploadSuccess"
                                 :on-error="handleUploadError"
                                 :on-exceed="handleExceed"
-                                :data="watermarkConfig"
+                                :data="uploadData"
                                 id="upload_input"
                                 ref="upload"
                                 multiple
@@ -267,8 +267,9 @@
                         status: '',
                         sort_time: '',//排序：时间
                     },
-                    watermarkConfig: {
-                        enable: '0'
+                    uploadData: {
+                        enable: '0',
+                        group_id: 'all'
                     },
                     loading: true
                 },
@@ -352,6 +353,7 @@
                     // 获取指定分类的图片
                     selectGroup(group_id) {
                         this.now_group = group_id;
+                        this.uploadData.group_id = group_id;
                         // 获取图片列表
                         this.getGalleryByGroupIdList()
                     },
@@ -515,7 +517,7 @@
                             dataType: 'json',
                             type: 'get',
                             success: function (res) {
-                                that.watermarkConfig.enable = res.data.watermarkenable + ''
+                                that.uploadData.enable = res.data.watermarkenable + ''
                             }
                         })
                     },
