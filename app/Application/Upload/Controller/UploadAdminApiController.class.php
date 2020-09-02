@@ -130,7 +130,7 @@ class UploadAdminApiController extends AdminApiBaseController
             $this->ajaxReturn($result);
             return;
         }
-        
+
         $attachmentDriverConfig = cache("Config.attachment_driver");
         if ($attachmentDriverConfig && $attachmentDriverConfig == 'Aliyun') {
             //如果是aliyun上传机制，修改视频封面缩略图
