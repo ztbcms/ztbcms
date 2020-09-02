@@ -91,6 +91,7 @@ class AttachmentModel extends Model
         $info['extension'] = strtolower($info['extension']);
         //文件保存物理地址
         $filePath = $info['savepath'] . $info['savename'];
+        $fileUrl = empty($info['url']) ? "" : $info['url'];
         if (empty($filePath)) {
             return false;
         }
@@ -108,6 +109,8 @@ class AttachmentModel extends Model
             "filename" => $info['name'],
             //附件路径
             "filepath" => $fileUrlPath,
+            //附件url
+            "fileurl" => $fileUrl,
             //附件大小
             "filesize" => $info['size'],
             //附件扩展名

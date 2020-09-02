@@ -130,6 +130,17 @@ class UploadAdminApiController extends AdminApiBaseController
             $this->ajaxReturn($result);
             return;
         }
+        
+        $attachmentDriverConfig = cache("Config.attachment_driver");
+        if ($attachmentDriverConfig && $attachmentDriverConfig == 'Aliyun') {
+            //如果是aliyun上传机制，修改视频封面缩略图
+            $data = $result['data'];
+            $filethumb = $data['url'] . '?x-oss-process=video/snapshot,t_500,f_png';
+            M('Attachment')->where(['aid' => $data['aid']])->save([
+                'filethumb' => $filethumb
+            ]);
+            $result['data']['filethumb'] = $filethumb;
+        }
         $this->ajaxReturn($result);
     }
 
@@ -182,7 +193,7 @@ class UploadAdminApiController extends AdminApiBaseController
             $return_list [] = [
                 'aid' => $item['aid'],
                 'name' => $item['filename'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
                 'filepath' => $item['filepath'],
             ];
         }
@@ -309,7 +320,7 @@ class UploadAdminApiController extends AdminApiBaseController
             $return_list [] = [
                 'aid' => $item['aid'],
                 'name' => $item['filename'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
                 'filepath' => $item['filepath'],
             ];
         }
@@ -349,7 +360,7 @@ class UploadAdminApiController extends AdminApiBaseController
                 'aid' => $item['aid'],
                 'name' => $item['filename'],
                 'filethumb' => $item['filethumb'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
                 'filepath' => $item['filepath'],
             ];
         }
@@ -388,7 +399,7 @@ class UploadAdminApiController extends AdminApiBaseController
                 'aid' => $item['aid'],
                 'name' => $item['filename'],
                 'filethumb' => $item['filethumb'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
                 'filepath' => $item['filepath'],
             ];
         }
