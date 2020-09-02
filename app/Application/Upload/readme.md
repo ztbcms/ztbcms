@@ -5,6 +5,15 @@
 
 请参考 Elementui 模块的示例
 
+
+### Aliyun OSS 存储配置
+
+打开 **设置-系统设置-附件配置** 填入相应的OSS配置。建议使用 使用RAM账号 的配置
+
+![图片](https://ztbcms-tes.oss-cn-beijing.aliyuncs.com/0902.png)
+
+
+
 ### 水印设置
 
 1. 后台：上传时可以选择是否添加水印
@@ -148,8 +157,4 @@ layer.open({
  url        |     string    |      文件url
  name        |     string    |       文件名称
  filethumb        |     string    |       文件缩略图
-
-
-
-
 
