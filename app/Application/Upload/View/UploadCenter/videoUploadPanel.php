@@ -63,9 +63,17 @@
                                          class="imgListItem">
                                         <el-tooltip class="item" effect="dark" :content="item.name"
                                                     placement="bottom">
-                                            <img :src="item.filethumb"
-                                                 style="width:80px;height: 80px;"
-                                                 @click="selectImgEvent(index)">
+                                            <div v-if="item.filethumb">
+                                                <img :src="item.filethumb"
+                                                     style="width:80px;height: 80px;"
+                                                     @click="selectImgEvent(index)">
+                                            </div>
+                                            <div v-else @click="selectImgEvent(index)">
+                                                <video style="pointer-events: none;width: 80px; height: 80px">
+                                                    <source autoplay="autoplay" :src="item.url"
+                                                            type="video/mp4">
+                                                </video>
+                                            </div>
                                         </el-tooltip>
                                         <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
                                             <span style="line-height: 80px;" class="el-icon-check"></span>
