@@ -63,9 +63,19 @@
                                          class="imgListItem">
                                         <el-tooltip class="item" effect="dark" :content="item.name"
                                                     placement="bottom">
-                                            <img :src="item.filethumb"
-                                                 style="width:80px;height: 80px;"
-                                                 @click="selectImgEvent(index)">
+
+                                            <div v-if="item.filethumb">
+                                                <img :src="item.filethumb"
+                                                     style="width:80px;height: 80px;"
+                                                     @click="selectImgEvent(index)">
+                                            </div>
+                                            <div v-else>
+                                                <img src="/statics/admin/upload/doc.png"
+                                                     style="width:80px;height: 80px;"
+                                                     @click="selectImgEvent(index)">
+                                            </div>
+
+
                                         </el-tooltip>
                                         <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
                                             <span style="line-height: 80px;" class="el-icon-check"></span>
