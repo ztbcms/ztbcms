@@ -7,14 +7,13 @@
 
             <div>
                 <template v-for="(file, index) in uploadedFileList">
-                    <p>{{file.name}} <span style="font-size: 22px" class="el-icon-delete" @click="deleteItem(index)"></span></p>
+                    <p>{{file.name}} <span style="font-size: 22px" class="el-icon-delete"
+                                           @click="deleteItem(index)"></span></p>
                 </template>
             </div>
 
-            <el-button type="primary" @click="gotoUploadFile">上传图片</el-button>
+            <el-button type="primary" @click="gotoUploadFile">上传文件</el-button>
         </el-card>
-
-
     </div>
 
     <style>
@@ -56,9 +55,10 @@
                     gotoUploadFile: function () {
                         layer.open({
                             type: 2,
-                            title: '上传图片',
+                            title: '',
+                            closeBtn: false,
                             content: "{:U('Upload/UploadCenter/fileUploadPanel', ['max_upload' => 9])}",
-                            area: ['80%', '70%'],
+                            area: ['670px', '550px'],
                         })
                     },
                     onUploadedFile: function (event) {

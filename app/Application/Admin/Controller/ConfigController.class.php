@@ -8,11 +8,13 @@ namespace Admin\Controller;
 
 use Common\Controller\AdminBase;
 
-class ConfigController extends AdminBase {
+class ConfigController extends AdminBase
+{
 
     private $Config = null;
 
-    protected function _initialize() {
+    protected function _initialize()
+    {
         parent::_initialize();
         $this->Config = D('Common/Config');
         $configList = $this->Config->getField("varname,value");
@@ -20,7 +22,8 @@ class ConfigController extends AdminBase {
     }
 
     //网站基本设置
-    public function index() {
+    public function index()
+    {
         if (IS_POST) {
             if ($this->Config->saveConfig($_POST)) {
                 $this->success("更新成功！");
@@ -45,14 +48,15 @@ class ConfigController extends AdminBase {
                 }
             }
             $this->assign('TagURL', $TagURL)
-                    ->assign('IndexURL', $IndexURL)
-                    ->assign('indextp', $indextp)
-                    ->display();
+                ->assign('IndexURL', $IndexURL)
+                ->assign('indextp', $indextp)
+                ->display();
         }
     }
 
     //邮箱参数
-    public function mail() {
+    public function mail()
+    {
         if (IS_POST) {
             $this->index();
         } else {
@@ -61,7 +65,8 @@ class ConfigController extends AdminBase {
     }
 
     //附件参数
-    public function attach() {
+    public function attach()
+    {
         if (IS_POST) {
             $this->index();
         } else {
@@ -70,11 +75,12 @@ class ConfigController extends AdminBase {
             $lang = array(
                 'Local' => '本地存储驱动',
                 'Ftp' => 'FTP远程附件驱动',
+                'Aliyun' => '阿里云OSS上传驱动【暂不支持水印】',
             );
             foreach ($dirverList as $k => $rs) {
                 unset($dirverList[$k]);
                 $dirverName = str_replace(array($path, '.class.php'), '', $rs);
-                $dirverList[$dirverName] = $lang[$dirverName]? : $dirverName;
+                $dirverList[$dirverName] = $lang[$dirverName] ?: $dirverName;
             }
             $this->assign('dirverList', $dirverList);
             $this->display();
@@ -82,7 +88,8 @@ class ConfigController extends AdminBase {
     }
 
     //高级配置
-    public function addition() {
+    public function addition()
+    {
         if (IS_POST) {
             if ($this->Config->addition($_POST)) {
                 $this->success("修改成功，请及时更新缓存！");
@@ -101,7 +108,8 @@ class ConfigController extends AdminBase {
     }
 
     //扩展配置
-    public function extend() {
+    public function extend()
+    {
         if (IS_POST) {
             $action = I('post.action');
             if ($action) {
@@ -155,7 +163,8 @@ class ConfigController extends AdminBase {
     /**
      * 删除配置项
      */
-    public function extendDel(){
+    public function extendDel()
+    {
         $action = I('post.action');
         if ($action == 'delete') {
             $fid = I('post.fid', 0, 'intval');

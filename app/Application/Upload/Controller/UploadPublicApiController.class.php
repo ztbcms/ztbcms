@@ -26,7 +26,18 @@ class UploadPublicApiController extends Base
     const MODULE_FILE = 'module_upload_files';
     const MODULE_VIDEO = 'module_upload_video';
 
-    protected function _initialize() {
+    const FILE_THUMB_ARRAY = [
+        'ppt' => '/statics/admin/upload/ppt.png',
+        'pptx' => '/statics/admin/upload/ppt.png',
+        'doc' => '/statics/admin/upload/doc.png',
+        'docx' => '/statics/admin/upload/doc.png',
+        'xls' => '/statics/admin/upload/xls.png',
+        'xlsx' => '/statics/admin/upload/xls.png',
+        'file' => '/statics/admin/upload/file.png',
+    ];
+
+    protected function _initialize()
+    {
         //支持跨域
         //http 预检响应
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -46,7 +57,7 @@ class UploadPublicApiController extends Base
      * @param $module  string 文件所属模块
      * @return array
      */
-    private function _upload($module)
+    private function _upload($module, $filethumb = "")
     {
         if (IS_POST) {
             //回调函数
@@ -60,7 +71,18 @@ class UploadPublicApiController extends Base
             //开始上传
             $info = $Attachment->upload($Callback);
             if ($info) {
+                $extension = $info[0]['extension'];
+                $aid = $info[0]['aid'];
+                if (!$filethumb) {
+                    if (!empty(self::FILE_THUMB_ARRAY[$extension])) {
+                        $filethumb = self::FILE_THUMB_ARRAY[$extension];
+                        M('Attachment')->where(['aid' => $aid])->save([
+                            'filethumb' => $filethumb
+                        ]);
+                    }
+                }
                 $data = [
+                    'filethumb' => $filethumb, //文件缩略图，图片可以为空
                     'name' => $info[0]['name'],//名称
                     'type' => $info[0]['type'],//类型 eg:image/png
                     'size' => $info[0]['size'],// 容量,单位 byte eg: 1KB=1024byte
@@ -130,11 +152,21 @@ class UploadPublicApiController extends Base
      */
     function uploadVideo()
     {
-        $result = $this->_upload(self::MODULE_VIDEO);
-        if ($result) {
-            //视频缩略图第一秒截屏（接入阿里云OSS）
-            $video_thumb_url = $result['data']['url'] . '?x-oss-process=video/snapshot,t_1000,f_jpg,w_0,h_0,m_fast';
-            $result['data']['video_thumb_url'] = $video_thumb_url;
+        $filethumb = "/statics/admin/upload/video.png";
+        $result = $this->_upload(self::MODULE_VIDEO, $filethumb);
+        if (!$result['status']) {
+            $this->ajaxReturn($result);
+            return;
+        }
+        $attachmentDriverConfig = cache("Config.attachment_driver");
+        if ($attachmentDriverConfig && $attachmentDriverConfig == 'Aliyun') {
+            //如果是aliyun上传机制，修改视频封面缩略图
+            $data = $result['data'];
+            $filethumb = $data['url'] . '?x-oss-process=video/snapshot,t_500,f_png';
+            M('Attachment')->where(['aid' => $data['aid']])->save([
+                'filethumb' => $filethumb
+            ]);
+            $result['data']['filethumb'] = $filethumb;
         }
         $this->ajaxReturn($result);
     }

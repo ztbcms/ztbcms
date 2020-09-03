@@ -43,6 +43,7 @@ CREATE TABLE `cms_attachment` (
   `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
   `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
   `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
+  `filethumb` varchar(256) DEFAULT NULL COMMENT '文件缩略图',
   `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
   `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
   `isimage` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为图片 1为图片',
@@ -344,8 +345,13 @@ INSERT INTO `cms_config` VALUES ('40', 'indextp', '首页模板', '1', 'index.ph
 INSERT INTO `cms_config` VALUES ('41', 'tagurl', 'TagURL规则', '1', '8');
 INSERT INTO `cms_config` VALUES ('42', 'checkcode_type', '验证码类型', '1', '0');
 INSERT INTO `cms_config` VALUES ('43', 'attachment_driver', '附件驱动', '1', 'Local');
-INSERT INTO `cms_config` VALUES (44, 'site_domain', '网站域名', 1, '');
-INSERT INTO `cms_config` VALUES (45, 'site_file_domain', '网站附件域名', 1, '');
+INSERT INTO `cms_config` VALUES ('44', 'attachment_aliyun_key_id', 'OSS-accessKeyId', '1', '');
+INSERT INTO `cms_config` VALUES ('45', 'attachment_aliyun_key_secret', 'OSS-accessKeySecret', '1', '');
+INSERT INTO `cms_config` VALUES ('46', 'attachment_aliyun_endpoint', 'OSS-Endpoint', '1', '');
+INSERT INTO `cms_config` VALUES ('47', 'attachment_aliyun_bucket', 'OSS-bucket', '1', '');
+INSERT INTO `cms_config` VALUES ('48', 'attachment_aliyun_domain', 'OSS-外网域名', '1', '');
+INSERT INTO `cms_config` VALUES ('49', 'site_domain', '网站域名', 1, '');
+INSERT INTO `cms_config` VALUES ('50', 'site_file_domain', '网站附件域名', 1, '');
 
 
 -- ----------------------------
