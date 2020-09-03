@@ -10,7 +10,8 @@
 
 打开 **设置-系统设置-附件配置** 填入相应的OSS配置。建议使用 使用RAM账号 的配置
 
-![图片](https://ztbcms-tes.oss-cn-beijing.aliyuncs.com/0902.png)
+
+![wCx54S.png](https://s1.ax1x.com/2020/09/03/wCx54S.png)
 
 
 
