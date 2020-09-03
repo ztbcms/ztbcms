@@ -25,13 +25,25 @@ class UploadAdminApiController extends AdminApiBaseController
 
     //模块
     const MODULE_IMAGE = 'module_upload_images';
+    const MODULE_VIDEO = 'module_upload_videos';
     const MODULE_FILE = 'module_upload_files';
 
+    const FILE_THUMB_ARRAY = [
+        'ppt' => '/statics/admin/upload/ppt.png',
+        'pptx' => '/statics/admin/upload/ppt.png',
+        'doc' => '/statics/admin/upload/doc.png',
+        'docx' => '/statics/admin/upload/doc.png',
+        'xls' => '/statics/admin/upload/xls.png',
+        'xlsx' => '/statics/admin/upload/xls.png',
+        'file' => '/statics/admin/upload/file.png',
+    ];
+
     /**
-     * @param $module  string 文件所属模块
+     * @param $module 文件所属模块
+     * @param string $filethumb 文件缩略图
      * @return array
      */
-    private function _upload($module)
+    private function _upload($module, $filethumb = '')
     {
         if (IS_POST) {
             //回调函数
@@ -44,11 +56,22 @@ class UploadAdminApiController extends AdminApiBaseController
             $group_id = I('post.group_id', 0);
 
             //获取附件服务
-            $Attachment = service("Attachment", array('module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid , 'group_id'=> $group_id));
+            $Attachment = service("Attachment", array('filethumb' => $filethumb, 'module' => $module, 'catid' => $catid, 'isadmin' => self::isadmin, 'userid' => $upuserid, 'group_id' => $group_id));
             //开始上传
             $info = $Attachment->upload($Callback);
             if ($info) {
+                $extension = $info[0]['extension'];
+                $aid = $info[0]['aid'];
+                if (!$filethumb) {
+                    if (!empty(self::FILE_THUMB_ARRAY[$extension])) {
+                        $filethumb = self::FILE_THUMB_ARRAY[$extension];
+                        M('Attachment')->where(['aid' => $aid])->save([
+                            'filethumb' => $filethumb
+                        ]);
+                    }
+                }
                 $data = [
+                    'filethumb' => $filethumb, //文件缩略图，图片可以为空
                     'name' => $info[0]['name'],//名称
                     'type' => $info[0]['type'],//类型 eg:image/png
                     'size' => $info[0]['size'],// 容量,单位 byte eg: 1KB=1024byte
@@ -56,7 +79,7 @@ class UploadAdminApiController extends AdminApiBaseController
                     'savepath' => $info[0]['savepath'],// eg:"/root/project/ztbcms/d/file/module_upload_images/2019/09/"
                     'savename' => $info[0]['savename'],// eg:image/png
                     'hash' => $info[0]['hash'],// hash
-                    'aid' => $info[0]['aid'],// 附件ID
+                    'aid' => $aid,// 附件ID
                     'url' => $info[0]['url'],//上传文件路径, e.g: http://ztbcms.biz:8888/d/file/module_upload_images/2019/09/5d89d09186329.jpeg 、 或 /d/file/module_upload_images/2019/09/5d89d09186329.jpeg
                 ];
                 return self::createReturn(true, $data, '上传成功');
@@ -85,7 +108,7 @@ class UploadAdminApiController extends AdminApiBaseController
         $upload_file_info = $result['data'];
         //处理水印
         //是否添加水印
-        if($watermark_enable == WatermarkService::ENABLE_YES){
+        if ($watermark_enable == WatermarkService::ENABLE_YES) {
             $watermarkService = new WatermarkService();
             $watermark_config = $watermarkService->getWatermarkConfig()['data'];
             $source_image_path = $upload_file_info['url'];
@@ -95,6 +118,32 @@ class UploadAdminApiController extends AdminApiBaseController
         $this->ajaxReturn($result);
 
     }
+
+    /**
+     * 上传视频
+     */
+    function uploadVideo()
+    {
+        $filethumb = "/statics/admin/upload/video.png";
+        $result = $this->_upload(self::MODULE_VIDEO, $filethumb);
+        if (!$result['status']) {
+            $this->ajaxReturn($result);
+            return;
+        }
+
+        $attachmentDriverConfig = cache("Config.attachment_driver");
+        if ($attachmentDriverConfig && $attachmentDriverConfig == 'Aliyun') {
+            //如果是aliyun上传机制，修改视频封面缩略图
+            $data = $result['data'];
+            $filethumb = $data['url'] . '?x-oss-process=video/snapshot,t_500,f_png';
+            M('Attachment')->where(['aid' => $data['aid']])->save([
+                'filethumb' => $filethumb
+            ]);
+            $result['data']['filethumb'] = $filethumb;
+        }
+        $this->ajaxReturn($result);
+    }
+
 
     /**
      * 批量删除文件
@@ -144,7 +193,7 @@ class UploadAdminApiController extends AdminApiBaseController
             $return_list [] = [
                 'aid' => $item['aid'],
                 'name' => $item['filename'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
                 'filepath' => $item['filepath'],
             ];
         }
@@ -155,25 +204,27 @@ class UploadAdminApiController extends AdminApiBaseController
     /**
      * 获取图片分组
      */
-    function getGalleryGroup(){
+    function getGalleryGroup()
+    {
         $AttachmentGroupModel = new AttachmentGroupModel;
         $where = [
             'is_delete' => AttachmentGroupModel::IS_DELETE_NO,
             'group_type' => AttachmentGroupModel::GROUP_TYPE_IMAGE,
         ];
         $list = $AttachmentGroupModel->where($where)->field('group_id,group_name')->order('sort desc')->select();
-        $this->ajaxReturn(self::createReturn(true,$list));
+        $this->ajaxReturn(self::createReturn(true, $list));
     }
 
     /**
      * 批量移动图片分组
      */
-    function moveGralleryGroup(){
+    function moveGralleryGroup()
+    {
         $files = I('post.files');
         $group_id = I('post.group_id');
         $AttachmentModel = new AttachmentModel;
         foreach ($files as $file) {
-            $AttachmentModel->where(['aid' => ['EQ', $file['aid']]])->save(['group_id' => $group_id ]);
+            $AttachmentModel->where(['aid' => ['EQ', $file['aid']]])->save(['group_id' => $group_id]);
         }
         $this->ajaxReturn(self::createReturn(true, null, '操作成功'));
     }
@@ -181,10 +232,11 @@ class UploadAdminApiController extends AdminApiBaseController
     /**
      * 添加图片类型分组
      */
-    function addGalleryGroup(){
-        $group_name = I('group_name','');
-        if(empty($group_name)){
-            $this->ajaxReturn(self::createReturn(false,[],'请输入分类名称'));
+    function addGalleryGroup()
+    {
+        $group_name = I('group_name', '');
+        if (empty($group_name)) {
+            $this->ajaxReturn(self::createReturn(false, [], '请输入分类名称'));
         }
         $data = [
             'group_type' => AttachmentGroupModel::GROUP_TYPE_IMAGE,
@@ -194,45 +246,47 @@ class UploadAdminApiController extends AdminApiBaseController
         $AttachmentGroupModel = new AttachmentGroupModel;
         $AttachmentGroupModel->create($data);
         $res = $AttachmentGroupModel->add();
-        if($res) $this->ajaxReturn(self::createReturn(true,[],'添加成功'));
-        $this->ajaxReturn(self::createReturn(false,[],'添加失败'));
+        if ($res) $this->ajaxReturn(self::createReturn(true, [], '添加成功'));
+        $this->ajaxReturn(self::createReturn(false, [], '添加失败'));
     }
 
     /**
      * 修改图片类型分组名称
      */
-    function editGalleryGroup(){
-        $group_name = I('group_name','');
-        $group_id = I('group_id','');
-        if(empty($group_name) || empty($group_id)){
-            $this->ajaxReturn(self::createReturn(false,[],'请输入分类名称'));
+    function editGalleryGroup()
+    {
+        $group_name = I('group_name', '');
+        $group_id = I('group_id', '');
+        if (empty($group_name) || empty($group_id)) {
+            $this->ajaxReturn(self::createReturn(false, [], '请输入分类名称'));
         }
         $data = [
             'group_name' => $group_name,
             'update_time' => time()
         ];
         $AttachmentGroupModel = new AttachmentGroupModel;
-        $res = $AttachmentGroupModel->where(['group_id'=>$group_id])->save($data);
-        if($res) $this->ajaxReturn(self::createReturn(true,[],'修改成功'));
-        $this->ajaxReturn(self::createReturn(false,[],'修改失败'));
+        $res = $AttachmentGroupModel->where(['group_id' => $group_id])->save($data);
+        if ($res) $this->ajaxReturn(self::createReturn(true, [], '修改成功'));
+        $this->ajaxReturn(self::createReturn(false, [], '修改失败'));
     }
 
     /**
      * 删除图片分组
      */
-    function delGalleryGroup(){
-        $group_id = I('group_id','');
-        if(empty($group_id)){
-            $this->ajaxReturn(self::createReturn(false,[],'操作失败'));
+    function delGalleryGroup()
+    {
+        $group_id = I('group_id', '');
+        if (empty($group_id)) {
+            $this->ajaxReturn(self::createReturn(false, [], '操作失败'));
         }
         $AttachmentGroupModel = new AttachmentGroupModel;
         $res = $AttachmentGroupModel->delete($group_id);
         // 重置图片到未分组
         $AttachmentModel = new AttachmentModel();
-        $AttachmentModel->where(['group_id'=>$group_id])->save(['group_id'=>0]);
+        $AttachmentModel->where(['group_id' => $group_id])->save(['group_id' => 0]);
 
-        if($res) $this->ajaxReturn(self::createReturn(true,[],'删除成功'));
-        $this->ajaxReturn(self::createReturn(false,[],'删除失败'));
+        if ($res) $this->ajaxReturn(self::createReturn(true, [], '删除成功'));
+        $this->ajaxReturn(self::createReturn(false, [], '删除失败'));
     }
 
     /**
@@ -240,7 +294,7 @@ class UploadAdminApiController extends AdminApiBaseController
      */
     function getGalleryByGroupIdList()
     {
-        $page  = I('page', 1);
+        $page = I('page', 1);
         $limit = I('limit', 20);
         $group_id = I('group_id', 'all');
         $userInfo = User::getInstance()->getInfo();
@@ -248,17 +302,17 @@ class UploadAdminApiController extends AdminApiBaseController
 
         $db = M('Attachment');
         $where = [
-            'module'  => self::MODULE_IMAGE,
-            'userid'  => $userid,
+            'module' => self::MODULE_IMAGE,
+            'userid' => $userid,
             'isadmin' => 1,
             'isimage' => 1,
             'delete_status' => AttachmentModel::DELETE_STATUS_NO,
         ];
-        if($group_id != 'all'){
+        if ($group_id != 'all') {
             $where['group_id'] = $group_id;
         }
         $total_items = $db->where($where)->count();
-        $total_page  = ceil($total_items / $limit);
+        $total_page = ceil($total_items / $limit);
         $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
 
         $return_list = [];
@@ -266,7 +320,86 @@ class UploadAdminApiController extends AdminApiBaseController
             $return_list [] = [
                 'aid' => $item['aid'],
                 'name' => $item['filename'],
-                'url' => cache('Config.sitefileurl') . $item['filepath'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
+                'filepath' => $item['filepath'],
+            ];
+        }
+        $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
+    }
+
+
+    /**
+     * 通过分组id获取视频列表
+     */
+    function getVideosByGroupIdList()
+    {
+        $page = I('page', 1);
+        $limit = I('limit', 20);
+        $group_id = I('group_id', 'all');
+        $userInfo = User::getInstance()->getInfo();
+        $userid = $userInfo['id'];
+
+        $db = M('Attachment');
+        $where = [
+            'module' => self::MODULE_VIDEO,
+            'userid' => $userid,
+            'isadmin' => 1,
+            'isimage' => 0,
+            'delete_status' => AttachmentModel::DELETE_STATUS_NO,
+        ];
+        if ($group_id != 'all') {
+            $where['group_id'] = $group_id;
+        }
+        $total_items = $db->where($where)->count();
+        $total_page = ceil($total_items / $limit);
+        $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
+
+        $return_list = [];
+        foreach ($list as $index => $item) {
+            $return_list [] = [
+                'aid' => $item['aid'],
+                'name' => $item['filename'],
+                'filethumb' => $item['filethumb'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
+                'filepath' => $item['filepath'],
+            ];
+        }
+        $this->ajaxReturn($this->createReturnList(true, $return_list, $page, $limit, $total_items, $total_page));
+    }
+
+    /**
+     * 通过分组id获取文件列表
+     */
+    function getFilesByGroupIdList()
+    {
+        $page = I('page', 1);
+        $limit = I('limit', 20);
+        $group_id = I('group_id', 'all');
+        $userInfo = User::getInstance()->getInfo();
+        $userid = $userInfo['id'];
+
+        $db = M('Attachment');
+        $where = [
+            'module' => self::MODULE_FILE,
+            'userid' => $userid,
+            'isadmin' => 1,
+            'isimage' => 0,
+            'delete_status' => AttachmentModel::DELETE_STATUS_NO,
+        ];
+        if ($group_id != 'all') {
+            $where['group_id'] = $group_id;
+        }
+        $total_items = $db->where($where)->count();
+        $total_page = ceil($total_items / $limit);
+        $list = $db->where($where)->page($page)->limit($limit)->order(array("uploadtime" => "DESC"))->select();
+
+        $return_list = [];
+        foreach ($list as $index => $item) {
+            $return_list [] = [
+                'aid' => $item['aid'],
+                'name' => $item['filename'],
+                'filethumb' => $item['filethumb'],
+                'url' => empty($item['fileurl']) ? cache('Config.sitefileurl') . $item['filepath'] : $item['fileurl'],
                 'filepath' => $item['filepath'],
             ];
         }
@@ -276,7 +409,8 @@ class UploadAdminApiController extends AdminApiBaseController
     /**
      * 获取水印配置
      */
-    function getWatermarkConfig(){
+    function getWatermarkConfig()
+    {
         $system_configs = M('Config')->where([
             'varname' => ['IN', 'watermarkenable,watermarkminwidth,watermarkminheight,watermarkimg,watermarkpct,watermarkquality,watermarkpos']
         ])->select();
@@ -290,12 +424,13 @@ class UploadAdminApiController extends AdminApiBaseController
     /**
      * 保存水印配置
      */
-    function saveWatermarkConfig(){
+    function saveWatermarkConfig()
+    {
         $post = I('post.');
 
-        $fileds = ['watermarkenable','watermarkminwidth','watermarkminheight','watermarkimg','watermarkpct','watermarkquality','watermarkpos'];
-        foreach ($post as $key => $value){
-            if(in_array($key, $fileds)){
+        $fileds = ['watermarkenable', 'watermarkminwidth', 'watermarkminheight', 'watermarkimg', 'watermarkpct', 'watermarkquality', 'watermarkpos'];
+        foreach ($post as $key => $value) {
+            if (in_array($key, $fileds)) {
                 M('Config')->where(['varname' => $key])->save(['value' => $value]);
             }
         }

@@ -55,6 +55,7 @@ class ComposerStaticInite766d226433bf0c120f1dc5e51097aee
         'O' => 
         array (
             'Overtrue\\Socialite\\' => 19,
+            'OSS\\' => 4,
         ),
         'M' => 
         array (
@@ -163,6 +164,10 @@ class ComposerStaticInite766d226433bf0c120f1dc5e51097aee
         'Overtrue\\Socialite\\' => 
         array (
             0 => __DIR__ . '/..' . '/overtrue/socialite/src',
+        ),
+        'OSS\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aliyuncs/oss-sdk-php/src/OSS',
         ),
         'Monolog\\' => 
         array (

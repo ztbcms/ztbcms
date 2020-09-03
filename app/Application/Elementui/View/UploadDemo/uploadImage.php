@@ -3,23 +3,33 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>多图片上传示例</h3>
-
+            <h3>图片上传示例</h3>
             <div>
-                <template v-for="(file, index) in uploadedFileList">
+                <template v-for="(file, index) in uploadedImageList">
                     <div class="imgListItem">
                         <img :src="file.url" :alt="file.name" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteItem(index)">
+                        <div class="deleteMask" @click="deleteImageItem(index)">
                             <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
                         </div>
                     </div>
                 </template>
             </div>
-
             <el-button type="primary" @click="gotoUploadFile">上传图片</el-button>
         </el-card>
-
-
+        <el-card style="margin-top: 10px">
+            <h3>视频上传示例</h3>
+            <div>
+                <template v-for="(file, index) in uploadedVideoList">
+                    <div class="imgListItem">
+                        <img :src="file.filethumb" style="width: 128px;height: 128px;">
+                        <div class="deleteMask" @click="deleteVideoItem(index)">
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <el-button type="primary" @click="gotoUploadVideo">上传图片</el-button>
+        </el-card>
     </div>
 
     <style>
@@ -58,12 +68,8 @@
             new Vue({
                 el: '#app',
                 data: {
-                    uploadedFileList: [
-                        // {
-                        //     name: "屏幕快照 2019-02-14 14.32.36.png",
-                        //     url: "/d/file/module_upload_images/2019/03/5c7e4cf7dd1cd.png"
-                        // },
-                    ]
+                    uploadedImageList: [],
+                    uploadedVideoList: []
                 },
                 watch: {},
                 filters: {
@@ -74,32 +80,56 @@
                     }
                 },
                 methods: {
-                    gotoUploadFile: function () {
+                    gotoUploadVideo: function () {
                         layer.open({
                             type: 2,
-                            title: '上传图片',
-                            content: "{:U('Upload/UploadCenter/imageUploadPanel', ['max_upload' => 9])}",
-                            area: ['70%', '70%'],
+                            title: '',
+                            closeBtn: false,
+                            content: "{:U('Upload/UploadCenter/videoUploadPanel', ['max_upload' => 9])}",
+                            area: ['670px', '550px'],
                         })
                     },
-                    onUploadedFile: function (event) {
+                    onUploadedVideo: function (event) {
                         var that = this;
-                        console.log(event)
-                        var files = event.detail.files
-                        console.log(files)
+                        console.log(event);
+                        var files = event.detail.files;
+                        console.log(files);
                         if (files) {
-
                             files.map(function (item) {
-                                that.uploadedFileList.push(item)
+                                that.uploadedVideoList.push(item)
                             })
                         }
                     },
-                    deleteItem: function (index) {
-                        this.uploadedFileList.splice(index, 1)
+                    deleteVideoItem: function (index) {
+                        this.uploadedVideoList.splice(index, 1)
+                    },
+                    gotoUploadFile: function () {
+                        layer.open({
+                            type: 2,
+                            title: '',
+                            closeBtn: false,
+                            content: "{:U('Upload/UploadCenter/imageUploadPanel', ['max_upload' => 9])}",
+                            area: ['670px', '550px'],
+                        })
+                    },
+                    onUploadedImage: function (event) {
+                        var that = this;
+                        console.log(event);
+                        var files = event.detail.files;
+                        console.log(files);
+                        if (files) {
+                            files.map(function (item) {
+                                that.uploadedImageList.push(item)
+                            })
+                        }
+                    },
+                    deleteImageItem: function (index) {
+                        this.uploadedImageList.splice(index, 1)
                     }
                 },
                 mounted: function () {
-                    window.addEventListener('ZTBCMS_UPLOAD_FILE', this.onUploadedFile.bind(this));
+                    window.addEventListener('ZTBCMS_UPLOAD_IMAGE', this.onUploadedImage.bind(this));
+                    window.addEventListener('ZTBCMS_UPLOAD_VIDEO', this.onUploadedVideo.bind(this));
                 },
 
             })
