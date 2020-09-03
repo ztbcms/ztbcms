@@ -12,11 +12,81 @@ use app\common\controller\AdminController;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronLogModel;
 use app\common\model\cron\CronModel;
+use app\common\util\Dir;
 use think\facade\View;
 use think\Request;
 
 class Dashboard extends AdminController
 {
+
+    function createCron(Request $request)
+    {
+        if ($request->isPost()) {
+//            $formData = $request->post('form');
+            $loopType = $request->post('form.loop_type');
+            $loopData = $request->post('loop_data');
+            //通过循环的类型和参数，获取下次执行时间和统一循环格式。
+            list($nextTime, $loopDaytime) = CronModel::getLoopData($loopType, $loopData);
+
+            $cronModel = new CronModel();
+            $cronModel->type = $request->post('form.type');
+            $cronModel->subject = $request->post('form.subject');
+            $cronModel->loop_type = $request->post('form.loop_type');
+            $cronModel->cron_file = $request->post('form.cron_file');
+            $cronModel->isopen = $request->post('form.isopen');
+            $cronModel->loop_daytime = $loopDaytime;
+            $cronModel->next_time = $nextTime;
+            $cronModel->created_time = time();
+            $cronModel->modified_time = time();
+            if ($cronModel->save()) {
+                return self::createReturn(true, [], 'ok');
+            } else {
+                return self::createReturn(false, [], '创建有误');
+            }
+        }
+        return View::fetch('createCron', [
+            'cronFileList' => $this->_getCronFileList()
+        ]);
+    }
+
+    private function _getCronFileList()
+    {
+        $dir = APP_PATH;
+        $Dirs = new Dir($dir);
+        $moduleList = $Dirs->toArray();
+        $cronFileList = [];
+        //遍历模块
+        foreach ($moduleList as $k => $module) {
+            $cronscript_filename = APP_PATH . $module['filename'] . DIRECTORY_SEPARATOR . 'CronScript';
+            if (file_exists($cronscript_filename)) {
+                $CronDirs = new Dir($cronscript_filename);
+                $cronFiles = $CronDirs->toArray();
+                //遍历 Module/CronScript 模块下的脚本
+                foreach ($cronFiles as $index => $cronFile) {
+                    $cron_classname = str_replace('.php', '', $cronFile['filename']);
+                    if ($cron_classname != 'CronScript') {
+                        $cronFileList[] = 'app\\' . $module['filename'] . '\\' . 'cronscript' . '\\' . $cron_classname;
+                    }
+                }
+            }
+        }
+        return $cronFileList;
+    }
+
+    function getCronList()
+    {
+        $lists = CronModel::order('cron_id', 'DESC')->paginate(15);
+        foreach ($lists as $key => $value) {
+
+        }
+        return self::createReturn(true, $lists, 'ok');
+    }
+
+    function cron()
+    {
+        return View::fetch('cron');
+    }
+
     function index()
     {
         return View::fetch('index');

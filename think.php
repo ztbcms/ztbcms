@@ -14,6 +14,7 @@ namespace think;
 
 //当前目录路径
 define('SITE_PATH', getcwd() . '/');
+define('APP_PATH', SITE_PATH . "tp6/app/");
 
 require __DIR__ . '/tp6/vendor/autoload.php';
 
