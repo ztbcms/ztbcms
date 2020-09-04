@@ -39,6 +39,22 @@ return array(
                     ]
                 ]
             ),
+            array(
+                "route" => "common/message.message/index",
+                "type" => 1,
+                "status" => 1,
+                "name" => "消息管理",
+                "remark" => "",
+                "child" => [
+                    [
+                        "route" => "common/message.message/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "消息列表",
+                        "remark" => "",
+                    ]
+                ]
+            ),
         ),
     ),
 );
