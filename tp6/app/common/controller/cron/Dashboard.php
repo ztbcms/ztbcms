@@ -18,17 +18,56 @@ use think\Request;
 
 class Dashboard extends AdminController
 {
+    function deleteCron(Request $request)
+    {
+        $cronId = $request->post('cron_id');
+        $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
+        if (!$cron->isEmpty() && $cron->delete()) {
+            return self::createReturn(true, [''], 'ok');
+        } else {
+            return self::createReturn(false, [], '删除失败');
+        }
+    }
+
+    function getCronDetail(Request $request)
+    {
+        $cronId = $request->get('cron_id');
+        $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
+        if (!$cron->isEmpty()) {
+            //整理loopData
+            $loopDaytime = $cron->loop_daytime;
+            list($day, $hour, $minute) = explode('-', $loopDaytime);
+            if ($cron->loop_type == 'now') {
+                $loopData = [
+                    'now_time' => (int)$day + (int)$hour + (int)$minute,
+                    'now_type' => $day ? 'day' : ($hour ? 'hour' : 'minute'),
+                ];
+            } else {
+                $loopData = [
+                    $cron->loop_type . '_day' => (int)$day,
+                    $cron->loop_type . '_hour' => (int)$hour,
+                    $cron->loop_type . '_minute' => (int)$minute,
+                ];
+            }
+
+            return self::createReturn(true, ['cron' => $cron, 'loop_data' => $loopData], 'ok');
+        } else {
+            return self::createReturn(false, [], '获取失败');
+        }
+    }
 
     function createCron(Request $request)
     {
         if ($request->isPost()) {
+//            TODO 数据校验
 //            $formData = $request->post('form');
+            $cronId = $request->post('cron_id', '');
             $loopType = $request->post('form.loop_type');
             $loopData = $request->post('loop_data');
             //通过循环的类型和参数，获取下次执行时间和统一循环格式。
             list($nextTime, $loopDaytime) = CronModel::getLoopData($loopType, $loopData);
 
-            $cronModel = new CronModel();
+            $cronModel = CronModel::where('cron_id', $cronId)->findOrEmpty();
             $cronModel->type = $request->post('form.type');
             $cronModel->subject = $request->post('form.subject');
             $cronModel->loop_type = $request->post('form.loop_type');
@@ -77,7 +116,7 @@ class Dashboard extends AdminController
     {
         $lists = CronModel::order('cron_id', 'DESC')->paginate(15);
         foreach ($lists as $key => $value) {
-
+            $value->loop_time_text = CronModel::getLoopText($value->loop_type, $value->loop_daytime);
         }
         return self::createReturn(true, $lists, 'ok');
     }

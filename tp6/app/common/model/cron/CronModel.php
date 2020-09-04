@@ -15,6 +15,10 @@ class CronModel extends Model
 {
 
     protected $name = 'tp6_cron';
+    protected $type = [
+        'modified_time' => 'timestamp',
+        'next_time' => 'timestamp'
+    ];
 
     private static function _getMouthDays($month, $isLeapYear)
     {
@@ -89,10 +93,36 @@ class CronModel extends Model
         return $nexttime;
     }
 
+    private static function _capitalWeek($select = 0)
+    {
+        $array = array('日', '一', '二', '三', '四', '五', '六');
+        return $array[$select];
+    }
+
+    static function getLoopText($loopType, $loopDaytime)
+    {
+        $array = array('month' => '每月', 'week' => '每周', 'day' => '每日', 'hour' => '每小时', 'now' => '每隔');
+        $type = $loopType ? $array[$loopType] : $array;
+
+        list($day, $hour, $minute) = explode('-', $loopDaytime);
+        if ($loopType == 'week') {
+            $type .= '星期' . self::_capitalWeek($day);
+        } elseif ($day == 99) {
+            $type .= '最后一天';
+        } else {
+            $type .= $day ? $day . '日' : '';
+        }
+        if ($loopType == 'week' || $loopType == 'month') {
+            $type .= $hour . '时';
+        } else {
+            $type .= $hour ? $hour . '时' : '';
+        }
+        $type .= $minute ? $minute . '分' : '00分';
+        return $type;
+    }
+
     static function getLoopData($loopType, $loopData)
     {
-        $nextTime = 0;
-        $loopDaytime = "0-0-0";
         //计划任务循环类型
         switch ($loopType) {
             case 'month':

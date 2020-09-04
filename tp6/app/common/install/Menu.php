@@ -29,6 +29,13 @@ return array(
                         "status" => 1,
                         "name" => "概况",
                         "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/cron",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "任务列表",
+                        "remark" => "",
                     ]
                 ]
             ),

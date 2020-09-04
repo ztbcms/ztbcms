@@ -88,7 +88,7 @@
                         </template>
                         <template v-if="form.loop_type=='now'">
                             <el-col :span="8">
-                                <el-input style="width: 200px;" v-model="form.now_time" type="number"></el-input>
+                                <el-input style="width: 200px;" v-model="loop_data.now_time" type="number"></el-input>
                             </el-col>
                             <el-col :span="8">
                                 <el-select v-model="loop_data.now_type" placeholder="请选择">
@@ -129,6 +129,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button @click="submit" type="primary">保存</el-button>
+                <el-button @click="backList" type="default">取消</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -160,6 +161,7 @@
                 }
             },
             data: {
+                cronId: "",
                 loop_type_options: [
                     {
                         value: "month",
@@ -198,8 +200,40 @@
                 },
             },
             mounted: function () {
+                var cronId = this.getUrlQuery('cron_id');
+                console.log('cronId', cronId);
+                if (parseInt(cronId) > 0) {
+                    this.cronId = cronId;
+                    this.getCronDetail();
+                }
             },
             methods: {
+                backList: function () {
+                    location.href = "{:urlx('common/cron.dashboard/cron')}"
+                },
+                getCronDetail: function () {
+                    var _this = this;
+                    $.ajax({
+                        url: "{:urlx('common/cron.dashboard/getCronDetail')}",
+                        data: {cron_id: this.cronId},
+                        dataType: 'json',
+                        type: 'get',
+                        success: function (res) {
+                            if (res.status) {
+                                var cron = res.data.cron;
+                                _this.form = {
+                                    subject: cron.subject,
+                                    type: cron.type,
+                                    loop_type: cron.loop_type,
+                                    isopen: cron.isopen,
+                                    cron_file: cron.cron_file,
+                                };
+                                _this.loop_data = Object.assign(_this.loop_data, res.data.loop_data);
+                                console.log('_this.loop_data', _this.loop_data)
+                            }
+                        }
+                    })
+                },
                 submit: function () {
                     console.log('form', this.form);
                     console.log('loop_data', this.loop_data);
@@ -211,13 +245,20 @@
                         layer.msg('执行文件不能为空');
                         return
                     }
+                    var _this = this;
                     $.ajax({
                         url: "{:urlx('common/cron.dashboard/createCron')}",
-                        data: {form: this.form, loop_data: this.loop_data},
+                        data: {cron_id: this.cronId, form: this.form, loop_data: this.loop_data},
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
                             // var data = res.data;
+                            if (res.status) {
+                                layer.msg('保存成功');
+                                setTimeout(function () {
+                                    _this.backList();
+                                }, 1000)
+                            }
                         }
                     })
                 }
