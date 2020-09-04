@@ -4,6 +4,14 @@
             <el-button @click="createCron" type="primary">
                 新增任务
             </el-button>
+            <el-button onclick="javascript:location.href='{:urlx(\'common/cron.dashboard/schedulingLog\')}';"
+                       type="default">
+                调度日志
+            </el-button>
+            <el-button onclick="javascript:location.href='{:urlx(\'common/cron.dashboard/cronLog\')}';"
+                       type="default">
+                任务日志
+            </el-button>
         </div>
         <el-table
                 :data="lists"
@@ -60,7 +68,7 @@
                     </el-button>
                     <el-button @click="deleteCron(props.row.cron_id)" type="danger"> 删除
                     </el-button>
-                    <el-button type="success">立即执行
+                    <el-button @click="runCronAction(props.row.cron_id)" type="success">立即执行
                     </el-button>
                 </template>
             </el-table-column>
@@ -93,6 +101,17 @@
                 this.getList();
             },
             methods: {
+                runCronAction(cronId) {
+                    $.ajax({
+                        url: "{:urlx('common/cron.dashboard/runAction')}",
+                        data: {cron_id: cronId},
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            layer.msg(res.msg)
+                        }
+                    })
+                },
                 deleteCron(cronId) {
                     var _this = this;
                     this.$confirm('是否确认删除？').then(() => {

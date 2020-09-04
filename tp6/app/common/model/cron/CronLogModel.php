@@ -10,6 +10,7 @@ namespace app\common\model\cron;
 
 
 use think\Model;
+use think\Request;
 
 class CronLogModel extends Model
 {
@@ -31,4 +32,13 @@ class CronLogModel extends Model
      * 运行结果：处理中
      */
     const RESULT_PROCESSING = 3;
+    protected $type = [
+        'start_time' => 'timestamp',
+        'end_time' => 'timestamp'
+    ];
+
+    public function cronFile()
+    {
+        return $this->belongsTo(CronModel::class, 'cron_id', 'cron_id')->bind(['cron_file']);
+    }
 }

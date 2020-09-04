@@ -19,6 +19,59 @@ class CronModel extends Model
         'modified_time' => 'timestamp',
         'next_time' => 'timestamp'
     ];
+    const OPEN_STATUS_ON = 1;
+    const OPEN_STATUS_OFF = 0;
+
+
+    public function runAction()
+    {
+        //载入文件
+        $class = $this->cron_file;
+        $start_time = time();
+        $cronLog = new CronLogModel();
+        $cronLog->start_time = $start_time;
+        $cronLog->cron_id = $this->cron_id;
+
+        try {
+            $cron = new $class();
+            $start_time = time();
+            $cron->run($this->cron_id);
+
+            //处理完成
+            $end_time = time();
+            $use_time = $end_time - $start_time;
+            $result = CronLogModel::RESULT_SUCCESS;
+            $result_msg = "ok";
+        } catch (\Exception $exception) {
+            //异常
+            $this->errorCount++;
+
+            $end_time = time();
+            $use_time = $end_time - $start_time;
+            $result = CronLogModel::RESULT_FAIL;
+            $result_msg = $exception->getMessage();
+
+        } catch (\Error $error) {
+            //错误
+            $this->errorCount++;
+
+            $errorStr = $error->getMessage() . ' ' . $error->getFile() . " 第 " . $error->getLine() . " 行.\n";
+            $errorStr .= $error->getTraceAsString();
+
+            $end_time = time();
+            $use_time = $end_time - $start_time;
+            $result = CronLogModel::RESULT_FAIL;
+            $result_msg = $errorStr;
+        }
+
+        $cronLog->end_time = $end_time;
+        $cronLog->result = $result;
+        $cronLog->use_time = $use_time;
+        $cronLog->result_msg = $result_msg;
+        $cronLog->save();
+
+        return true;
+    }
 
     private static function _getMouthDays($month, $isLeapYear)
     {

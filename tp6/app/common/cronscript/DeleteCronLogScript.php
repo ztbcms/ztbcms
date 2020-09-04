@@ -13,6 +13,5 @@ class DeleteCronLogScript extends CronScript
 {
     public function run($cronId)
     {
-        // TODO: Implement run() method.
     }
 }

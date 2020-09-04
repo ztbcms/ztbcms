@@ -12,12 +12,74 @@ use app\common\controller\AdminController;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronLogModel;
 use app\common\model\cron\CronModel;
+use app\common\model\cron\CronSchedulingLogModel;
 use app\common\util\Dir;
 use think\facade\View;
 use think\Request;
 
 class Dashboard extends AdminController
 {
+
+    function cronLog(Request $request)
+    {
+        if ($request->isAjax()) {
+            $cronId = $request->get('cron_id', '');
+            $datetime = $request->get('datetime', '');
+            $userTime = $request->get('user_time', '');
+            $where = [];
+            if ($cronId) {
+                $where[] = ['cron_id', '=', $cronId];
+            }
+            if ($datetime) {
+                foreach ($datetime as &$time) {
+                    $time = strtotime($time);
+                }
+                $where[] = ['start_time', 'between', $datetime];
+            }
+            if ($userTime) {
+                $where[] = ['use_time', '>', $userTime];
+            }
+            $lists = CronLogModel::where($where)->order('id', 'DESC')->with('cronFile')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        }
+        $corns = CronModel::column('cron_file', 'cron_id');
+        return View::fetch('cronLog', ['corns' => $corns]);
+    }
+
+    function schedulingLog(Request $request)
+    {
+        if ($request->isAjax()) {
+            $datetime = $request->get('datetime', '');
+            $userTime = $request->get('user_time', '');
+            $where = [];
+            if ($datetime) {
+                foreach ($datetime as &$time) {
+                    $time = strtotime($time);
+                }
+                $where[] = ['start_time', 'between', $datetime];
+            }
+            if ($userTime) {
+                $where[] = ['use_time', '>', $userTime];
+            }
+            $lists = CronSchedulingLogModel::where($where)->order('id', 'DESC')->paginate(20);
+            return self::createReturn(true, $lists, 'ok');
+        }
+        return View::fetch('schedulingLog');
+    }
+
+    function runAction(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $cronId = $request->post('cron_id');
+        $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
+        if (!$cron->isEmpty() && $cron->runAction()) {
+            return self::createReturn(true, [], '执行成功');
+        } else {
+            return self::createReturn(false, [], '执行失败');
+        }
+    }
+
     function deleteCron(Request $request)
     {
         $cronId = $request->post('cron_id');
@@ -114,7 +176,7 @@ class Dashboard extends AdminController
 
     function getCronList()
     {
-        $lists = CronModel::order('cron_id', 'DESC')->paginate(15);
+        $lists = CronModel::order('cron_id', 'DESC')->paginate(20);
         foreach ($lists as $key => $value) {
             $value->loop_time_text = CronModel::getLoopText($value->loop_type, $value->loop_daytime);
         }
@@ -152,7 +214,6 @@ class Dashboard extends AdminController
     function getCronStatus(Request $request)
     {
         $cronConfig = CronConfigModel::column('value', 'key');
-
         $cronStatus = $this->_getCronExecuteStatus();
         $cronEntryUrl = $request->domain() . '/home/common/cron.index/index/cron_secret_key/' . $cronConfig[CronConfigModel::KEY_ENABLE_SECRET_KEY];
         return self::createReturn(true, [
