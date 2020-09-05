@@ -52,6 +52,13 @@ return array(
                         "status" => 1,
                         "name" => "消息列表",
                         "remark" => "",
+                    ],
+                    [
+                        "route" => "common/message.message/sendLog",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "发送日志",
+                        "remark" => "",
                     ]
                 ]
             ),

@@ -10,11 +10,12 @@ namespace app\common\message\senders;
 
 
 use app\common\libs\message\SenderUnit;
+use app\common\model\message\MessageModel;
 
 class SimpleWxSender extends SenderUnit
 {
-    function doSend()
+    function doSend(MessageModel $message): bool
     {
-        // TODO: 发送微信消息
+        return true;
     }
 }

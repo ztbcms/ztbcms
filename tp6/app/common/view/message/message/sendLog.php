@@ -3,32 +3,7 @@
         <div>
             <el-form :inline="true" :model="searchForm" class="demo-form-inline">
                 <el-form-item label="">
-                    <el-date-picker
-                            v-model="searchForm.datetime"
-                            type="datetimerange"
-                            range-separator="至"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input v-model="searchMessage.target" placeholder="来源"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input v-model="searchMessage.target_type" placeholder="来源类型"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input v-model="searchMessage.sender" placeholder="发送者"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input v-model="searchMessage.sender_type" placeholder="发送者类型"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input v-model="searchMessage.receiver" placeholder="接收者"></el-input>
-                </el-form-item>
-                <el-form-item label="">
-                    <el-input v-model="searchMessage.receiver_type" placeholder="接收者类型"></el-input>
+                    <el-input v-model="searchForm.message_id" placeholder="消息id"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
@@ -48,65 +23,37 @@
             <el-table-column
                     min-width="80"
                     align="center"
-                    label="消息源"
+                    prop="message_id"
+                    label="消息ID"
             >
-                <template slot-scope="props">
-                    <div>{{props.row.target}}</div>
-                    <div>{{props.row.target_type}}</div>
-                </template>
+            </el-table-column>
+            <el-table-column
+                    min-width="300"
+                    align="center"
+                    prop="sender"
+                    label="发送器"
+            >
             </el-table-column>
             <el-table-column
                     min-width="80"
                     align="center"
-                    label="发送者"
-            >
+                    label="状态">
                 <template slot-scope="props">
-                    <div>{{props.row.sender}}</div>
-                    <div>{{props.row.sender_type}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    min-width="80"
-                    align="center"
-                    label="接收者">
-                <template slot-scope="props">
-                    <div>{{props.row.receiver}}</div>
-                    <div>{{props.row.receiver_type}}</div>
+                    <el-tag v-if="props.row.status == 1" type="success">成功</el-tag>
+                    <el-tag v-else type="danger">失败</el-tag>
                 </template>
             </el-table-column>
             <el-table-column
                     min-width="180"
                     align="center"
-                    label="内容">
-                <template slot-scope="props">
-                    <div>
-                        <strong>{{props.row.title}}</strong>
-                    </div>
-                    <div>
-                        {{props.row.content}}
-                    </div>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    align="center"
-                    min-width="60"
-                    label="处理次数/状态">
-                <template slot-scope="props">
-                    {{props.row.process_num}} / {{props.row.process_status}}
-                </template>
+                    prop="result_msg"
+                    label="结果">
             </el-table-column>
             <el-table-column
                     align="center"
                     min-width="180"
+                    prop="create_time"
                     label="时间">
-                <template slot-scope="props">
-                    <div>
-                        创建：{{props.row.create_time}}
-                    </div>
-                    <div>
-                        发送：{{props.row.send_time?props.row.send_time:'-'}}
-                    </div>
-                </template>
             </el-table-column>
             <el-table-column
                     min-width="100"
@@ -114,8 +61,7 @@
                     fixed="right"
                     label="操作">
                 <template slot-scope="props">
-                    <el-button @click="handMessage(props.row)" type="primary">执行</el-button>
-                    <el-button @click="openDetail(props.row)" type="success">查看</el-button>
+                    <el-button @click='handleAgain(props.row)' type="primary">再次执行</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -138,7 +84,7 @@
             el: "#app",
             data: {
                 searchForm: {
-                    datetime: "",
+                    message_id: "",
                 },
                 searchMessage: {},
                 lists: [],
@@ -151,12 +97,12 @@
                 this.getList();
             },
             methods: {
-                handMessage: function (message) {
+                handleAgain: function (record) {
                     var _this = this;
-                    var hander = function () {
+                    var hand = function () {
                         $.ajax({
-                            url: "{:urlx('common/message.message/handMessage')}",
-                            data: {message_id: message.id},
+                            url: "{:urlx('common/message.message/handleAgainLog')}",
+                            data: {log_id: record.id},
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
@@ -169,11 +115,11 @@
                             }
                         })
                     };
-                    if (message.process_status === 1) {
-                        this.$confirm('该消息已经处理完成，是否再次执行？').then(res => hander()).catch(err => {
+                    if (record.status === 1) {
+                        this.$confirm('该记录已经处理完成，是否再次执行？').then(res => hand()).catch(err => {
                         })
                     } else {
-                        hander();
+                        hand();
                     }
                 },
                 openDetail: function (detail) {
@@ -190,9 +136,8 @@
                 getList: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/message.message/getMessageList')}",
+                        url: "{:urlx('common/message.message/sendLog')}",
                         data: Object.assign({
-                            search_message: this.searchMessage,
                             page: this.currentPage
                         }, this.searchForm),
                         dataType: 'json',

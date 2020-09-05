@@ -26,6 +26,9 @@ abstract class MessageUnit
     //消息类型，默认notice通知消息
     protected $type = 'notice';
 
+    /**
+     * @return bool
+     */
     abstract static function getSenders();
 
     function createMessage()

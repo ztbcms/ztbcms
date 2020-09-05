@@ -9,7 +9,27 @@
 namespace app\common\libs\message;
 
 
+use app\common\model\message\MessageModel;
+
 abstract class SenderUnit
 {
-    abstract function doSend();
+    protected $error;
+
+    /**
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param mixed $error
+     */
+    public function setError($error): void
+    {
+        $this->error = $error;
+    }
+
+    abstract function doSend(MessageModel $message): bool;
 }

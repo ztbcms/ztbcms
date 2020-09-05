@@ -8,13 +8,17 @@
 
 namespace app\common\message\senders;
 
-
 use app\common\libs\message\SenderUnit;
+use app\common\model\message\MessageModel;
 
 class SimpleSmsSender extends SenderUnit
 {
-    function doSend()
+    /**
+     * @param MessageModel $message
+     * @return bool
+     */
+    function doSend(MessageModel $message): bool
     {
-        // TODO: 发送短信消息
+        return true;
     }
 }
