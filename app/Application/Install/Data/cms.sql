@@ -477,131 +477,133 @@ CREATE TABLE `cms_menu` (
 -- ----------------------------
 -- Records of cms_menu
 -- ----------------------------
-INSERT INTO `cms_menu` VALUES (1, '概览', 0, 'Admin', 'Main', 'index', '', 1, 1, '', 0, 'dashboard');
-INSERT INTO `cms_menu` VALUES ('2', '我的面板', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', 'icon_boss');
-INSERT INTO `cms_menu` VALUES ('3', '设置', '0', 'Admin', 'Config', 'index', '', '0', '1', '', '0', 'icon_setting');
-INSERT INTO `cms_menu` VALUES ('4', '个人信息', '2', 'Admin', 'Adminmanage', 'myinfo', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('5', '修改个人信息', '4', 'Admin', 'Adminmanage', 'myinfo', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('6', '修改密码', '4', 'Admin', 'Adminmanage', 'chanpass', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('7', '系统设置', '3', 'Admin', 'Config', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('8', '站点配置', '7', 'Admin', 'Config', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('9', '邮箱配置', '7', 'Admin', 'Config', 'mail', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('10', '附件配置', '7', 'Admin', 'Config', 'attach', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('11', '高级配置', '7', 'Admin', 'Config', 'addition', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('12', '扩展配置', '7', 'Admin', 'Config', 'extend', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('13', '行为管理', '3', 'Admin', 'Behavior', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('14', '行为日志', '13', 'Admin', 'Behavior', 'logs', '', '1', '1', '', '2', '');
-INSERT INTO `cms_menu` VALUES ('15', '编辑行为', '13', 'Admin', 'Behavior', 'edit', '', '1', '0', '', '5', '');
-INSERT INTO `cms_menu` VALUES ('16', '删除行为', '13', 'Admin', 'Behavior', 'delete', '', '1', '0', '', '4', '');
-INSERT INTO `cms_menu` VALUES ('17', '后台菜单管理', '3', 'Admin', 'Menu', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('18', '添加菜单', '17', 'Admin', 'Menu', 'add', '', '1', '1', '', '2', '');
-INSERT INTO `cms_menu` VALUES ('19', '修改菜单', '17', 'Admin', 'Menu', 'edit', '', '1', '0', '', '3', '');
-INSERT INTO `cms_menu` VALUES ('20', '删除菜单', '17', 'Admin', 'Menu', 'delete', '', '1', '0', '', '4', '');
-INSERT INTO `cms_menu` VALUES ('21', '管理员设置', '3', 'Admin', 'Management', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('22', '管理员列表', '21', 'Admin', 'Management', 'manager', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('23', '添加管理员', '21', 'Admin', 'Management', 'adminadd', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('24', '编辑管理信息', '22', 'Admin', 'Management', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('25', '删除管理员', '22', 'Admin', 'Management', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('26', '角色管理', '3', 'Admin', 'Rbac', 'rolemanage', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('27', '添加角色', '26', 'Admin', 'Rbac', 'roleadd', '', '1', '1', '', '2', '');
-INSERT INTO `cms_menu` VALUES ('28', '删除角色', '26', 'Admin', 'Rbac', 'roledelete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('29', '角色编辑', '26', 'Admin', 'Rbac', 'roleedit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('30', '角色授权', '26', 'Admin', 'Rbac', 'authorize', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('31', '日志管理', '3', 'Admin', 'Logs', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('32', '后台登录日志', '31', 'Admin', 'Logs', 'loginlog', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('33', '后台操作日志', '31', 'Admin', 'Logs', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('34', '删除一个月前的登录日志', '32', 'Admin', 'Logs', 'deleteloginlog', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('35', '删除一个月前的操作日志', '33', 'Admin', 'Logs', 'deletelog', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('36', '添加行为', '13', 'Admin', 'Behavior', 'add', '', '1', '1', '', '3', '');
-INSERT INTO `cms_menu` VALUES ('37', '模块', '0', 'Admin', 'Module', 'index', '', '0', '1', '', '0', 'icon_subordinate');
-INSERT INTO `cms_menu` VALUES ('42', '模块管理', '37', 'Admin', 'Module', 'local', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('43', '本地模块', '42', 'Admin', 'Module', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('41', '模块仓库', '42', 'Admin', 'Module', 'remote', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('44', '内容', '0', 'Content', 'Index', 'index', '', '0', '1', '', '0', 'news1');
-INSERT INTO `cms_menu` VALUES ('45', '内容管理', '44', 'Content', 'Content', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('46', '内容相关设置', '44', 'Content', 'Category', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('47', '栏目列表', '46', 'Content', 'Category', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('48', '添加栏目', '47', 'Content', 'Category', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('49', '添加单页', '47', 'Content', 'Category', 'singlepage', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('50', '添加外部链接栏目', '47', 'Content', 'Category', 'wadd', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('51', '编辑栏目', '47', 'Content', 'Category', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('52', '删除栏目', '47', 'Content', 'Category', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('53', '栏目属性转换', '47', 'Content', 'Category', 'categoryshux', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('54', '模型管理', '46', 'Content', 'Models', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('55', '创建新模型', '54', 'Content', 'Models', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('56', '删除模型', '54', 'Content', 'Models', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('57', '编辑模型', '54', 'Content', 'Models', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('58', '模型禁用', '54', 'Content', 'Models', 'disabled', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('59', '模型导入', '54', 'Content', 'Models', 'import', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('60', '字段管理', '54', 'Content', 'Field', 'index', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('61', '字段修改', '60', 'Content', 'Field', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('62', '字段删除', '60', 'Content', 'Field', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('63', '字段状态', '60', 'Content', 'Field', 'disabled', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('64', '模型预览', '60', 'Content', 'Field', 'priview', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('65', '管理内容', '45', 'Content', 'Content', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('66', '附件管理', '45', 'Attachment', 'Atadmin', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('67', '删除', '66', 'Attachment', 'Atadmin', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('68', '发布管理', '44', 'Content', 'Createhtml', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('69', '批量更新栏目页', '68', 'Content', 'Createhtml', 'category', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('70', '生成首页', '68', 'Content', 'Createhtml', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('71', '批量更新URL', '68', 'Content', 'Createhtml', 'update_urls', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('72', '批量更新内容页', '68', 'Content', 'Createhtml', 'update_show', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('73', '刷新自定义页面', '68', 'Template', 'Custompage', 'createhtml', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('74', 'URL规则管理', '46', 'Content', 'Urlrule', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('75', '添加规则', '74', 'Content', 'Urlrule', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('76', '编辑', '74', 'Content', 'Urlrule', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('77', '删除', '74', 'Content', 'Urlrule', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('78', '推荐位管理', '46', 'Content', 'Position', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('79', '信息管理', '78', 'Content', 'Position', 'item', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('80', '添加推荐位', '78', 'Content', 'Position', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('81', '修改推荐位', '78', 'Content', 'Position', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('82', '删除推荐位', '78', 'Content', 'Position', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('83', '信息编辑', '79', 'Content', 'Position', 'item_manage', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('84', '信息排序', '79', 'Content', 'Position', 'item_listorder', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('85', '数据重建', '78', 'Content', 'Position', 'rebuilding', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('86', 'Tags管理', '45', 'Content', 'Tags', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('87', '修改', '86', 'Content', 'Tags', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('88', '删除', '86', 'Content', 'Tags', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('89', 'Tags数据重建', '86', 'Content', 'Tags', 'create', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('90', '界面', '0', 'Template', 'Style', 'index', '', '0', '1', '', '0', 'icon_skin');
-INSERT INTO `cms_menu` VALUES ('91', '模板管理', '90', 'Template', 'Style', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('92', '模板风格', '91', 'Template', 'Style', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('93', '添加模板页', '92', 'Template', 'Style', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('94', '删除模板', '92', 'Template', 'Style', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('95', '修改模板', '92', 'Template', 'Style', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('96', '主题管理', '91', 'Template', 'Theme', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('97', '主题更换', '96', 'Template', 'Theme', 'chose', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('98', '自定义页面', '90', 'Template', 'Custompage', 'index', '', '0', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('99', '自定义页面', '98', 'Template', 'Custompage', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('100', '添加自定义页面', '99', 'Template', 'Custompage', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('101', '删除自定义页面', '99', 'Template', 'Custompage', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('102', '编辑自定义页面', '99', 'Template', 'Custompage', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('103', '自定义列表', '98', 'Template', 'Customlist', 'index', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('104', '添加列表', '103', 'Template', 'Customlist', 'add', '', '1', '1', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('105', '删除列表', '103', 'Template', 'Customlist', 'delete', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('106', '编辑列表', '103', 'Template', 'Customlist', 'edit', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('107', '生成列表', '103', 'Template', 'Customlist', 'generate', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('108', '安装模块', '39', 'Admin', 'Moduleshop', 'install', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('109', '升级模块', '39', 'Admin', 'Moduleshop', 'upgrade', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('110', '安装插件', '40', 'Admin', 'Addonshop', 'install', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('111', '升级插件', '40', 'Admin', 'Addonshop', 'upgrade', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES ('112', '栏目授权', '26', 'Admin', 'Rbac', 'setting_cat_priv', '', '1', '0', '', '0', '');
-INSERT INTO `cms_menu` VALUES (113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0,'');
-INSERT INTO `cms_menu` VALUES (114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0,'');
-INSERT INTO `cms_menu` VALUES (115, '缓存更新', 0, 'Admin', 'Index', 'cache', '', 1, 0, '', 0, '');
-INSERT INTO `cms_menu` VALUES (116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '');
-INSERT INTO `cms_menu` VALUES (117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '');
-INSERT INTO `cms_menu` VALUES (118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '');
-INSERT INTO `cms_menu` VALUES (119, '消息', 0, 'Admin', 'AdminMessage', '%', '', 1, 1, '', 0, 'icon-test');
-INSERT INTO `cms_menu` VALUES (120, '所有消息', 119, 'Admin', 'AdminMessage', 'index', '', 1, 1, '', 0, '');
-INSERT INTO `cms_menu` VALUES (121, '未读消息', 119, 'Admin', 'AdminMessage', 'noRead', '', 1, 1, '', 0, '');
-INSERT INTO `cms_menu` VALUES (122, '系统消息', 119, 'Admin', 'AdminMessage', 'system', '', 1, 1, '', 0, '');
-INSERT INTO `cms_menu` VALUES (123, '获取消息列表', 119, 'Admin', 'AdminMessage', 'getAdminMsgList', '', 1, 0, '', 0, '');
-INSERT INTO `cms_menu` VALUES (124, '阅读消息', 119, 'Admin', 'AdminMessage', 'readMsg', '', 1, 0, '', 0, '');
-INSERT INTO `cms_menu` VALUES (125, '阅读全部消息', 119, 'Admin', 'AdminMessage', 'readMsgAll', '', 1, 0, '', 0, '');
-INSERT INTO `cms_menu` VALUES (126, '概览页接口', 1, 'Admin', 'MainApi', '%', '', 1, 0, '', 0, '');
-INSERT INTO `cms_menu` VALUES (127, '角色基本权限(必选)', 26, 'Admin', 'Rbac', '%', '', 1, 0, '', 0, '');
-INSERT INTO `cms_menu` VALUES (128, '管理员基本权限(必选)', 21, 'Admin', 'Management', '%', '', 1, 0, '', 0, '');
+INSERT INTO `ztb_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`, `icon`, `is_tp6`)
+VALUES
+	(1, '概览', 0, 'Admin', 'Main', 'index', '', 1, 1, '', 0, 'dashboard', 0),
+	(2, '我的面板', 0, 'Admin', 'Config', 'index', '', 0, 1, '', 0, 'icon_boss', 0),
+	(3, '设置', 0, 'Admin', 'Config', 'index', '', 0, 1, '', 0, 'icon_setting', 0),
+	(4, '个人信息', 2, 'Admin', 'Adminmanage', 'myinfo', '', 0, 1, '', 0, '', 0),
+	(5, '修改个人信息', 4, 'Admin', 'Adminmanage', 'myinfo', '', 1, 1, '', 0, '', 0),
+	(6, '修改密码', 4, 'Admin', 'Adminmanage', 'chanpass', '', 1, 1, '', 0, '', 0),
+	(7, '系统设置', 3, 'Admin', 'Config', 'index', '', 0, 1, '', 0, '', 0),
+	(8, '站点配置', 7, 'Admin', 'Config', 'index', '', 1, 1, '', 0, '', 0),
+	(9, '邮箱配置', 7, 'Admin', 'Config', 'mail', '', 1, 1, '', 0, '', 0),
+	(10, '附件配置', 7, 'Admin', 'Config', 'attach', '', 1, 1, '', 0, '', 0),
+	(11, '高级配置', 7, 'Admin', 'Config', 'addition', '', 1, 1, '', 0, '', 0),
+	(12, '扩展配置', 7, 'Admin', 'Config', 'extend', '', 1, 1, '', 0, '', 0),
+	(13, '行为管理', 3, 'Admin', 'Behavior', 'index', '', 1, 1, '', 0, '', 0),
+	(14, '行为日志', 13, 'Admin', 'Behavior', 'logs', '', 1, 1, '', 2, '', 0),
+	(15, '编辑行为', 13, 'Admin', 'Behavior', 'edit', '', 1, 0, '', 5, '', 0),
+	(16, '删除行为', 13, 'Admin', 'Behavior', 'delete', '', 1, 0, '', 4, '', 0),
+	(17, '后台菜单管理', 3, 'Admin', 'Menu', 'index', '', 1, 1, '', 0, '', 0),
+	(18, '添加菜单', 17, 'Admin', 'Menu', 'add', '', 1, 1, '', 2, '', 0),
+	(19, '修改菜单', 17, 'Admin', 'Menu', 'edit', '', 1, 0, '', 3, '', 0),
+	(20, '删除菜单', 17, 'Admin', 'Menu', 'delete', '', 1, 0, '', 4, '', 0),
+	(21, '管理员设置', 3, 'Admin', 'Management', 'index', '', 0, 1, '', 0, '', 0),
+	(22, '管理员列表', 21, 'Admin', 'Management', 'manager', '', 1, 1, '', 0, '', 0),
+	(23, '添加管理员', 21, 'Admin', 'Management', 'adminadd', '', 1, 1, '', 0, '', 0),
+	(24, '编辑管理信息', 22, 'Admin', 'Management', 'edit', '', 1, 0, '', 0, '', 0),
+	(25, '删除管理员', 22, 'Admin', 'Management', 'delete', '', 1, 0, '', 0, '', 0),
+	(26, '角色管理', 3, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 0, '', 0),
+	(27, '添加角色', 26, 'Admin', 'Rbac', 'roleadd', '', 1, 1, '', 2, '', 0),
+	(28, '删除角色', 26, 'Admin', 'Rbac', 'roledelete', '', 1, 0, '', 0, '', 0),
+	(29, '角色编辑', 26, 'Admin', 'Rbac', 'roleedit', '', 1, 0, '', 0, '', 0),
+	(30, '角色授权', 26, 'Admin', 'Rbac', 'authorize', '', 1, 0, '', 0, '', 0),
+	(31, '日志管理', 3, 'Admin', 'Logs', 'index', '', 0, 1, '', 0, '', 0),
+	(32, '后台登录日志', 31, 'Admin', 'Logs', 'loginlog', '', 1, 1, '', 0, '', 0),
+	(33, '后台操作日志', 31, 'Admin', 'Logs', 'index', '', 1, 1, '', 0, '', 0),
+	(34, '删除一个月前的登录日志', 32, 'Admin', 'Logs', 'deleteloginlog', '', 1, 1, '', 0, '', 0),
+	(35, '删除一个月前的操作日志', 33, 'Admin', 'Logs', 'deletelog', '', 1, 1, '', 0, '', 0),
+	(36, '添加行为', 13, 'Admin', 'Behavior', 'add', '', 1, 1, '', 3, '', 0),
+	(37, '模块', 0, 'Admin', 'Module', 'index', '', 0, 1, '', 0, 'icon_subordinate', 0),
+	(41, '模块仓库', 42, 'Admin', 'Module', 'remote', '', 1, 1, '', 0, '', 0),
+	(42, '模块管理', 37, 'Admin', 'Module', 'local', '', 0, 1, '', 0, '', 0),
+	(43, '本地模块', 42, 'Admin', 'Module', 'index', '', 1, 1, '', 0, '', 0),
+	(44, '内容', 0, 'Content', 'Index', 'index', '', 0, 1, '', 0, 'news1', 0),
+	(45, '内容管理', 44, 'Content', 'Content', 'index', '', 0, 1, '', 0, '', 0),
+	(46, '内容相关设置', 44, 'Content', 'Category', 'index', '', 0, 1, '', 0, '', 0),
+	(47, '栏目列表', 46, 'Content', 'Category', 'index', '', 1, 1, '', 0, '', 0),
+	(48, '添加栏目', 47, 'Content', 'Category', 'add', '', 1, 1, '', 0, '', 0),
+	(49, '添加单页', 47, 'Content', 'Category', 'singlepage', '', 1, 1, '', 0, '', 0),
+	(50, '添加外部链接栏目', 47, 'Content', 'Category', 'wadd', '', 1, 1, '', 0, '', 0),
+	(51, '编辑栏目', 47, 'Content', 'Category', 'edit', '', 1, 0, '', 0, '', 0),
+	(52, '删除栏目', 47, 'Content', 'Category', 'delete', '', 1, 0, '', 0, '', 0),
+	(53, '栏目属性转换', 47, 'Content', 'Category', 'categoryshux', '', 1, 0, '', 0, '', 0),
+	(54, '模型管理', 46, 'Content', 'Models', 'index', '', 1, 1, '', 0, '', 0),
+	(55, '创建新模型', 54, 'Content', 'Models', 'add', '', 1, 1, '', 0, '', 0),
+	(56, '删除模型', 54, 'Content', 'Models', 'delete', '', 1, 0, '', 0, '', 0),
+	(57, '编辑模型', 54, 'Content', 'Models', 'edit', '', 1, 0, '', 0, '', 0),
+	(58, '模型禁用', 54, 'Content', 'Models', 'disabled', '', 1, 0, '', 0, '', 0),
+	(59, '模型导入', 54, 'Content', 'Models', 'import', '', 1, 1, '', 0, '', 0),
+	(60, '字段管理', 54, 'Content', 'Field', 'index', '', 1, 0, '', 0, '', 0),
+	(61, '字段修改', 60, 'Content', 'Field', 'edit', '', 1, 0, '', 0, '', 0),
+	(62, '字段删除', 60, 'Content', 'Field', 'delete', '', 1, 0, '', 0, '', 0),
+	(63, '字段状态', 60, 'Content', 'Field', 'disabled', '', 1, 0, '', 0, '', 0),
+	(64, '模型预览', 60, 'Content', 'Field', 'priview', '', 1, 0, '', 0, '', 0),
+	(65, '管理内容', 45, 'Content', 'Content', 'index', '', 1, 1, '', 0, '', 0),
+	(66, '附件管理', 45, 'Attachment', 'Atadmin', 'index', '', 1, 1, '', 0, '', 0),
+	(67, '删除', 66, 'Attachment', 'Atadmin', 'delete', '', 1, 0, '', 0, '', 0),
+	(68, '发布管理', 44, 'Content', 'Createhtml', 'index', '', 0, 1, '', 0, '', 0),
+	(69, '批量更新栏目页', 68, 'Content', 'Createhtml', 'category', '', 1, 1, '', 0, '', 0),
+	(70, '生成首页', 68, 'Content', 'Createhtml', 'index', '', 1, 1, '', 0, '', 0),
+	(71, '批量更新URL', 68, 'Content', 'Createhtml', 'update_urls', '', 1, 1, '', 0, '', 0),
+	(72, '批量更新内容页', 68, 'Content', 'Createhtml', 'update_show', '', 1, 1, '', 0, '', 0),
+	(73, '刷新自定义页面', 68, 'Template', 'Custompage', 'createhtml', '', 1, 1, '', 0, '', 0),
+	(74, 'URL规则管理', 46, 'Content', 'Urlrule', 'index', '', 1, 1, '', 0, '', 0),
+	(75, '添加规则', 74, 'Content', 'Urlrule', 'add', '', 1, 1, '', 0, '', 0),
+	(76, '编辑', 74, 'Content', 'Urlrule', 'edit', '', 1, 0, '', 0, '', 0),
+	(77, '删除', 74, 'Content', 'Urlrule', 'delete', '', 1, 0, '', 0, '', 0),
+	(78, '推荐位管理', 46, 'Content', 'Position', 'index', '', 1, 1, '', 0, '', 0),
+	(79, '信息管理', 78, 'Content', 'Position', 'item', '', 1, 0, '', 0, '', 0),
+	(80, '添加推荐位', 78, 'Content', 'Position', 'add', '', 1, 1, '', 0, '', 0),
+	(81, '修改推荐位', 78, 'Content', 'Position', 'edit', '', 1, 0, '', 0, '', 0),
+	(82, '删除推荐位', 78, 'Content', 'Position', 'delete', '', 1, 0, '', 0, '', 0),
+	(83, '信息编辑', 79, 'Content', 'Position', 'item_manage', '', 1, 0, '', 0, '', 0),
+	(84, '信息排序', 79, 'Content', 'Position', 'item_listorder', '', 1, 0, '', 0, '', 0),
+	(85, '数据重建', 78, 'Content', 'Position', 'rebuilding', '', 1, 0, '', 0, '', 0),
+	(86, 'Tags管理', 45, 'Content', 'Tags', 'index', '', 1, 1, '', 0, '', 0),
+	(87, '修改', 86, 'Content', 'Tags', 'edit', '', 1, 0, '', 0, '', 0),
+	(88, '删除', 86, 'Content', 'Tags', 'delete', '', 1, 0, '', 0, '', 0),
+	(89, 'Tags数据重建', 86, 'Content', 'Tags', 'create', '', 1, 1, '', 0, '', 0),
+	(90, '界面', 0, 'Template', 'Style', 'index', '', 0, 1, '', 0, 'icon_skin', 0),
+	(91, '模板管理', 90, 'Template', 'Style', 'index', '', 0, 1, '', 0, '', 0),
+	(92, '模板风格', 91, 'Template', 'Style', 'index', '', 1, 1, '', 0, '', 0),
+	(93, '添加模板页', 92, 'Template', 'Style', 'add', '', 1, 1, '', 0, '', 0),
+	(94, '删除模板', 92, 'Template', 'Style', 'delete', '', 1, 0, '', 0, '', 0),
+	(95, '修改模板', 92, 'Template', 'Style', 'edit', '', 1, 0, '', 0, '', 0),
+	(96, '主题管理', 91, 'Template', 'Theme', 'index', '', 1, 1, '', 0, '', 0),
+	(97, '主题更换', 96, 'Template', 'Theme', 'chose', '', 1, 0, '', 0, '', 0),
+	(98, '自定义页面', 90, 'Template', 'Custompage', 'index', '', 0, 1, '', 0, '', 0),
+	(99, '自定义页面', 98, 'Template', 'Custompage', 'index', '', 1, 1, '', 0, '', 0),
+	(100, '添加自定义页面', 99, 'Template', 'Custompage', 'add', '', 1, 1, '', 0, '', 0),
+	(101, '删除自定义页面', 99, 'Template', 'Custompage', 'delete', '', 1, 0, '', 0, '', 0),
+	(102, '编辑自定义页面', 99, 'Template', 'Custompage', 'edit', '', 1, 0, '', 0, '', 0),
+	(103, '自定义列表', 98, 'Template', 'Customlist', 'index', '', 1, 1, '', 0, '', 0),
+	(104, '添加列表', 103, 'Template', 'Customlist', 'add', '', 1, 1, '', 0, '', 0),
+	(105, '删除列表', 103, 'Template', 'Customlist', 'delete', '', 1, 0, '', 0, '', 0),
+	(106, '编辑列表', 103, 'Template', 'Customlist', 'edit', '', 1, 0, '', 0, '', 0),
+	(107, '生成列表', 103, 'Template', 'Customlist', 'generate', '', 1, 0, '', 0, '', 0),
+	(108, '安装模块', 39, 'Admin', 'Moduleshop', 'install', '', 1, 0, '', 0, '', 0),
+	(109, '升级模块', 39, 'Admin', 'Moduleshop', 'upgrade', '', 1, 0, '', 0, '', 0),
+	(110, '安装插件', 40, 'Admin', 'Addonshop', 'install', '', 1, 0, '', 0, '', 0),
+	(111, '升级插件', 40, 'Admin', 'Addonshop', 'upgrade', '', 1, 0, '', 0, '', 0),
+	(112, '栏目授权', 26, 'Admin', 'Rbac', 'setting_cat_priv', '', 1, 0, '', 0, '', 0),
+	(113, '权限管理', 3, 'Admin', '%', '%', '', 0, 1, '', 0, '', 0),
+	(114, '权限组', 113, 'Admin', 'AccessGroup', 'accessGroupList', '', 1, 1, '', 0, '', 0),
+	(115, '缓存更新', 0, 'Admin', 'Index', 'cache', '', 1, 0, '', 0, '', 0),
+	(116, '后台菜单', 17, 'Admin', 'Menu', 'index', '', 1, 1, '', 1, '', 0),
+	(117, '行为列表', 13, 'Admin', 'Behavior', 'index', '', 1, 1, '', 1, '', 0),
+	(118, '角色列表', 26, 'Admin', 'Rbac', 'rolemanage', '', 1, 1, '', 1, '', 0),
+	(119, '消息', 0, 'Admin', 'AdminMessage', '%', '', 1, 1, '', 0, 'icon-test', 0),
+	(120, '所有消息', 119, 'Admin', 'AdminMessage', 'index', '', 1, 1, '', 0, '', 0),
+	(121, '未读消息', 119, 'Admin', 'AdminMessage', 'noRead', '', 1, 1, '', 0, '', 0),
+	(122, '系统消息', 119, 'Admin', 'AdminMessage', 'system', '', 1, 1, '', 0, '', 0),
+	(123, '获取消息列表', 119, 'Admin', 'AdminMessage', 'getAdminMsgList', '', 1, 0, '', 0, '', 0),
+	(124, '阅读消息', 119, 'Admin', 'AdminMessage', 'readMsg', '', 1, 0, '', 0, '', 0),
+	(125, '阅读全部消息', 119, 'Admin', 'AdminMessage', 'readMsgAll', '', 1, 0, '', 0, '', 0),
+	(126, '概览页接口', 1, 'Admin', 'MainApi', '%', '', 1, 0, '', 0, '', 0),
+	(127, '角色基本权限(必选)', 26, 'Admin', 'Rbac', '%', '', 1, 0, '', 0, '', 0),
+	(128, '管理员基本权限(必选)', 21, 'Admin', 'Management', '%', '', 1, 0, '', 0, '', 0);
 
 
 -- ----------------------------
