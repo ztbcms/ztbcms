@@ -158,7 +158,7 @@ class Dashboard extends AdminController
         $cronFileList = [];
         //遍历模块
         foreach ($moduleList as $k => $module) {
-            $cronscript_filename = APP_PATH . $module['filename'] . DIRECTORY_SEPARATOR . 'CronScript';
+            $cronscript_filename = app_path() . $module['filename'] . DIRECTORY_SEPARATOR . 'CronScript';
             if (file_exists($cronscript_filename)) {
                 $CronDirs = new Dir($cronscript_filename);
                 $cronFiles = $CronDirs->toArray();

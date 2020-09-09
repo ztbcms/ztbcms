@@ -35,7 +35,7 @@ class Index extends BaseController
 
         $start_at = $end_at = time();
         // 锁定自动执行
-        $lockfile = RUNTIME_PATH . 'cron.lock';
+        $lockfile = runtime_path() . 'cron.lock';
         if (is_writable($lockfile)) {
             return json(['used_time' => 0, 'msg' => 'Cron is Locked']);
         } else {

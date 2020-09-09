@@ -12,13 +12,7 @@
 // [ 应用入口文件 ]
 namespace think;
 
-//当前目录路径
-define('SITE_PATH', getcwd() . '/');
-define('APP_PATH', SITE_PATH . "tp6/app/");
-define('RUNTIME_PATH', SITE_PATH . "tp6/runtime/");
-
 require __DIR__ . '/tp6/vendor/autoload.php';
-
 
 // 执行HTTP应用并响应
 $http = (new App())->http;
