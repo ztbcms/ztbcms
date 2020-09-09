@@ -3,7 +3,7 @@
  RewriteBase /
  RewriteCond %{REQUEST_FILENAME} !-d
  RewriteCond %{REQUEST_FILENAME} !-f
- RewriteRule ^home(.*)$ think.php/$1 [QSA,PT,L]
+ RewriteRule ^home(.*)$ think.php?s=/$1 [QSA,PT,L]
  RewriteCond %{REQUEST_FILENAME} !-f
  RewriteRule ^(.*)$ index.php?s=/$1 [QSA,PT,L]
 </IfModule>
