@@ -930,7 +930,6 @@ CREATE TABLE `cms_user` (
   `info` text NOT NULL COMMENT '信息',
   `avatar` varchar(256) NOT NULL DEFAULT '' COMMENT '头像链接',
   `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
-  `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
