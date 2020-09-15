@@ -33,6 +33,7 @@ class UploadPublicApiController extends Base
         'docx' => '/statics/admin/upload/doc.png',
         'xls' => '/statics/admin/upload/xls.png',
         'xlsx' => '/statics/admin/upload/xls.png',
+        'pdf' => '/statics/admin/upload/pdf.png',
         'file' => '/statics/admin/upload/file.png',
     ];
 
@@ -144,7 +145,15 @@ class UploadPublicApiController extends Base
     function uploadFile()
     {
         $result = $this->_upload(self::MODULE_FILE);
-        $this->ajaxReturn($result);
+        $upload_file_info = $result['data'];
+        $return = [
+            'name' => $upload_file_info['name'],//名称
+            'filethumb' => $upload_file_info['filethumb'],//名称
+            'size' => $upload_file_info['size'],// 容量,单位 byte eg: 1KB=1024byte
+            'aid' => $upload_file_info['aid'],// 附件ID
+            'url' => $upload_file_info['url'],
+        ];
+        $this->ajaxReturn(self::createReturn(true, $return));
     }
 
     /**
@@ -168,7 +177,15 @@ class UploadPublicApiController extends Base
             ]);
             $result['data']['filethumb'] = $filethumb;
         }
-        $this->ajaxReturn($result);
+        $upload_file_info = $result['data'];
+        $return = [
+            'name' => $upload_file_info['name'],//名称
+            'filethumb' => $upload_file_info['filethumb'],//名称
+            'size' => $upload_file_info['size'],// 容量,单位 byte eg: 1KB=1024byte
+            'aid' => $upload_file_info['aid'],// 附件ID
+            'url' => $upload_file_info['url'],
+        ];
+        $this->ajaxReturn(self::createReturn(true, $return));
     }
 
 
