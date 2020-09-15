@@ -19,4 +19,5 @@ use think\Model;
 class ConfigModel extends Model
 {
     protected $name = 'config';
+    protected $pk = "varname";
 }
