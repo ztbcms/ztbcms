@@ -23,4 +23,7 @@ class AttachmentModel extends Model
     const MODULE_IMAGE = "module_upload_images";
     const MODULE_VIDEO = "module_upload_video";
     const MODULE_FILE = "module_upload_files";
+
+    const IS_IMAGES_YES = 1;
+    const IS_IMAGES_NO = 0;
 }

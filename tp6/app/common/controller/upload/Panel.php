@@ -11,6 +11,7 @@ namespace app\common\controller\upload;
 use app\common\controller\AdminController;
 use app\common\model\upload\AttachmentGroupModel;
 use app\common\model\upload\AttachmentModel;
+use app\common\service\upload\UploadService;
 use think\facade\View;
 use think\Request;
 
@@ -160,10 +161,16 @@ class Panel extends AdminController
 
     /**
      * 图片上传面板
+     * @param Request $request
      * @return string
      */
-    function imageUpload()
+    function imageUpload(Request $request)
     {
+        if ($request->post()) {
+            $uploadService = new UploadService();
+            $uploadService->uploadImage();
+            return "ok";
+        }
         return View::fetch('imageUpload');
     }
 

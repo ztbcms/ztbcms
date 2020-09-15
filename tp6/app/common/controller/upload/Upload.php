@@ -29,12 +29,7 @@ class Upload extends AdminController
     function setting(Request $request)
     {
         if ($request->post()) {
-            $updataData = [];
-            foreach ($request->post() as $key => $value) {
-                $updataData[] = ['varname' => $key, 'value' => $value];
-            }
-            $configModel = new ConfigModel();
-            $configModel->saveAll($updataData);
+            ConfigModel::editConfigs($request->post());
             return self::createReturn(true, '', '保存成功');
         }
         $config = ConfigModel::column('value', 'varname');
