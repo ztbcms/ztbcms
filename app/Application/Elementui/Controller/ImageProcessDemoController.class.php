@@ -333,6 +333,33 @@ class ImageProcessDemoController extends AdminBase
 
         }
         return $str . $textOverflowEllipsis;
+    }
 
+    //居中裁剪
+    //参考：https://www.cnblogs.com/woider/p/6380491.html
+    /**
+     * 图片尺寸变形(resize)，若尺寸比例不一致时，居中缩放
+     * @param  \Intervention\Image\Image  $source_image
+     * @param int $width 目标宽度
+     * @param t $height 目标长度
+     *
+     * @return \Intervention\Image\Image
+     */
+    function  _image_center_crop(\Intervention\Image\Image $source_image, $width, $height)
+    {
+
+        /* 获取图像尺寸信息 */
+        $target_w = intval($width);
+        $target_h = intval($height);
+        $source_w = $source_image->width();
+        $source_h = $source_image->height();
+        /* 计算裁剪宽度和高度 */
+        $judge = (($source_w / $source_h) > ($target_w / $target_h));
+        $resize_w = $judge ? intval(($source_w * $target_h) / $source_h) : $target_w;
+        $resize_h = !$judge ? intval(($source_h * $target_w) / $source_w) : $target_h;
+        $start_x = $judge ? intval(($resize_w - $target_w) / 2) : 0;
+        $start_y = !$judge ? intval($resize_h - $target_h) / 2 : 0;
+        /* 绘制居中缩放图像 */
+        return $source_image->crop($resize_w, $resize_h, $start_x, $start_y)->resize($target_w, $target_w);
     }
 }
