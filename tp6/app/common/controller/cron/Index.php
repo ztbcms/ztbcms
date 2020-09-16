@@ -45,21 +45,33 @@ class Index extends BaseController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        $schedulingLogModel = new CronSchedulingLogModel();
-        //日志信息
-        $schedulingLogModel->start_time = time();
+        try {
+            $schedulingLogModel = new CronSchedulingLogModel();
+            //日志信息
+            $startTime = time();
+            try {
+                //执行计划任务
+                $this->runCron();
+            } catch (\Exception $exception) {
+                $end_at = time();
+                $used_time = $end_at - $start_at;
+                return json(['used_time' => $used_time, 'msg' => 'Cron status: error' . $exception->getMessage()]);
+            }
+            //记录执行日志
+            $endEime = time();
+            $schedulingLogModel->start_time = $startTime;
+            $schedulingLogModel->end_time = $endEime;
+            $schedulingLogModel->use_time = (int)($endEime - $startTime);
+            $schedulingLogModel->error_count = $this->errorCount;
+            $schedulingLogModel->cron_count = $this->cronCount;
 
-        //执行计划任务
-        $this->runCron();
-
-        //记录执行日志
-        $schedulingLogModel->end_time = time();
-        $schedulingLogModel->use_time = $schedulingLogModel->end_time - $schedulingLogModel->start_time;
-        $schedulingLogModel->error_count = $this->errorCount;
-        $schedulingLogModel->cron_count = $this->cronCount;
-
-        //记录执行日志
-        $schedulingLogModel->save();
+            //记录执行日志
+            $schedulingLogModel->save();
+        } catch (\Exception $exception) {
+            $end_at = time();
+            $used_time = $end_at - $start_at;
+            return json(['used_time' => $used_time, 'msg' => 'Cron status: error' . $exception->getMessage()]);
+        }
 
         // 解除锁定
         unlink($lockfile);
