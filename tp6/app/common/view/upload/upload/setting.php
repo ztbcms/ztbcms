@@ -39,6 +39,11 @@
                                     <el-input v-model="formData.attachment_aliyun_domain"
                                               placeholder="请输入OSS-外网域名"></el-input>
                                 </el-form-item>
+                                <el-form-item label="oss-读写权限"
+                                              prop="attachment_aliyun_privilege">
+                                    <el-radio v-model="formData.attachment_aliyun_privilege" label="1">公共读</el-radio>
+                                    <el-radio v-model="formData.attachment_aliyun_privilege" label="2">私有</el-radio>
+                                </el-form-item>
                             </template>
                             <el-form-item label="允许上传附件大小" prop="uploadmaxsize">
                                 <el-input v-model="formData.uploadmaxsize" placeholder="请输入允许上传附件大小" clearable
@@ -172,6 +177,7 @@
                             attachment_aliyun_endpoint: "{$config.attachment_aliyun_endpoint}",
                             attachment_aliyun_bucket: "{$config.attachment_aliyun_bucket}",
                             attachment_aliyun_domain: "{$config.attachment_aliyun_domain}",
+                            attachment_aliyun_privilege: "{$config.attachment_aliyun_privilege}",
                             uploadmaxsize: "{$config.uploadmaxsize}",
                             uploadallowext: "{$config.uploadallowext}",
                             qtuploadmaxsize: "{$config.qtuploadmaxsize}",

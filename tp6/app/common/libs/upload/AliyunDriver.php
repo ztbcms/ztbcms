@@ -12,18 +12,22 @@ namespace app\common\libs\upload;
 use app\common\model\upload\AttachmentModel;
 use OSS\Core\OssException;
 use OSS\OssClient;
-use think\facade\Filesystem;
 
 class AliyunDriver
 {
 
     const DISKCONFIG = "ztbcms";
 
+    const PRIVILEGE_PUBLIC = "1";
+    const PRIVILEGE_PRIVICE = "2";
+
     protected $siteurl = "";
     protected $accessKeyId;
     protected $accessKeySecret;
     protected $endpoint;
     protected $bucket;
+    protected $domain;
+    protected $privilege;
 
     public function __construct($config)
     {
@@ -34,8 +38,15 @@ class AliyunDriver
         $this->endpoint = $config['attachment_aliyun_endpoint'];
         // 设置存储空间名称。
         $this->bucket = $config['attachment_aliyun_bucket'];
+        $this->domain = $config['attachment_aliyun_domain'];
+        $this->privilege = $config['attachment_aliyun_privilege'];
     }
 
+    /**
+     * @param AttachmentModel $attachmentModel
+     * @throws \Exception
+     * @return bool
+     */
     function upload(AttachmentModel $attachmentModel)
     {
         try {
@@ -45,28 +56,59 @@ class AliyunDriver
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
             $res = $ossClient->uploadFile($this->bucket, $object, $filePath);
             if (!empty($res['oss-request-url'])) {
-                $attachmentModel->filepath = $res['oss-request-url'];
+                $attachmentModel->filepath = $object;
                 $attachmentModel->fileurl = $res['oss-request-url'];
                 if ($attachmentModel->module == AttachmentModel::MODULE_VIDEO) {
                     //如果是视频文件、获取视频缩略图
-                    $attachmentModel->filethumb = $attachmentModel->filepath . "?x-oss-process=video/snapshot,t_500,f_png";
+                    $attachmentModel->filethumb = $attachmentModel->getData('fileurl') . "?x-oss-process=video/snapshot,t_500,f_png";
                 }
                 return true;
             } else {
-                $this->error = "上传oss失败";
-                return false;
+                throw new \Exception("OSS 上传失败");
             }
         } catch (OssException $e) {
-            $this->error = $e->getMessage();
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * 获取私有访问链接
+     * @param $object
+     * @return bool|string
+     */
+    public function getPrivateUrl($object)
+    {
+        //如果读写权限是公开，不做私有处理
+        if ($this->privilege == self::PRIVILEGE_PUBLIC) {
             return false;
         }
+        try {
+            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
+            return $ossClient->signUrl($this->bucket, $object, 60);
+        } catch (\Exception $exception) {
+            return "error";
+        }
+    }
 
-
-        $file = request()->file('file');
-        $url = Filesystem::disk(self::DISKCONFIG)->getConfig()->get('url');
-        //兼容原CMS
-        $saveName = Filesystem::disk(self::DISKCONFIG)->putFile($attachmentModel->module, $file);
-        $attachmentModel->filepath = $saveName;
-        $attachmentModel->fileurl = ($this->siteurl != '/' ? $this->siteurl : '') . $url . $saveName;
+    /**
+     * 获取私有访问缩略图
+     * @param $object
+     * @return bool|string
+     */
+    public function getPrivateThumbUrl($object)
+    {
+        //如果读写权限是公开，不做私有处理
+        if ($this->privilege == self::PRIVILEGE_PUBLIC) {
+            return false;
+        }
+        try {
+            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
+            $options = [
+                OssClient::OSS_PROCESS => "video/snapshot,t_500,f_png"
+            ];
+            return $ossClient->signUrl($this->bucket, $object, 60, OssClient::OSS_HTTP_GET, $options);
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 }

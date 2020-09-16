@@ -79,7 +79,8 @@ class Panel extends AdminController
             $where[] = ['group_id', '=', $groupId];
         }
         $lists = AttachmentModel::where($where)
-            ->field(['aid', 'filename', 'filepath', 'fileurl', 'filethumb'])
+            ->field(['aid', 'filename', 'filepath', 'fileurl', 'filethumb', 'driver', 'module'])//driver,module数据处理需要
+            ->visible(['aid', 'filename', 'filepath', 'fileurl', 'filethumb'])
             ->order('aid', 'DESC')
             ->paginate(15);
         return self::createReturn(true, $lists, 'ok');

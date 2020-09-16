@@ -33,4 +33,14 @@ class LocalDriver
         $attachmentModel->filepath = $saveName;
         $attachmentModel->fileurl = ($this->siteurl != '/' ? $this->siteurl : '') . $url . $saveName;
     }
+
+    public function getPrivateUrl($url)
+    {
+        return $url;
+    }
+
+    public function getPrivateThumbUrl($url)
+    {
+        return $url;
+    }
 }

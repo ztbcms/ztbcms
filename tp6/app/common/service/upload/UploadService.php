@@ -101,7 +101,8 @@ class UploadService extends BaseService
             if (!$this->upload($attachmentModel)) {
                 return false;
             }
-            $attachmentModel->filethumb = $attachmentModel->fileurl;
+            //getData('fileurl') 获取原始数据，防止获取器造成的影响
+            $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
             $attachmentModel->isimage = AttachmentModel::IS_IMAGES_YES;
             $attachmentModel->save();
             return true;
@@ -126,6 +127,9 @@ class UploadService extends BaseService
         $attachmentModel->uploadip = get_client_ip();
 
         $config = ConfigModel::getConfigs();
+        $attachmentDriver = isset($config['attachment_driver']) ? $config['attachment_driver'] : 'Local';
+        $attachmentModel->driver = $attachmentDriver;
+
         //最大上传大小
         $maxFileSize = ($attachmentModel->isadmin == 1 ? $config['uploadmaxsize'] : $config['qtuploadmaxsize']) * 1024;
         //允许上传文件格式
@@ -141,15 +145,55 @@ class UploadService extends BaseService
             $this->setError($e->getMessage());
             return false;
         }
-        $attachmentDriver = isset($config['attachment_driver']) ? $config['attachment_driver'] : 'Local';
         if (isset($this->uploadDrivers[$attachmentDriver])) {
-            $driver = new $this->uploadDrivers[$attachmentDriver]($config);
-            $driver->upload($attachmentModel);
+            try {
+                $driver = new $this->uploadDrivers[$attachmentDriver]($config);
+                $driver->upload($attachmentModel);
+            } catch (\Exception $exception) {
+                $this->setError($exception->getMessage());
+                return false;
+            }
         } else {
             $this->setError('找不到相应上传驱动，请联系管理员！');
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * 获取私有访问链接
+     * @param $filepath
+     * @param $attachmentDriver
+     * @return bool
+     */
+    public function getPrivateUrl($filepath, $attachmentDriver)
+    {
+        $config = ConfigModel::getConfigs();
+        if (isset($this->uploadDrivers[$attachmentDriver])) {
+            $driver = new $this->uploadDrivers[$attachmentDriver]($config);
+            return $driver->getPrivateUrl($filepath);
+        } else {
+            $this->setError('找不到相应上传驱动，请联系管理员！');
+            return false;
+        }
+    }
+
+    /**
+     * 获取私有缩略图URL
+     * @param $filepath
+     * @param $attachmentDriver
+     * @return bool
+     */
+    public function getPrivateThumbUrl($filepath, $attachmentDriver)
+    {
+        $config = ConfigModel::getConfigs();
+        if (isset($this->uploadDrivers[$attachmentDriver])) {
+            $driver = new $this->uploadDrivers[$attachmentDriver]($config);
+            return $driver->getPrivateThumbUrl($filepath);
+        } else {
+            $this->setError('找不到相应上传驱动，请联系管理员！');
+            return false;
+        }
     }
 }

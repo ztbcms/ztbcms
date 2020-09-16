@@ -39,6 +39,8 @@ CREATE TABLE `cms_admin_panel` (
 DROP TABLE IF EXISTS `cms_attachment`;
 CREATE TABLE `cms_attachment` (
   `aid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件ID',
+  `driver` varchar(32) DEFAULT 'Local' COMMENT '上传驱动',
+  `group_id` int(11) DEFAULT '0',
   `module` varchar(64) NOT NULL DEFAULT '' COMMENT '模块名称',
   `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
   `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
@@ -55,7 +57,6 @@ CREATE TABLE `cms_attachment` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '附件使用状态',
   `authcode` varchar(32) NOT NULL DEFAULT '' COMMENT '附件路径MD5值',
   `delete_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态 0未删除 1已删除',
-  `group_id` int(11) DEFAULT '0',
   PRIMARY KEY (`aid`),
   KEY `authcode` (`authcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
@@ -350,8 +351,9 @@ INSERT INTO `cms_config` VALUES ('45', 'attachment_aliyun_key_secret', 'OSS-acce
 INSERT INTO `cms_config` VALUES ('46', 'attachment_aliyun_endpoint', 'OSS-Endpoint', '1', '');
 INSERT INTO `cms_config` VALUES ('47', 'attachment_aliyun_bucket', 'OSS-bucket', '1', '');
 INSERT INTO `cms_config` VALUES ('48', 'attachment_aliyun_domain', 'OSS-外网域名', '1', '');
-INSERT INTO `cms_config` VALUES ('49', 'site_domain', '网站域名', 1, '');
-INSERT INTO `cms_config` VALUES ('50', 'site_file_domain', '网站附件域名', 1, '');
+INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '');
+INSERT INTO `cms_config` VALUES ('50', 'site_domain', '网站域名', 1, '');
+INSERT INTO `cms_config` VALUES ('51', 'site_file_domain', '网站附件域名', 1, '');
 
 
 -- ----------------------------
