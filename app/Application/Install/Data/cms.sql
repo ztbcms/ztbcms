@@ -46,6 +46,7 @@ CREATE TABLE `cms_attachment` (
   `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
   `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
   `filethumb` varchar(256) DEFAULT NULL COMMENT '文件缩略图',
+  `fileurl` varchar(512) DEFAULT '' COMMENT '文件url',
   `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
   `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
   `isimage` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为图片 1为图片',
@@ -479,7 +480,7 @@ CREATE TABLE `cms_menu` (
 -- ----------------------------
 -- Records of cms_menu
 -- ----------------------------
-INSERT INTO `ztb_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`, `icon`, `is_tp6`)
+INSERT INTO `cms_menu` (`id`, `name`, `parentid`, `app`, `controller`, `action`, `parameter`, `type`, `status`, `remark`, `listorder`, `icon`, `is_tp6`)
 VALUES
 	(1, '概览', 0, 'Admin', 'Main', 'index', '', 1, 1, '', 0, 'dashboard', 0),
 	(2, '我的面板', 0, 'Admin', 'Config', 'index', '', 0, 1, '', 0, 'icon_boss', 0),
