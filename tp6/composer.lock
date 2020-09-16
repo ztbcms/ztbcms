@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9822d9526cef4622bccf138161e327cf",
+    "content-hash": "1663643f234f7b02b4fae9d38f6f1770",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -147,6 +147,57 @@
                 "tool"
             ],
             "time": "2020-08-03T06:19:07+00:00"
+        },
+        {
+            "name": "aliyuncs/oss-sdk-php",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aliyun/aliyun-oss-php-sdk.git",
+                "reference": "bd9c2bba3d167de821cbb33b5c03fe6e41e8e363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aliyun/aliyun-oss-php-sdk/zipball/bd9c2bba3d167de821cbb33b5c03fe6e41e8e363",
+                "reference": "bd9c2bba3d167de821cbb33b5c03fe6e41e8e363",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OSS\\": "src/OSS"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aliyuncs",
+                    "homepage": "http://www.aliyun.com"
+                }
+            ],
+            "description": "Aliyun OSS SDK for PHP",
+            "homepage": "http://www.aliyun.com/product/oss/",
+            "support": {
+                "issues": "https://github.com/aliyun/aliyun-oss-php-sdk/issues",
+                "source": "https://github.com/aliyun/aliyun-oss-php-sdk/tree/master"
+            },
+            "time": "2020-08-31T08:39:59+00:00"
         },
         {
             "name": "clagiordano/weblibs-configmanager",

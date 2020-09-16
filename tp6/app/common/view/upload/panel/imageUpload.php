@@ -41,7 +41,7 @@
 
                     <el-col :span="18">
                         <el-upload
-                                :limit="10"
+                                :limit="uploadConfig.max_upload"
                                 multiple
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
@@ -111,7 +111,7 @@
                 data: {
                     uploadConfig: {
                         uploadUrl: "{:urlx('common/upload.panel/imageUpload')}",
-                        max_upload: 9,//同时上传文件数
+                        max_upload: 10,//同时上传文件数
                         accept: 'image/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
                     pagination: {
@@ -143,9 +143,16 @@
                     }
                 },
                 methods: {
-                    handleUploadSuccess: function (response, file, fileList) {
-                        console.log('handleUploadSuccess', response);
-                        this.getGalleryByGroupIdList();
+                    handleUploadSuccess: function (res, file, fileList) {
+                        console.log('handleUploadSuccess', res);
+                        if (res.status) {
+                            this.getGalleryByGroupIdList();
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: res.msg
+                            });
+                        }
                     },
                     handleUploadError: function () {
                         ELEMENT.Message.error('上传失败');
@@ -153,7 +160,6 @@
                     handleExceed: function () {
                         ELEMENT.Message.error('上传文件数量超限制');
                     },
-
                     // 获取分组图片列表
                     getGalleryByGroupIdList: function () {
                         this.loading = true;

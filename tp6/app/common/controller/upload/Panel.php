@@ -161,34 +161,60 @@ class Panel extends AdminController
 
     /**
      * 图片上传面板
+     *
      * @param Request $request
-     * @return string
+     * @return array|string
      */
     function imageUpload(Request $request)
     {
-        if ($request->post()) {
+        if ($request->isPost()) {
+            $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
-            $uploadService->uploadImage();
-            return "ok";
+            if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+                return json(self::createReturn(true, [], '上传成功'));
+            } else {
+                return json(self::createReturn(false, [], $uploadService->getError()));
+            }
         }
         return View::fetch('imageUpload');
     }
 
     /**
      * 视频上传面板
-     * @return string
+     * @param Request $request
+     * @return array|string
      */
-    function videoUpload()
+    function videoUpload(Request $request)
     {
+        if ($request->isPost()) {
+            $groupId = $request->post('group_id', '');
+            $uploadService = new UploadService();
+            if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+                return json(self::createReturn(true, [], '上传成功'));
+            } else {
+                return json(self::createReturn(false, [], $uploadService->getError()));
+            }
+        }
         return View::fetch('videoUpload');
     }
 
     /**
-     *  文件（文档）上传面板
-     * @return string
+     * 文件（文档）上传面板
+     *
+     * @param Request $request
+     * @return string|\think\response\Json
      */
-    function fileUpload()
+    function fileUpload(Request $request)
     {
+        if ($request->isPost()) {
+            $groupId = $request->post('group_id', '');
+            $uploadService = new UploadService();
+            if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+                return json(self::createReturn(true, [], '上传成功'));
+            } else {
+                return json(self::createReturn(false, [], $uploadService->getError()));
+            }
+        }
         return View::fetch('fileUpload');
     }
 }

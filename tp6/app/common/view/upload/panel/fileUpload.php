@@ -41,7 +41,8 @@
 
                     <el-col :span="18">
                         <el-upload
-                                :limit="10"
+                                :limit="uploadConfig.max_upload"
+                                multiple
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
@@ -225,8 +226,8 @@
                 el: '#app',
                 data: {
                     uploadConfig: {
-                        uploadUrl: "{:urlx('Upload/UploadAdminApi/uploadFile')}",
-                        max_upload: 9,//同时上传文件数
+                        uploadUrl: "{:urlx('common/upload.panel/fileUpload')}",
+                        max_upload: 10,//同时上传文件数
                         accept: '.xls,.doc,.ppt,.xlsx,.docx,.pptx,.pdf', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
                     pagination: {
@@ -241,15 +242,6 @@
                     now_group: 'all',     // 当前分类ID
                     move_group_id: '',    // 移动至分类ID
                     group_type: "file", // 显示修改分组名称框
-                    form: {
-                        search_date: [],
-                        uid: '',
-                        ip: '',
-                        start_time: '',
-                        end_time: '',
-                        status: '',
-                        sort_time: '',//排序：时间
-                    },
                     uploadData: {
                         enable: '0',
                         group_id: 'all'
@@ -268,17 +260,17 @@
                         return result;
                     }
                 },
-                filters: {
-                    formatTime(timestamp) {
-                        var date = new Date();
-                        date.setTime(parseInt(timestamp) * 1000);
-                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
-                    }
-                },
                 methods: {
-                    handleUploadSuccess: function (response, file, fileList) {
-                        console.log('handleUploadSuccess', response);
-                        this.getGalleryByGroupIdList();
+                    handleUploadSuccess: function (res, file, fileList) {
+                        console.log('handleUploadSuccess', res);
+                        if (res.status) {
+                            this.getGalleryByGroupIdList();
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: res.msg
+                            });
+                        }
                     },
                     handleUploadError: function () {
                         ELEMENT.Message.error('上传失败');
@@ -441,16 +433,16 @@
                     // 移动分组
                     moveGroup: function () {
                         var that = this;
-                        var form = {
-                            files: [],
-                            group_id: this.move_group_id
-                        };
+                        var files = [];
                         for (var i = 0; i < this.selectdFileList.length; i++) {
-                            form['files'].push(this.selectdFileList[i])
+                            files.push(this.selectdFileList[i])
                         }
                         $.ajax({
                             url: "{:urlx('common/upload.panel/moveGralleryGroup')}",
-                            data: form,
+                            data: {
+                                files,
+                                group_id: this.move_group_id
+                            },
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
@@ -499,15 +491,15 @@
                     },
                     doDeleteSelected: function () {
                         var that = this;
-                        var form = {
-                            files: []
-                        };
+                        var files = [];
                         for (var i = 0; i < this.selectdFileList.length; i++) {
-                            form['files'].push(this.selectdFileList[i])
+                            files.push(this.selectdFileList[i])
                         }
                         $.ajax({
                             url: "{:urlx('common/upload.panel/deleteFiles')}",
-                            data: form,
+                            data: {
+                                files
+                            },
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
