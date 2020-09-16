@@ -34,53 +34,64 @@ class UploadService extends BaseService
     ];
 
     /**
-     *上传文件
+     * 上传文件
      * @param int $groupId
      * @param int $userid
      * @param int $isadmin
-     * @return bool
+     * @return AttachmentModel|bool
      */
     function uploadFile($groupId = 0, $userid = 0, $isadmin = 1)
     {
-        $attachmentModel = new AttachmentModel();
-        $attachmentModel->userid = $userid;
-        $attachmentModel->isadmin = $isadmin;
-        $attachmentModel->group_id = $groupId;
-        $attachmentModel->module = AttachmentModel::MODULE_FILE;
-        if (!$this->upload($attachmentModel)) {
+        try {
+            $attachmentModel = new AttachmentModel();
+            $attachmentModel->userid = $userid;
+            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->group_id = $groupId;
+            $attachmentModel->module = AttachmentModel::MODULE_FILE;
+            if (!$this->upload($attachmentModel)) {
+                return false;
+            }
+            if (!$attachmentModel->filethumb) {
+                $attachmentModel->filethumb = isset(self::FILE_THUMB_ARRAY[$attachmentModel->fileext]) ? self::FILE_THUMB_ARRAY[$attachmentModel->fileext] : self::FILE_THUMB_ARRAY['doc'];
+            }
+            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_NO;
+            $attachmentModel->save();
+            return $attachmentModel;
+        } catch (\Exception $exception) {
+            $this->setError($exception->getMessage());
             return false;
         }
-        if (!$attachmentModel->filethumb) {
-            $attachmentModel->filethumb = isset(self::FILE_THUMB_ARRAY[$attachmentModel->fileext]) ? self::FILE_THUMB_ARRAY[$attachmentModel->fileext] : self::FILE_THUMB_ARRAY['doc'];
-        }
-        $attachmentModel->isimage = AttachmentModel::IS_IMAGES_NO;
-        $attachmentModel->save();
-        return true;
     }
 
     /**
-     *上传视频
+     * 上传视频
      * @param int $groupId
      * @param int $userid
      * @param int $isadmin
-     * @return bool
+     * @return AttachmentModel|bool
      */
     function uploadVideo($groupId = 0, $userid = 0, $isadmin = 1)
     {
-        $attachmentModel = new AttachmentModel();
-        $attachmentModel->userid = $userid;
-        $attachmentModel->isadmin = $isadmin;
-        $attachmentModel->group_id = $groupId;
-        $attachmentModel->module = AttachmentModel::MODULE_VIDEO;
-        if (!$this->upload($attachmentModel)) {
+        try {
+            $attachmentModel = new AttachmentModel();
+            $attachmentModel->userid = $userid;
+            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->group_id = $groupId;
+            $attachmentModel->module = AttachmentModel::MODULE_VIDEO;
+            if (!$this->upload($attachmentModel)) {
+                return false;
+            }
+            if (!$attachmentModel->filethumb) {
+                $attachmentModel->filethumb = self::FILE_THUMB_ARRAY['video'];
+            }
+            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_NO;
+            $attachmentModel->save();
+            return $attachmentModel;
+        } catch (\Exception $exception) {
+            $this->setError($exception->getMessage());
             return false;
         }
-        if (!$attachmentModel->filethumb) {
-            $attachmentModel->filethumb = self::FILE_THUMB_ARRAY['video'];
-        }
-        $attachmentModel->isimage = AttachmentModel::IS_IMAGES_NO;
-        $attachmentModel->save();
-        return true;
+
     }
 
     /**
@@ -88,7 +99,7 @@ class UploadService extends BaseService
      * @param int $groupId
      * @param int $userid
      * @param int $isadmin
-     * @return bool
+     * @return AttachmentModel|bool
      */
     function uploadImage($groupId = 0, $userid = 0, $isadmin = 1)
     {
@@ -105,7 +116,7 @@ class UploadService extends BaseService
             $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
             $attachmentModel->isimage = AttachmentModel::IS_IMAGES_YES;
             $attachmentModel->save();
-            return true;
+            return $attachmentModel;
         } catch (\Exception $exception) {
             $this->setError($exception->getMessage());
             return false;

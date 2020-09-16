@@ -73,6 +73,7 @@ class Panel extends AdminController
     {
         $module = $request->get('module', AttachmentModel::MODULE_IMAGE);
         $where[] = ['module', '=', $module];
+        $where[] = ['isadmin', '=', AttachmentModel::IS_ADMIN_YES];
 
         $groupId = $request->get('group_id', 'all');
         if ($groupId !== 'all') {

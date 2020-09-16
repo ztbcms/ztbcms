@@ -15,8 +15,8 @@ return array(
         //备注
         "remark" => "",
         //子菜单列表
-        "child" => array(
-            array(
+        "child" => [
+            [
                 "route" => "common/cron.dashboard/index",
                 "type" => 1,
                 "status" => 1,
@@ -38,8 +38,8 @@ return array(
                         "remark" => "",
                     ]
                 ]
-            ),
-            array(
+            ],
+            [
                 "route" => "common/message.message/index",
                 "type" => 1,
                 "status" => 1,
@@ -61,7 +61,30 @@ return array(
                         "remark" => "",
                     ]
                 ]
-            ),
-        ),
+            ],
+            [
+                "route" => "common/upload.upload/setting",
+                "type" => 1,
+                "status" => 1,
+                "name" => "上传管理",
+                "remark" => "",
+                "child" => [
+                    [
+                        "route" => "common/upload.upload/setting",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "上传配置",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/upload.upload/demo",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "上传示例",
+                        "remark" => "",
+                    ]
+                ]
+            ],
+        ],
     ),
 );

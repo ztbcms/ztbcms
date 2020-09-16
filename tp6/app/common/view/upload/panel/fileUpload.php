@@ -286,7 +286,7 @@
                             page: this.pagination.page,
                             limit: this.pagination.limit,
                             group_id: this.now_group,
-                            module: "module_upload_files" //视频类型文件
+                            module: this.group_type //视频类型文件
                         };
                         $.ajax({
                             url: "{:urlx('common/upload.panel/getFilesByGroupIdList')}",

@@ -1,7 +1,7 @@
 <div>
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>图片上传示例</h3>
+            <h3>后台上传示例</h3>
             <div>
                 <template v-for="(file, index) in uploadedImageList">
                     <div class="imgListItem">
@@ -13,10 +13,8 @@
                 </template>
             </div>
             <el-button type="primary" @click="gotoUploadImage">上传图片</el-button>
-        </el-card>
-        <el-card style="margin-top: 10px">
-            <h3>视频上传示例</h3>
-            <div>
+
+            <div style="margin-top: 20px">
                 <template v-for="(file, index) in uploadedVideoList">
                     <div class="imgListItem">
                         <img :src="file.filethumb" style="width: 128px;height: 128px;">
@@ -26,11 +24,9 @@
                     </div>
                 </template>
             </div>
-            <el-button type="primary" @click="gotoUploadVideo">上传图片</el-button>
-        </el-card>
-        <el-card style="margin-top: 10px">
-            <h3>文件上传示例</h3>
-            <div>
+            <el-button type="primary" @click="gotoUploadVideo">上传视频</el-button>
+
+            <div style="margin-top: 20px">
                 <template v-for="(file, index) in uploadeFileList">
                     <div class="imgListItem">
                         <img :src="file.filethumb" style="width: 128px;height: 128px;">
@@ -42,6 +38,65 @@
             </div>
             <el-button type="primary" @click="gotoUploadFile">上传文件</el-button>
         </el-card>
+
+        <div style="margin-top: 20px;">
+            <el-card>
+                <h3>前端上传示例</h3>
+                <el-upload
+                        :limit="9"
+                        multiple
+                        action="{:urlx('common/upload.api/imageUpload')}"
+                        accept="image/*"
+                        :on-success="handleUploadSuccess"
+                        :on-error="handleUploadError"
+                        :on-exceed="handleExceed"
+                        :data="uploadData"
+                        id="upload_input"
+                        ref="upload"
+                        :show-file-list="false">
+                    <el-button size="small" type="default">上传图片</el-button>
+                </el-upload>
+
+                <div style="margin-top: 20px">
+                    <el-upload
+                            :limit="9"
+                            multiple
+                            action="{:urlx('common/upload.api/videoUpload')}"
+                            accept="video/*"
+                            :on-success="handleUploadSuccess"
+                            :on-error="handleUploadError"
+                            :on-exceed="handleExceed"
+                            :data="uploadData"
+                            id="upload_input"
+                            ref="upload"
+                            :show-file-list="false">
+                        <el-button size="small" type="default">上传视频</el-button>
+                    </el-upload>
+                </div>
+                <div style="margin-top: 20px">
+                    <el-upload
+                            :limit="9"
+                            multiple
+                            action="{:urlx('common/upload.api/fileUpload')}"
+                            accept=".xls,.doc,.ppt,.xlsx,.docx,.pptx,.pdf"
+                            :on-success="handleUploadSuccess"
+                            :on-error="handleUploadError"
+                            :on-exceed="handleExceed"
+                            :data="uploadData"
+                            id="upload_input"
+                            ref="upload"
+                            :show-file-list="false">
+                        <el-button size="small" type="default">上传文件</el-button>
+                    </el-upload>
+                </div>
+                <div style="margin-top: 20px">
+                    <div>上传结果</div>
+                    <div style="word-break: break-all;">
+                        {{uploadRes}}
+                    </div>
+                </div>
+            </el-card>
+        </div>
     </div>
 
     <style>
@@ -82,17 +137,27 @@
                 data: {
                     uploadedImageList: [],
                     uploadedVideoList: [],
-                    uploadeFileList: []
-                },
-                watch: {},
-                filters: {
-                    formatTime(timestamp) {
-                        var date = new Date();
-                        date.setTime(parseInt(timestamp) * 1000);
-                        return moment(date).format('YYYY-MM-DD HH:mm:ss')
-                    }
+                    uploadeFileList: [],
+                    uploadRes: ""
                 },
                 methods: {
+                    handleUploadSuccess: function (res, file, fileList) {
+                        console.log('handleUploadSuccess', res);
+                        if (res.status) {
+                            this.uploadRes = JSON.stringify(res);
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: res.msg
+                            });
+                        }
+                    },
+                    handleUploadError: function () {
+                        ELEMENT.Message.error('上传失败');
+                    },
+                    handleExceed: function () {
+                        ELEMENT.Message.error('上传文件数量超限制');
+                    },
                     gotoUploadFile: function () {
                         layer.open({
                             type: 2,

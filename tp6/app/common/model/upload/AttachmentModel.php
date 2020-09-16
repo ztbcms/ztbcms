@@ -20,15 +20,18 @@ class AttachmentModel extends Model
     protected $name = 'attachment';
     protected $pk = 'aid';
 
-    const MODULE_IMAGE = "module_upload_images";
-    const MODULE_VIDEO = "module_upload_video";
-    const MODULE_FILE = "module_upload_files";
+    const MODULE_IMAGE = "image";
+    const MODULE_VIDEO = "video";
+    const MODULE_FILE = "file";
 
     const DRIVER_ALIYUN = "Aliyun";
     const DRIVER_LOCAL = "Local";
 
     const IS_IMAGES_YES = 1;
     const IS_IMAGES_NO = 0;
+
+    const IS_ADMIN_YES = 1;
+    const IS_ADMIN_NO = 0;
 
     /**
      * 获取缩略图处理器
