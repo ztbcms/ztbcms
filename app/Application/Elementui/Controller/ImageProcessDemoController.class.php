@@ -358,7 +358,7 @@ class ImageProcessDemoController extends AdminBase
         $resize_w = $judge ? intval(($source_w * $target_h) / $source_h) : $target_w;
         $resize_h = !$judge ? intval(($source_h * $target_w) / $source_w) : $target_h;
         $start_x = $judge ? intval(($resize_w - $target_w) / 2) : 0;
-        $start_y = !$judge ? intval($resize_h - $target_h) / 2 : 0;
+        $start_y = !$judge ? intval(($resize_h - $target_h) / 2) : 0;
         /* 绘制居中缩放图像 */
         return $source_image->crop($resize_w, $resize_h, $start_x, $start_y)->resize($target_w, $target_w);
     }
