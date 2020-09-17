@@ -44,6 +44,13 @@
                                     <el-radio v-model="formData.attachment_aliyun_privilege" label="1">公共读</el-radio>
                                     <el-radio v-model="formData.attachment_aliyun_privilege" label="2">私有</el-radio>
                                 </el-form-item>
+                                <el-form-item v-if="formData.attachment_aliyun_privilege==2" label="oss-临时访问链接过期时间"
+                                              prop="attachment_aliyun_expire_time">
+                                    <el-input type="number" v-model="formData.attachment_aliyun_expire_time"
+                                              placeholder="请输入临时链接过期时间">
+                                        <template slot="append">秒</template>
+                                    </el-input>
+                                </el-form-item>
                             </template>
                             <el-form-item label="允许上传附件大小" prop="uploadmaxsize">
                                 <el-input v-model="formData.uploadmaxsize" placeholder="请输入允许上传附件大小" clearable
@@ -178,6 +185,7 @@
                             attachment_aliyun_bucket: "{$config.attachment_aliyun_bucket}",
                             attachment_aliyun_domain: "{$config.attachment_aliyun_domain}",
                             attachment_aliyun_privilege: "{$config.attachment_aliyun_privilege}",
+                            attachment_aliyun_expire_time: "{$config.attachment_aliyun_expire_time}",
                             uploadmaxsize: "{$config.uploadmaxsize}",
                             uploadallowext: "{$config.uploadallowext}",
                             qtuploadmaxsize: "{$config.qtuploadmaxsize}",

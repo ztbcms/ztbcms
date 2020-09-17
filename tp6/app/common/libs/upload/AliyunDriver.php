@@ -16,8 +16,6 @@ use OSS\OssClient;
 class AliyunDriver
 {
 
-    const DISKCONFIG = "ztbcms";
-
     const PRIVILEGE_PUBLIC = "1";
     const PRIVILEGE_PRIVICE = "2";
 
@@ -28,6 +26,7 @@ class AliyunDriver
     protected $bucket;
     protected $domain;
     protected $privilege;
+    protected $expireTime;
 
     public function __construct($config)
     {
@@ -40,6 +39,7 @@ class AliyunDriver
         $this->bucket = $config['attachment_aliyun_bucket'];
         $this->domain = $config['attachment_aliyun_domain'];
         $this->privilege = $config['attachment_aliyun_privilege'];
+        $this->expireTime = $config['attachment_aliyun_expire_time'];
     }
 
     /**
@@ -84,7 +84,7 @@ class AliyunDriver
         }
         try {
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
-            return $ossClient->signUrl($this->bucket, $object, 60);
+            return $ossClient->signUrl($this->bucket, $object, $this->expireTime);
         } catch (\Exception $exception) {
             return "error";
         }
@@ -106,7 +106,7 @@ class AliyunDriver
             $options = [
                 OssClient::OSS_PROCESS => "video/snapshot,t_500,f_png"
             ];
-            return $ossClient->signUrl($this->bucket, $object, 60, OssClient::OSS_HTTP_GET, $options);
+            return $ossClient->signUrl($this->bucket, $object, $this->expireTime, OssClient::OSS_HTTP_GET, $options);
         } catch (\Exception $exception) {
             return false;
         }
