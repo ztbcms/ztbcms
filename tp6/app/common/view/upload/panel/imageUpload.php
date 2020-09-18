@@ -210,7 +210,8 @@
                             dataType: 'json',
                             type: 'get',
                             success: function (res) {
-                                that.galleryGroupList = res.data
+                                that.galleryGroupList = res.data;
+                                that.getGalleryByGroupIdList()
                             }
                         })
                     },
@@ -394,8 +395,8 @@
                 mounted: function () {
                     //获取分组列表
                     this.getGalleryGroup();
-                    //获取图片列表
-                    this.getGalleryByGroupIdList();
+                    // //获取图片列表
+                    // this.getGalleryByGroupIdList();
 
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
                     this.callback = this.getUrlQuery('callback') || this.callback

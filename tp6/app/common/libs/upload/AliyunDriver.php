@@ -12,6 +12,7 @@ namespace app\common\libs\upload;
 use app\common\model\upload\AttachmentModel;
 use OSS\Core\OssException;
 use OSS\OssClient;
+use think\facade\Cache;
 
 class AliyunDriver
 {
@@ -86,9 +87,17 @@ class AliyunDriver
         if ($this->privilege == self::PRIVILEGE_PUBLIC) {
             return false;
         }
+        $privateUrl = Cache::get('private_url_' . $object);
+        if ($privateUrl) {
+            // 查看
+            return $privateUrl;
+        }
         try {
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
-            return $ossClient->signUrl($this->bucket, $object, $this->expireTime);
+            $privateUrl = $ossClient->signUrl($this->bucket, $object, $this->expireTime);
+            //设置文件缓存，过期时间提前10分钟
+            Cache::set('private_url_' . $object, $privateUrl, $this->expireTime - 600);
+            return $privateUrl;
         } catch (\Exception $exception) {
             return "error";
         }
@@ -105,12 +114,20 @@ class AliyunDriver
         if ($this->privilege == self::PRIVILEGE_PUBLIC) {
             return false;
         }
+        $privateThumbUrl = Cache::get('private_thumb_url_' . $object);
+        if ($privateThumbUrl) {
+            // 查看
+            return $privateThumbUrl;
+        }
         try {
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
             $options = [
                 OssClient::OSS_PROCESS => "video/snapshot,t_500,f_png"
             ];
-            return $ossClient->signUrl($this->bucket, $object, $this->expireTime, OssClient::OSS_HTTP_GET, $options);
+            $privateThumbUrl = $ossClient->signUrl($this->bucket, $object, $this->expireTime, OssClient::OSS_HTTP_GET, $options);
+            //设置文件缓存，过期时间提前10分钟
+            Cache::set('private_thumb_url_' . $object, $privateThumbUrl, $this->expireTime - 600);
+            return $privateThumbUrl;
         } catch (\Exception $exception) {
             return false;
         }
