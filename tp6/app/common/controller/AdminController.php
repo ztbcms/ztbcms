@@ -16,6 +16,9 @@ use think\App;
 
 class AdminController extends BaseController
 {
+    /**
+     * @var UserModel|null
+     */
     protected $user;
 
     public function __construct(App $app)
