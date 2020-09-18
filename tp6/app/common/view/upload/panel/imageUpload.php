@@ -43,16 +43,25 @@
                         <el-upload
                                 :limit="uploadConfig.max_upload"
                                 multiple
+                                drag
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
-                                :on-error="handleUploadError"
                                 :on-exceed="handleExceed"
+                                :on-progress="handleUploadProgress"
+                                :on-change="handleUploadChange"
                                 :data="uploadData"
                                 id="upload_input"
                                 ref="upload"
                                 :show-file-list="false">
-                            <el-button size="small" type="default"><i class="el-icon-plus"></i>点击上传</el-button>
+                            <div style="display: flex; justify-content: center;align-items: center;line-height: 36px;">
+                                <div>
+                                    <i class="el-icon-upload"></i>
+                                </div>
+                                <div style="padding: 0 10px">
+                                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                </div>
+                            </div>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
                             <div>
@@ -111,7 +120,7 @@
                 data: {
                     uploadConfig: {
                         uploadUrl: "{:urlx('common/upload.panel/imageUpload')}",
-                        max_upload: 10,//同时上传文件数
+                        max_upload: 99,//同时上传文件数
                         accept: 'image/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
                     pagination: {
@@ -129,7 +138,8 @@
                     uploadData: {
                         group_id: 'all'
                     },
-                    loading: true
+                    loading: true,
+                    uploadLoading: null,
                 },
                 watch: {},
                 computed: {
@@ -144,8 +154,18 @@
                     }
                 },
                 methods: {
+                    handleUploadProgress(event, file, fileList) {
+                        console.log('handleUploadProgress', event, file, fileList);
+                        this.uploadLoading = this.$loading({
+                            lock: true,
+                            text: '上传中……',
+                            spinner: 'el-icon-loading',
+                            background: 'rgba(0, 0, 0, 0.7)'
+                        })
+                    },
                     handleUploadSuccess: function (res, file, fileList) {
                         console.log('handleUploadSuccess', res);
+                        this.uploadLoading.close();
                         if (res.status) {
                             this.getGalleryByGroupIdList();
                         } else {
@@ -155,8 +175,8 @@
                             });
                         }
                     },
-                    handleUploadError: function () {
-                        ELEMENT.Message.error('上传失败');
+                    handleUploadChange(file, fileList) {
+                        console.log('handleUploadChange', file, fileList);
                     },
                     handleExceed: function () {
                         ELEMENT.Message.error('上传文件数量超限制');
@@ -211,7 +231,7 @@
                             type: 'get',
                             success: function (res) {
                                 that.galleryGroupList = res.data;
-                                that.getGalleryByGroupIdList()
+                                that.getGalleryByGroupIdList();
                             }
                         })
                     },
@@ -395,7 +415,7 @@
                 mounted: function () {
                     //获取分组列表
                     this.getGalleryGroup();
-                    // //获取图片列表
+                    //获取图片列表
                     // this.getGalleryByGroupIdList();
 
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
@@ -515,5 +535,18 @@
             opacity: 0.9;
         }
 
+        .el-upload-dragger {
+            height: 36px;
+            line-height: 30px;
+            text-align: right;
+            padding: 0 2px;
+        }
+
+        .el-upload-dragger .el-icon-upload {
+            font-size: 18px !important;
+            color: #C0C4CC;
+            line-height: 22px;
+            margin: 0;
+        }
     </style>
 </div>

@@ -43,6 +43,8 @@
                         <el-upload
                                 :limit="uploadConfig.max_upload"
                                 multiple
+                                drag
+                                :on-progress="handleUploadProgress"
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
@@ -52,7 +54,14 @@
                                 id="upload_input"
                                 ref="upload"
                                 :show-file-list="false">
-                            <el-button size="small" type="default"><i class="el-icon-plus"></i>点击上传</el-button>
+                            <div style="display: flex; justify-content: center;align-items: center;line-height: 36px;">
+                                <div>
+                                    <i class="el-icon-upload"></i>
+                                </div>
+                                <div style="padding: 0 10px">
+                                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                </div>
+                            </div>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
                             <div>
@@ -129,7 +138,8 @@
                     uploadData: {
                         group_id: 'all'
                     },
-                    loading: true
+                    loading: true,
+                    uploadLoading: null,
                 },
                 watch: {},
                 computed: {
@@ -144,8 +154,18 @@
                     }
                 },
                 methods: {
+                    handleUploadProgress(event, file, fileList) {
+                        console.log('handleUploadProgress', event, file, fileList);
+                        this.uploadLoading = this.$loading({
+                            lock: true,
+                            text: '上传中……',
+                            spinner: 'el-icon-loading',
+                            background: 'rgba(0, 0, 0, 0.7)'
+                        })
+                    },
                     handleUploadSuccess: function (res, file, fileList) {
                         console.log('handleUploadSuccess', res);
+                        this.uploadLoading.close();
                         if (res.status) {
                             this.getGalleryByGroupIdList();
                         } else {
@@ -215,7 +235,6 @@
                             type: 'get',
                             success: function (res) {
                                 that.galleryGroupList = res.data;
-                                that.getGalleryByGroupIdList();
                             }
                         })
                     },
@@ -400,7 +419,7 @@
                     //获取分组列表
                     this.getGalleryGroup();
                     //获取图片列表
-                    // this.getGalleryByGroupIdList();
+                    this.getGalleryByGroupIdList();
 
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
                     this.callback = this.getUrlQuery('callback') || this.callback
@@ -517,6 +536,19 @@
 
         .el-menu-item:hover i {
             opacity: 0.9;
+        }
+        .el-upload-dragger {
+            height: 36px;
+            line-height: 30px;
+            text-align: right;
+            padding: 0 2px;
+        }
+
+        .el-upload-dragger .el-icon-upload {
+            font-size: 18px !important;
+            color: #C0C4CC;
+            line-height: 22px;
+            margin: 0;
         }
 
     </style>
