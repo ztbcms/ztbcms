@@ -67,7 +67,7 @@ class AttachmentModel extends Model
      */
     public function getFileurlAttr($value, $data)
     {
-        if (isset($data['driver']) && $data['driver'] == self::DRIVER_ALIYUN && $data['module'] == self::MODULE_IMAGE) {
+        if (isset($data['driver']) && $data['driver'] == self::DRIVER_ALIYUN && $data['module'] != self::MODULE_UE_IMAGE) {
             $uploadService = new UploadService();
             $res = $uploadService->getPrivateUrl($data['filepath'], self::DRIVER_ALIYUN);
             if ($res) {
