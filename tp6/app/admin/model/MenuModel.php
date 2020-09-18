@@ -16,13 +16,13 @@ class MenuModel extends Model
      * 获取后台管理员的菜单
      * @param $role_id
      * @param int $parentid
-     * @param int $Level
+     * @param int $level
      * @return array
      */
-    function getAdminUserMenuTree($role_id, $parentid = 0, $Level = 1)
+    function getAdminUserMenuTree($role_id, $parentid = 0, $level = 1)
     {
         $data = $this->adminMenu2($role_id, $parentid);
-        $Level++;
+        $level++;
         $ret = array();
         if (is_array($data)) {
             foreach ($data as $a) {
@@ -50,9 +50,9 @@ class MenuModel extends Model
                     "items" => []
                 );
 
-                $child = $this->getAdminUserMenuTree($role_id, $a['id'], $Level);
+                $child = $this->getAdminUserMenuTree($role_id, $a['id'], $level);
                 //由于后台管理界面只支持三层，超出的不层级的不显示
-                if ($child && $Level <= 3) {
+                if ($child && $level <= 3) {
                     $array['items'] = $child;
                 }
 
@@ -65,10 +65,10 @@ class MenuModel extends Model
 
     /**
      * 按父ID查找菜单子项
+     * @param $role_id
      * @param integer $parentid 父菜单ID
      * @param boolean $with_self 是否包括他自己
      * @return array
-     *
      */
     public function adminMenu2($role_id, $parentid, $with_self = false)
     {
@@ -79,7 +79,7 @@ class MenuModel extends Model
             $result = array();
         }
         if ($with_self) {
-            $parentInfo = $this->where(array('id' => $parentid))->find();
+            $parentInfo = $this->where(array('id' => $parentid))->findOrEmpty();
             $result2[] = $parentInfo ? $parentInfo : array();
             $result = array_merge($result2, $result);
         }

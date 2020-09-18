@@ -7,6 +7,7 @@
 namespace app\admin\controller;
 
 
+use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\controller\AdminController;
 
@@ -21,7 +22,8 @@ class AdminApi extends AdminController
     function getPermissionInfo(){
         $adminUserInfo = $this->user;
 
-        $menuList = D("Admin/Menu")->getAdminUserMenuTree($adminUserInfo['role_id']);
+        $menuModel = new MenuModel();
+        $menuList = $menuModel->getAdminUserMenuTree($adminUserInfo['role_id']);
         $roleModel = new RoleModel();
         $role_access_list = $roleModel->getAccessList($adminUserInfo['role_id']);
         $ret = [
