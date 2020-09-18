@@ -2,7 +2,7 @@
     <div id="app" style="" v-cloak v-loading="loading">
         <el-card>
             <div slot="header">
-                视频上传
+                图片上传UE
             </div>
             <div>
                 <el-row>
@@ -44,10 +44,10 @@
                                 :limit="uploadConfig.max_upload"
                                 multiple
                                 drag
+                                :on-progress="handleUploadProgress"
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
-                                :on-progress="handleUploadProgress"
                                 :on-error="handleUploadError"
                                 :on-exceed="handleExceed"
                                 :data="uploadData"
@@ -68,12 +68,9 @@
                                 <template v-for="(item,index) in galleryList">
                                     <div :key="index"
                                          class="imgListItem">
-                                        <el-tooltip class="item" effect="dark" :content="item.filename"
-                                                    placement="bottom">
-                                            <img :src="item.filethumb"
-                                                 style="width:80px;height: 80px;"
-                                                 @click="selectImgEvent(index)">
-                                        </el-tooltip>
+                                        <img :src="item.fileurl"
+                                             style="width:80px;height: 80px;"
+                                             @click="selectImgEvent(index)">
                                         <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
                                             <span style="line-height: 80px;" class="el-icon-check"></span>
                                         </div>
@@ -122,9 +119,9 @@
                 el: '#app',
                 data: {
                     uploadConfig: {
-                        uploadUrl: "{:urlx('common/upload.panel/videoUpload')}",
-                        max_upload: 99,//同时上传文件数
-                        accept: 'video/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
+                        uploadUrl: "{:urlx('common/upload.panel/imageUEUpload')}",
+                        max_upload: 10,//同时上传文件数
+                        accept: 'image/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
                     pagination: {
                         page: 1,
@@ -132,18 +129,17 @@
                         total_pages: 0,
                         total_items: 0,
                     },
-                    callback: "ZTBCMS_UPLOAD_VIDEO",
+                    callback: "ZTBCMS_UPLOAD_UE_IMAGE",
                     galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
+                    group_type: "ue_image",
                     now_group: 'all',     // 当前分类ID
                     move_group_id: '',    // 移动至分类ID
-                    group_type: "video", // 显示修改分组名称框
                     uploadData: {
-                        enable: '0',
                         group_id: 'all'
                     },
                     loading: true,
-                    uploadLoading: null
+                    uploadLoading: null,
                 },
                 watch: {},
                 computed: {
@@ -193,7 +189,7 @@
                             page: this.pagination.page,
                             limit: this.pagination.limit,
                             group_id: this.now_group,
-                            module: this.group_type //视频类型文件
+                            module: this.group_type //UEditor图片
                         };
                         $.ajax({
                             url: "{:urlx('common/upload.panel/getFilesByGroupIdList')}",
@@ -226,6 +222,7 @@
                         // 获取图片列表
                         this.getGalleryByGroupIdList()
                     },
+
                     // 获取分组列表
                     getGalleryGroup() {
                         var that = this;
@@ -237,24 +234,23 @@
                             },
                             type: 'get',
                             success: function (res) {
-                                that.galleryGroupList = res.data
+                                that.galleryGroupList = res.data;
                             }
                         })
                     },
                     // 添加分组
                     addGroup() {
-                        var that = this;
                         this.$prompt('请输入分组名称', '新增分组', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                         }).then(({value}) => {
+                            var that = this;
                             $.ajax({
                                 url: "{:urlx('common/upload.panel/addGalleryGroup')}",
                                 dataType: "json",
                                 type: "post",
                                 data: {
-                                    group_name: value,
-                                    group_type: that.group_type
+                                    group_name: value
                                 },
                                 success(res) {
                                     if (res.status) {
@@ -340,15 +336,15 @@
                     // 移动分组
                     moveGroup: function () {
                         var that = this;
-                        var files;
+                        var files = [];
                         for (var i = 0; i < this.selectdFileList.length; i++) {
                             files.push(this.selectdFileList[i])
                         }
                         $.ajax({
                             url: "{:urlx('common/upload.panel/moveGralleryGroup')}",
                             data: {
-                                files,
-                                group_id: that.move_group_id
+                                files: files,
+                                group_id: this.move_group_id
                             },
                             dataType: 'json',
                             type: 'post',
@@ -367,6 +363,7 @@
                     confirm: function () {
                         console.log('selectdFileList', JSON.stringify(this.selectdFileList));
                         var event = document.createEvent('CustomEvent');
+
                         event.initCustomEvent(this.callback, true, true, {
                             files: this.selectdFileList
                         });
@@ -402,10 +399,11 @@
                         for (var i = 0; i < this.selectdFileList.length; i++) {
                             files.push(this.selectdFileList[i])
                         }
+
                         $.ajax({
                             url: "{:urlx('common/upload.panel/deleteFiles')}",
                             data: {
-                                files
+                                files: files
                             },
                             dataType: 'json',
                             type: 'post',
@@ -539,7 +537,6 @@
         .el-menu-item:hover i {
             opacity: 0.9;
         }
-
         .el-upload-dragger {
             height: 36px;
             line-height: 30px;

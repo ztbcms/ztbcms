@@ -1,6 +1,9 @@
 <?php
+
 namespace app;
 
+use app\common\exception\AdminApiException;
+use app\common\exception\BaseApiException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
 use think\exception\Handle;
@@ -38,20 +41,29 @@ class ExceptionHandle extends Handle
     {
         // 使用内置的方式记录异常日志
         parent::report($exception);
+
     }
 
     /**
      * Render an exception into an HTTP response.
      *
      * @access public
-     * @param \think\Request   $request
+     * @param \think\Request $request
      * @param Throwable $e
      * @return Response
      */
     public function render($request, Throwable $e): Response
     {
         // 添加自定义异常处理机制
+        if ($e instanceof BaseApiException) {
+            //基础api异常处理
+            return json(['status' => false, 'msg' => $e->getMessage(), 'code' => $e->getCode(), 'data' => $e->getData()]);
+        }
 
+        if ($e instanceof AdminApiException) {
+            //基础api异常处理
+            return json(['status' => false, 'msg' => $e->getMessage(), 'code' => $e->getCode(), 'data' => $e->getData()]);
+        }
         // 其他错误交给系统处理
         return parent::render($request, $e);
     }

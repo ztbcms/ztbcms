@@ -12,11 +12,10 @@ namespace app\common\libs\upload;
 use app\common\model\upload\AttachmentModel;
 use OSS\Core\OssException;
 use OSS\OssClient;
+use think\facade\Cache;
 
 class AliyunDriver
 {
-
-    const DISKCONFIG = "ztbcms";
 
     const PRIVILEGE_PUBLIC = "1";
     const PRIVILEGE_PRIVICE = "2";
@@ -28,6 +27,7 @@ class AliyunDriver
     protected $bucket;
     protected $domain;
     protected $privilege;
+    protected $expireTime;
 
     public function __construct($config)
     {
@@ -40,6 +40,7 @@ class AliyunDriver
         $this->bucket = $config['attachment_aliyun_bucket'];
         $this->domain = $config['attachment_aliyun_domain'];
         $this->privilege = $config['attachment_aliyun_privilege'];
+        $this->expireTime = $config['attachment_aliyun_expire_time'];
     }
 
     /**
@@ -62,6 +63,10 @@ class AliyunDriver
                     //如果是视频文件、获取视频缩略图
                     $attachmentModel->filethumb = $attachmentModel->getData('fileurl') . "?x-oss-process=video/snapshot,t_500,f_png";
                 }
+                if ($attachmentModel->module == AttachmentModel::MODULE_UE_IMAGE) {
+                    //如果是UEditor编辑上传的图片，默认公共读
+                    $ossClient->putObjectAcl($this->bucket, $object, OssClient::OSS_ACL_TYPE_PUBLIC_READ);
+                }
                 return true;
             } else {
                 throw new \Exception("OSS 上传失败");
@@ -82,9 +87,17 @@ class AliyunDriver
         if ($this->privilege == self::PRIVILEGE_PUBLIC) {
             return false;
         }
+        $privateUrl = Cache::get('private_url_' . $object);
+        if ($privateUrl) {
+            // 查看
+            return $privateUrl;
+        }
         try {
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
-            return $ossClient->signUrl($this->bucket, $object, 60);
+            $privateUrl = $ossClient->signUrl($this->bucket, $object, $this->expireTime);
+            //设置文件缓存，过期时间提前10分钟
+            Cache::set('private_url_' . $object, $privateUrl, $this->expireTime - 600);
+            return $privateUrl;
         } catch (\Exception $exception) {
             return "error";
         }
@@ -101,12 +114,20 @@ class AliyunDriver
         if ($this->privilege == self::PRIVILEGE_PUBLIC) {
             return false;
         }
+        $privateThumbUrl = Cache::get('private_thumb_url_' . $object);
+        if ($privateThumbUrl) {
+            // 查看
+            return $privateThumbUrl;
+        }
         try {
             $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
             $options = [
                 OssClient::OSS_PROCESS => "video/snapshot,t_500,f_png"
             ];
-            return $ossClient->signUrl($this->bucket, $object, 60, OssClient::OSS_HTTP_GET, $options);
+            $privateThumbUrl = $ossClient->signUrl($this->bucket, $object, $this->expireTime, OssClient::OSS_HTTP_GET, $options);
+            //设置文件缓存，过期时间提前10分钟
+            Cache::set('private_thumb_url_' . $object, $privateThumbUrl, $this->expireTime - 600);
+            return $privateThumbUrl;
         } catch (\Exception $exception) {
             return false;
         }

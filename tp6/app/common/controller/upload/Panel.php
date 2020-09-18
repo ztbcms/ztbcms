@@ -219,4 +219,23 @@ class Panel extends AdminController
         }
         return View::fetch('fileUpload');
     }
+
+    /**
+     * 上传UEditor文件图片（公开读）
+     * @param Request $request
+     * @return string|\think\response\Json
+     */
+    function imageUEUpload(Request $request)
+    {
+        if ($request->isPost()) {
+            $groupId = $request->post('group_id', '');
+            $uploadService = new UploadService();
+            if ($uploadService->uploadUEImage($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+                return json(self::createReturn(true, [], '上传成功'));
+            } else {
+                return json(self::createReturn(false, [], $uploadService->getError()));
+            }
+        }
+        return View::fetch('imageUEUpload');
+    }
 }

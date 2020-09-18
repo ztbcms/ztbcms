@@ -353,8 +353,9 @@ INSERT INTO `cms_config` VALUES ('46', 'attachment_aliyun_endpoint', 'OSS-Endpoi
 INSERT INTO `cms_config` VALUES ('47', 'attachment_aliyun_bucket', 'OSS-bucket', '1', '');
 INSERT INTO `cms_config` VALUES ('48', 'attachment_aliyun_domain', 'OSS-外网域名', '1', '');
 INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '');
-INSERT INTO `cms_config` VALUES ('50', 'site_domain', '网站域名', 1, '');
-INSERT INTO `cms_config` VALUES ('51', 'site_file_domain', '网站附件域名', 1, '');
+INSERT INTO `cms_config` VALUES ('50', 'attachment_aliyun_expire_time', 'OSS-临时访问链接过期时间', '86400', '');
+INSERT INTO `cms_config` VALUES ('51', 'site_domain', '网站域名', 1, '');
+INSERT INTO `cms_config` VALUES ('52', 'site_file_domain', '网站附件域名', 1, '');
 
 
 -- ----------------------------

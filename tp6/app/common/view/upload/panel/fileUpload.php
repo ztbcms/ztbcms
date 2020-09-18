@@ -43,16 +43,25 @@
                         <el-upload
                                 :limit="uploadConfig.max_upload"
                                 multiple
+                                drag
                                 :action="uploadConfig.uploadUrl"
                                 :accept="uploadConfig.accept"
                                 :on-success="handleUploadSuccess"
+                                :on-progress="handleUploadProgress"
                                 :on-error="handleUploadError"
                                 :on-exceed="handleExceed"
                                 :data="uploadData"
                                 id="upload_input"
                                 ref="upload"
                                 :show-file-list="false">
-                            <el-button size="small" type="default"><i class="el-icon-plus"></i>点击上传</el-button>
+                            <div style="display: flex; justify-content: center;align-items: center;line-height: 36px;">
+                                <div>
+                                    <i class="el-icon-upload"></i>
+                                </div>
+                                <div style="padding: 0 10px">
+                                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                </div>
+                            </div>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
                             <div>
@@ -107,119 +116,6 @@
             </div>
         </el-card>
     </div>
-    <style>
-        /* 页面架构 */
-        body {
-            margin: 0;
-        }
-
-        .footer {
-            margin-top: 10px;
-            margin-right: 16px;
-            float: right;
-        }
-
-        /* 上传图片    */
-        .thumb-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .thumb-uploader .el-upload:hover {
-            border-color: #409EFF;
-        }
-
-        .el-upload__input {
-            display: none !important;
-        }
-
-        /*图库*/
-        .imgListItem {
-            width: 82px;
-            height: 82px;
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            display: inline-flex;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            position: relative;
-            cursor: pointer;
-            vertical-align: top;
-        }
-
-        .is_check {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 80px;
-            height: 80px;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            font-size: 40px;
-        }
-
-        .group_list {
-            height: 330px;
-            overflow: scroll;
-            border-bottom: 1px solid gainsboro;
-        }
-
-        .el-menu {
-            border: none;
-            padding-right: 20px;
-        }
-
-        .el-menu-item {
-            height: 30px;
-            line-height: 30px;
-        }
-
-        .el-menu-item:focus {
-            outline: none;
-            background-color: #ecf5ff;
-        }
-
-        .group_close {
-            font-size: 15px;
-            line-height: 30px;
-        }
-
-        .group_edit_icon {
-            font-size: 15px;
-            line-height: 30px;
-        }
-
-        .group_active {
-            /*background-color: #409eff;*/
-            color: #409eff;
-        }
-
-        .group_item {
-            width: 85%;
-            margin: 3px 10px;
-            padding: 4px 10px;
-            font-size: 13px;
-            background-color: #fff;
-            border-color: #b3d8ff;
-            color: #409eff;
-            height: 36px;
-        }
-
-        .el-menu-item i {
-            color: #303133;
-            opacity: 0;
-        }
-
-        .el-menu-item:hover i {
-            opacity: 0.9;
-        }
-
-    </style>
-
     <script>
         $(document).ready(function () {
             new Vue({
@@ -236,6 +132,7 @@
                         total_pages: 0,
                         total_items: 0,
                     },
+                    callback: "ZTBCMS_UPLOAD_FILE",
                     galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
 
@@ -246,7 +143,8 @@
                         enable: '0',
                         group_id: 'all'
                     },
-                    loading: true
+                    loading: true,
+                    uploadLoading: null
                 },
                 watch: {},
                 computed: {
@@ -261,8 +159,18 @@
                     }
                 },
                 methods: {
+                    handleUploadProgress(event, file, fileList) {
+                        console.log('handleUploadProgress', event, file, fileList);
+                        this.uploadLoading = this.$loading({
+                            lock: true,
+                            text: '上传中……',
+                            spinner: 'el-icon-loading',
+                            background: 'rgba(0, 0, 0, 0.7)'
+                        })
+                    },
                     handleUploadSuccess: function (res, file, fileList) {
                         console.log('handleUploadSuccess', res);
+                        this.uploadLoading.close();
                         if (res.status) {
                             this.getGalleryByGroupIdList();
                         } else {
@@ -460,7 +368,7 @@
                     confirm: function () {
                         console.log('selectdFileList', JSON.stringify(this.selectdFileList));
                         var event = document.createEvent('CustomEvent');
-                        event.initCustomEvent('ZTBCMS_UPLOAD_FILE', true, true, {
+                        event.initCustomEvent(this.callback, true, true, {
                             files: this.selectdFileList
                         });
                         window.parent.dispatchEvent(event);
@@ -517,8 +425,135 @@
                     this.getGalleryByGroupIdList();
 
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
+                    this.callback = this.getUrlQuery('callback') || this.callback
                 }
             })
         })
     </script>
+    <style>
+        /* 页面架构 */
+        body {
+            margin: 0;
+        }
+
+        .footer {
+            margin-top: 10px;
+            margin-right: 16px;
+            float: right;
+        }
+
+        /* 上传图片    */
+        .thumb-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .thumb-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .el-upload__input {
+            display: none !important;
+        }
+
+        /*图库*/
+        .imgListItem {
+            width: 82px;
+            height: 82px;
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            display: inline-flex;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            cursor: pointer;
+            vertical-align: top;
+        }
+
+        .is_check {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: 80px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 40px;
+        }
+
+        .group_list {
+            height: 330px;
+            overflow: scroll;
+            border-bottom: 1px solid gainsboro;
+        }
+
+        .el-menu {
+            border: none;
+            padding-right: 20px;
+        }
+
+        .el-menu-item {
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .el-menu-item:focus {
+            outline: none;
+            background-color: #ecf5ff;
+        }
+
+        .group_close {
+            font-size: 15px;
+            line-height: 30px;
+        }
+
+        .group_edit_icon {
+            font-size: 15px;
+            line-height: 30px;
+        }
+
+        .group_active {
+            /*background-color: #409eff;*/
+            color: #409eff;
+        }
+
+        .group_item {
+            width: 85%;
+            margin: 3px 10px;
+            padding: 4px 10px;
+            font-size: 13px;
+            background-color: #fff;
+            border-color: #b3d8ff;
+            color: #409eff;
+            height: 36px;
+        }
+
+        .el-menu-item i {
+            color: #303133;
+            opacity: 0;
+        }
+
+        .el-menu-item:hover i {
+            opacity: 0.9;
+        }
+
+        .el-upload-dragger {
+            height: 36px;
+            line-height: 30px;
+            text-align: right;
+            padding: 0 2px;
+        }
+
+        .el-upload-dragger .el-icon-upload {
+            font-size: 18px !important;
+            color: #C0C4CC;
+            line-height: 22px;
+            margin: 0;
+        }
+
+    </style>
 </div>
