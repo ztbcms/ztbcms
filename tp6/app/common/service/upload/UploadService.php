@@ -34,6 +34,35 @@ class UploadService extends BaseService
     ];
 
     /**
+     * 上传UEditor图片
+     * @param int $groupId
+     * @param int $userid
+     * @param int $isadmin
+     * @return AttachmentModel|bool
+     */
+    function uploadUEImage($groupId = 0, $userid = 0, $isadmin = 1)
+    {
+        try {
+            $attachmentModel = new AttachmentModel();
+            $attachmentModel->userid = $userid;
+            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->group_id = $groupId;
+            $attachmentModel->module = AttachmentModel::MODULE_UE_IMAGE;
+            if (!$this->upload($attachmentModel)) {
+                return false;
+            }
+            //getData('fileurl') 获取原始数据，防止获取器造成的影响
+            $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
+            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_YES;
+            $attachmentModel->save();
+            return $attachmentModel;
+        } catch (\Exception $exception) {
+            $this->setError($exception->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * 上传文件
      * @param int $groupId
      * @param int $userid

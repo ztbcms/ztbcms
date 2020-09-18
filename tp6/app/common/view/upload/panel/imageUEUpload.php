@@ -2,7 +2,7 @@
     <div id="app" style="" v-cloak v-loading="loading">
         <el-card>
             <div slot="header">
-                图片上传
+                图片上传UE
             </div>
             <div>
                 <el-row>
@@ -110,7 +110,7 @@
                 el: '#app',
                 data: {
                     uploadConfig: {
-                        uploadUrl: "{:urlx('common/upload.panel/imageUpload')}",
+                        uploadUrl: "{:urlx('common/upload.panel/imageUEUpload')}",
                         max_upload: 10,//同时上传文件数
                         accept: 'image/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
@@ -120,10 +120,10 @@
                         total_pages: 0,
                         total_items: 0,
                     },
-                    callback: "ZTBCMS_UPLOAD_IMAGE",
+                    callback: "ZTBCMS_UPLOAD_UE_IMAGE",
                     galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
-
+                    group_type: "ue_image",
                     now_group: 'all',     // 当前分类ID
                     move_group_id: '',    // 移动至分类ID
                     uploadData: {
@@ -169,6 +169,7 @@
                             page: this.pagination.page,
                             limit: this.pagination.limit,
                             group_id: this.now_group,
+                            module: this.group_type //UEditor图片
                         };
                         $.ajax({
                             url: "{:urlx('common/upload.panel/getFilesByGroupIdList')}",
@@ -208,9 +209,12 @@
                         $.ajax({
                             url: "{:urlx('common/upload.panel/getGalleryGroup')}",
                             dataType: 'json',
+                            data: {
+                                group_type: that.group_type
+                            },
                             type: 'get',
                             success: function (res) {
-                                that.galleryGroupList = res.data
+                                that.galleryGroupList = res.data;
                             }
                         })
                     },

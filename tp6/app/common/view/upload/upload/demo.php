@@ -1,45 +1,6 @@
 <div>
     <div id="app" style="padding: 8px;" v-cloak>
-        <el-card>
-            <h3>后台上传示例</h3>
-            <div>
-                <template v-for="(file, index) in uploadedImageList">
-                    <div class="imgListItem">
-                        <img :src="file.fileurl" :alt="file.filename" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteImageItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <el-button type="primary" @click="gotoUploadImage">上传图片</el-button>
-
-            <div style="margin-top: 20px">
-                <template v-for="(file, index) in uploadedVideoList">
-                    <div class="imgListItem">
-                        <img :src="file.filethumb" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteVideoItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <el-button type="primary" @click="gotoUploadVideo">上传视频</el-button>
-
-            <div style="margin-top: 20px">
-                <template v-for="(file, index) in uploadeFileList">
-                    <div class="imgListItem">
-                        <img :src="file.filethumb" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteFileItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <el-button type="primary" @click="gotoUploadFile">上传文件</el-button>
-        </el-card>
-
-        <div style="margin-top: 20px;">
+        <div >
             <el-card>
                 <h3>前端上传示例</h3>
                 <el-upload
@@ -97,7 +58,53 @@
                 </div>
             </el-card>
         </div>
+        <el-card style="margin-top: 20px;">
+            <h3>后台上传示例</h3>
+            <div>
+                <template v-for="(file, index) in uploadedImageList">
+                    <div class="imgListItem">
+                        <img :src="file.fileurl" :alt="file.filename" style="width: 128px;height: 128px;">
+                        <div class="deleteMask" @click="deleteImageItem(index)">
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <el-button type="primary" @click="gotoUploadImage">上传图片</el-button>
+
+            <div style="margin-top: 20px">
+                <template v-for="(file, index) in uploadedVideoList">
+                    <div class="imgListItem">
+                        <img :src="file.filethumb" style="width: 128px;height: 128px;">
+                        <div class="deleteMask" @click="deleteVideoItem(index)">
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <el-button type="primary" @click="gotoUploadVideo">上传视频</el-button>
+
+            <div style="margin-top: 20px">
+                <template v-for="(file, index) in uploadeFileList">
+                    <div class="imgListItem">
+                        <img :src="file.filethumb" style="width: 128px;height: 128px;">
+                        <div class="deleteMask" @click="deleteFileItem(index)">
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <el-button type="primary" @click="gotoUploadFile">上传文件</el-button>
+
+            <div style="margin-top: 20px;line-height: 0;">
+                <textarea id="editor_content" style="height: 500px;width: 390px;"></textarea>
+            </div>
+        </el-card>
+
     </div>
+
+    <!-- 引入UEditor   -->
+    {include file="/ueditor_simplicity"}
 
     <style>
         .imgListItem {
@@ -132,9 +139,11 @@
 
     <script>
         $(document).ready(function () {
+            var ueditorInstance = UE.getEditor('editor_content');
             new Vue({
                 el: '#app',
                 data: {
+                    uploadData: {},
                     uploadedImageList: [],
                     uploadedVideoList: [],
                     uploadeFileList: [],

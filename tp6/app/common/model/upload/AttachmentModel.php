@@ -23,6 +23,10 @@ class AttachmentModel extends Model
     const MODULE_IMAGE = "image";
     const MODULE_VIDEO = "video";
     const MODULE_FILE = "file";
+    /**
+     * UE富文本图片
+     */
+    const MODULE_UE_IMAGE = "ue_image";
 
     const DRIVER_ALIYUN = "Aliyun";
     const DRIVER_LOCAL = "Local";
@@ -63,7 +67,7 @@ class AttachmentModel extends Model
      */
     public function getFileurlAttr($value, $data)
     {
-        if (isset($data['driver']) && $data['driver'] == self::DRIVER_ALIYUN) {
+        if (isset($data['driver']) && $data['driver'] == self::DRIVER_ALIYUN && $data['module'] == self::MODULE_IMAGE) {
             $uploadService = new UploadService();
             $res = $uploadService->getPrivateUrl($data['filepath'], self::DRIVER_ALIYUN);
             if ($res) {

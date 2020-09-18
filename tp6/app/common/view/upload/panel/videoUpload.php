@@ -236,6 +236,7 @@
                         total_pages: 0,
                         total_items: 0,
                     },
+                    callback: "ZTBCMS_UPLOAD_VIDEO",
                     galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
                     now_group: 'all',     // 当前分类ID
@@ -459,7 +460,7 @@
                     confirm: function () {
                         console.log('selectdFileList', JSON.stringify(this.selectdFileList));
                         var event = document.createEvent('CustomEvent');
-                        event.initCustomEvent('ZTBCMS_UPLOAD_VIDEO', true, true, {
+                        event.initCustomEvent(this.callback, true, true, {
                             files: this.selectdFileList
                         });
                         window.parent.dispatchEvent(event);
@@ -516,6 +517,7 @@
                     this.getGalleryByGroupIdList();
 
                     this.uploadConfig.max_upload = parseInt(this.getUrlQuery('max_upload') || this.uploadConfig.max_upload);
+                    this.callback = this.getUrlQuery('callback') || this.callback
                 }
             })
         })

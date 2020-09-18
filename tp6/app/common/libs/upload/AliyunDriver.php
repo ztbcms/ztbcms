@@ -62,6 +62,10 @@ class AliyunDriver
                     //如果是视频文件、获取视频缩略图
                     $attachmentModel->filethumb = $attachmentModel->getData('fileurl') . "?x-oss-process=video/snapshot,t_500,f_png";
                 }
+                if ($attachmentModel->module == AttachmentModel::MODULE_UE_IMAGE) {
+                    //如果是UEditor编辑上传的图片，默认公共读
+                    $ossClient->putObjectAcl($this->bucket, $object, OssClient::OSS_ACL_TYPE_PUBLIC_READ);
+                }
                 return true;
             } else {
                 throw new \Exception("OSS 上传失败");
