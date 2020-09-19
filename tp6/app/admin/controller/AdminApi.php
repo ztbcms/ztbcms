@@ -10,6 +10,7 @@ namespace app\admin\controller;
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\controller\AdminController;
+use think\facade\Db;
 
 class AdminApi extends AdminController
 {
@@ -30,7 +31,7 @@ class AdminApi extends AdminController
             'menuList' => $menuList,
             'roleAccessList' => $role_access_list
         ];
-        return self::makeReturn(true, $ret);
+        return self::makeJsonReturn(true, $ret);
     }
 
     /**
@@ -38,13 +39,13 @@ class AdminApi extends AdminController
      */
     public function getAdminUserInfo()
     {
-        $adminUser = M('user')->where(['id' => $this->uid])->field('password,verify', true)->find();
+        $adminUser = Db::name('user')->where(['id' => $this->user->id])->withoutField('password,verify')->findOrEmpty();
         if($adminUser){
-            $role = M('role')->where(['id' => $adminUser['role_id']])->find();
+            $role = Db::name('role')->where(['id' => $adminUser['role_id']])->find();
             $adminUser['role_name'] = $role['name'];
         }
 
-        $this->ajaxReturn(self::createReturn(true, $adminUser));
+        return self::makeJsonReturn(true, $adminUser);
     }
 
     /**
