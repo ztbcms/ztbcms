@@ -12,7 +12,7 @@
     <script src="/statics/admin/theme/adminlte/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <!-- layer.js -->
     <script src="/statics/admin/layer/layer.js"></script>
-    <!--  ztbcms工具类(必须在vue-commonn 前加载)  -->
+    <!--  ztbcms工具类(必须在vue-common 前加载)  -->
     <script src="/statics/js/ztbcms/ztbcms.js"></script>
     <!-- vue.js -->
     <script src="/statics/js/vue/vue.js"></script>

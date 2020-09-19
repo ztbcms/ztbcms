@@ -118,4 +118,19 @@ abstract class BaseController
         ];
     }
 
+    /**
+     * 构建json响应对象
+     * @param boolean $status 返回状态
+     * @param array $data 返回数据
+     * @param string $msg 返回提示
+     * @param string $code 错误码
+     * @param string $url 下一跳地址
+     *
+     * @return \think\response\Json
+     */
+    static function makeReturn($status, $data = [], $msg = '', $code = null, $url = '')
+    {
+        return json(self::createReturn($status, $data, $msg, $code, $url));
+    }
+
 }
