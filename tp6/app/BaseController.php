@@ -128,7 +128,7 @@ abstract class BaseController
      *
      * @return \think\response\Json
      */
-    static function makeReturn($status, $data = [], $msg = '', $code = null, $url = '')
+    static function makeJsonReturn($status, $data = [], $msg = '', $code = null, $url = '')
     {
         return json(self::createReturn($status, $data, $msg, $code, $url));
     }

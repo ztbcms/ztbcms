@@ -765,7 +765,7 @@
             getAdminUserInfo() {
                 var that = this
                 $.ajax({
-                    url: '/Admin/AdminApi/getAdminUserInfo',
+                    url: "{:api_url('/Admin/AdminApi/getAdminUserInfo')}",
                     method: 'get',
                     params: {}
                 }).then(function(res){
