@@ -49,7 +49,7 @@ class AdminMessage extends AdminController
         $limit = Request::param('limit', 15);
         // 默认接收者
         $where = [
-            ['receiver', '=', $this->user->user->id]
+            ['receiver', '=', $this->user->id]
         ];
         // 阅读状态 0 未读 1 已读
         $read_status = Request::param('read_status', '');
