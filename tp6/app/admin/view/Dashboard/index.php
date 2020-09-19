@@ -707,7 +707,7 @@
                     text: ''
                 });
                 $.ajax({
-                    url: '/Admin/AdminApi/getPermissionInfo',
+                    url: "{:api_url('/Admin/AdminApi/getPermissionInfo')}",
                     method: 'get',
                     params: {}
                 }).then(function(res) {

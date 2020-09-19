@@ -14,9 +14,11 @@ class MenuModel extends Model
 
     /**
      * 获取后台管理员的菜单
+     *
      * @param $role_id
-     * @param int $parentid
-     * @param int $level
+     * @param  int  $parentid
+     * @param  int  $level
+     *
      * @return array
      */
     function getAdminUserMenuTree($role_id, $parentid = 0, $level = 1)
@@ -33,20 +35,20 @@ class MenuModel extends Model
                 //附带参数
                 $fu = "";
                 if ($a['parameter']) {
-                    $fu = "?" . $a['parameter'];
+                    $fu = "?".$a['parameter'];
                 }
                 if (!empty($a['is_tp6'])) {
-                    //如果是tp6 返回 /home/module/controller/action 格式
-                    $url = strtolower("/home/{$name}/{$controller}/{$action}{$fu}");
+                    //如果是tp6 返回 /home/module/controller/action 格式 TODO
+                    $url = build_url("{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
                 } else {
-                    $url = U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id));
+                    $url = url("{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true)->build();
                 }
                 $array = array(
-                    "icon" => $a['icon'],
-                    "id" => $id . $name,
-                    "name" => $a['name'],
-                    "url" => $url,
-                    "path" => "/{$id}{$name}/{$controller}/{$action}",
+                    "icon"  => $a['icon'],
+                    "id"    => $id.$name,
+                    "name"  => $a['name'],
+                    "url"   => $url,
+                    "path"  => "/{$id}{$name}/{$controller}/{$action}",
                     "items" => []
                 );
 
@@ -65,16 +67,18 @@ class MenuModel extends Model
 
     /**
      * 按父ID查找菜单子项
+     *
      * @param $role_id
-     * @param integer $parentid 父菜单ID
-     * @param boolean $with_self 是否包括他自己
+     * @param  integer  $parentid  父菜单ID
+     * @param  boolean  $with_self  是否包括他自己
+     *
      * @return array
      */
     public function adminMenu2($role_id, $parentid, $with_self = false)
     {
         //父节点ID
-        $parentid = (int)$parentid;
-        $result = $this->where(array('parentid' => $parentid, 'status' => 1))->order('listorder ASC,id ASC')->select();
+        $parentid = (int) $parentid;
+        $result = $this->where(array('parentid' => $parentid, 'status' => 1))->order('listorder ASC,id ASC')->select()->toArray();
         if (empty($result)) {
             $result = array();
         }
@@ -96,19 +100,16 @@ class MenuModel extends Model
             //方法
             $action = $v['action'];
             //条件
-            $where = array('app' => $v['app'], 'controller' => $v['controller'], 'action' => $action, 'role_id' => array('IN', $child));
+            $where = [['app', '=', $v['app']], ['controller', '=', $v['controller']], ['action', '=', $action], ['role_id', 'in', join(',', $child)]];
             //如果是菜单项
             if ($v['type'] == 0) {
-                $where['controller'] .= $v['id'];
-                $where['action'] .= $v['id'];
+                $where[1] = ['controller', '=', $v['controller'].$v['id']];
+                $where[2] = ['action', '=', $v['action'].$v['id']];
             }
             //public开头的通过
             if (preg_match('/^public_/', $action)) {
                 $array[] = $v;
             } else {
-                if (preg_match('/^ajax_([a-z]+)_/', $action, $_match)) {
-                    $action = $_match[1];
-                }
                 //是否有权限
                 $accessModel = new AccessModel();
                 if ($accessModel->hasPermission($role_id, $where)) {

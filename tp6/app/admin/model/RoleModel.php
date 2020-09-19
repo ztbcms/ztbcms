@@ -6,8 +6,6 @@
 
 namespace app\admin\model;
 
-
-use Admin\Service\User;
 use think\Model;
 
 /**
@@ -34,7 +32,7 @@ class RoleModel extends Model
      */
     public function getAccessList($role_id)
     {
-        $priv_data = array();
+        $priv_data = [];
         if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
             //超级管理员返回全部
             return [
@@ -46,7 +44,8 @@ class RoleModel extends Model
                 ]
             ];
         }
-        $data = $this->getAccessList($role_id);
+        $AccessModel = new AccessModel();
+        $data = $AccessModel->getAccessList($role_id);
         if (empty($data)) {
             return $priv_data;
         }
@@ -87,7 +86,7 @@ class RoleModel extends Model
      */
     function getTreeArray() {
         $roleList = array();
-        $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select();
+        $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select()->toArray();
         foreach ($roleData as $rs) {
             $roleList[$rs['id']] = $rs;
         }
