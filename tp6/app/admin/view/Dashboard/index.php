@@ -861,7 +861,7 @@
                 window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                 var that = this
                 $.ajax({
-                    url: '/Admin/AdminMessage/getAdminMsgList',
+                    url: "{:api_url('/Admin/AdminMessage/getAdminMsgList')}",
                     method: 'get',
                     data: {
                         page: 1,
@@ -891,7 +891,7 @@
             readMsg:function (id) {
                 var that = this;
                 $.ajax({
-                    url: '/Admin/AdminMessage/readMsg',
+                    url: "{:api_url('/Admin/AdminMessage/readMsg')}",
                     method: 'post',
                     data: {
                         ids: [id]
