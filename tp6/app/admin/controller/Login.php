@@ -114,4 +114,16 @@ class Login extends BaseController
         return $checkcode->validate($code, false);
     }
 
+
+    /**
+     * 注销登录
+     */
+    public function doLogout()
+    {
+        AdminUserService::getInstance()->logout();
+        return self::makeJsonReturn(true, [
+            'redirect' => build_url('/admin/login/index')
+        ], '注销成功');
+    }
+
 }

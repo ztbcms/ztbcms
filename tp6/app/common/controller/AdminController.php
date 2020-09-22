@@ -14,6 +14,7 @@ use app\BaseController;
 use app\common\model\UserModel;
 use app\common\model\UserTokenModel;
 use think\App;
+use think\facade\View;
 
 class AdminController extends BaseController
 {
@@ -32,17 +33,29 @@ class AdminController extends BaseController
         } else {
             // 适配 ztbcms v3跳转到 tp6
             $sessionId = cookie('PHPSESSID');
-            if ($sessionId) {
-                $userToken = UserTokenModel::where('session_id', $sessionId)->findOrEmpty();
-                if (!$userToken->isEmpty()) {
-                    $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
-                }
-            } else {
-                //TODO 展示未登录提示页面
-                echo '请登录';
-                exit;
+            if (!$sessionId) {
+                $this->_handleUnlogin();
+                return;
             }
-        }
+            $userToken = UserTokenModel::where('session_id', $sessionId)->findOrEmpty();
+            if ($userToken->isEmpty()) {
+                $this->_handleUnlogin();
+                return;
+            }
 
+            $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
+        }
+    }
+
+    // 处理未登录情况
+    private function _handleUnlogin()
+    {
+        if (request()->isAjax()) {
+            self::makeJsonReturn(false, null, '请登录账号', 401)->send();
+            exit;
+        } else {
+            response(View::fetch('common/401'))->send();
+            exit;
+        }
     }
 }
