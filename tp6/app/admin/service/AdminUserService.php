@@ -16,7 +16,7 @@ use think\facade\Db;
 class AdminUserService
 {
     //存储用户uid的Key
-    const userUidKey = 'cms_userid';
+    const userUidKey = 'spf_userid';
     //超级管理员角色id
     const administratorRoleId = 1;
 
@@ -128,6 +128,10 @@ class AdminUserService
     public function logout()
     {
         session(null);
+        // 删除凭证
+        Db::name('UserToken')->where([
+            ['session_id'  ,'=', cookie('PHPSESSID')],
+        ])->delete();
         return true;
     }
 
@@ -165,7 +169,7 @@ class AdminUserService
         session(self::userUidKey, $token);
 
         Db::name('UserToken')->insert([
-            'session_id'  => session_id(),
+            'session_id'  => cookie('PHPSESSID'),
             'token'       => $token,
             'user_id'     => (int) $userInfo['id'],
             'expire_time' => time() + 7 * 86400,
@@ -185,6 +189,9 @@ class AdminUserService
      *
      * @param null $password
      * @return boolean|array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     private function getUserInfo($identifier, $password = null)
     {
