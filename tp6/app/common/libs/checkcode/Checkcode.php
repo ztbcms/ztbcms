@@ -36,19 +36,14 @@ class Checkcode
     //输出多少次后更换验证码
     private $testLimit = 3;
 
-    //
-
     /**
      * Checkcode constructor.
      *
-     * @param int|string $checkcode_type 验证码类型
+     * @param  int|string  $checkcode_type  验证码类型
      */
     public function __construct($checkcode_type)
     {
-//        $this->font = COMMON_PATH.'Font/elephant.ttf';
-        $this->font = app()->getRootPath() . 'app/common/libs/checkcode/font/elephant.ttf';
-//        var_dump($this->font);exit;
-        $checkcode_type = $checkcode_type;
+        $this->font = app()->getRootPath().'app/common/libs/checkcode/font/elephant.ttf';
         switch ($checkcode_type) {
             //纯数字
             case 1:
@@ -56,7 +51,7 @@ class Checkcode
                 break;
             //纯字母
             case 2:
-                $this->charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ';
+                $this->charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXY Z';
                 break;
             //字母+数字
             case 3:
@@ -148,6 +143,7 @@ class Checkcode
     /**
      * 生成验证码
      * $regenerate
+     *
      * @param  boolean  $regenerate  刷新
      *
      * @return string
