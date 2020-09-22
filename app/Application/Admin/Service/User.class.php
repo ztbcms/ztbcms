@@ -70,6 +70,13 @@ class User
     {
         $userId = \Libs\Util\Encrypt::authcode(session(self::userUidKey), 'DECODE');
         if (empty($userId)) {
+            // TODO 适配 ztbcms tp6跳转到 v3
+            $sessionId = $_COOKIE['PHPSESSID'];
+            $token = M('user_token')->where(['session_id' => $sessionId])->find();
+            if($token){
+                return (int)$token['user_id'];
+            }
+
             return false;
         }
         return (int)$userId;
