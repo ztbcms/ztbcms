@@ -6,8 +6,6 @@
 
 namespace app\admin\controller;
 
-
-use app\admin\model\AdminMessageModel;
 use app\admin\service\AdminMessageService;
 use app\common\controller\AdminController;
 use think\facade\Request;
@@ -57,7 +55,7 @@ class AdminMessage extends AdminController
             $where[] = ['read_status', '=', $read_status];
         }
         // 消息类型
-        $type = Request::param('type', '');;
+        $type = Request::param('type', '');
         if ($type) {
             $where[] = ['type', '=', $type];
         }
@@ -91,9 +89,7 @@ class AdminMessage extends AdminController
     {
         // 消息类型
         $type = Request::param('type', '');
-        if ($type) {
-            $where['type'] = $type;
-        }
+        if ($type)  $where['type'] = $type;
         $res = AdminMessageService::readAllAdminMessage($this->user->id, $type);
         return json($res);
     }
