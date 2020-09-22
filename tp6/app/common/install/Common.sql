@@ -87,15 +87,15 @@ CREATE TABLE `cms_tp6_message_msg` (
 DROP TABLE IF EXISTS `cms_tp6_attachment_group`;
 CREATE TABLE `cms_tp6_attachment_group` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT '0' COMMENT '父ID',
   `group_type` varchar(255) NOT NULL DEFAULT '' COMMENT '分类类型',
   `group_name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
   `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  `is_delete` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除 0否1是',
+  `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `pid` int(11) DEFAULT NULL COMMENT '父ID',
   PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
 
 DROP TABLE IF EXISTS `cms_tp6_attachment`;
 CREATE TABLE `cms_tp6_attachment` (
