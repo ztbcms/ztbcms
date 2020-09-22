@@ -17,27 +17,29 @@ use function EasyWeChat\Kernel\Support\get_client_ip;
 
 class UploadService extends BaseService
 {
+    public $isPrivate = false;
+
     private $uploadDrivers = [
-        'Local' => LocalDriver::class,
+        'Local'  => LocalDriver::class,
         'Aliyun' => AliyunDriver::class,
     ];
 
     const FILE_THUMB_ARRAY = [
-        'ppt' => '/statics/admin/upload/ppt.png',
-        'pptx' => '/statics/admin/upload/ppt.png',
-        'doc' => '/statics/admin/upload/doc.png',
-        'docx' => '/statics/admin/upload/doc.png',
-        'xls' => '/statics/admin/upload/xls.png',
-        'xlsx' => '/statics/admin/upload/xls.png',
-        'file' => '/statics/admin/upload/file.png',
+        'ppt'   => '/statics/admin/upload/ppt.png',
+        'pptx'  => '/statics/admin/upload/ppt.png',
+        'doc'   => '/statics/admin/upload/doc.png',
+        'docx'  => '/statics/admin/upload/doc.png',
+        'xls'   => '/statics/admin/upload/xls.png',
+        'xlsx'  => '/statics/admin/upload/xls.png',
+        'file'  => '/statics/admin/upload/file.png',
         'video' => '/statics/admin/upload/video.png'
     ];
 
     /**
      * 上传UEditor图片
-     * @param int $groupId
-     * @param int $userid
-     * @param int $isadmin
+     * @param  int  $groupId
+     * @param  int  $userid
+     * @param  int  $isadmin
      * @return AttachmentModel|bool
      */
     function uploadUEImage($groupId = 0, $userid = 0, $isadmin = 1)
@@ -45,7 +47,7 @@ class UploadService extends BaseService
         try {
             $attachmentModel = new AttachmentModel();
             $attachmentModel->userid = $userid;
-            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->is_admin = $isadmin;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_UE_IMAGE;
             if (!$this->upload($attachmentModel)) {
@@ -64,9 +66,9 @@ class UploadService extends BaseService
 
     /**
      * 上传文件
-     * @param int $groupId
-     * @param int $userid
-     * @param int $isadmin
+     * @param  int  $groupId
+     * @param  int  $userid
+     * @param  int  $isadmin
      * @return AttachmentModel|bool
      */
     function uploadFile($groupId = 0, $userid = 0, $isadmin = 1)
@@ -74,7 +76,7 @@ class UploadService extends BaseService
         try {
             $attachmentModel = new AttachmentModel();
             $attachmentModel->userid = $userid;
-            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->is_admin = $isadmin;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_FILE;
             if (!$this->upload($attachmentModel)) {
@@ -94,9 +96,9 @@ class UploadService extends BaseService
 
     /**
      * 上传视频
-     * @param int $groupId
-     * @param int $userid
-     * @param int $isadmin
+     * @param  int  $groupId
+     * @param  int  $userid
+     * @param  int  $isadmin
      * @return AttachmentModel|bool
      */
     function uploadVideo($groupId = 0, $userid = 0, $isadmin = 1)
@@ -104,7 +106,7 @@ class UploadService extends BaseService
         try {
             $attachmentModel = new AttachmentModel();
             $attachmentModel->userid = $userid;
-            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->is_admin = $isadmin;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_VIDEO;
             if (!$this->upload($attachmentModel)) {
@@ -125,9 +127,9 @@ class UploadService extends BaseService
 
     /**
      * 上传图片
-     * @param int $groupId
-     * @param int $userid
-     * @param int $isadmin
+     * @param  int  $groupId
+     * @param  int  $userid
+     * @param  int  $isadmin
      * @return AttachmentModel|bool
      */
     function uploadImage($groupId = 0, $userid = 0, $isadmin = 1)
@@ -135,7 +137,7 @@ class UploadService extends BaseService
         try {
             $attachmentModel = new AttachmentModel();
             $attachmentModel->userid = $userid;
-            $attachmentModel->isadmin = $isadmin;
+            $attachmentModel->is_admin = $isadmin;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_IMAGE;
             if (!$this->upload($attachmentModel)) {
@@ -165,20 +167,22 @@ class UploadService extends BaseService
         $attachmentModel->fileext = $file->getOriginalExtension();
         $attachmentModel->uploadtime = time();
         $attachmentModel->uploadip = get_client_ip();
+        $attachmentModel->is_private = $this->isPrivate;
 
         $config = ConfigModel::getConfigs();
         $attachmentDriver = isset($config['attachment_driver']) ? $config['attachment_driver'] : 'Local';
         $attachmentModel->driver = $attachmentDriver;
 
         //最大上传大小
-        $maxFileSize = ($attachmentModel->isadmin == 1 ? $config['uploadmaxsize'] : $config['qtuploadmaxsize']) * 1024;
+        $maxFileSize = ($attachmentModel->is_admin == 1 ? $config['uploadmaxsize'] : $config['qtuploadmaxsize']) * 1024;
         //允许上传文件格式
-        $uploadAllowExt = str_replace('|', ',', ($attachmentModel->isadmin == 1 ? $config['uploadallowext'] : $config['qtuploadallowext']));
+        $uploadAllowExt = str_replace('|', ',',
+            ($attachmentModel->is_admin == 1 ? $config['uploadallowext'] : $config['qtuploadallowext']));
         try {
             validate(['file' => "filesize:{$maxFileSize}|fileExt:{$uploadAllowExt}"])
                 ->message([
-                    'file.filesize' => '文件大小不能超过' . ($maxFileSize / 1024) . '文件大小不能超过',
-                    'file.fileExt' => '文件格式不对',
+                    'file.filesize' => '文件大小不能超过'.($maxFileSize / 1024).'文件大小不能超过',
+                    'file.fileExt'  => '文件格式不对',
                 ])
                 ->check(request()->file());
         } catch (\think\exception\ValidateException $e) {
@@ -188,6 +192,7 @@ class UploadService extends BaseService
         if (isset($this->uploadDrivers[$attachmentDriver])) {
             try {
                 $driver = new $this->uploadDrivers[$attachmentDriver]($config);
+                $driver->setIsPrivate($this->isPrivate);
                 $driver->upload($attachmentModel);
             } catch (\Exception $exception) {
                 $this->setError($exception->getMessage());

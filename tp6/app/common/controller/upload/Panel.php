@@ -18,9 +18,9 @@ use think\Request;
 class Panel extends AdminController
 {
     /**
-     * @param Request $request
-     * @throws \Exception
+     * @param  Request  $request
      * @return array
+     * @throws \Exception
      */
     function deleteFiles(Request $request)
     {
@@ -28,7 +28,7 @@ class Panel extends AdminController
         $uploadData = [];
         foreach ($files as $file) {
             $uploadData[] = [
-                'aid' => $file['aid'],
+                'aid'           => $file['aid'],
                 'delete_status' => 1
             ];
         }
@@ -41,9 +41,9 @@ class Panel extends AdminController
     }
 
     /**
-     * @param Request $request
-     * @throws \Exception
+     * @param  Request  $request
      * @return array
+     * @throws \Exception
      */
     function moveGralleryGroup(Request $request)
     {
@@ -52,7 +52,7 @@ class Panel extends AdminController
         $uploadData = [];
         foreach ($files as $file) {
             $uploadData[] = [
-                'aid' => $file['aid'],
+                'aid'      => $file['aid'],
                 'group_id' => $groupId
             ];
         }
@@ -65,22 +65,21 @@ class Panel extends AdminController
     }
 
     /**
-     * @param Request $request
-     * @throws \think\db\exception\DbException
+     * @param  Request  $request
      * @return array
+     * @throws \think\db\exception\DbException
      */
     function getFilesByGroupIdList(Request $request)
     {
         $module = $request->get('module', AttachmentModel::MODULE_IMAGE);
         $where[] = ['module', '=', $module];
-        $where[] = ['isadmin', '=', AttachmentModel::IS_ADMIN_YES];
+        $where[] = ['is_admin', '=', AttachmentModel::IS_ADMIN_YES];
 
         $groupId = $request->get('group_id', 'all');
         if ($groupId !== 'all') {
             $where[] = ['group_id', '=', $groupId];
         }
         $lists = AttachmentModel::where($where)
-            ->field(['aid', 'filename', 'filepath', 'fileurl', 'filethumb', 'driver', 'module'])//driver,module数据处理需要
             ->visible(['aid', 'filename', 'filepath', 'fileurl', 'filethumb'])
             ->order('aid', 'DESC')
             ->paginate(15);
@@ -88,7 +87,7 @@ class Panel extends AdminController
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     function delGalleryGroup(Request $request)
@@ -107,7 +106,7 @@ class Panel extends AdminController
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     function editGalleryGroup(Request $request)
@@ -127,7 +126,7 @@ class Panel extends AdminController
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     function addGalleryGroup(Request $request)
@@ -144,11 +143,11 @@ class Panel extends AdminController
 
     /**
      * 获取文件分组
-     * @param Request $request
-     * @throws \think\db\exception\DataNotFoundException
+     * @param  Request  $request
+     * @return array
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
-     * @return array
+     * @throws \think\db\exception\DataNotFoundException
      */
     function getGalleryGroup(Request $request)
     {
@@ -164,65 +163,71 @@ class Panel extends AdminController
     /**
      * 图片上传面板
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array|string
      */
     function imageUpload(Request $request)
     {
+        $isPrivate = $request->param('is_private', 0);
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
+            $uploadService->isPrivate = $isPrivate == 1;
             if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
             }
         }
-        return View::fetch('imageUpload');
+        return View::fetch('imageUpload', ['isPrivate' => $isPrivate]);
     }
 
     /**
      * 视频上传面板
-     * @param Request $request
+     * @param  Request  $request
      * @return array|string
      */
     function videoUpload(Request $request)
     {
+        $isPrivate = $request->param('is_private', 0);
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
+            $uploadService->isPrivate = $isPrivate == 1;
             if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
             }
         }
-        return View::fetch('videoUpload');
+        return View::fetch('videoUpload', ['isPrivate' => $isPrivate]);
     }
 
     /**
      * 文件（文档）上传面板
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return string|\think\response\Json
      */
     function fileUpload(Request $request)
     {
+        $isPrivate = $request->param('is_private', 0);
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
+            $uploadService->isPrivate = $isPrivate == 1;
             if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
             }
         }
-        return View::fetch('fileUpload');
+        return View::fetch('fileUpload', ['isPrivate' => $isPrivate]);
     }
 
     /**
      * 上传UEditor文件图片（公开读）
-     * @param Request $request
+     * @param  Request  $request
      * @return string|\think\response\Json
      */
     function imageUEUpload(Request $request)
