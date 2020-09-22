@@ -203,11 +203,9 @@ class AdminMessageService extends BaseService
     }
 
     /**
-     *
      * 已读所有
-     *
-     * @param  string  $receiver
-     *
+     * @param $receiver
+     * @param  string  $type
      * @return array
      * @throws \think\db\exception\DbException
      */
