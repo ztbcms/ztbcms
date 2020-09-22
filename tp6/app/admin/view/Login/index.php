@@ -249,8 +249,8 @@
                     var msg = res.msg;
                     layer.msg(msg);
                     setTimeout(function () {
-                        window.location.replace(res.url)
-                    }, 1500)
+                        window.location.replace(res.data.forward)
+                    }, 800)
                 }
             }
         })

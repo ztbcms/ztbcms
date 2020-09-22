@@ -153,7 +153,10 @@ class AdminUserService
     /**
      * 注册用户登录状态
      *
-     * @param  array  $userInfo  用户信息
+     * @param  array $userInfo 用户信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     private function registerLogin(array $userInfo)
     {
@@ -178,8 +181,9 @@ class AdminUserService
     /**
      * 获取用户信息
      *
-     * @param  string  $identifier  用户名或者用户ID
+     * @param  string $identifier 用户名或者用户ID
      *
+     * @param null $password
      * @return boolean|array
      */
     private function getUserInfo($identifier, $password = null)

@@ -6,6 +6,7 @@
 
 namespace app\admin\model;
 
+use think\facade\Db;
 use think\Model;
 
 class AdminUserModel extends Model
@@ -15,9 +16,13 @@ class AdminUserModel extends Model
     /**
      * 获取用户信息
      *
-     * @param  string  $identifier  用户名或者用户ID
+     * @param  string $identifier 用户名或者用户ID
      *
+     * @param null $password
      * @return boolean|array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function getUserInfo($identifier, $password = null)
     {
@@ -45,16 +50,22 @@ class AdminUserModel extends Model
     /**
      * 更新登录状态信息
      *
-     * @param  string  $userId
+     * @param  string $userId
      *
      * @return boolean|array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     public function loginStatus($userId)
     {
         $this->find((int) $userId);
-        $this->last_login_time = time();
-        $this->last_login_ip = request()->ip();
-        return $this->save();
+        $res = Db::name('user')->where('id', $userId)->update([
+            'last_login_time' => time(),
+            'last_login_ip' => request()->ip(),
+        ]);
+
+        return !!$res;
     }
 
     /**
