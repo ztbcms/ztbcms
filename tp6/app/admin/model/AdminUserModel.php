@@ -16,15 +16,16 @@ class AdminUserModel extends Model
     /**
      * 获取用户信息
      *
-     * @param  string $identifier 用户名或者用户ID
+     * @param  string  $identifier  用户名或者用户ID
      *
-     * @param null $password
+     * @param  null  $password
+     *
      * @return boolean|array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    function getUserInfo($identifier, $password = null)
+    function getUserInfo(string $identifier, $password = null)
     {
         if (empty($identifier)) {
             return false;

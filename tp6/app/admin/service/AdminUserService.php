@@ -10,6 +10,7 @@ namespace app\admin\service;
 use app\admin\libs\system\Rbac;
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
+use app\common\service\BaseService;
 use app\common\util\Encrypt;
 use think\facade\Db;
 
@@ -19,7 +20,7 @@ use think\facade\Db;
  *
  * @package app\admin\service
  */
-class AdminUserService
+class AdminUserService extends BaseService
 {
     //存储用户uid的Key
     const userUidKey = 'spf_userid';
@@ -215,5 +216,25 @@ class AdminUserService
         }
         $adminUserModel = new AdminUserModel();
         return $adminUserModel->getUserInfo($identifier, $password);
+    }
+
+    /**
+     * 获取后台用户信息
+     * @param $user_id
+     *
+     * @return array|null
+     */
+    function getAdminUserInfoById($user_id)
+    {
+        if (empty($user_id)) {
+            return null;
+        }
+        $adminUserModel = new AdminUserModel();
+        $res = $adminUserModel->where('id', $user_id)->findOrEmpty();
+        if($res){
+            return self::createReturn(true, $res->toArray());
+        }
+
+        return self::createReturn(false, null, '找不到信息');
     }
 }
