@@ -15,8 +15,10 @@ use think\model\concern\SoftDelete;
 class AttachmentGroupModel extends Model
 {
     use SoftDelete;
+
+    protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $deleteTime = 'is_delete';
-    protected $name = 'attachment_group';
+
+    protected $name = 'tp6_attachment_group';
     const TYPE_IMAGE = "image";
 }

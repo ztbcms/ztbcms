@@ -1,14 +1,26 @@
 <?php
+/**
+ * User: jayinton
+ * Date: 2020/9/22
+ */
 
-// +----------------------------------------------------------------------
-// |  后台用户服务
-// +----------------------------------------------------------------------
+namespace app\admin\service;
 
-namespace Admin\Service;
 
-class User
+use app\admin\libs\system\Rbac;
+use app\admin\model\AdminUserModel;
+use app\admin\model\LoginlogModel;
+use app\common\util\Encrypt;
+use think\facade\Db;
+
+/**
+ * 后台管理员服务
+ * Class AdminUserService
+ *
+ * @package app\admin\service
+ */
+class AdminUserService
 {
-
     //存储用户uid的Key
     const userUidKey = 'spf_userid';
     //超级管理员角色id
@@ -20,20 +32,23 @@ class User
     /**
      * 连接后台用户服务
      * @staticvar \Admin\Service\Cache $systemHandier
-     * @return \Admin\Service\User
+     *
+     * @return AdminUserService
      */
     static public function getInstance()
     {
-        static $handier = NULL;
+        static $handier = null;
         if (empty($handier)) {
-            $handier = new User();
+            $handier = new AdminUserService();
         }
         return $handier;
     }
 
     /**
      * 魔术方法
-     * @param string $name
+     *
+     * @param  string  $name
+     *
      * @return null
      */
     public function __get($name)
@@ -46,12 +61,13 @@ class User
             if (!empty($userInfo)) {
                 return $userInfo[$name];
             }
-            return NULL;
+            return null;
         }
     }
 
     /**
      * 获取当前登录用户资料
+     *
      * @return array
      */
     public function getInfo()
@@ -59,27 +75,21 @@ class User
         if (empty(self::$userInfo)) {
             self::$userInfo = $this->getUserInfo($this->isLogin());
         }
-        return !empty(self::$userInfo) ? self::$userInfo : false;
+        return !empty(self::$userInfo) ? self::$userInfo : null;
     }
 
     /**
      * 检验用户是否已经登录
+     *
      * @return boolean|int 失败返回false，成功返回当前登录用户基本信息
      */
     public function isLogin()
     {
-        $userId = \Libs\Util\Encrypt::authcode(session(self::userUidKey), 'DECODE');
+        $userId = Encrypt::authcode(session(self::userUidKey), 'DECODE');
         if (empty($userId)) {
-            // TODO 适配 ztbcms tp6跳转到 v3
-            $sessionId = $_COOKIE['PHPSESSID'];
-            $token = M('user_token')->where(['session_id' => $sessionId])->find();
-            if($token){
-                return (int)$token['user_id'];
-            }
-
             return false;
         }
-        return (int)$userId;
+        return (int) $userId;
     }
 
     //登录后台
@@ -104,6 +114,7 @@ class User
 
     /**
      * 检查当前用户是否超级管理员
+     *
      * @return boolean
      */
     public function isAdministrator()
@@ -117,64 +128,83 @@ class User
 
     /**
      * 注销登录状态
+     *
      * @return boolean
      */
     public function logout()
     {
-        session('[destroy]');
+        session(null);
+        // 删除凭证
+        Db::name('UserToken')->where([
+            ['session_id'  ,'=', cookie('PHPSESSID')],
+        ])->delete();
         return true;
     }
 
     /**
      * 记录登录日志
-     * @param string $identifier 登录方式，uid,username
-     * @param string $password 密码
-     * @param int $status
+     *
+     * @param  string  $identifier  登录方式，uid,username
+     * @param  string  $password  密码
+     * @param  int  $status
      */
     private function record($identifier, $password, $status = 0)
     {
         //登录日志
-        D('Admin/Loginlog')->addLoginLogs(array(
+        $loginLogModel = new LoginlogModel();
+        $loginLogModel->addLoginLog([
             "username" => $identifier,
-            "status" => $status,
+            "status"   => $status,
             "password" => $status ? '密码保密' : $password,
-            "info" => is_int($identifier) ? '用户ID登录' : '用户名登录',
-        ));
+            "info"     => is_int($identifier) ? '用户ID登录' : '用户名登录',
+        ]);
     }
 
     /**
      * 注册用户登录状态
-     * @param array $userInfo 用户信息
+     *
+     * @param  array $userInfo 用户信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     private function registerLogin(array $userInfo)
     {
         //写入session
-        $token = \Libs\Util\Encrypt::authcode((int)$userInfo['id'], '');
+        $token = Encrypt::authcode((int) $userInfo['id'], '');
         session(self::userUidKey, $token);
-        M('UserToken')->add([
-            'session_id' => session_id(),
-            'token' => $token,
-            'user_id' => (int)$userInfo['id'],
+
+        Db::name('UserToken')->insert([
+            'session_id'  => cookie('PHPSESSID'),
+            'token'       => $token,
+            'user_id'     => (int) $userInfo['id'],
             'expire_time' => time() + 7 * 86400,
             'create_time' => time()
         ]);
         //更新状态
-        D('Admin/User')->loginStatus((int)$userInfo['id']);
+        $adminUserModel = new AdminUserModel();
+        $adminUserModel->loginStatus((int) $userInfo['id']);
         //注册权限
-        \Libs\System\RBAC::saveAccessList((int)$userInfo['id']);
+        Rbac::saveAccessList((int) $userInfo['id']);
     }
 
     /**
      * 获取用户信息
-     * @param string $identifier 用户名或者用户ID
+     *
+     * @param  string $identifier 用户名或者用户ID
+     *
+     * @param null $password
      * @return boolean|array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
-    private function getUserInfo($identifier, $password = NULL)
+    private function getUserInfo($identifier, $password = null)
     {
         if (empty($identifier)) {
             return false;
         }
-        return D('Admin/User')->getUserInfo($identifier, $password);
+        $adminUserModel = new AdminUserModel();
+        return $adminUserModel->getUserInfo($identifier, $password);
     }
-
 }

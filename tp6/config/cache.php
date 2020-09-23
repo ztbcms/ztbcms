@@ -4,6 +4,13 @@
 // | 缓存设置
 // +----------------------------------------------------------------------
 
+//引入cms数据库配置
+if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
+    $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
+} else {
+    throw new \Exception('找不到dataconfig.php文件');
+}
+
 return [
     // 默认缓存驱动
     'default' => env('cache.driver', 'file'),
@@ -16,7 +23,7 @@ return [
             // 缓存保存目录
             'path'       => '',
             // 缓存前缀
-            'prefix'     => '',
+            'prefix'     => $cmsDataConfig['DATA_CACHE_PREFIX'],
             // 缓存有效期 0表示永久缓存
             'expire'     => 0,
             // 缓存标签前缀

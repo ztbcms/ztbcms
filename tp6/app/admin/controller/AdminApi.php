@@ -9,6 +9,7 @@ namespace app\admin\controller;
 
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 
@@ -20,7 +21,8 @@ class AdminApi extends AdminController
      * - 显示的权限菜单
      * - 所有权限列表
      */
-    function getPermissionInfo(){
+    function getPermissionInfo()
+    {
         $adminUserInfo = $this->user;
 
         $menuModel = new MenuModel();
@@ -40,7 +42,7 @@ class AdminApi extends AdminController
     public function getAdminUserInfo()
     {
         $adminUser = Db::name('user')->where(['id' => $this->user->id])->withoutField('password,verify')->findOrEmpty();
-        if($adminUser){
+        if ($adminUser) {
             $role = Db::name('role')->where(['id' => $adminUser['role_id']])->find();
             $adminUser['role_name'] = $role['name'];
         }
@@ -48,17 +50,5 @@ class AdminApi extends AdminController
         return self::makeJsonReturn(true, $adminUser);
     }
 
-    /**
-     * 登出
-     */
-    public function logout()
-    {
-        User::getInstance()->logout();
-        //手动登出时，清空forward
-        cookie( NULL);
-        $this->ajaxReturn(self::createReturn(true, [
-            'redirect' => U("Admin/Public/login")
-        ],'注销成功'));
 
-    }
 }

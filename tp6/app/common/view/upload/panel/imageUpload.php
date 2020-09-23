@@ -136,6 +136,7 @@
                     now_group: 'all',     // 当前分类ID
                     move_group_id: '',    // 移动至分类ID
                     uploadData: {
+                        is_private: '{$isPrivate}',//是否私有配置
                         group_id: 'all'
                     },
                     loading: true,

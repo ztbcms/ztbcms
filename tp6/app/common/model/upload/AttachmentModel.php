@@ -15,9 +15,10 @@ use think\model\concern\SoftDelete;
 class AttachmentModel extends Model
 {
     use SoftDelete;
+    protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
-    protected $deleteTime = 'delete_status';
-    protected $name = 'attachment';
+
+    protected $name = 'tp6_attachment';
     protected $pk = 'aid';
 
     const MODULE_IMAGE = "image";
@@ -37,6 +38,9 @@ class AttachmentModel extends Model
     const IS_ADMIN_YES = 1;
     const IS_ADMIN_NO = 0;
 
+    const IS_PRIVATE_YES = 1;
+    const IS_PRIVATE_NO = 0;
+
     /**
      * 获取缩略图处理器
      *
@@ -46,9 +50,9 @@ class AttachmentModel extends Model
      */
     public function getFilethumbAttr($value, $data)
     {
-        if (isset($data['driver']) && $data['driver'] == self::DRIVER_ALIYUN && $data['module'] == self::MODULE_VIDEO) {
+        if (isset($data['is_private']) && $data['is_private'] == self::IS_PRIVATE_YES) {
             $uploadService = new UploadService();
-            $res = $uploadService->getPrivateThumbUrl($data['filepath'], self::DRIVER_ALIYUN);
+            $res = $uploadService->getPrivateThumbUrl($data['filepath'], $data['driver']);
             if ($res) {
                 return $res;
             } else {
@@ -67,9 +71,9 @@ class AttachmentModel extends Model
      */
     public function getFileurlAttr($value, $data)
     {
-        if (isset($data['driver']) && $data['driver'] == self::DRIVER_ALIYUN && $data['module'] != self::MODULE_UE_IMAGE) {
+        if (isset($data['is_private']) && $data['is_private'] == self::IS_PRIVATE_YES) {
             $uploadService = new UploadService();
-            $res = $uploadService->getPrivateUrl($data['filepath'], self::DRIVER_ALIYUN);
+            $res = $uploadService->getPrivateUrl($data['filepath'], $data['driver']);
             if ($res) {
                 return $res;
             } else {

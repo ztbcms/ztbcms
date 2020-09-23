@@ -1,6 +1,6 @@
 <div>
     <div id="app" style="padding: 8px;" v-cloak>
-        <div >
+        <div>
             <el-card>
                 <h3>前端上传示例</h3>
                 <el-upload
@@ -17,6 +17,23 @@
                         :show-file-list="false">
                     <el-button size="small" type="default">上传图片</el-button>
                 </el-upload>
+
+                <div style="margin-top: 20px">
+                    <el-upload
+                            :limit="9"
+                            multiple
+                            action="{:urlx('common/upload.api/imageUpload')}"
+                            accept="image/*"
+                            :on-success="handleUploadSuccess"
+                            :on-error="handleUploadError"
+                            :on-exceed="handleExceed"
+                            :data="{is_private:1}"
+                            id="upload_input"
+                            ref="upload"
+                            :show-file-list="false">
+                        <el-button size="small" type="danger">上传图片（私有读）</el-button>
+                    </el-upload>
+                </div>
 
                 <div style="margin-top: 20px">
                     <el-upload
@@ -70,8 +87,9 @@
                     </div>
                 </template>
             </div>
-            <el-button type="primary" @click="gotoUploadImage">上传图片</el-button>
-
+            <el-button type="primary" @click="gotoUploadImage(0)">上传图片</el-button>
+            <el-button type="danger" @click="gotoUploadImage(1)">上传图片(私有读)</el-button>
+            <span style="color: #666;font-size: 14px;">私有读：目前支持阿里云OSS私有读配置(视频，文件同理)，私有读文件需要存文件 aid，每次获取都需要返回临时地址</span>
             <div style="margin-top: 20px">
                 <template v-for="(file, index) in uploadedVideoList">
                     <div class="imgListItem">
@@ -213,12 +231,12 @@
                     deleteVideoItem: function (index) {
                         this.uploadedVideoList.splice(index, 1)
                     },
-                    gotoUploadImage: function () {
+                    gotoUploadImage: function (isPrivate) {
                         layer.open({
                             type: 2,
                             title: '',
                             closeBtn: false,
-                            content: "{:urlx('common/upload.panel/imageUpload')}",
+                            content: "{:urlx('common/upload.panel/imageUpload')}&is_private=" + isPrivate,
                             area: ['670px', '550px'],
                         })
                     },

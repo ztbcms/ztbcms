@@ -54,7 +54,7 @@ VALUES
 	('secret_key', '', '私钥', '');
 
 -- ----------------------------
--- 计划任务
+-- 消息
 -- ----------------------------
 
 DROP TABLE IF EXISTS `cms_tp6_message_msg`;
@@ -76,10 +76,45 @@ CREATE TABLE `cms_tp6_message_msg` (
   `class` varchar(128) NOT NULL DEFAULT '' COMMENT '实例化的类名',
   `read_time` int(11) NOT NULL DEFAULT '0' COMMENT '阅读时间',
   `process_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '处理次数',
-  PRIMARY KEY (`id`),
-  KEY `create_time` (`create_time`),
-  KEY `sender` (`sender`),
-  KEY `sender_type` (`sender_type`),
-  KEY `receiver` (`receiver`),
-  KEY `receiver_type` (`receiver_type`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- 上传处理
+-- ----------------------------
+
+DROP TABLE IF EXISTS `cms_tp6_attachment_group`;
+CREATE TABLE `cms_tp6_attachment_group` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT '0' COMMENT '父ID',
+  `group_type` varchar(255) NOT NULL DEFAULT '' COMMENT '分类类型',
+  `group_name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
+  `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
+
+DROP TABLE IF EXISTS `cms_tp6_attachment`;
+CREATE TABLE `cms_tp6_attachment` (
+  `aid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件ID',
+  `driver` varchar(32) DEFAULT 'Local' COMMENT '上传驱动',
+  `group_id` int(11) DEFAULT '0' COMMENT '分组',
+  `module` varchar(64) NOT NULL DEFAULT '' COMMENT '模块名称',
+  `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
+  `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
+  `fileurl` varchar(256) DEFAULT '' COMMENT '文件全局路径',
+  `filethumb` varchar(256) DEFAULT '' COMMENT '文件缩略图',
+  `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
+  `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
+  `userid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上传用户ID',
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否后台用户上传',
+  `is_private` tinyint(1) DEFAULT '0' COMMENT '是否私有链接',
+  `upload_ip` varchar(16) NOT NULL DEFAULT '' COMMENT '上传ip',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
+  `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
+  `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
