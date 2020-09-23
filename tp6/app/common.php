@@ -19,7 +19,6 @@ if (!function_exists('build_url')) {
     /**
      * 构建路由
      * 因为挂载cms下，默认、tp6有一个 /home 开头
-     * TODO
      * @param  string $string
      * @param  array  $vars
      * @param  bool  $suffix
@@ -27,7 +26,7 @@ if (!function_exists('build_url')) {
      *
      * @return string
      */
-    function build_url($string, array $vars = [], $suffix = true, $domain = false){
+    function build_url($string, array $vars = [], $suffix = false, $domain = true){
         return url('/home' . $string, $vars, $suffix, $domain)->build();
     }
 }
