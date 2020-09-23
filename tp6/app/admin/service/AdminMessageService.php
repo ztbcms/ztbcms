@@ -6,11 +6,15 @@
 
 namespace app\admin\service;
 
-
 use app\admin\model\AdminMessageModel;
 use app\common\service\BaseService;
 use think\facade\Db;
 
+/**
+ * 后台消息服务
+ * Class AdminMessageService
+ * @package app\admin\service
+ */
 class AdminMessageService extends BaseService
 {
 

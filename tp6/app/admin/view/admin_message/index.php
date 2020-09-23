@@ -1,5 +1,3 @@
-<extend name="../../Admin/View/Common/element_layout"/>
-
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
