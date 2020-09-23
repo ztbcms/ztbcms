@@ -9,8 +9,9 @@
 namespace app\admin\service;
 
 use app\admin\model\MenuModel;
+use app\admin\validate\Menu;
 use app\common\service\BaseService;
-use think\facade\Config;
+use think\exception\ValidateException;
 
 /**
  * 菜单管理
@@ -231,20 +232,27 @@ class MenuService extends BaseService
      */
     static function addEditDetails($posts = []){
         $MenuModel = new MenuModel();
-        if($posts['id']) {
-            //编辑菜单
-            if ($MenuModel->where('id',$posts['id'])->save($posts) !== false) {
-                return self::createReturn(true,'','操作成功');
+
+        try {
+            validate(Menu::class)->check($posts);
+            if($posts['id']) {
+                //编辑菜单
+                if ($MenuModel->where('id',$posts['id'])->save($posts) !== false) {
+                    return self::createReturn(true,'','操作成功');
+                } else {
+                    return self::createReturn(false,'',$MenuModel->getError());
+                }
             } else {
-                return self::createReturn(false,'',$MenuModel->getError());
+                //添加菜单
+                if($MenuModel->create($posts)) {
+                    return self::createReturn(true,'','操作成功');
+                } else {
+                    return self::createReturn(false,'',$MenuModel->getError());
+                }
             }
-        } else {
-            //添加菜单
-            if($MenuModel->create($posts)) {
-                return self::createReturn(true,'','操作成功');
-            } else {
-                return self::createReturn(false,'',$MenuModel->getError());
-            }
+        } catch (ValidateException $e) {
+            // 验证失败 输出错误信息
+            return self::createReturn(false,'',$e->getError());
         }
     }
 }

@@ -12,8 +12,13 @@
 │
 ├─ 后台菜单管理
 │
-├──── 后台菜单 {{domain}}/home/Menu/index
-├──── 后台详情 {{domain}}/home/Menu/details
+├──── 后台菜单 {{domain}}/home/Admin/Menu/index
+├──── 后台详情 {{domain}}/home/Admin/Menu/details
+├
+├─ 管理员管理
+│
+├──── 管理员列表 {{domain}}/home/Management/Menu/index
+├──── 管理员详情 {{domain}}/home/Management/Menu/details
 ```
 
 

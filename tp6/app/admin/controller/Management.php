@@ -1,0 +1,138 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Cycle3
+ * Date: 2020/9/23
+ * Time: 16:40
+ */
+
+namespace app\admin\controller;
+
+use app\admin\model\RoleModel;
+use app\admin\model\UserModel;
+use app\common\controller\AdminController;
+use think\facade\Request;
+
+class Management extends AdminController
+{
+    /**
+     * 管理员列表
+     */
+    public function index()
+    {
+        return view();
+    }
+
+    /**
+     * 管理员管理
+     */
+    public function details()
+    {
+        $id = Request::param('id');
+        return view('details', [
+            'id' => $id
+        ]);
+    }
+
+    /**
+     * 获取管理员列表
+     */
+    public function getManagementList()
+    {
+        $UserModel = new UserModel();
+        $RoleModel = new RoleModel();
+        $where = [];
+        if (!$this->is_administrator) {
+            //如果非超级管理员，只能管理下级角色的成员
+            $res = $UserModel->field('id')->where(['parentid' => $this->user->role_id])->select();
+            $role_ids = [];
+            foreach ($res as $val) {
+                $role_ids[] = $val['id'];
+            }
+            //如果没有找到下级role_ids 则默认为0
+            $where['role_id'] = ['in', $role_ids ? $role_ids : '0'];
+        }
+
+        $list = $UserModel->where($where)->select();
+        foreach ($list as $k => $User_value) {
+            if ($User_value['last_login_time']) {
+                $list[$k]['last_login_time'] = date("Y-m-d H:i:s", $User_value['last_login_time']);
+            }
+            $list[$k]['role_name'] = $RoleModel->where('id='.$User_value['role_id'])->value('name');
+        }
+        return json(self::createReturn(true, $list));
+    }
+
+    /**
+     * 获取管理员详情
+     */
+    public function getDetails()
+    {
+        $UserModel = new UserModel();
+        $id = Request::param('id');
+        $where['id'] = $id;
+        $res = $UserModel->where($where)->find();
+        $res['password'] = '';
+        $res['status'] = (string)$res['status'];
+        if($res) {
+            return json(self::createReturn(true,$res));
+        } else {
+            return json(self::createReturn(false,[],'该管理员不存在'));
+        }
+    }
+
+    /**
+     * 添加或者编辑管理员
+     */
+    public function addEditManagement()
+    {
+        $id = Request::param('id');
+        $UserModel = new UserModel();
+        // 编辑管理员
+        if (!empty($id)) {
+            //判断是否修改本人，在此方法，不能修改本人相关信息
+            if ($this->user->id == $id) {
+                return json(self::createReturn(false, null, '修改当前登录用户信息请进入[我的面板]中进行修改'));
+            }
+            if (1 == $id) {
+                return json(self::createReturn(false, null, '该帐号不允许修改'));
+            }
+            if (false !== $UserModel->amendManager($_POST)) {
+                return json(self::createReturn(true, [], '更新成功'));
+            } else {
+                $error = $UserModel->error;
+                return json(self::createReturn(false, [], $error ? $error : '添加失败！'));
+            }
+        }
+
+        // 创建管理员
+        if ($UserModel->createManager($_POST)) {
+            return json(self::createReturn(true, [], '添加管理员成功'));
+        } else {
+            $error = $UserModel->error;
+            return json(self::createReturn(false, [], $error ? $error : '添加失败！'));
+        }
+    }
+
+    //管理员删除
+    public function delete() {
+        $id = Request::param('id','','trim');
+        if (empty($id)) {
+            return json(self::createReturn(false, [], '没有指定删除对象！'));
+        }
+
+        if ((int)$id == $this->user->id) {
+            return json(self::createReturn(false, [], '你不能删除你自己！'));
+        }
+
+        $UserModel = new UserModel();
+        //执行删除
+        if ($UserModel->deleteUser($id)) {
+            return json(self::createReturn(true, [], '删除成功！'));
+        } else {
+            $error = $UserModel->error;
+            return json(self::createReturn(false, [], $error ?  : '删除失败！'));
+        }
+    }
+
+}
