@@ -24,7 +24,7 @@ class AdminUserModel extends Model
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getUserInfo($identifier, $password = null)
+    function getUserInfo($identifier, $password = null)
     {
         if (empty($identifier)) {
             return false;
@@ -57,7 +57,7 @@ class AdminUserModel extends Model
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function loginStatus($userId)
+    function loginStatus($userId)
     {
         $this->find((int) $userId);
         $res = Db::name('user')->where('id', $userId)->update([
@@ -76,7 +76,7 @@ class AdminUserModel extends Model
      *
      * @return string 密文密码
      */
-    public function hashPassword($password, $verify = "")
+    function hashPassword($password, $verify = "")
     {
         return md5($password.md5($verify));
     }
@@ -91,7 +91,7 @@ class AdminUserModel extends Model
      *
      * @return boolean
      */
-    public function changePassword($uid, $newPass, $password = null)
+    function changePassword($uid, $newPass, $password = null)
     {
         //获取会员信息
         $userInfo = $this->getUserInfo((int) $uid, $password);
@@ -112,7 +112,7 @@ class AdminUserModel extends Model
      *
      * @return boolean
      */
-    public function amendManager($data)
+    function amendManager($data)
     {
         if (empty($data) || !is_array($data) || !isset($data['id'])) {
             $this->error = '没有需要修改的数据！';
@@ -147,7 +147,7 @@ class AdminUserModel extends Model
      *
      * @return boolean
      */
-    public function createManager($data)
+    function createManager($data)
     {
         if (empty($data)) {
             $this->error = '没有数据！';
@@ -173,7 +173,7 @@ class AdminUserModel extends Model
      *
      * @return boolean
      */
-    public function deleteUser($userId)
+    function deleteUser($userId)
     {
         $userId = (int) $userId;
         if (empty($userId)) {

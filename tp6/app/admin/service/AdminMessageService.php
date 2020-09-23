@@ -11,6 +11,12 @@ use app\admin\model\AdminMessageModel;
 use app\common\service\BaseService;
 use think\facade\Db;
 
+/**
+ * 后台消息
+ * Class AdminMessageService
+ *
+ * @package app\admin\service
+ */
 class AdminMessageService extends BaseService
 {
 

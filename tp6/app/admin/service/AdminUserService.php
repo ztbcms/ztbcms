@@ -13,6 +13,12 @@ use app\admin\model\LoginlogModel;
 use app\common\util\Encrypt;
 use think\facade\Db;
 
+/**
+ * 后台管理员服务
+ * Class AdminUserService
+ *
+ * @package app\admin\service
+ */
 class AdminUserService
 {
     //存储用户uid的Key
