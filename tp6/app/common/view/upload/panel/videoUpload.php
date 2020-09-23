@@ -139,7 +139,7 @@
                     move_group_id: '',    // 移动至分类ID
                     group_type: "video", // 显示修改分组名称框
                     uploadData: {
-                        enable: '0',
+                        is_private: '{$isPrivate}',//是否私有配置
                         group_id: 'all'
                     },
                     loading: true,

@@ -20,7 +20,7 @@ return array(
     //作者邮箱
     'authoremail' => '364626853@qq.com',
     //版本号，请不要带除数字外的其他字符
-    'version' => '0.0.1.0',
+    'version' => '0.0.2.0',
     //适配最低CMS版本，
     'adaptation' => '3.8.0.0',
     //签名
