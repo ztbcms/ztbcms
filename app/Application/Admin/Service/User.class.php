@@ -121,6 +121,10 @@ class User
      */
     public function logout()
     {
+        // 删除凭证
+        M('UserToken')->where([
+            ['session_id' => $_COOKIE['PHPSESSID']],
+        ])->delete();
         session('[destroy]');
         return true;
     }

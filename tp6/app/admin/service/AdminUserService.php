@@ -87,6 +87,15 @@ class AdminUserService
     {
         $userId = Encrypt::authcode(session(self::userUidKey), 'DECODE');
         if (empty($userId)) {
+            // TODO 适配 ztbcms tp3登录跳转到 tp6
+            $sessionId = $_COOKIE['PHPSESSID'];
+            $token = Db::name('user_token')->where([
+                ['session_id', '=', $sessionId],
+                ['expire_time', '>', time()],
+            ])->find();
+            if($token){
+                return (int)$token['user_id'];
+            }
             return false;
         }
         return (int) $userId;
@@ -133,11 +142,11 @@ class AdminUserService
      */
     public function logout()
     {
-        session(null);
         // 删除凭证
         Db::name('UserToken')->where([
             ['session_id'  ,'=', cookie('PHPSESSID')],
         ])->delete();
+        session(null);
         return true;
     }
 
