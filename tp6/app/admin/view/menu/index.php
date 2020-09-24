@@ -5,7 +5,7 @@
             <h3>后台菜单</h3>
         </div>
 
-        <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="details()">
+        <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="details('')">
             添加菜单
         </el-button>
 

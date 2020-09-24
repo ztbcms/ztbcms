@@ -26,6 +26,15 @@
 │
 ├──── 管理员列表 {{domain}}/Admin/Management/index => {{domain}}/home/Admin/Management/index
 ├──── 管理员详情 {{domain}}/Admin/Management/add || edit => {{domain}}/home/Admin/Management/details
+├
+├─ 角色管理
+│
+├──── 角色列表 {{domain}}/Admin/Rbac/index => {{domain}}/home/Admin/Rbac/index
+├──── 添加角色 {{domain}}/home/Admin/Rbac/roleAdd
+├──── 编辑角色 {{domain}}/home/Admin/Rbac/roleEdit
+├──── 权限设置 {{domain}}/home/Admin/Rbac/authorize
+├──── 成员管理 {{domain}}/home/Admin/Management/index
+│
 
 ```
 

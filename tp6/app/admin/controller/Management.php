@@ -85,7 +85,10 @@ class Management extends AdminController
      */
     public function index()
     {
-        return view();
+        $role_id = Request::param('role_id');
+        return view('index',[
+            'role_id' => $role_id
+        ]);
     }
 
     /**
@@ -107,15 +110,16 @@ class Management extends AdminController
         $AdminUserModel = new AdminUserModel();
         $RoleModel = new RoleModel();
         $where = [];
+        $role_id = Request::param('role_id');
         if (!$this->is_administrator) {
             //如果非超级管理员，只能管理下级角色的成员
-            $res = $AdminUserModel->field('id')->where(['parentid' => $this->user->role_id])->select();
-            $role_ids = [];
-            foreach ($res as $val) {
-                $role_ids[] = $val['id'];
-            }
+            $roleWhere['parentid'] = $this->user->role_id;
+            if($role_id) $roleWhere['id'] = $role_id;
+            $role_ids = $RoleModel->where($roleWhere)->column('id');
             //如果没有找到下级role_ids 则默认为0
-            $where['role_id'] = ['in', $role_ids ? $role_ids : '0'];
+            $where['role_id'] = ['in', implode(',',$role_ids)];
+        } else {
+            if($role_id) $where['role_id'] = $role_id;
         }
 
         $list = $AdminUserModel->where($where)->select();

@@ -102,6 +102,7 @@
                 total: 0,
                 input_date: ['', ''],
                 listQuery: {
+                    role_id : '{$role_id}',
                     page: 1,
                     limit: 20,
                     total: 0
@@ -134,6 +135,7 @@
                         type: "get",
                         dataType:"json",
                         data:{
+                            'role_id' : that.listQuery.role_id
                         },
                         success:function (res) {
                             if(res.status){
