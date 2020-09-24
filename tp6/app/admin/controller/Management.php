@@ -8,13 +8,78 @@
 
 namespace app\admin\controller;
 
+use Admin\Service\User;
 use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use think\facade\Request;
 
 class Management extends AdminController
 {
+    /**
+     * 用户基本信息
+     */
+    public function myBasicsInfo()
+    {
+        return view(
+            'myBasicsInfo', ['user' => $this->user]
+        );
+    }
+
+    /**
+     * 编辑我的基本资料
+     */
+    public function editMyBasicsInfo()
+    {
+        $save = array(
+            'nickname'    => Request::param('nickname'),
+            'email'       => Request::param('email'),
+            'remark'      => Request::param('remark'),
+            'update_time' => time()
+        );
+        $AdminUserModel = new AdminUserModel();
+        $AdminUserModel->where(['id' => $this->user->id])->save($save);
+        return json(self::createReturn(true, [], '操作成功'));
+    }
+
+    /**
+     * 修改密码
+     */
+    public function chanpass()
+    {
+        return view('chanpass', ['user' => $this->user]);
+    }
+
+    /**
+     * 编辑用户密码
+     */
+    public function changePassword()
+    {
+        $oldPass = Request::param('password', '', 'trim');
+        $newPass = Request::param('new_password', '', 'trim');
+        $new_pwdconfirm = Request::param('new_pwdconfirm', '', 'trim');
+
+        if (empty($oldPass)) {
+            return json(self::createReturn(false, null,  '请输入旧密码'));
+        }
+
+        if ($newPass != $new_pwdconfirm) {
+            return json(self::createReturn(false, null,  '两次密码不相同'));
+        }
+
+        $AdminUserModel = new AdminUserModel();
+        if ($AdminUserModel->changePassword($this->user->id, $newPass, $oldPass)) {
+            //退出登录
+            (new AdminUserService)->logout();
+            return json(self::createReturn(true, [
+                'rediret_url' => api_url("/Admin/Login/index") //跳转链接
+            ],  '密码已经更新，请重新登录'));
+        } else {
+            return json(self::createReturn(false, null,  '密码更新失败'));
+        }
+    }
+
     /**
      * 管理员列表
      */
@@ -73,11 +138,11 @@ class Management extends AdminController
         $where['id'] = $id;
         $res = $AdminUserModel->where($where)->find();
         $res['password'] = '';
-        $res['status'] = (string)$res['status'];
-        if($res) {
-            return json(self::createReturn(true,$res));
+        $res['status'] = (string) $res['status'];
+        if ($res) {
+            return json(self::createReturn(true, $res));
         } else {
-            return json(self::createReturn(false,[],'该管理员不存在'));
+            return json(self::createReturn(false, [], '该管理员不存在'));
         }
     }
 
@@ -116,9 +181,10 @@ class Management extends AdminController
     }
 
     //管理员删除
-    public function delete() {
-        $id = Request::param('id','','trim');
-        if ((int)$id == $this->user->id) {
+    public function delete()
+    {
+        $id = Request::param('id', '', 'trim');
+        if ((int) $id == $this->user->id) {
             return json(self::createReturn(false, [], '你不能删除你自己！'));
         }
 
@@ -128,7 +194,7 @@ class Management extends AdminController
             return json(self::createReturn(true, [], '删除成功！'));
         } else {
             $error = $AdminUserModel->error;
-            return json(self::createReturn(false, [], $error ?  : '删除失败！'));
+            return json(self::createReturn(false, [], $error ?: '删除失败！'));
         }
     }
 

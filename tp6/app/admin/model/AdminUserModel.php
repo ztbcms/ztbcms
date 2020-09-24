@@ -110,13 +110,13 @@ class AdminUserModel extends Model
 
     /**
      * 修改密码
-     * TODO update
-     *
-     * @param  int  $uid  用户ID
-     * @param  string  $newPass  新密码
-     * @param  string  $password  旧密码
-     *
-     * @return boolean
+     * @param $uid
+     * @param $newPass
+     * @param  null  $password
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     function changePassword($uid, $newPass, $password = null)
     {
@@ -126,7 +126,7 @@ class AdminUserModel extends Model
             $this->error = '旧密码不正确或者该用户不存在！';
             return false;
         }
-        $verify = genRandomString(6);
+        $verify = $this->genRandomString(6);
         $status = $this->where(array('id' => $userInfo['id']))->save(array(
             'password' => $this->hashPassword($newPass, $verify), 'verify' => $verify
         ));
