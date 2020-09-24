@@ -17,8 +17,8 @@
 ├
 ├─ 管理员管理
 │
-├──── 管理员列表 {{domain}}/home/Management/Menu/index
-├──── 管理员详情 {{domain}}/home/Management/Menu/details
+├──── 管理员列表 {{domain}}/home/Admin/Management/index
+├──── 管理员详情 {{domain}}/home/Admin/Management/details
 ```
 
 

@@ -6,6 +6,8 @@
 
 namespace app\admin\model;
 
+use app\admin\validate\User;
+use think\exception\ValidateException;
 use think\facade\Db;
 use think\Model;
 
@@ -16,9 +18,9 @@ class AdminUserModel extends Model
     /**
      * 获取用户信息
      *
-     * @param  string $identifier 用户名或者用户ID
+     * @param  string  $identifier  用户名或者用户ID
      *
-     * @param null $password
+     * @param  null  $password
      * @return boolean|array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -50,7 +52,7 @@ class AdminUserModel extends Model
     /**
      * 更新登录状态信息
      *
-     * @param  string $userId
+     * @param  string  $userId
      *
      * @return boolean|array
      * @throws \think\db\exception\DataNotFoundException
@@ -62,7 +64,7 @@ class AdminUserModel extends Model
         $this->find((int) $userId);
         $res = Db::name('user')->where('id', $userId)->update([
             'last_login_time' => time(),
-            'last_login_ip' => request()->ip(),
+            'last_login_ip'   => request()->ip(),
         ]);
 
         return !!$res;
@@ -79,6 +81,31 @@ class AdminUserModel extends Model
     function hashPassword($password, $verify = "")
     {
         return md5($password.md5($verify));
+    }
+
+    /**
+     * 产生一个指定长度的随机字符串,并返回给用户
+     * @param  int  $len  产生字符串的长度
+     * @return string 随机字符串
+     */
+    function genRandomString($len = 6)
+    {
+        $chars = array(
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
+            "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
+            "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G",
+            "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+            "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2",
+            "3", "4", "5", "6", "7", "8", "9",
+        );
+        $charsLen = count($chars) - 1;
+        // 将数组打乱
+        shuffle($chars);
+        $output = "";
+        for ($i = 0; $i < $len; $i++) {
+            $output .= $chars[mt_rand(0, $charsLen)];
+        }
+        return $output;
     }
 
     /**
@@ -100,81 +127,103 @@ class AdminUserModel extends Model
             return false;
         }
         $verify = genRandomString(6);
-        $status = $this->where(array('id' => $userInfo['id']))->save(array('password' => $this->hashPassword($newPass, $verify), 'verify' => $verify));
+        $status = $this->where(array('id' => $userInfo['id']))->save(array(
+            'password' => $this->hashPassword($newPass, $verify), 'verify' => $verify
+        ));
         return $status !== false ? true : false;
     }
 
     /**
-     * 修改管理员信息
-     * TODO update
-     *
-     * @param  array  $data
-     *
-     * @return boolean
+     * 编辑管理员
+     * @param $data
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
-    function amendManager($data)
-    {
+    public function amendManager($data){
         if (empty($data) || !is_array($data) || !isset($data['id'])) {
             $this->error = '没有需要修改的数据！';
             return false;
         }
+
         $info = $this->where(array('id' => $data['id']))->find();
         if (empty($info)) {
             $this->error = '该管理员不存在！';
             return false;
         }
+
         //密码为空，表示不修改密码
         if (isset($data['password']) && empty($data['password'])) {
             unset($data['password']);
+        } else {
+            $verify =  $this->genRandomString(6);
+            $data['verify'] = $verify;
+            $data['password'] = $this->hashPassword($data['password'], $verify);
+            unset($data['pwdconfirm']);
         }
-        if ($this->create($data)) {
-            if ($this->data['password']) {
-                $verify = genRandomString(6);
-                $this->verify = $verify;
-                $this->password = $this->hashPassword($this->password, $verify);
-            }
-            $status = $this->save();
-            return $status !== false ? true : false;
+
+        try {
+            $validateData = $data;
+            $validateData['password'] = 'success';
+            $validateData['pwdconfirm'] = 'success';
+            validate(User::class)->check($validateData);
+
+            $this->where(['id'=> $data['id'] ])->update($data);
+            return true;
+        } catch (ValidateException $e) {
+            // 验证失败 输出错误信息
+            $this->error = $e->getError();
+            return false;
         }
-        return false;
     }
 
     /**
      * 创建管理员
-     * TODO update
-     *
      * @param  array  $data
-     *
      * @return boolean
      */
-    function createManager($data)
+    public function createManager($data)
     {
         if (empty($data)) {
             $this->error = '没有数据！';
             return false;
         }
-        if ($this->create($data)) {
-            $id = $this->add();
-            if ($id) {
-                return $id;
-            }
-            $this->error = '入库失败！';
+
+        $isCount = $this->where(['username' => $data['username']])->count();
+        if ($isCount) {
+            $this->error = '对不起，该账户已经存在！';
             return false;
-        } else {
+        }
+
+        if ($data['password'] != $data['pwdconfirm']) {
+            $this->error = '对不起，您两次输入的密码不一致！';
+            return false;
+        }
+
+        if ($data['password']) {
+            $verify = $this->genRandomString(6);
+            $data['verify'] = $verify;
+            $data['password'] = $this->hashPassword($data['password'], $verify);
+        }
+
+        try {
+            validate(User::class)->check($data);
+            $this->create($data);
+            return true;
+        } catch (ValidateException $e) {
+            // 验证失败 输出错误信息
+            $this->error = $e->getError();
             return false;
         }
     }
 
     /**
      * 删除管理员
-     * TODO update
-     *
-     * @param  string  $userId
-     *
-     * @return boolean
+     * @param $userId
+     * @return bool
      */
-    function deleteUser($userId)
-    {
+    public function deleteUser($userId){
         $userId = (int) $userId;
         if (empty($userId)) {
             $this->error = '请指定需要删除的用户ID！';
@@ -190,20 +239,5 @@ class AdminUserModel extends Model
             $this->error = '删除失败！';
             return false;
         }
-    }
-
-    /**
-     * 插入成功后的回调方法
-     * TODO update
-     *
-     * @param  array  $data  数据
-     * @param  string  $options  表达式
-     */
-    protected function _after_insert($data, $options)
-    {
-        //添加信息后，更新密码字段
-        $this->where(array('id' => $data['id']))->save(array(
-            'password' => $this->hashPassword($data['password'], $data['verify']),
-        ));
     }
 }
