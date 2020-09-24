@@ -20,7 +20,7 @@ class User extends Validate
         'role_id' => 'require',
         'password' => 'require',
         'pwdconfirm' => 'require',
-        'email' => 'email',
+        'email' => 'require|email',
         'status' => 'require',
     ];
 
@@ -35,5 +35,11 @@ class User extends Validate
         'email' => '邮箱地址有误！',
         'status' => '状态错误，状态只能是1或者0！'
     ];
+
+    // 编辑时验证
+    public function sceneEdit()
+    {
+        return $this->only(['username','nickname','role_id','email','status']);
+    }
 
 }

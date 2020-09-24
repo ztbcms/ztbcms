@@ -164,10 +164,9 @@ class AdminUserModel extends Model
         }
 
         try {
-            $validateData = $data;
-            $validateData['password'] = 'success';
-            $validateData['pwdconfirm'] = 'success';
-            validate(User::class)->check($validateData);
+            validate(User::class)
+                ->scene('edit')
+                ->check($data);
 
             $this->where(['id'=> $data['id'] ])->update($data);
             return true;
