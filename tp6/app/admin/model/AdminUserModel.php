@@ -16,7 +16,7 @@ class AdminUserModel extends Model
     /**
      * 获取用户信息
      *
-     * @param  string  $identifier  用户名或者用户ID
+     * @param  string|int  $identifier  用户名或者用户ID
      *
      * @param  null  $password
      *
@@ -25,19 +25,19 @@ class AdminUserModel extends Model
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    function getUserInfo(string $identifier, $password = null)
+    function getUserInfo($identifier, $password = null)
     {
         if (empty($identifier)) {
             return false;
         }
-        $map = array();
+        $map = [];
         //判断是uid还是用户名
         if (is_int($identifier)) {
-            $map['id'] = $identifier;
+            $map []= ['id', '=', $identifier];
         } else {
-            $map['username'] = $identifier;
+            $map []= ['username', '=', $identifier];
         }
-        $userInfo = $this->where($map)->find();
+        $userInfo = $this->where($map)->findOrEmpty();
         if (empty($userInfo)) {
             return false;
         }

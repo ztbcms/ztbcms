@@ -76,6 +76,7 @@ class AdminUserService extends BaseService
         if (empty(self::$userInfo)) {
             self::$userInfo = $this->getUserInfo($this->isLogin());
         }
+
         return !empty(self::$userInfo) ? self::$userInfo : null;
     }
 
@@ -89,7 +90,7 @@ class AdminUserService extends BaseService
         $userId = Encrypt::authcode(session(self::userUidKey), 'DECODE');
         if (empty($userId)) {
             // TODO 适配 ztbcms tp3登录跳转到 tp6
-            $sessionId = $_COOKIE['PHPSESSID'];
+            $sessionId = isset($_COOKIE['PHPSESSID']) ? $_COOKIE['PHPSESSID'] : null;
             $token = Db::name('user_token')->where([
                 ['session_id', '=', $sessionId],
                 ['expire_time', '>', time()],

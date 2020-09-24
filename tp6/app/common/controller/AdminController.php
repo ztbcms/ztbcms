@@ -9,6 +9,9 @@
 namespace app\common\controller;
 
 
+use app\admin\libs\system\Rbac;
+use app\admin\model\AdminUserModel;
+use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
 use app\BaseController;
 use app\common\model\UserModel;
@@ -46,7 +49,6 @@ class AdminController extends BaseController
 
             $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
         }
-
         $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
         if(!$hasPremission){
             $this->_handleNoPermiassion();
@@ -82,10 +84,22 @@ class AdminController extends BaseController
         if (empty($user)) {
             return false;
         }
+        // TODO: 适配过渡版本
         if(strpos($baseUrl, '/home')===0){
             $baseUrl = str_replace('/home', '', $baseUrl);
         }
 
+        // 超级管理员
+        if($user['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID){
+            return true;
+        }
+        
+        $app = app('http')->getName();
+        $controller = request()->controller();;
+        $acion = request()->action();
+        $accessList = Rbac::getAccessList($user_id);
+
+        //TODO: check
         return true;
     }
 }
