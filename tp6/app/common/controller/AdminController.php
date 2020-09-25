@@ -50,7 +50,7 @@ class AdminController extends BaseController
             $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
         }
         $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
-        if(!$hasPremission){
+        if (!$hasPremission) {
             $this->_handleNoPermiassion();
         }
     }
@@ -68,7 +68,8 @@ class AdminController extends BaseController
     }
 
     // 无权限情况
-    private function _handleNoPermiassion(){
+    private function _handleNoPermiassion()
+    {
         if (request()->isAjax()) {
             self::makeJsonReturn(false, null, '无权限', 403)->send();
             exit;
@@ -78,28 +79,59 @@ class AdminController extends BaseController
         }
     }
 
-    private function hasAccessPermission($user_id, string $baseUrl)
+    /**
+     * 权限检测
+     * @param  int|string  $user_id  用户ID
+     * @param  string  $base_url  路由
+     *
+     * @return bool
+     */
+    private function hasAccessPermission($user_id, string $base_url = '')
     {
         $user = AdminUserService::getInstance()->getAdminUserInfoById($user_id)['data'];
         if (empty($user)) {
             return false;
         }
         // TODO: 适配过渡版本
-        if(strpos($baseUrl, '/home')===0){
-            $baseUrl = str_replace('/home', '', $baseUrl);
+        if (strpos($base_url, '/home/') === 0) {
+            $base_url = str_replace('/home/', '', $base_url);
         }
-
         // 超级管理员
-        if($user['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID){
+        if ($user['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return true;
         }
-        
-        $app = app('http')->getName();
-        $controller = request()->controller();;
-        $acion = request()->action();
-        $accessList = Rbac::getAccessList($user_id);
+        if (!empty($base_url)) {
+            $items = explode('/', $base_url);
+            $app = $items[0];
+            $controller = $items[1];
+            $action = $items[2];
+        } else {
+            $app = strtoupper(app('http')->getName());
+            $controller = strtoupper(request()->controller());
+            $action = strtoupper(request()->action());
+        }
 
-        //TODO: check
-        return true;
+        $accessList = Rbac::getAccessList($user_id);
+        // app
+        if (isset($accessList['%'])) {
+            return true;
+        }
+        if (!isset($accessList[$app])) {
+            return false;
+        }
+        // controller+action
+        if (isset($accessList[$app]['%'])) {
+            return true;
+        }
+        $controllers = explode('.', $controller);
+        $c = [];
+        foreach ($controllers as $i => $v) {
+            $c [] = $v;
+            $pass_controller = trim(join('.', $c).'.'.trim(str_repeat('%.', count($controllers) - ($i + 1)), '.'), '.');
+            if (isset($accessList[$app][$pass_controller]) && isset($accessList[$app][$pass_controller][$action])) {
+                return true;
+            }
+        }
+        return false;
     }
 }
