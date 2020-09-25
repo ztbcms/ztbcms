@@ -9,7 +9,6 @@ namespace app\admin\controller;
 
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
-use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 

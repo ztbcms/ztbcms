@@ -216,20 +216,11 @@
                     url += '&id=' + id;
                     this.__openWindow(url);
                 },
-
-                //权限组管理 todo 未修改
+                //权限组管理
                 getRoleAccessGroup: function (id) {
-                    var url = '/Admin/AccessGroup/accessGroupRoleSetting';
-                    url = url + '&roleid=' + id
-
-                    layer.open({
-                        type: 2,
-                        title: '权限组管理',
-                        content: url,
-                        area: ['100%', '100%'],
-                        end: function () {
-                        }
-                    })
+                    var url = "{:api_url('/Admin/AccessGroup/accessGroupRoleSetting')}";
+                    url = url + '&role_id=' + id
+                    this.__openWindow(url);
                 },
 
                 //栏目管理 todo 未修改

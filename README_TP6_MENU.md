@@ -34,7 +34,7 @@
 ├──── 编辑角色 {{domain}}/home/Admin/Rbac/roleEdit
 ├──── 权限设置 {{domain}}/home/Admin/Rbac/authorize
 ├──── 成员管理 {{domain}}/home/Admin/Management/index
-│
+├──── 权限组设置 {{domain}}/home/Admin/AccessGroup/accessGroupRoleSetting
 
 ```
 
