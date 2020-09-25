@@ -126,4 +126,30 @@ class RbacService extends BaseService
         }
         return $ret;
     }
+
+    /**
+     * 权限组删除
+     * @param  array  $access_group_ids
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    static function deleteAccessGroup($access_group_ids = []){
+        $AccessGroupModel = new AccessGroupModel();
+        $delete_items = $AccessGroupModel
+            ->where('id','in',$access_group_ids)
+            ->select();
+        foreach ($delete_items as $index => $item){
+            $children = $AccessGroupModel->where(['parentid' => $item['id']])->select()->toArray();
+            if(!empty($children)){
+                $ids = array_map(function($c){
+                    return $c['id'];
+                }, $children);
+                self::deleteAccessGroup($ids);
+            }
+            $AccessGroupModel->where(['id' => $item['id']])->delete();
+        }
+        return self::createReturn(true, [], '操作成功');
+    }
 }

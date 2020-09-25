@@ -35,6 +35,11 @@
 ├──── 权限设置 {{domain}}/home/Admin/Rbac/authorize
 ├──── 成员管理 {{domain}}/home/Admin/Management/index
 ├──── 权限组设置 {{domain}}/home/Admin/AccessGroup/accessGroupRoleSetting
+│
+├─ 权限组管理
+│
+├──── 权限组列表 {{domain}}/Admin/AccessGroup/accessGroupList => {{domain}}/home/Admin/AccessGroup/accessGroupList
+├──── 权限组详情 {{domain}}/home/Admin/AccessGroup/accessGroupDetails
 
 ```
 

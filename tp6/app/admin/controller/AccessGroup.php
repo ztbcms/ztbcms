@@ -6,6 +6,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\AccessGroupModel;
 use app\admin\model\RoleModel;
 use app\common\controller\AdminController;
 use app\admin\service\RbacService;
@@ -77,5 +78,52 @@ class AccessGroup extends AdminController
         $accessGroupTreeArray = RbacService::getAccessGroupTreeArray();
         return json(self::createReturn(true, $accessGroupTreeArray));
     }
+
+    /**
+     * 权限组列表
+     * @return \think\response\View
+     */
+    public function accessGroupList(){
+        return view('accessGroupList');
+    }
+
+    /**
+     * 删除权限组
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function deleteAccessGroup(){
+        $group_id = input('group_id', '', 'trim');
+        $res = RbacService::deleteAccessGroup([$group_id]);
+        return json($res);
+    }
+
+    /**
+     * 权限组详情
+     * @return \think\response\View
+     */
+    public function accessGroupDetails(){
+        $id = input('id','','trim');
+        $AccessGroupModel = new AccessGroupModel();
+        $info = $AccessGroupModel->where('id',$id)->find();
+        return view('accessGroupDetails',[
+            'info' => $info
+        ]);
+    }
+
+    /**
+     * 父级权限组
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getAccessGroupTreeArray(){
+        $accessGroupTreeArray = RbacService::getAccessGroupTreeArray(0);
+        return json(self::createReturn(true,$accessGroupTreeArray));
+    }
+
 
 }
