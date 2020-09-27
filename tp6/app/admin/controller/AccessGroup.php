@@ -111,9 +111,17 @@ class AccessGroup extends AdminController
     public function accessGroupDetails()
     {
         $id = input('id', '', 'trim');
-        $AccessGroupModel = new AccessGroupModel();
-        $info = $AccessGroupModel->where('id', $id)->find();
-        $info['parentid'] = (int) $info['parentid'];
+        if($id){
+            $AccessGroupModel = new AccessGroupModel();
+            $info = $AccessGroupModel->where('id', $id)->find();
+            $info['parentid'] = (int) $info['parentid'];
+        } else {
+            $info['id'] = '';
+            $info['name'] = '';
+            $info['description'] = '';
+            $info['status'] = '1';
+            $info['parentid'] = 0;
+        }
         return view('accessGroupDetails', [
             'info' => $info
         ]);

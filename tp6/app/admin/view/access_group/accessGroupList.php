@@ -7,7 +7,7 @@
 
                 <div class="filter-container">
                     <div style="margin-bottom: 15px;">
-                        <el-button @click="newDetail()" size="small" type="success">
+                        <el-button @click="detail('0')" size="small" type="success">
                             添加
                         </el-button>
                     </div>
@@ -42,7 +42,7 @@
 
                     <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="openDetail(scope.row.id)">修改</el-button>
+                            <el-button type="primary" size="mini" @click="detail(scope.row.id)">修改</el-button>
                             <el-button type="danger" size="mini" @click="clickDelteItem(scope.row.id)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -132,25 +132,10 @@
                         })
                     });
                 },
-                //编辑权限组
-                openDetail: function (id) {
+               detail: function (id) {
                     var that = this;
                     var url = '{:api_url("/Admin/AccessGroup/accessGroupDetails")}';
-                    if(id) url += '&id='+id;
-                    layer.open({
-                        type: 2,
-                        title: '管理',
-                        content: url,
-                        area: ['95%', '95%'],
-                        end: function(){
-                            that.fetchData();
-                        }
-                    });
-                },
-                //新增权限组
-                newDetail: function () {
-                    var that = this;
-                    var url = '{:api_url("/Admin/AccessGroup/accessGroupDetails")}';
+                   if(id) url += '&id='+id;
                     layer.open({
                         type: 2,
                         title: '管理',
