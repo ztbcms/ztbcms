@@ -13,19 +13,19 @@
                         </el-form-item>
 
                         <el-form-item label="父级权限组" prop="name">
-                            <el-select v-model="info.parentid" placeholder="请选择">
-                                <el-option value="0">无</el-option>
+                            <el-select v-model="info.parentid" placeholder="请选择" :style="{width: '100%'}">
+                                <el-option :value="default_parentid" label="无"></el-option>
                                 <el-option
-                                    v-for="item in accessGroupTreeArray"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
+                                        v-for="item in accessGroupTreeArray"
+                                        :key="item.value"
+                                        :label="item.view_name"
+                                        :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
 
-                        <el-form-item label="备注" prop="remark">
-                            <el-input v-model="info.remark" placeholder="请输入名称" clearable
+                        <el-form-item label="备注" prop="description">
+                            <el-input v-model="info.description" placeholder="请输入备注" clearable
                                       :style="{width: '100%'}"></el-input>
                         </el-form-item>
 
@@ -34,26 +34,41 @@
                             <el-radio v-model="info.status" label="0">禁止</el-radio>
                         </el-form-item>
 
-                        <el-button type="primary" style="margin-bottom: 20px;" @click="submitForm">保存</el-button>
+                        <el-button type="primary" style="margin-bottom: 20px;" @click="submitForm">基础信息保存</el-button>
+
+                        <el-button v-if="info.id != ''" type="primary" @click="clickSelectAccessList">添加权限</el-button>
+                        <el-button v-if="info.id != ''" type="primary" @click="clickSave">权限保存</el-button>
 
                         <div v-if="info.id != ''">
-                            <h3> 权限组 </h3>
+                            <h3> 权限列表 </h3>
 
                             <el-table
-                                    :data="accessGroupList"
+                                    :data="accessGroupItems"
                                     highlight-current-row
                                     style="width: 100%;"
                             >
 
-                                <el-table-column label="权限组ID" align="center">
+                                <el-table-column label="名称" align="center">
                                     <template slot-scope="scope">
-                                        <span>{{ scope.row.group_id }}</span>
+                                        <span>{{ scope.row.name }}</span>
                                     </template>
                                 </el-table-column>
 
-                                <el-table-column label="权限组名称" align="">
+                                <el-table-column label="模块" align="">
                                     <template slot-scope="scope">
-                                        <span>{{ scope.row.group_name }}</span>
+                                        <span>{{ scope.row.app }}</span>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column label="控制器" align="">
+                                    <template slot-scope="scope">
+                                        <span>{{ scope.row.controller }}</span>
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column label="方法" align="">
+                                    <template slot-scope="scope">
+                                        <span>{{ scope.row.action }}</span>
                                     </template>
                                 </el-table-column>
 
@@ -69,10 +84,6 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-
-                            <el-form-item size="large" style="margin-top: 15px;">
-                                <el-button type="primary" @click="clickSelectAccessList">添加权限组</el-button>
-                            </el-form-item>
                         </div>
 
 
@@ -95,33 +106,34 @@
                     info: {
                         id: "{$info.id}",
                         name: "{$info.name}",
-                        remark: "{$info.remark}",
-                        status: "{$info.status}"
+                        description: "{$info.description}",
+                        status: "{$info.status}",
+                        parentid: "{$info.parentid}" * 1
                     },
+                    default_parentid : '0' * 1,
                     formData: {},
                     rules: {},
-                    accessGroupList: [],
-                    accessGroupTreeArray : []
+                    accessGroupTreeArray: [],
+                    accessGroupItems: [],
                 }
             },
             computed: {
-
                 selectedItemIds: function () {
                     var that = this;
                     var ids = [];
-                    if (that.accessGroupList) {
-                        that.accessGroupList.forEach(function (item) {
-                            ids.push(item['group_id'])
+                    if (that.accessGroupItems) {
+                        that.accessGroupItems.forEach(function (item) {
+                            ids.push(item['access_id'])
                         })
                     }
                     return ids;
                 }
-
             },
             watch: {},
             created() {
             },
             mounted() {
+                this.getAccessGroupTreeArray();
                 this.fetchData();
             },
             methods: {
@@ -129,82 +141,127 @@
                     var that = this;
                     if (that.info.id) {
                         $.ajax({
-                            url: "{:api_url('/Admin/AccessGroup/getRoleAccessGroup')}&role_id=" + that.info.id,
+                            url: "{:api_url('/Admin/AccessGroup/getAccessGroupById')}&id=" + that.info.id,
                             type: "get",
                             dataType: "json",
                             success: function (res) {
                                 if (res.status) {
-                                    that.accessGroupList = res.data;
-                                } else {
-                                    layer.msg('操作繁忙，请稍后再试')
+                                    that.id = res.data.id;
+                                    that.name = res.data.name;
+                                    that.parentid = res.data.parentid;
+                                    that.description = res.data.description;
+                                    that.status = res.data.status;
+                                    that.accessGroupItems = res.data.accessGroupItems;
                                 }
                             }
                         })
                     }
                 },
-                deleteItem: function (index, item) {
-                    this.accessGroupList.splice(index, 1);
-                },
-                addAccessGroup: function (accessList) {
-                    var that = this;
-                    if (accessList) {
-                        accessList.filter(
-                            function (element, index, self) {
-                                for (var j in that.accessGroupList) {
-                                    if (that.accessGroupList[j]['group_id'] == element['id']) {
-                                        return;
-                                    }
-                                }
-                                that.accessGroupList.push({
-                                    group_id: element.id,
-                                    group_name: element.name,
-                                    role_id: element.role_id,
-                                    group_parentid: element.parentid
-                                });
-                            });
-                    }
-                },
                 submitForm() {
                     var that = this;
+                    var data = {
+                        id: that.info.id,
+                        name: that.info.name,
+                        parentid: that.info.parentid,
+                        description: that.info.description,
+                        status: that.info.status
+                    };
+                    var req_url = "{:api_url('/Admin/AccessGroup/doCreateAccessGroup')}";
                     $.ajax({
-                        url: "{:api_url('/Admin/AccessGroup/doSaveAccessGroupRole')}",
+                        url: req_url,
                         type: "post",
                         dataType: "json",
-                        data: {
-                            role_id: that.info.id,
-                            accessGroupList: that.accessGroupList,
-                        },
+                        data: data,
                         success: function (res) {
                             if (res.status) {
                                 layer.msg('操作成功！');
                                 setTimeout(function () {
-                                    window.parent.layer.closeAll();
-                                }, 1000);
+                                    parent.window.layer.closeAll();
+                                }, 1000)
                             } else {
+                                layer.msg('操作繁忙，请稍后再试')
+                            }
+                        }
+                    })
+                },
+                getAccessGroupTreeArray: function () {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/Admin/AccessGroup/getAccessGroupTreeArray')}",
+                        type: "post",
+                        dataType: "json",
+                        data: {},
+                        success: function (res) {
+                            if (res.status) {
+                                that.accessGroupTreeArray = res.data;
+                            }
+                        }
+                    });
+                },
+                deleteItem: function(index, item){
+                    this.accessGroupItems.splice(index, 1);
+                },
+                clickSelectAccessList: function(){
+                    layer.open({
+                        type: 2,
+                        title: '操作',
+                        shadeClose: true,
+                        shade: 0.8,
+                        area: ['70%', '70%'],
+                        content: "/Admin/AccessGroup/accessList"+'&selected_ids=' + this.selectedItemIds.join(',')
+                    });
+                },
+                updateSelectAccessList: function(accessList){
+                    var that = this;
+                    if(accessList){
+                        accessList.filter(
+                            function(element,index, self){
+                                for(var j in that.accessGroupItems) {
+                                    if(that.accessGroupItems[j]['access_id'] == element['access_id']){
+                                        return;
+                                    }
+                                }
+                                that.accessGroupItems.push({
+                                    group_id: that.info.id,
+                                    app: element.app,
+                                    controller: element.controller,
+                                    action: element.action,
+                                    name: element.name,
+                                    access_id: element.id
+                                });
+                            });
+                    }
+                },
+                clickSave: function(){
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/Admin/AccessGroup/doSaveAccessGroupItem')}",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            group_id: that.info.id,
+                            accessGroupItems: that.accessGroupItems,
+                        },
+                        success: function(res){
+                            if(res.status){
+                                layer.msg('操作成功！');
+                                setTimeout(function(){
+                                    window.location.reload();
+                                }, 700)
+                            }else{
                                 layer.msg('操作繁忙，请稍后再试')
                             }
                         }
                     });
                 },
-                clickSelectAccessList: function () {
-                    layer.open({
-                        type: 2,
-                        title: '权限',
-                        shadeClose: true,
-                        shade: 0.8,
-                        area: ['70%', '70%'],
-                        content: "{:api_url('/Admin/AccessGroup/selectAccessGroupList')}" + '&selected_ids=' + this.selectedItemIds
-                    });
-                },
-
             }
         });
     });
 
     //选择权限回调
-    function selectAccessGroupListCallback(accessGroupList) {
-        if (accessGroupList) {
-            window.App.addAccessGroup(accessGroupList)
+    function selectAccessListCallback(accessList){
+        if(accessList){
+            window.App.updateSelectAccessList(accessList)
         }
     }
 </script>

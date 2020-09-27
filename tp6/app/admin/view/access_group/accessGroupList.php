@@ -132,8 +132,20 @@
                         })
                     });
                 },
+                //编辑权限组
                 openDetail: function (id) {
-                    Ztbcms.openNewIframeByUrl('编辑', '/index.php?g=Admin&m=AccessGroup&a=editAccessGroup&id=' + id)
+                    var that = this;
+                    var url = '{:api_url("/Admin/AccessGroup/accessGroupDetails")}';
+                    if(id) url += '&id='+id;
+                    layer.open({
+                        type: 2,
+                        title: '管理',
+                        content: url,
+                        area: ['95%', '95%'],
+                        end: function(){
+                            that.fetchData();
+                        }
+                    });
                 },
                 //新增权限组
                 newDetail: function () {
@@ -145,7 +157,7 @@
                         content: url,
                         area: ['95%', '95%'],
                         end: function(){
-                            that.getList();
+                            that.fetchData();
                         }
                     });
                 }

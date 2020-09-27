@@ -63,7 +63,8 @@ class AccessGroup extends AdminController
     /**
      * 选择权限组
      */
-    public function selectAccessGroupList(){
+    public function selectAccessGroupList()
+    {
         return view('selectAccessGroupList');
     }
 
@@ -74,7 +75,8 @@ class AccessGroup extends AdminController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getAccessGroupList(){
+    public function getAccessGroupList()
+    {
         $accessGroupTreeArray = RbacService::getAccessGroupTreeArray();
         return json(self::createReturn(true, $accessGroupTreeArray));
     }
@@ -83,7 +85,8 @@ class AccessGroup extends AdminController
      * 权限组列表
      * @return \think\response\View
      */
-    public function accessGroupList(){
+    public function accessGroupList()
+    {
         return view('accessGroupList');
     }
 
@@ -94,7 +97,8 @@ class AccessGroup extends AdminController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function deleteAccessGroup(){
+    public function deleteAccessGroup()
+    {
         $group_id = input('group_id', '', 'trim');
         $res = RbacService::deleteAccessGroup([$group_id]);
         return json($res);
@@ -104,11 +108,13 @@ class AccessGroup extends AdminController
      * 权限组详情
      * @return \think\response\View
      */
-    public function accessGroupDetails(){
-        $id = input('id','','trim');
+    public function accessGroupDetails()
+    {
+        $id = input('id', '', 'trim');
         $AccessGroupModel = new AccessGroupModel();
-        $info = $AccessGroupModel->where('id',$id)->find();
-        return view('accessGroupDetails',[
+        $info = $AccessGroupModel->where('id', $id)->find();
+        $info['parentid'] = (int) $info['parentid'];
+        return view('accessGroupDetails', [
             'info' => $info
         ]);
     }
@@ -120,10 +126,53 @@ class AccessGroup extends AdminController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getAccessGroupTreeArray(){
+    public function getAccessGroupTreeArray()
+    {
         $accessGroupTreeArray = RbacService::getAccessGroupTreeArray(0);
-        return json(self::createReturn(true,$accessGroupTreeArray));
+        foreach ($accessGroupTreeArray as $k => $v) {
+            $accessGroupTreeArray[$k]['view_name'] = '|—'.str_repeat('—', $v['level'] * 1).$v['name'];
+        }
+        return json(self::createReturn(true, $accessGroupTreeArray));
     }
 
+    /**
+     * 创建权限组
+     * @return \think\response\Json
+     */
+    public function doCreateAccessGroup()
+    {
+        $id = input('id', '', 'trim');
+        $name = input('name', '', 'trim');
+        $parentid = input('parentid', '', 'trim');
+        $description = input('description', '', 'trim');
+        $status = input('status', '', 'trim');
+        $res = RbacService::createAccessGroup($id,$name, $parentid, $description, $status);
+        return json($res);
+    }
 
+    /**
+     * 编辑权限组权限
+     * @return \think\response\Json
+     */
+    public function doSaveAccessGroupItem()
+    {
+        $group_id = input('group_id', '', 'trim');
+        $accessGroupItems = input('accessGroupItems');
+        $res = RbacService::updateAccessGroupItems($group_id, $accessGroupItems);
+        return json($res);
+    }
+
+    /**
+     * 获取权限组详情
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getAccessGroupById()
+    {
+        $id = input('id', '', 'trim');
+        $accessGroup = RbacService::getAccessGroupById($id);
+        return json($accessGroup);
+    }
 }

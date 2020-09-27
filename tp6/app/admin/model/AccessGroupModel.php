@@ -20,4 +20,11 @@ class AccessGroupModel extends \think\Model
      * 取消
      */
     const STATUS_DISABLE = 0;
+
+
+    function accessGroupItems()
+    {
+        return $this->hasMany('AccessGroupItemsModel','group_id');
+    }
+
 }
