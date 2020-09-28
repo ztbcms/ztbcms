@@ -27,6 +27,9 @@ class AdminController extends BaseController
      */
     protected $user;
 
+    //是否为超级管理员
+    protected $is_administrator;
+
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -49,6 +52,11 @@ class AdminController extends BaseController
 
             $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
         }
+
+        //判断是否为超级管理员
+        $this->is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
+
+        // 权限检测
         $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
         if (!$hasPremission) {
             $this->_handleNoPermiassion();
@@ -125,6 +133,7 @@ class AdminController extends BaseController
         }
         $controllers = explode('.', $controller);
         $c = [];
+        // 计算可能得controller模式，如 a.b.c 、a.b.%、a.%.%
         foreach ($controllers as $i => $v) {
             $c [] = $v;
             $pass_controller = trim(join('.', $c).'.'.trim(str_repeat('%.', count($controllers) - ($i + 1)), '.'), '.');

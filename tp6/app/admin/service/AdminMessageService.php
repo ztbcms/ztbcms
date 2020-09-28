@@ -6,7 +6,6 @@
 
 namespace app\admin\service;
 
-
 use app\admin\model\AdminMessageModel;
 use app\common\service\BaseService;
 use think\facade\Db;
