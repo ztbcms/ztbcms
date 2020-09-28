@@ -78,6 +78,7 @@ class AdminMessage extends AdminController
         if (empty($ids)) {
             return self::makeJsonReturn(false, null, '参数错误');
         }
+
         $res = AdminMessageService::readAdminMessage($ids, $this->user->id);
         return json($res);
     }
@@ -89,7 +90,9 @@ class AdminMessage extends AdminController
     {
         // 消息类型
         $type = Request::param('type', '');
-        if ($type)  $where['type'] = $type;
+        if ($type)  {
+            $where['type'] = $type;
+        }
         $res = AdminMessageService::readAllAdminMessage($this->user->id, $type);
         return json($res);
     }

@@ -23,6 +23,9 @@ class AdminController extends BaseController
      */
     protected $user;
 
+    //是否为超级管理员
+    protected $is_administrator;
+
     public function __construct(App $app)
     {
         parent::__construct($app);
@@ -44,6 +47,13 @@ class AdminController extends BaseController
             }
 
             $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
+        }
+
+        //判断是否为超级管理员
+        if($this->user['role_id'] != AdminUserService::administratorRoleId) {
+            $this->is_administrator = false;
+        } else {
+            $this->is_administrator = true;
         }
     }
 
