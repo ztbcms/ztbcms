@@ -66,13 +66,13 @@
 
             },
             watch: {},
-            created() {
+            created: function() {
             },
-            mounted() {
+            mounted: function() {
                 this.fetchData();
             },
             methods: {
-                handleSelectionChange:function(val) {
+                handleSelectionChange: function(val) {
                     this.multipleSelection = val;
                     this.multipleSelectionFlag = true;
                     if(this.multipleSelection.length == 0) {

@@ -1,6 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: Cycle3
  * Date: 2020/9/23
  * Time: 16:40
@@ -8,7 +7,6 @@
 
 namespace app\admin\controller;
 
-use Admin\Service\User;
 use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;

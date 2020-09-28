@@ -97,9 +97,9 @@
 
             },
             watch: {},
-            created() {
+            created: function() {
             },
-            mounted() {
+            mounted: function() {
                 this.fetchData();
             },
             methods: {
@@ -142,7 +142,7 @@
                             });
                     }
                 },
-                submitForm() {
+                submitForm: function() {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/Admin/AccessGroup/doSaveAccessGroupRole')}",
@@ -171,7 +171,7 @@
                         shadeClose: true,
                         shade: 0.8,
                         area: ['70%', '70%'],
-                        content: "{:api_url('/Admin/AccessGroup/selectAccessGroupList')}"+'&selected_ids=' + this.selectedItemIds
+                        content: "{:api_url('/Admin/AccessGroup/selectAccessGroupList')}"+'?selected_ids=' + this.selectedItemIds
                     });
                 },
 

@@ -37,7 +37,7 @@
             // 插入export default里面的内容
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     id : "{$id}",
                     name : '',
@@ -53,17 +53,17 @@
             },
             computed: {},
             watch: {
-                filterText(val) {
+                filterText: function(val) {
                     this.$refs.tree.filter(val);
                 }
             },
-            created() {
+            created: function() {
             },
-            mounted() {
+            mounted: function() {
                 this.getDetails();
             },
             methods: {
-                submitForm() {
+                submitForm: function() {
                     var that = this;
                     var checked_keys = that.$refs.tree.getCheckedKeys().toString();
                     $.ajax({
@@ -99,7 +99,7 @@
                         that.name = res.data.name;
                     }, 'json');
                 },
-                filterNode(value, data) {
+                filterNode: function(value, data) {
                     if (!value) return true;
                     return data.label.indexOf(value) !== -1;
                 }

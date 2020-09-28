@@ -50,7 +50,7 @@
             // 插入export default里面的内容
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     formData: {},
                     rules: {},
@@ -65,9 +65,9 @@
 
             },
             watch: {},
-            created() {
+            created: function() {
             },
-            mounted() {
+            mounted: function() {
                 this.fetchData();
             },
             methods: {

@@ -72,7 +72,7 @@
             // 插入export default里面的内容
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     formData: {
                         id : "{$id}",
@@ -145,14 +145,14 @@
             },
             computed: {},
             watch: {},
-            created() {},
-            mounted() {
+            created: function() {},
+            mounted: function() {
                 this.getMenuList();
                 this.getModuleList();
                 if(this.formData.id) this.getDetails();
             },
             methods: {
-                submitForm() {
+                submitForm: function() {
                     var that = this;
 
                     that.$refs['elForm'].validate(valid => {
@@ -179,7 +179,7 @@
                     })
                 },
                 //获取菜单列表
-                getMenuList() {
+                getMenuList: function() {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/Admin/Menu/getMenuList')}",
