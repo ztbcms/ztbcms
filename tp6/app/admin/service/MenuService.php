@@ -254,4 +254,30 @@ class MenuService extends BaseService
             return self::createReturn(false,'',$e->getError());
         }
     }
+
+
+    /**
+     * 获取含有层次(level)树状
+     * @param  int  $parentid
+     * @param  int  $level
+     * @param  array  $ret
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    static function getMenuTreeArray($parentid = 0, $level = 0, $ret = []){
+        $MenuModel = new MenuModel();
+        $menus = $MenuModel->where(['parentid' => $parentid])->order('listorder ASC')->select();
+        foreach ($menus as $index => $menu){
+            $menu['level'] = $level;
+
+            $ret[] = $menu;
+            $children = $MenuModel->where(['parentid' => $menu['id']])->select();
+            if($children){
+                $ret = self::getMenuTreeArray($menu['id'], $level + 1, $ret);
+            }
+        }
+        return $ret;
+    }
 }

@@ -10,6 +10,7 @@ use app\admin\model\AccessGroupModel;
 use app\admin\model\RoleModel;
 use app\common\controller\AdminController;
 use app\admin\service\RbacService;
+use app\admin\service\MenuService;
 
 class AccessGroup extends AdminController
 {
@@ -182,5 +183,25 @@ class AccessGroup extends AdminController
         $id = input('id', '', 'trim');
         $accessGroup = RbacService::getAccessGroupById($id);
         return json($accessGroup);
+    }
+
+    /**
+     * 权限列表
+     * @return \think\response\View
+     */
+    public function accessList(){
+        return view('accessList');
+    }
+
+    /**
+     * 获取权限列表信息
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getAccessList(){
+        $menuTreeArray = MenuService::getMenuTreeArray(0);
+        return json(self::createReturn(true, $menuTreeArray));
     }
 }

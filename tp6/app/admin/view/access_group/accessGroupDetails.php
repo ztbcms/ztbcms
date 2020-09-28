@@ -208,7 +208,7 @@
                         shadeClose: true,
                         shade: 0.8,
                         area: ['70%', '70%'],
-                        content: "/Admin/AccessGroup/accessList"+'&selected_ids=' + this.selectedItemIds.join(',')
+                        content: "{:api_url('/Admin/AccessGroup/accessList')}" + '&selected_ids=' + this.selectedItemIds.join(',')
                     });
                 },
                 updateSelectAccessList: function(accessList){
