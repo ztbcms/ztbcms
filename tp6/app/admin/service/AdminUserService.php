@@ -10,6 +10,7 @@ namespace app\admin\service;
 use app\admin\libs\system\Rbac;
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
+use app\common\service\BaseService;
 use app\common\util\Encrypt;
 use think\facade\Db;
 
@@ -19,7 +20,7 @@ use think\facade\Db;
  *
  * @package app\admin\service
  */
-class AdminUserService
+class AdminUserService extends BaseService
 {
     //存储用户uid的Key
     const userUidKey = 'spf_userid';
@@ -75,6 +76,7 @@ class AdminUserService
         if (empty(self::$userInfo)) {
             self::$userInfo = $this->getUserInfo($this->isLogin());
         }
+
         return !empty(self::$userInfo) ? self::$userInfo : null;
     }
 
@@ -88,7 +90,7 @@ class AdminUserService
         $userId = Encrypt::authcode(session(self::userUidKey), 'DECODE');
         if (empty($userId)) {
             // TODO 适配 ztbcms tp3登录跳转到 tp6
-            $sessionId = $_COOKIE['PHPSESSID'];
+            $sessionId = isset($_COOKIE['PHPSESSID']) ? $_COOKIE['PHPSESSID'] : null;
             $token = Db::name('user_token')->where([
                 ['session_id', '=', $sessionId],
                 ['expire_time', '>', time()],
@@ -215,5 +217,25 @@ class AdminUserService
         }
         $adminUserModel = new AdminUserModel();
         return $adminUserModel->getUserInfo($identifier, $password);
+    }
+
+    /**
+     * 获取后台用户信息
+     * @param $user_id
+     *
+     * @return array|null
+     */
+    function getAdminUserInfoById($user_id)
+    {
+        if (empty($user_id)) {
+            return null;
+        }
+        $adminUserModel = new AdminUserModel();
+        $res = $adminUserModel->where('id', $user_id)->findOrEmpty();
+        if($res){
+            return self::createReturn(true, $res->toArray());
+        }
+
+        return self::createReturn(false, null, '找不到信息');
     }
 }

@@ -18,9 +18,10 @@ class AdminUserModel extends Model
     /**
      * 获取用户信息
      *
-     * @param  string  $identifier  用户名或者用户ID
+     * @param  string|int  $identifier  用户名或者用户ID
      *
      * @param  null  $password
+     *
      * @return boolean|array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -31,14 +32,14 @@ class AdminUserModel extends Model
         if (empty($identifier)) {
             return false;
         }
-        $map = array();
+        $map = [];
         //判断是uid还是用户名
         if (is_int($identifier)) {
-            $map['id'] = $identifier;
+            $map []= ['id', '=', $identifier];
         } else {
-            $map['username'] = $identifier;
+            $map []= ['username', '=', $identifier];
         }
-        $userInfo = $this->where($map)->find();
+        $userInfo = $this->where($map)->findOrEmpty();
         if (empty($userInfo)) {
             return false;
         }

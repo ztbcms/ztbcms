@@ -6,7 +6,10 @@
 
 namespace app\admin\libs\system;
 
+use app\admin\model\AccessModel;
+use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
+use think\facade\Db;
 
 /**
  * RBAC后台权限控制
@@ -168,24 +171,28 @@ class Rbac
 
     /**
      * 取得当前认证号的所有权限列表
-     * @param $authId
+     *
+     * @param $user_id
+     *
      * @return array|bool
      */
-    static public function getAccessList($authId) {
+    static public function getAccessList($user_id)
+    {
         //用户信息
-        $userInfo = User::getInstance()->getInfo();
+        $userInfo = Db::name('user')->where('id', $user_id)->findOrEmpty();
         if (empty($userInfo)) {
-            return false;
+            return null;
         }
         //角色ID
         $role_id = $userInfo['role_id'];
         //检查角色
-        $roleinfo = D('Admin/Role')->where(array('id' => $role_id))->find();
+        $roleinfo = Db::name('role')->where('id' ,$role_id)->findOrEmpty();
         if (empty($roleinfo) || empty($roleinfo['status'])) {
             return false;
         }
         //该角色全部权限
-        $access = D('Admin/Access')->getAccessList($role_id);
+        $accessModel = new AccessModel();
+        $access = $accessModel->getAccessList($role_id);
         $accessList = array();
         foreach ($access as $acc) {
             $app = strtoupper($acc['app']);
