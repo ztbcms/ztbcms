@@ -45,5 +45,12 @@ class ModuleService extends BaseService
         return true;
     }
 
+    /**
+     * 获取已安装模块列表
+     * @return array
+     */
+    function getInstallModuleList(){
+        return [];
+    }
 
 }
