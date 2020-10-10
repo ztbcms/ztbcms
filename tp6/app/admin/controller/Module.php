@@ -9,9 +9,8 @@ namespace app\admin\controller;
 
 use app\common\controller\AdminController;
 use think\facade\Db;
-use think\Request;
 
-class Module  extends AdminController
+class Module extends AdminController
 {
     //系统模块，隐藏
     const SystemModuleList = ['admin', 'common', 'install', 'attachment', 'template'];
@@ -19,27 +18,52 @@ class Module  extends AdminController
     /**
      * 模块列表
      */
-    function index(){
-//        return view('index');
-//        var_dump($dirs = glob(base_path() . '*'));
-        $this->getModuleList();
+    function index()
+    {
+        return view('index');
     }
 
-    function getModuleList(){
-        $page = input('page', 1);
-        $limit = input('limit', 15);
-        //取得模块目录名称
-        $dirs = glob(base_path() . '*');
-        $dirs_arr = [];
+    /**
+     * 模块安装页面
+     */
+    function install(){
+        $module = input('module', '');
+        if(empty($module)){
+            $this->showError('请指定模块');
+            return;
+        }
+        $config_file = base_path()  . strtolower($module).'/Config.inc.php';
+        if(!file_exists($config_file)){
+            $this->showError('找不到模块配置文件');
+            return;
+        }
+        $moduleConfig = include $config_file;
+        $moduleConfig['module'] = strtolower($module);
+        $moduleConfig['install_time'] = '';
+        $moduleInfo = Db::name('module')->where('module', '=', ucwords($module))->findOrEmpty();
+        if($moduleInfo && isset($moduleInfo['installtime'])){
+            $moduleConfig['install_time'] = date('Y-m-d H:i', $moduleInfo['installtime']);
+        }
 
-        //tp6下的模块
-//        $tpDisrs = glob($this->tpAppPath . "*");
-//        foreach ($tpDisrs as $path) {
-//            if (is_dir($path) && file_exists($path . '/Config.inc.php')) {
-//                $pathName = basename($path);
-//                $dirs_arr[ucwords($pathName)] = $path . '/Config.inc.php';
-//            }
-//        }
+        return view('install', [
+            'config' => $moduleConfig
+        ]);
+    }
+
+    /**
+     * 获取模块列表
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function getModuleList()
+    {
+        $page = input('page', 1, 'intval');
+        $limit = input('limit', 15, 'intval');
+        //取得模块目录名称
+        $dirs = glob(base_path().'*');
+        $dirs_arr = [];
 
         foreach ($dirs as $path) {
             if (is_dir($path)) {
@@ -49,20 +73,16 @@ class Module  extends AdminController
                 if (in_array($pathName, self::SystemModuleList)) {
                     continue;
                 }
-                $dirs_arr[$pathName] = $path . '/Config.inc.php';
+                $dirs_arr[$pathName] = $path.'/Config.inc.php';
             }
         }
 
         //取得已安装模块列表
-//        $moduleList = Db::name('module')->select() ?: [];
-//        foreach ($this->moduleList as $v) {
-//            $moduleList[$v['module']] = $v;
-//            //检查是否系统模块，如果是，直接不显示
-//            if ($v['iscore']) {
-//                $key = array_keys($dirs_arr, $v['module']);
-//                unset($dirs_arr[$key[0]]);
-//            }
-//        }
+        $installedModuleList = Db::name('module')->select() ?: [];
+        $installedModuleMap = [];
+        foreach ($installedModuleList as $module) {
+            $installedModuleMap[strtolower($module['module'])] = $module;
+        }
 
         //数量
         $total_items = count($dirs_arr);
@@ -72,62 +92,81 @@ class Module  extends AdminController
         $page = max($page, 1);
         //根据分页取到对应的模块列表数据
         $directory = $dirs_arr[intval($page - 1)];
-//var_dump($directory);
-//exit;
+
         $moduleList = [];
         foreach ($directory as $moduleName => $moduleFilePath) {
             $moduleName = ucwords($moduleName);
+            $moduleInfo = isset($installedModuleMap[strtolower($moduleName)]) ? $installedModuleMap[strtolower($moduleName)] : null;
             $config = array(
                 //模块目录
-                'module' => $moduleName,
+                'module'       => $moduleName,
                 //模块名称
-                'modulename' => $moduleName,
+                'modulename'   => $moduleName,
                 //图标地址，远程地址
-                'icon' => '',
+                'icon'         => '',
                 //模块介绍地址
-                'address' => '',
+                'address'      => '',
                 //模块简介
-                'introduce' => '',
+                'introduce'    => '',
                 //模块作者
-                'author' => '',
+                'author'       => '',
                 //作者地址
-                'authorsite' => '',
+                'authorsite'   => '',
                 //作者邮箱
-                'authoremail' => '',
+                'authoremail'  => '',
                 //版本号，请不要带除数字外的其他字符
-                'version' => '',
+                'version'      => '',
                 //适配最低CMS版本，
-                'adaptation' => '',
+                'adaptation'   => '',
                 //签名
-                'sign' => '',
+                'sign'         => '',
                 //依赖模块
-                'depend' => array(),
+                'depend'       => array(),
                 //行为
-                'tags' => array(),
+                'tags'         => array(),
                 //缓存
-                'cache' => array(),
+                'cache'        => array(),
+                // 安装时间
+                'install_time' => $moduleInfo && isset($moduleInfo['installtime']) ? date('Y-m-d H:i', $moduleInfo['installtime']) : ''
             );
-            var_dump($moduleFilePath);
             // Config.inc.php 存在才认为是模块
-            if(is_file($moduleFilePath)){
+            if (is_file($moduleFilePath)) {
                 $moduleConfig = include $moduleFilePath;
-                $moduleList[$moduleName] = array_merge($config, $moduleConfig);
+                $moduleList[] = array_merge($config, $moduleConfig);
             }
         }
         //进行分页
-//        $Page = $this->page($count, 10, I('get.page', 1));
-
-//        $this->assign("Page", $Page->show());
-//        $this->assign("data", $moduleList);
-//        $this->assign("modules", $this->moduleList);
-//        $this->display();
 
         return self::makeJsonReturn(true, [
-            'page' => $page,
-            'limit' => $limit,
+            'page'        => $page,
+            'limit'       => $limit,
             'total_items' => $total_items,
-            'total_pages' => ceil($total_items/$limit),
-            'items' => $moduleList,
+            'total_pages' => ceil($total_items / $limit),
+            'items'       => $moduleList,
         ]);
     }
+
+    function getModuleInfo(){
+
+    }
+
+    function doInstallModule(){
+        $moduleName = input('module', '', 'strtolower');
+        if(empty($moduleName)){
+            return self::makeJsonReturn(false, null, '参数异常');
+        }
+
+        return self::makeJsonReturn(true, null, '安装完成');
+    }
+
+    function doUninstallModule(){
+        $moduleName = input('module', '', 'strtolower');
+        if(empty($moduleName)){
+            return self::makeJsonReturn(false, null, '参数异常');
+        }
+
+        return self::makeJsonReturn(true, null, '卸载完成');
+    }
+
+
 }

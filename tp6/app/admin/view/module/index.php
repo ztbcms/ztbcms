@@ -1,19 +1,7 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <div class="filter-container">
-            <h3>行为列表</h3>
-        </div>
-
-        <div class="filter-container">
-            <div style="margin-bottom: 15px;">
-                <el-input size="small" v-model="listQuery.keyword" placeholder="行为标识"
-                          style="width: 350px;" class="filter-item">
-                </el-input>
-
-                <el-button @click="doSearch" size="small" type="primary" icon="el-icon-search">
-                    搜索
-                </el-button>
-            </div>
+            <h3>模块列表</h3>
         </div>
 
         <el-table
@@ -22,44 +10,51 @@
                 highlight-current-row
                 style="width: 100%;"
         >
-            <el-table-column label="编号" align="center">
+            <el-table-column label="模块别名/名称" align="center">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.id }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="行为标识" align="">
-                <template slot-scope="scope">
-                    <span>{{ scope.row.name }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="行为名称" align="">
-                <template slot-scope="scope">
-                    <span>{{ scope.row.title }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="规则说明" align="">
-                <template slot-scope="scope">
-                    <span>{{ scope.row.remark }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="类型" align="">
-                <template slot-scope="scope">
-                    <span v-if="scope.row.type === '1'">控制器</span>
-                    <span v-if="scope.row.type === '2'">视图</span>
+                    <span>{{ scope.row.module }}</span> | <span>{{ scope.row.modulename }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column label="状态" width="150px" align="center">
-                <template slot-scope="{row}">
-                    <el-switch @change="updateShow(row.id,row.status)" v-model="row.status" size="small" active-value="1" inactive-value="0">
-                    </el-switch>
+            <el-table-column label="介绍" align="">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.introduce }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="作者" align="">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.author }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="版本" align="">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.version }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="最低后台版本" align="">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.adaptation }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="安装时间" align="">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.install_time === ''">未安装</span>
+                    <span v-else>{{ scope.row.install_time }}</span>
                 </template>
             </el-table-column>
 
             <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="openDetail(scope.row.id)">修改</el-button>
-                    <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <template v-if="scope.row.install_time === ''">
+                        <el-button type="primary" size="mini" @click="toInstall(scope.row)">安装</el-button>
+                    </template>
+                    <template v-else>
+<!--                        <el-button type="danger" size="mini">禁用</el-button>-->
+                        <el-button type="danger" size="mini"  @click="toInstall(scope.row)">卸载</el-button>
+                    </template>
                 </template>
             </el-table-column>
         </el-table>
@@ -111,7 +106,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:U('index')}",
+                        url: "{:api_url('/admin/Module/getModuleList')}",
                         type: "get",
                         dataType: "json",
                         data: that.listQuery,
@@ -125,47 +120,16 @@
                         }
                     })
                 },
-                doSearch: function () {
-                    var that = this;
-                    that.listQuery.page = 1;
-                    that.getList();
+                // 安装
+                toInstall: function(moduleInfo){
+                    var url = "{:api_url('/admin/module/install')}"+'?module=' + moduleInfo.module
+                    layer.open({
+                        type: 2,
+                        title: '安装',
+                        content: url,
+                        area: ['670px', '550px'],
+                    })
                 },
-                handleDelete: function (index) {
-
-                    var that = this;
-                    var url = '{:U("Behavior/delete")}';
-                    layer.confirm('您确定需要删除？', {
-                        btn: ['确定', '取消'] //按钮
-                    }, function () {
-                        var data = {
-                            "id": index
-                        };
-                        that.httpPost(url, data, function (res) {
-                            if (res.status) {
-                                layer.msg('操作成功', {icon: 1});
-                                that.getList();
-                            }
-                        });
-                    });
-                },
-                updateShow: function (id, value) {
-                    var that = this;
-                    var url = '{:U("Behavior/status")}';
-                    var data = {
-                        id: id
-                    };
-                    that.httpPost(url, data, function (res) {
-                        if (res.status) {
-                            that.$message.success('修改成功');
-                            that.getList();
-                        } else {
-                            layer.msg(res.info);
-                        }
-                    });
-                },
-                openDetail: function (id) {
-                    Ztbcms.openNewIframeByUrl('编辑', '/index.php?g=Admin&m=Behavior&a=edit&id=' + id)
-                }
             },
             mounted: function () {
                 this.getList();

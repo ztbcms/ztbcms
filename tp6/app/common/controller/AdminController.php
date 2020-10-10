@@ -143,4 +143,11 @@ class AdminController extends BaseController
         }
         return false;
     }
+
+    // 错误展示
+    function showError($msg){
+        view('common/error', [
+            'msg' => $msg
+        ])->send();
+    }
 }
