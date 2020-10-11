@@ -7,6 +7,8 @@
 namespace app\admin\controller;
 
 
+use app\admin\libs\module\ModuleInstaller;
+use app\admin\service\ModuleService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 
@@ -32,19 +34,12 @@ class Module extends AdminController
             $this->showError('请指定模块');
             return;
         }
-        $config_file = base_path()  . strtolower($module).'/Config.inc.php';
-        if(!file_exists($config_file)){
-            $this->showError('找不到模块配置文件');
-            return;
+        $moduleService = new ModuleService();
+        $res = $moduleService->getModuleInfo($module);
+        if(!$res){
+            return $res;
         }
-        $moduleConfig = include $config_file;
-        $moduleConfig['module'] = strtolower($module);
-        $moduleConfig['install_time'] = '';
-        $moduleInfo = Db::name('module')->where('module', '=', ucwords($module))->findOrEmpty();
-        if($moduleInfo && isset($moduleInfo['installtime'])){
-            $moduleConfig['install_time'] = date('Y-m-d H:i', $moduleInfo['installtime']);
-        }
-
+        $moduleConfig = $res['data'];
         return view('install', [
             'config' => $moduleConfig
         ]);
@@ -150,13 +145,15 @@ class Module extends AdminController
 
     }
 
+    // 安装
     function doInstallModule(){
         $moduleName = input('module', '', 'strtolower');
         if(empty($moduleName)){
             return self::makeJsonReturn(false, null, '参数异常');
         }
-
-        return self::makeJsonReturn(true, null, '安装完成');
+        $installer = new ModuleInstaller($moduleName);
+        $res = $installer->run();
+        return json($res);
     }
 
     function doUninstallModule(){
