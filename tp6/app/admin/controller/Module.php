@@ -8,6 +8,7 @@ namespace app\admin\controller;
 
 
 use app\admin\libs\module\ModuleInstaller;
+use app\admin\libs\module\ModuleUninstaller;
 use app\admin\service\ModuleService;
 use app\common\controller\AdminController;
 use think\facade\Db;
@@ -156,14 +157,15 @@ class Module extends AdminController
         return json($res);
     }
 
+    // 卸载
     function doUninstallModule(){
         $moduleName = input('module', '', 'strtolower');
         if(empty($moduleName)){
             return self::makeJsonReturn(false, null, '参数异常');
         }
-
-        return self::makeJsonReturn(true, null, '卸载完成');
+        $uninstaller = new ModuleUninstaller($moduleName);
+        $res = $uninstaller->run();
+        return json($res);
     }
-
 
 }

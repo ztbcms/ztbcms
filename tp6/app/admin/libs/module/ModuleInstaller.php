@@ -22,14 +22,19 @@ use think\File;
  */
 class ModuleInstaller extends BaseService
 {
-    private $module = '';
+    protected $module = '';
 
     public function __construct($module)
     {
         $this->module = $module;
+        if (empty($this->module)) {
+            throw new \Exception('请指定模块');
+        }
     }
 
     /**
+     * 执行
+     *
      * @return array|int|string
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -37,9 +42,6 @@ class ModuleInstaller extends BaseService
      */
     public function run()
     {
-        if (empty($this->module)) {
-            return self::createReturn(false, null, '请选择需要安装的模块');
-        }
         $moduleName = $this->module;
         //设置脚本最大执行时间
         set_time_limit(0);
@@ -58,7 +60,7 @@ class ModuleInstaller extends BaseService
         //版本检查
         if ($config['adaptation']) {
             if (version_compare(Config::get('admin.admin_version'), $config['adaptation'], '>=') == false) {
-                return self::createReturn(false, null, '该模块要求系统最低版本为：' . $config['adaptation']);
+                return self::createReturn(false, null, '该模块要求系统最低版本为：'.$config['adaptation']);
             }
         }
         //依赖模块检测
@@ -77,16 +79,16 @@ class ModuleInstaller extends BaseService
 
         $moduleModel = new ModuleModel();
         $data = [
-            'module' => ucwords($config['module']),
-            'modulename' => $config['modulename'],
-            'sign' => $config['sign'],
-            'iscore' => isset($config['iscore']) ? $config['iscore'] : 0,
-            'disabled' => 0,
-            'version' => $config['version'],
-            'setting' => isset($config['setting']) ? json_encode($config['setting']) : '',
+            'module'      => ucwords($config['module']),
+            'modulename'  => $config['modulename'],
+            'sign'        => $config['sign'],
+            'iscore'      => isset($config['iscore']) ? $config['iscore'] : 0,
+            'disabled'    => 0,
+            'version'     => $config['version'],
+            'setting'     => isset($config['setting']) ? json_encode($config['setting']) : '',
             'installtime' => time(),
-            'updatetime' => time(),
-            'listorder' => 0,
+            'updatetime'  => time(),
+            'listorder'   => 0,
         ];
         $res = $moduleModel->insert($data);
         if (!$res) {
@@ -94,7 +96,7 @@ class ModuleInstaller extends BaseService
         }
 
         //执行数据库脚本安装
-        $res = $this->_runSQL($moduleName);
+        $res = $this->_runSQL($moduleName, 'install');
         if (!$res) {
             $this->_installRollback($moduleName);
             return $res;
@@ -107,21 +109,21 @@ class ModuleInstaller extends BaseService
             return $res;
         }
 
-        // TODO 执行安装脚本【tp6模块不执行该脚本，默认不增加Install.class.php】
-        $this->_runInstallScript($moduleName);
+        // TODO 执行安装脚本
+        $this->_runInstallScript($moduleName, 'install');
 
         //静态资源文件
-        $this->_moveResource($moduleName);
+        $this->_copyResource($moduleName);
 
         //安装结束，最后调用安装脚本完成
-        $this->_runInstallScriptEnd($moduleName);
+        $this->_runInstallScriptEnd($moduleName, 'install');
         return self::createReturn(true, null, '安装完成');
     }
 
     /**
      * 目录权限检查
      *
-     * @param  string $moduleName 模块名称
+     * @param  string  $moduleName  模块名称
      */
     function _checkPermission($moduleName = '')
     {
@@ -154,16 +156,18 @@ class ModuleInstaller extends BaseService
 
     /**
      * 执行安装数据库脚本
-     * @param string $moduleName
+     *
+     * @param  string  $moduleName
+     *
      * @return array
      */
-    function _runSQL($moduleName = '')
+    function _runSQL($moduleName = '', $dir = 'install')
     {
         if (empty($moduleName)) {
             return self::createReturn(false, null, '模块名称不能为空');
         }
         //sql文件
-        $path = base_path() . strtolower("{$moduleName}/install/") . "{$moduleName}.sql";
+        $path = base_path().strtolower("{$moduleName}/{$dir}/")."{$moduleName}.sql";
 
         if (!file_exists($path)) {
             return self::createReturn(true, null, 'sql文件不存在，无需安装');
@@ -180,13 +184,15 @@ class ModuleInstaller extends BaseService
 
     /**
      * 处理sql语句，执行替换前缀都功能
-     * @param string $sql 原始的sql
+     *
+     * @param  string  $sql  原始的sql
+     *
      * @return array
      */
     function _resolveSQL($sql)
     {
         // 处理前缀
-        $tablepre = Config::get('database.connections.' . Config::get('database.default') . '.prefix');
+        $tablepre = Config::get('database.connections.'.Config::get('database.default').'.prefix');
         $sql = str_replace("cms_", $tablepre, $sql);
 
         // 多行sql聚合为单行
@@ -215,12 +221,12 @@ class ModuleInstaller extends BaseService
         if (empty($moduleName)) {
             return self::createReturn(false, null, '模块名称不能为空');
         }
-        $path = base_path() . strtolower("{$moduleName}/install/") . "menu.php";
+        $path = base_path().strtolower("{$moduleName}/install/")."Menu.php";
         //检查是否有安装脚本
         if (!file_exists($path)) {
             return self::createReturn(true, null, '不存在Menu.php,无需安装');
         }
-        $menu = include $path . '';
+        $menu = include $path.'';
 
         if (empty($menu)) {
             return self::createReturn(true, null, '菜单为空，安装完成');
@@ -231,7 +237,9 @@ class ModuleInstaller extends BaseService
 
     /**
      * 安装回滚
+     *
      * @param $moduleName
+     *
      * @return array
      * @throws \think\db\exception\DbException
      */
@@ -246,32 +254,34 @@ class ModuleInstaller extends BaseService
     }
 
     // TODO 执行 install.php 前置方法
-    function _runInstallScript($moduleName)
+    function _runInstallScript($moduleName, $type = '')
     {
         return true;
     }
 
     // TODO 执行 install.php的后置方法
-    function _runInstallScriptEnd($moduleName)
+    function _runInstallScriptEnd($moduleName, $type = '')
     {
         return true;
     }
 
     /**
      * 资源迁移
+     *
      * @param $moduleName
+     *
      * @return array
      */
-    function _moveResource($moduleName)
+    function _copyResource($moduleName)
     {
         if (empty($moduleName)) {
             return self::createReturn(false, null, '模块名称不能为空');
         }
-        $resource_dir = base_path() . "{$moduleName}/install/extra/";
+        $resource_dir = base_path()."{$moduleName}/install/extra/";
         if (file_exists($resource_dir)) {
             $dir = new File($resource_dir, false);
             if ($dir->isDir()) {
-                $des_dir = public_path() . 'statics/extra/' . strtolower($moduleName) . '/';
+                $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
                 $this->_copyDir($resource_dir, $des_dir);
             }
         }
@@ -280,15 +290,16 @@ class ModuleInstaller extends BaseService
 
     /**
      * 复制目录
+     *
      * @param $source
      * @param $destination
+     *
      * @return boolean
      */
     function _copyDir($source, $destination)
     {
         if (is_dir($source) == false) {
-            $this->error = "源目录不存在！";
-            return false;
+            return BaseService::createReturn(false, null, '源目录不存在');
         }
         if (is_dir($destination) == false) {
             mkdir($destination, 0700, true);
@@ -296,12 +307,45 @@ class ModuleInstaller extends BaseService
         $handle = opendir($source);
         while (false !== ($file = readdir($handle))) {
             if ($file != "." && $file != "..") {
-                is_dir("$source/$file") ?
-                    $this->_copyDir("$source/$file", "$destination/$file") :
+                is_dir("$source/$file")
+                    ?
+                    $this->_copyDir("$source/$file", "$destination/$file")
+                    :
                     copy("$source/$file", "$destination/$file");
             }
         }
         closedir($handle);
+
+        return BaseService::createReturn(true, null, '操作完成');
+    }
+
+    /**
+     * 删除目录（包括下面的文件）
+     *
+     * @param $directory
+     *
+     * @return array
+     */
+    function _delDir($directory)
+    {
+        if (is_dir($directory) == false) {
+            return BaseService::createReturn(false, null, '目录不存在');
+        }
+        $handle = opendir($directory);
+        while (($file = readdir($handle)) !== false) {
+            if ($file != "." && $file != "..") {
+                is_dir("$directory/$file")
+                    ?
+                    $this->_delDir("$directory/$file")
+                    :
+                    unlink("$directory/$file");
+            }
+        }
+        if (readdir($handle) == false) {
+            closedir($handle);
+            rmdir($directory);
+        }
+        return BaseService::createReturn(true, null, '操作完成');
     }
 
 

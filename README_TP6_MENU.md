@@ -41,6 +41,12 @@
 ├──── 权限组列表 {{domain}}/Admin/AccessGroup/accessGroupList => {{domain}}/home/Admin/AccessGroup/accessGroupList
 ├──── 权限组详情 {{domain}}/home/Admin/AccessGroup/accessGroupDetails
 
+
+├─ 模块
+│
+├──── 模块管理 
+        ├──── 本地模块 {{domain}}/admin/module/index=> {{domain}}/home/admin/module/index
+
 ```
 
 
