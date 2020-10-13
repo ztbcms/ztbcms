@@ -142,10 +142,6 @@ class Module extends AdminController
         ]);
     }
 
-    function getModuleInfo(){
-
-    }
-
     // 安装
     function doInstallModule(){
         $moduleName = input('module', '', 'strtolower');

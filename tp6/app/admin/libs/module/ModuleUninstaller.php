@@ -69,7 +69,10 @@ class ModuleUninstaller extends ModuleInstaller
         //删除权限
         Db::name('access')->where('app', $moduleName)->delete();
         //移除菜单项和权限项
-        Db::name('menu')->where('app', $moduleName)->delete();
+        Db::name('menu')->where([
+            ['app', '=', $moduleName],
+            ['is_tp6', '=', 1]
+        ])->delete();
     }
 
     /**
@@ -80,6 +83,9 @@ class ModuleUninstaller extends ModuleInstaller
     function _removeResource($moduleName)
     {
         $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
+        $this->_delDir($des_dir);
+
+        $des_dir = dirname(root_path()).'/statics/extres/'.strtolower($moduleName).'/';
         $this->_delDir($des_dir);
     }
 }

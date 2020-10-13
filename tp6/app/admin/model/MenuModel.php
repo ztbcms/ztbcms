@@ -134,13 +134,14 @@ class MenuModel extends Model
         if (empty($data) || !is_array($data)) {
             return BaseService::createReturn(false, null, '没有数据');
         }
+
         if (empty($config)) {
             return BaseService::createReturn(false, null, '模块配置信息为空');
         }
         //默认安装时父级ID
         $localMenu = Db::name('menu')->where([['app', '=', 'Admin'], ['controller', '=', 'Module'], ['action', '=', 'local']])->findOrEmpty();
         $defaultMenuParentid = $localMenu && isset($localMenu['id']) ? $localMenu['id'] : 42;
-        foreach ($data as $rs) {
+        foreach ($data as $index => $rs) {
             if (empty($rs['route'])) {
                 return BaseService::createReturn(false, null, '菜单信息配置有误，route 不能为空');
             }
@@ -156,14 +157,13 @@ class MenuModel extends Model
                 'parameter' => isset($rs['parameter']) ? $rs['parameter'] : '',
                 'icon' => isset($rs['icon']) ? $rs['icon'] : '',
             ), $route);
-
             $newId = Db::name('menu')->insertGetId($newData);
             if (!$newId) {
                 return BaseService::createReturn(false, null, 'Menu 安装异常，请检查菜单配置');
             }
             //是否有子菜单
             if (!empty($rs['child'])) {
-                return $this->installModuleMenu($rs['child'], $config, $newId);
+                $this->installModuleMenu($rs['child'], $config, $newId);
             }
         }
         return BaseService::createReturn(true, null, '安装菜单完成');
