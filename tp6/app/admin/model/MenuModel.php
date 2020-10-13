@@ -80,7 +80,8 @@ class MenuModel extends Model
     {
         //父节点ID
         $parentid = (int)$parentid;
-        $result = $this->where(array('parentid' => $parentid, 'status' => 1))->order('listorder ASC,id ASC')->select()->toArray();
+        // 只获取tp6菜单
+        $result = $this->where(array('parentid' => $parentid, 'status' => 1, 'is_tp6' => 1))->order('listorder ASC,id ASC')->select()->toArray();
         if (empty($result)) {
             $result = array();
         }
