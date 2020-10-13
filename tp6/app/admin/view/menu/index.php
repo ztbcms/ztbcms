@@ -34,6 +34,17 @@
                 </template>
             </el-table-column>
 
+            <el-table-column label="TP6" width="100px" align="center">
+                <template slot-scope="{row}">
+                    <template v-if="row.is_tp6 == 1">
+                        <span style="color:green">是</span>
+                    </template>
+                    <template v-else>
+                        <span style="color:gray">否</span>
+                    </template>
+                </template>
+            </el-table-column>
+
             <el-table-column label="状态" width="100px" align="center">
                 <template slot-scope="{row}">
                     <template v-if="row.status == 1">

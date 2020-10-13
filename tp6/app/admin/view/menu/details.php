@@ -16,22 +16,14 @@
                             <el-input v-model="formData.name" placeholder="请输入名称" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
                         <el-form-item label="模块" prop="app">
-                            <el-select @change="getControllerList()" v-model="formData.app" placeholder="请选择模块" clearable :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in appOptions" :key="index" :label="item.name" :value="item.name"
-                                           :disabled="item.disabled"></el-option>
-                            </el-select>
+                            <el-input v-model="formData.app" placeholder="请输入模块,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
                         <el-form-item label="控制器" prop="controller">
-                            <el-select @change="getActionList()" v-model="formData.controller" placeholder="请选择控制器" clearable :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in controllerOptions" :key="index" :label="item"
-                                           :value="item" ></el-option>
-                            </el-select>
+                            <el-input v-model="formData.controller" placeholder="请输入控制器,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
+
                         </el-form-item>
                         <el-form-item label="方法" prop="action">
-                            <el-select v-model="formData.action" placeholder="请输入方法" clearable :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in actionOptions" :key="index" :label="item"
-                                           :value="item" ></el-option>
-                            </el-select>
+                            <el-input v-model="formData.action" placeholder="请输入方法,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
                         <el-form-item label="参数" prop="parameter">
                             <el-input v-model="formData.parameter" placeholder="请输入参数" clearable :style="{width: '100%'}">
@@ -46,8 +38,8 @@
                                            :value="item.value" :disabled="item.disabled"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="类型" prop=" type">
-                            <el-select v-model="formData. type" placeholder="请选择类型" clearable :style="{width: '100%'}">
+                        <el-form-item label="类型" prop="type">
+                            <el-select v-model="formData.type" placeholder="请选择类型" clearable :style="{width: '100%'}">
                                 <el-option v-for="(item, index) in  typeOptions" :key="index" :label="item.label"
                                            :value="item.value" :disabled="item.disabled"></el-option>
                             </el-select>
@@ -55,6 +47,14 @@
                         <el-form-item label="图标" prop="icon">
                             <el-input v-model="formData.icon" placeholder="请输入图标" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
+
+                        <el-form-item label="TP6" prop="is_tp6">
+                            <el-select v-model="formData.is_tp6" placeholder="请选择" clearable :style="{width: '100%'}">
+                                <el-option label="否" value="0"></el-option>
+                                <el-option label="是" value="1"></el-option>
+                            </el-select>
+                        </el-form-item>
+
                         <el-form-item size="large">
                             <el-button type="primary" @click="submitForm">提交</el-button>
                         </el-form-item>
@@ -76,17 +76,17 @@
                 return {
                     formData: {
                         id : "{$id}",
-                        parentid: "{$parentid}" * 1,
+                        parentid: "0",
                         name: '',
                         app: '',
-                        controller: '%',
-                        action: '%',
+                        controller: '',
+                        action: '',
                         parameter: '',
                         remark: '',
                         status: '1',
                         type: '1',
                         icon: '',
-                        is_tp6: 0,
+                        is_tp6: '1',
                     },
                     rules: {
                         parentid: [{
@@ -101,17 +101,17 @@
                         }],
                         app: [{
                             required: true,
-                            message: '请选择模块',
+                            message: '请填写模块',
                             trigger: 'change'
                         }],
                         controller: [{
                             required: true,
-                            message: '请选择控制器',
+                            message: '请填写控制器',
                             trigger: 'change'
                         }],
                         action: [{
                             required: true,
-                            message: '请输入方法',
+                            message: '请填写方法',
                             trigger: 'change'
                         }],
                         parameter: [],
@@ -148,7 +148,7 @@
             created: function() {},
             mounted: function() {
                 this.getMenuList();
-                this.getModuleList();
+                // this.getModuleList();
                 if(this.formData.id) this.getDetails();
             },
             methods: {
@@ -193,43 +193,7 @@
                         }
                     })
                 },
-                //获取模块列表
-                getModuleList: function () {
-                    var that = this;
-                    $.post("{:api_url('/Admin/Menu/getModuleList')}", {}, function (res) {
-                        that.appOptions = res.data;
-                    }, 'json');
-                },
-                //获取控制器列表
-                getControllerList: function () {
-                    var that = this;
 
-                    let appItem = that.appOptions.find(res => {
-                        return res.name == that.formData.app;
-                    });
-
-                    if (appItem) {
-                        that.formData.is_tp6 = appItem.is_tp6;
-                    }
-
-                    $.post("{:api_url('/Admin/Menu/getControllerList')}", {
-                        module: that.formData.app,
-                        is_tp6: that.formData.is_tp6
-                    }, function (res) {
-                        that.controllerOptions = res.data;
-                    }, 'json');
-                },
-                //获取方法列表
-                getActionList: function () {
-                    var that = this;
-                    $.post("{:api_url('Admin/Menu/getActionList')}", {
-                        controller: that.formData.controller,
-                        app : that.formData.app,
-                        is_tp6: that.formData.is_tp6
-                    }, function (res) {
-                        that.actionOptions = res.data;
-                    }, 'json');
-                },
                 //获取菜单详情
                 getDetails: function (){
                     var that = this;
@@ -237,6 +201,8 @@
                         id: that.formData.id,
                     }, function (res) {
                         that.formData = res.data;
+                        that.formData.parentid = parseInt(that.formData.parentid)
+                        that.formData.is_tp6 = that.formData.is_tp6 + ''
                     }, 'json');
                 }
             }
