@@ -12,6 +12,11 @@ use app\common\controller\AdminController;
 use app\admin\service\RbacService;
 use app\admin\service\MenuService;
 
+/**
+ * 权限组
+ *
+ * @package app\admin\controller
+ */
 class AccessGroup extends AdminController
 {
 

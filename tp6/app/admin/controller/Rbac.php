@@ -15,6 +15,11 @@ use think\facade\Request;
 use app\admin\validate\Role;
 use think\exception\ValidateException;
 
+/**
+ * 角色权限
+ *
+ * @package app\admin\controller
+ */
 class Rbac extends AdminController
 {
     /**

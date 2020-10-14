@@ -13,6 +13,11 @@ use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use think\facade\Request;
 
+/**
+ * 管理员
+ *
+ * @package app\admin\controller
+ */
 class Management extends AdminController
 {
     /**
@@ -59,11 +64,11 @@ class Management extends AdminController
         $new_pwdconfirm = Request::param('new_pwdconfirm', '', 'trim');
 
         if (empty($oldPass)) {
-            return json(self::createReturn(false, null,  '请输入旧密码'));
+            return json(self::createReturn(false, null, '请输入旧密码'));
         }
 
         if ($newPass != $new_pwdconfirm) {
-            return json(self::createReturn(false, null,  '两次密码不相同'));
+            return json(self::createReturn(false, null, '两次密码不相同'));
         }
 
         $AdminUserModel = new AdminUserModel();
@@ -72,9 +77,9 @@ class Management extends AdminController
             (new AdminUserService)->logout();
             return json(self::createReturn(true, [
                 'rediret_url' => api_url("/Admin/Login/index") //跳转链接
-            ],  '密码已经更新，请重新登录'));
+            ], '密码已经更新，请重新登录'));
         } else {
-            return json(self::createReturn(false, null,  '密码更新失败'));
+            return json(self::createReturn(false, null, '密码更新失败'));
         }
     }
 
@@ -84,7 +89,7 @@ class Management extends AdminController
     public function index()
     {
         $role_id = Request::param('role_id');
-        return view('index',[
+        return view('index', [
             'role_id' => $role_id
         ]);
     }
@@ -112,12 +117,16 @@ class Management extends AdminController
         if (!$this->is_administrator) {
             //如果非超级管理员，只能管理下级角色的成员
             $roleWhere['parentid'] = $this->user->role_id;
-            if($role_id) $roleWhere['id'] = $role_id;
+            if ($role_id) {
+                $roleWhere['id'] = $role_id;
+            }
             $role_ids = $RoleModel->where($roleWhere)->column('id');
             //如果没有找到下级role_ids 则默认为0
-            $where['role_id'] = ['in', implode(',',$role_ids)];
+            $where['role_id'] = ['in', implode(',', $role_ids)];
         } else {
-            if($role_id) $where['role_id'] = $role_id;
+            if ($role_id) {
+                $where['role_id'] = $role_id;
+            }
         }
 
         $list = $AdminUserModel->where($where)->select();

@@ -12,11 +12,17 @@ use app\admin\service\MenuService;
 use app\common\controller\AdminController;
 use think\facade\Request;
 
+/**
+ * 菜单
+ *
+ * @package app\admin\controller
+ */
 class Menu extends AdminController
 {
 
     /**
      * 菜单列表
+     *
      * @return string
      */
     function index()
@@ -64,16 +70,17 @@ class Menu extends AdminController
      */
     public function details()
     {
-        $id = Request::param('id','','trim');
-        $parentid = Request::param('parentid','','trim');
-        return view('details',['id'=>$id, 'parentid'=>(int)$parentid ]);
+        $id = Request::param('id', '', 'trim');
+        $parentid = Request::param('parentid', '', 'trim');
+        return view('details', ['id' => $id, 'parentid' => (int) $parentid]);
     }
 
     /**
      * 菜单数据
      */
-    public function getDetails(){
-        $id = Request::param('id','','trim');
+    public function getDetails()
+    {
+        $id = Request::param('id', '', 'trim');
         $res = MenuService::getDetails($id);
         return json($res);
     }
@@ -99,17 +106,19 @@ class Menu extends AdminController
     /**
      * 获取方法列表
      */
-    public function getActionList(){
+    public function getActionList()
+    {
         $controller = Request::param('controller');
         $is_tp6 = Request::param('is_tp6');
         $app = Request::param('app');
-        return json(MenuService::getActionList($controller,$app,$is_tp6));
+        return json(MenuService::getActionList($controller, $app, $is_tp6));
     }
 
     /**
      * 添加或者编辑详情
      */
-    public function addEditDetails(){
+    public function addEditDetails()
+    {
         $posts = input('post.');
         return json(MenuService::addEditDetails($posts));
     }

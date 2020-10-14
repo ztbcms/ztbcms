@@ -9,6 +9,12 @@ namespace app\admin\controller;
 use app\common\controller\AdminController;
 use think\facade\View;
 
+/**
+ * 仪表盘
+ * Class Dashboard
+ *
+ * @package app\admin\controller
+ */
 class Dashboard extends AdminController
 {
     /**

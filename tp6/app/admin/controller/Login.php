@@ -14,6 +14,11 @@ use think\facade\Db;
 use think\facade\Request;
 use think\facade\View;
 
+/**
+ * 登录
+ *
+ * @package app\admin\controller
+ */
 class Login extends BaseController
 {
     /**

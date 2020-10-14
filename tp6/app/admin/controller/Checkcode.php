@@ -11,6 +11,11 @@ use app\admin\service\AdminConfigService;
 use app\BaseController;
 use think\facade\Request;
 
+/**
+ * 校验码
+ *
+ * @package app\admin\controller
+ */
 class Checkcode extends BaseController
 {
     public function index()

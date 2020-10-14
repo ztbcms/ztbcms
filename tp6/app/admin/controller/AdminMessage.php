@@ -11,6 +11,11 @@ use app\common\controller\AdminController;
 use think\facade\Request;
 use think\facade\View;
 
+/**
+ * 后台消息
+ *
+ * @package app\admin\controller
+ */
 class AdminMessage extends AdminController
 {
     /**

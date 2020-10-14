@@ -13,6 +13,11 @@ use app\admin\service\ModuleService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 
+/**
+ * 模块
+ *
+ * @package app\admin\controller
+ */
 class Module extends AdminController
 {
     //系统模块，隐藏
@@ -29,15 +34,16 @@ class Module extends AdminController
     /**
      * 模块安装页面
      */
-    function install(){
+    function install()
+    {
         $module = input('module', '');
-        if(empty($module)){
+        if (empty($module)) {
             $this->showError('请指定模块');
             return;
         }
         $moduleService = new ModuleService();
         $res = $moduleService->getModuleInfo($module);
-        if(!$res){
+        if (!$res) {
             return $res;
         }
         $moduleConfig = $res['data'];
@@ -48,6 +54,7 @@ class Module extends AdminController
 
     /**
      * 获取模块列表
+     *
      * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -143,9 +150,10 @@ class Module extends AdminController
     }
 
     // 安装
-    function doInstallModule(){
+    function doInstallModule()
+    {
         $moduleName = input('module', '', 'strtolower');
-        if(empty($moduleName)){
+        if (empty($moduleName)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
         $installer = new ModuleInstaller($moduleName);
@@ -154,9 +162,10 @@ class Module extends AdminController
     }
 
     // 卸载
-    function doUninstallModule(){
+    function doUninstallModule()
+    {
         $moduleName = input('module', '', 'strtolower');
-        if(empty($moduleName)){
+        if (empty($moduleName)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
         $uninstaller = new ModuleUninstaller($moduleName);
