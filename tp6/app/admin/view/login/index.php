@@ -16,7 +16,7 @@
         <div class="input flex-between" style="margin-bottom: 0px">
             <input type="text" placeholder="请输入验证码" style="flex: 1;" id="code">
             <img id="code_img" class="code"
-                 src="{:api_url('/Admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"
+                 src="{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"
                  onclick="refreshs()"></a>
         </div>
         <p style="font-size: 12px;color: #7884a0;margin-top: 4px;">* 数据传输采用128位加密技术，保障您的信息安全</p>

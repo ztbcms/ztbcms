@@ -1,5 +1,7 @@
 ### 安装
 
+php 版本要求 7.2或以上
+
 ```shell script
 cd tp6 && composer install
 ```
