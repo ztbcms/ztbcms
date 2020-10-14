@@ -216,6 +216,13 @@ class ModuleInstaller extends BaseService
         return $ret;
     }
 
+    /**
+     * 安装菜单
+     * @param $moduleName
+     * @param $moduleConfig
+     *
+     * @return array
+     */
     function _installMenu($moduleName, $moduleConfig)
     {
         if (empty($moduleName)) {

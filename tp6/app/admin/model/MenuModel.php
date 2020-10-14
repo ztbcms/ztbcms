@@ -157,6 +157,7 @@ class MenuModel extends Model
                 'listorder' => isset($rs['listorder']) ? $rs['listorder'] : 0,
                 'parameter' => isset($rs['parameter']) ? $rs['parameter'] : '',
                 'icon' => isset($rs['icon']) ? $rs['icon'] : '',
+                'is_tp6' => isset($rs['is_tp6']) ? $rs['is_tp6'] : '1',//默认是tp6
             ), $route);
             $newId = Db::name('menu')->insertGetId($newData);
             if (!$newId) {
