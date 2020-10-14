@@ -168,7 +168,7 @@
 <script>
     //若当前页面是再后台的内容页，则通知外层页面跳转
     if(parent !== window){
-        parent.window.location = "{:api_url('/Admin/Login/index')}"
+        parent.window.location = "{:api_url('/admin/Login/index')}"
     }
 
     var inputs = document.querySelectorAll('input');
@@ -206,7 +206,7 @@
 
     //刷新二维码
     function refreshs() {
-        document.getElementById('code_img').src = "{:api_url('/Admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"+"&time=" + Math.random();
+        document.getElementById('code_img').src = "{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"+"&time=" + Math.random();
     }
 
     // refreshs();
@@ -233,7 +233,7 @@
         };
 
         $.ajax({
-            url: "{:api_url('/Admin/Login/doLogin')}",
+            url: "{:api_url('/admin/Login/doLogin')}",
             method: 'post',
             dataType: 'json',
             data: {
