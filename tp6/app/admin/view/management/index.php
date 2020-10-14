@@ -114,7 +114,7 @@
             methods: {
                 details: function (id) {
                     var that = this
-                    var url = "{:api_url('Admin/Management/details')}";
+                    var url = "{:api_url('admin/Management/details')}";
                     if (id !== 0) {
                         url += "&id=" + id;
                     }
@@ -131,7 +131,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Management/getManagementList')}",
+                        url:"{:api_url('/admin/Management/getManagementList')}",
                         type: "get",
                         dataType:"json",
                         data:{
@@ -159,7 +159,7 @@
                 doDelete(id){
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Management/delete')}",
+                        url:"{:api_url('/admin/Management/delete')}",
                         type: "get",
                         data:{
                             "id":id

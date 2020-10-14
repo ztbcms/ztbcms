@@ -64,7 +64,7 @@
                 onSubmit: function(){
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Rbac/roleAddEdit')}",
+                        url:"{:api_url('/admin/Rbac/roleAddEdit')}",
                         dataType:"json",
                         type:"post",
                         data:  that.form,
@@ -87,7 +87,7 @@
                 getroleList:function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Rbac/getrolemanage')}",
+                        url:"{:api_url('/admin/Rbac/getrolemanage')}",
                         type:"get",
                         dataType:"json",
                         success(res){

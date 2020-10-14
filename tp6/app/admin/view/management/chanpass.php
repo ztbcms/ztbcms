@@ -53,7 +53,7 @@
             methods: {
                 onSubmit: function () {
                     $.ajax({
-                        url: "{:api_url('/Admin/Management/changePassword')}",
+                        url: "{:api_url('/admin/Management/changePassword')}",
                         method: 'post',
                         dataType: 'json',
                         data: this.form,

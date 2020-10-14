@@ -86,7 +86,7 @@
                 onSubmit: function(){
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Management/addEditManagement')}",
+                        url:"{:api_url('/admin/Management/addEditManagement')}",
                         dataType:"json",
                         type:"post",
                         data:  that.form,
@@ -108,7 +108,7 @@
                 getroleList:function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Rbac/getrolemanage')}",
+                        url:"{:api_url('/admin/Rbac/getrolemanage')}",
                         type:"get",
                         dataType:"json",
                         success(res){
@@ -121,7 +121,7 @@
                 getManagerByid:function (id) {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/Admin/Management/getDetails')}",
+                        url:"{:api_url('/admin/Management/getDetails')}",
                         type:"post",
                         dataType:"json",
                         data:{

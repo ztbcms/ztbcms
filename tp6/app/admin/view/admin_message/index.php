@@ -96,7 +96,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AdminMessage/getAdminMsgList')}",
+                        url: "{:api_url('/admin/AdminMessage/getAdminMsgList')}",
                         data: that.where,
                         type: 'get',
                         dataType: 'json',
@@ -113,7 +113,7 @@
                 read:function(id){
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AdminMessage/readMsg')}",
+                        url: "{:api_url('/admin/AdminMessage/readMsg')}",
                         data: {
                             'ids': [id]
                         },
@@ -137,7 +137,7 @@
                 doReadAll:function(){
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AdminMessage/readMsgAll')}",
+                        url: "{:api_url('/admin/AdminMessage/readMsgAll')}",
                         data: {},
                         type: 'post',
                         dataType: 'json',
@@ -164,7 +164,7 @@
                         ids.push(that.tableData[item]['id']);
                     }
                     $.ajax({
-                        url:  "{:api_url('/Admin/AdminMessage/readMsg')}",
+                        url:  "{:api_url('/admin/AdminMessage/readMsg')}",
                         data: {
                             ids:ids
                         },

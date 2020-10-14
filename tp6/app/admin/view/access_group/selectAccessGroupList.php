@@ -81,7 +81,7 @@
                 fetchData: function(){
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AccessGroup/getAccessGroupList')}",
+                        url: "{:api_url('/admin/AccessGroup/getAccessGroupList')}",
                         type: "get",
                         dataType: "json",
                         success: function(res){

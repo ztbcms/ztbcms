@@ -159,7 +159,7 @@
                         if (!valid) return;
                         // TODO 提交表单
                         $.ajax({
-                            url: "{:api_url('/Admin/Menu/addEditDetails')}",
+                            url: "{:api_url('/admin/Menu/addEditDetails')}",
                             data: that.formData,
                             type: "post",
                             dataType: 'json',
@@ -182,7 +182,7 @@
                 getMenuList: function() {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/Menu/getMenuList')}",
+                        url: "{:api_url('/admin/Menu/getMenuList')}",
                         type: "get",
                         dataType: "json",
                         data: that.listQuery,
@@ -197,7 +197,7 @@
                 //获取菜单详情
                 getDetails: function (){
                     var that = this;
-                    $.post("{:api_url('Admin/Menu/getDetails')}", {
+                    $.post("{:api_url('/admin/Menu/getDetails')}", {
                         id: that.formData.id,
                     }, function (res) {
                         that.formData = res.data;

@@ -141,7 +141,7 @@
                     var that = this;
                     if (that.info.id) {
                         $.ajax({
-                            url: "{:api_url('/Admin/AccessGroup/getAccessGroupById')}&id=" + that.info.id,
+                            url: "{:api_url('/admin/AccessGroup/getAccessGroupById')}&id=" + that.info.id,
                             type: "get",
                             dataType: "json",
                             success: function (res) {
@@ -166,7 +166,7 @@
                         description: that.info.description,
                         status: that.info.status
                     };
-                    var req_url = "{:api_url('/Admin/AccessGroup/doCreateAccessGroup')}";
+                    var req_url = "{:api_url('/admin/AccessGroup/doCreateAccessGroup')}";
                     $.ajax({
                         url: req_url,
                         type: "post",
@@ -187,7 +187,7 @@
                 getAccessGroupTreeArray: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AccessGroup/getAccessGroupTreeArray')}",
+                        url: "{:api_url('/admin/AccessGroup/getAccessGroupTreeArray')}",
                         type: "post",
                         dataType: "json",
                         data: {},
@@ -208,7 +208,7 @@
                         shadeClose: true,
                         shade: 0.8,
                         area: ['70%', '70%'],
-                        content: "{:api_url('/Admin/AccessGroup/accessList')}" + '&selected_ids=' + this.selectedItemIds.join(',')
+                        content: "{:api_url('/admin/AccessGroup/accessList')}" + '&selected_ids=' + this.selectedItemIds.join(',')
                     });
                 },
                 updateSelectAccessList: function(accessList){
@@ -235,7 +235,7 @@
                 clickSave: function(){
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AccessGroup/doSaveAccessGroupItem')}",
+                        url: "{:api_url('/admin/AccessGroup/doSaveAccessGroupItem')}",
                         type: "post",
                         dataType: "json",
                         data: {

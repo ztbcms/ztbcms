@@ -67,7 +67,7 @@
                     var that = this;
                     var checked_keys = that.$refs.tree.getCheckedKeys().toString();
                     $.ajax({
-                        url: "{:api_url('/Admin/Rbac/addEditAuthorize')}",
+                        url: "{:api_url('/admin/Rbac/addEditAuthorize')}",
                         data: {
                             menuid : checked_keys,
                             roleid : that.roleid
@@ -90,7 +90,7 @@
                 //获取菜单详情
                 getDetails: function () {
                     var that = this;
-                    $.post("{:api_url('Admin/Rbac/getAuthorizeList')}", {
+                    $.post("{:api_url('/admin/Rbac/getAuthorizeList')}", {
                         id: that.id,
                     }, function (res) {
                         that.data = res.data.list;

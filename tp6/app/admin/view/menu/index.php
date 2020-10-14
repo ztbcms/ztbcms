@@ -112,7 +112,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/Menu/getMenuList')}",
+                        url: "{:api_url('/admin/Menu/getMenuList')}",
                         type: "get",
                         dataType: "json",
                         data: that.listQuery,
@@ -130,7 +130,7 @@
                 },
                 handleDelete: function (index) {
                     var that = this;
-                    var url = '{:api_url("/Admin/Menu/doDelete")}';
+                    var url = '{:api_url("/admin/Menu/doDelete")}';
                     layer.confirm('您确定需要删除？', {
                         btn: ['确定','取消'] //按钮
                     }, function(){
@@ -157,7 +157,7 @@
                         closeOnClickModal: false,
                         beforeClose: function(action, instance, done){
                             if(action == 'confirm'){
-                                var url = '{:api_url("/Admin/Menu/updateTable")}';
+                                var url = '{:api_url("/admin/Menu/updateTable")}';
                                 var data = {
                                     field: 'listorder',where_name: 'id',
                                     value: instance.inputValue, where_value: id
@@ -177,7 +177,7 @@
                 },
                 details : function (id) {
                     var that = this;
-                    var url = '{:api_url("/Admin/Menu/details")}';
+                    var url = '{:api_url("/admin/Menu/details")}';
                     if(id) url += '&id=' + id;
                     layer.open({
                         type: 2,
@@ -191,7 +191,7 @@
                 },
                 linkMenuAdd: function (parentid) {
                     var that = this;
-                    var url = '{:api_url("/Admin/Menu/details")}';
+                    var url = '{:api_url("/admin/Menu/details")}';
                     if(parentid) url += '&parentid=' + parentid;
                     layer.open({
                         type: 2,

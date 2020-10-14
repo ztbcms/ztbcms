@@ -107,7 +107,7 @@
                     var that = this;
                     if(that.info.id){
                         $.ajax({
-                            url: "{:api_url('/Admin/AccessGroup/getRoleAccessGroup')}&role_id=" + that.info.id,
+                            url: "{:api_url('/admin/AccessGroup/getRoleAccessGroup')}&role_id=" + that.info.id,
                             type: "get",
                             dataType: "json",
                             success: function(res){
@@ -145,7 +145,7 @@
                 submitForm: function() {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/AccessGroup/doSaveAccessGroupRole')}",
+                        url: "{:api_url('/admin/AccessGroup/doSaveAccessGroupRole')}",
                         type: "post",
                         dataType: "json",
                         data: {
@@ -171,7 +171,7 @@
                         shadeClose: true,
                         shade: 0.8,
                         area: ['70%', '70%'],
-                        content: "{:api_url('/Admin/AccessGroup/selectAccessGroupList')}"+'?selected_ids=' + this.selectedItemIds
+                        content: "{:api_url('/admin/AccessGroup/selectAccessGroupList')}"+'?selected_ids=' + this.selectedItemIds
                     });
                 },
 

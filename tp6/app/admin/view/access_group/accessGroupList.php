@@ -78,7 +78,7 @@
                 fetchData: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('Admin/AccessGroup/getAccessGroupList')}",
+                        url: "{:api_url('admin/AccessGroup/getAccessGroupList')}",
                         type: "get",
                         dataType: "json",
                         success: function (res) {
@@ -115,7 +115,7 @@
                     var that = this;
                     layer.confirm('确认要删除?', function () {
                         $.ajax({
-                            url: "{:api_url('/Admin/AccessGroup/deleteAccessGroup')}",
+                            url: "{:api_url('/admin/AccessGroup/deleteAccessGroup')}",
                             type: "post",
                             data: {
                                 group_id: group_id
@@ -134,7 +134,7 @@
                 },
                detail: function (id) {
                     var that = this;
-                    var url = '{:api_url("/Admin/AccessGroup/accessGroupDetails")}';
+                    var url = '{:api_url("/admin/AccessGroup/accessGroupDetails")}';
                    if(id) url += '&id='+id;
                     layer.open({
                         type: 2,

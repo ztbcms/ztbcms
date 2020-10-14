@@ -76,7 +76,7 @@ class Management extends AdminController
             //退出登录
             (new AdminUserService)->logout();
             return json(self::createReturn(true, [
-                'rediret_url' => api_url("/Admin/Login/index") //跳转链接
+                'rediret_url' => api_url("/admin/Login/index") //跳转链接
             ], '密码已经更新，请重新登录'));
         } else {
             return json(self::createReturn(false, null, '密码更新失败'));

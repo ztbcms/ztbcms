@@ -140,7 +140,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/Rbac/getrolemanage')}",
+                        url: "{:api_url('/admin/Rbac/getrolemanage')}",
                         type: "get",
                         dataType: "json",
                         success: function (res) {
@@ -155,11 +155,11 @@
                     this.getList();
                 },
                 roleAdd: function () {
-                    var url = '{:api_url("/Admin/Rbac/roleAdd")}';
+                    var url = '{:api_url("/admin/Rbac/roleAdd")}';
                     this.__openWindow(url);
                 },
                 roleEdit: function (id) {
-                    var url = '{:api_url("/Admin/Rbac/roleEdit")}';
+                    var url = '{:api_url("/admin/Rbac/roleEdit")}';
                     url += '&id=' + id;
                     this.__openWindow(url);
                 },
@@ -189,7 +189,7 @@
                 toDelete: function (id) {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/Rbac/roleDelete')}",
+                        url: "{:api_url('/admin/Rbac/roleDelete')}",
                         type: "get",
                         data: {id: id},
                         dataType: "json",
@@ -206,19 +206,19 @@
                 },
                 //成员管理
                 gotomanagerPage: function (id) {
-                    var url = "{:api_url('/Admin/Management/index')}";
+                    var url = "{:api_url('/admin/Management/index')}";
                     url = url + '&role_id=' + id;
                     this.__openWindow(url);
                 },
                 //权限设置
                 openAuth: function (id) {
-                    var url = "{:api_url('/Admin/Rbac/authorize')}";
+                    var url = "{:api_url('/admin/Rbac/authorize')}";
                     url += '&id=' + id;
                     this.__openWindow(url);
                 },
                 //权限组管理
                 getRoleAccessGroup: function (id) {
-                    var url = "{:api_url('/Admin/AccessGroup/accessGroupRoleSetting')}";
+                    var url = "{:api_url('/admin/AccessGroup/accessGroupRoleSetting')}";
                     url = url + '&role_id=' + id
                     this.__openWindow(url);
                 },
@@ -226,7 +226,7 @@
                 //栏目管理 todo 未修改
                 gotoAdminPage: function (id) {
 
-                    var url = '/Admin/Rbac/setting_cat_priv';
+                    var url = '/admin/Rbac/setting_cat_priv';
                     url = url + '&roleid=' + id
 
                     layer.open({

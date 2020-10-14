@@ -89,7 +89,7 @@ class Login extends BaseController
         if (AdminUserService::getInstance()->login($username, $password)) {
             $forward = cookie("forward");
             if (!$forward) {
-                $forward = build_url("/Admin/Dashboard/index");
+                $forward = build_url("/admin/Dashboard/index");
             } else {
                 cookie("forward", null);
             }

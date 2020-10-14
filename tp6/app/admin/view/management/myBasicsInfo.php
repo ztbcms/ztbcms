@@ -57,7 +57,7 @@
             methods: {
                 onSubmit: function () {
                     $.ajax({
-                        url: "{:api_url('/Admin/Management/editMyBasicsInfo')}",
+                        url: "{:api_url('/admin/Management/editMyBasicsInfo')}",
                         method: 'post',
                         dataType: 'json',
                         data: this.form,

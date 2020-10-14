@@ -707,7 +707,7 @@
                     text: ''
                 });
                 $.ajax({
-                    url: "{:api_url('/Admin/AdminApi/getPermissionInfo')}",
+                    url: "{:api_url('/admin/AdminApi/getPermissionInfo')}",
                     method: 'get',
                     params: {}
                 }).then(function(res) {
@@ -765,7 +765,7 @@
             getAdminUserInfo: function () {
                 var that = this
                 $.ajax({
-                    url: "{:api_url('/Admin/AdminApi/getAdminUserInfo')}",
+                    url: "{:api_url('/admin/AdminApi/getAdminUserInfo')}",
                     method: 'get',
                     params: {}
                 }).then(function(res){
@@ -836,13 +836,13 @@
             },
             // 点击清理缓存
             click_cleancache: function(){
-                this.openNewFrame('缓存更新', '/Admin/Index/cache')
+                this.openNewFrame('缓存更新', '/admin/Index/cache')
             },
             // 点击退出
             click_logout: function(){
                 var that = this
                 $.ajax({
-                    url: "{:api_url('/Admin/Login/doLogout')}",
+                    url: "{:api_url('/admin/Login/doLogout')}",
                     method: 'get',
                     params: {}
                 }).then(function(res){
@@ -861,7 +861,7 @@
                 window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                 var that = this
                 $.ajax({
-                    url: "{:api_url('/Admin/AdminMessage/getAdminMsgList')}",
+                    url: "{:api_url('/admin/AdminMessage/getAdminMsgList')}",
                     method: 'get',
                     data: {
                         page: 1,
@@ -891,7 +891,7 @@
             readMsg:function (id) {
                 var that = this;
                 $.ajax({
-                    url: "{:api_url('/Admin/AdminMessage/readMsg')}",
+                    url: "{:api_url('/admin/AdminMessage/readMsg')}",
                     method: 'post',
                     data: {
                         ids: [id]
@@ -904,7 +904,7 @@
             },
             // 跳转到消息列表
             toShowMsg:function () {
-                this.openNewFrame('所有消息', '/Admin/AdminMessage/index')
+                this.openNewFrame('所有消息', '/admin/AdminMessage/index')
                 this.showMsg = false
             }
         },
@@ -921,7 +921,7 @@
             },
             // 是否有清理缓存权限
             hasPermission_cleanCache: function() {
-                return this.hasRolePermission('/Admin/Index/cache')
+                return this.hasRolePermission('/admin/Index/cache')
             }
         },
         created () {
