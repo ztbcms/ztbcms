@@ -46,4 +46,8 @@ class AdminConfigService extends BaseService
         }
         return self::createReturn(true, $config);
     }
+
+    function updateConfig($keyValue = []){
+
+    }
 }
