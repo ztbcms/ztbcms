@@ -7,6 +7,17 @@ cd tp6 && composer install
 ```
 
 
+### 后台入口
+
+旧版本
+http://ztbcms.ztbweb.cn/admin/public/login
+
+tp6版本
+http://ztbcms.ztbweb.cn/home/admin/Dashboard/index
+
+测试账号密码 admin/zhutibang
+PS: 请勿同时在同一浏览器登录两个版本
+
 ### 配置
 
 拷贝`tp6/.example.env`配置到`tp6/.env`开启应用配置
