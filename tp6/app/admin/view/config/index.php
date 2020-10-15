@@ -12,10 +12,12 @@
                         <el-form-item label="网站访问地址" prop="siteurl">
                             <el-input v-model="formData.siteurl" placeholder="请输入网站访问地址" clearable :style="{width: '100%'}">
                             </el-input>
+                            <small style="color: #858689;">请以"/"结尾</small>
                         </el-form-item>
                         <el-form-item label="附件访问地址" prop="sitefileurl">
                             <el-input v-model="formData.sitefileurl" placeholder="请输入附件访问地址" clearable :style="{width: '100%'}">
                             </el-input>
+                            <small style="color: #858689;">请以"/"结尾</small>
                         </el-form-item>
                         <el-form-item label="联系邮箱" prop="siteemail">
                             <el-input v-model="formData.siteemail" placeholder="请输入联系邮箱" clearable :style="{width: '100%'}">
@@ -50,7 +52,6 @@
     $(document).ready(function () {
         new Vue({
             el: '#app',
-            // 插入export default里面的内容
             components: {},
             props: [],
             data() {
@@ -62,11 +63,6 @@
                         siteemail: "{$Site.siteemail}",
                         sitekeywords: "{$Site.sitekeywords}",
                         siteinfo: "{$Site.siteinfo}",
-                        domainaccess: "{$Site.domainaccess}",
-                        generate: "{$Site.generate}",
-                        index_urlruleid: "{$Site.index_urlruleid}",
-                        indextp: "{$Site.indextp}",
-                        tagurl: "{$Site.tagurl}",
                         checkcode_type: "{$Site.checkcode_type}",
                     },
                     rules: {
@@ -152,7 +148,7 @@
                         if (!valid) return;
                         //  提交表单
                         that.httpPost("{:api_url('/admin/Config/index')}", this.formData, function(res){
-                            layer.msg(res.,sg)
+                            layer.msg(res.msg)
                         })
                         // $.ajax({
                         //     url: "{:api_url('/admin/Config/index')}",
