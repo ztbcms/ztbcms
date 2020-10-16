@@ -6,6 +6,7 @@
 namespace app\admin\controller;
 
 use app\admin\service\AdminConfigService;
+use app\admin\service\ConfigFieldService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 use think\Request;
@@ -86,7 +87,6 @@ class Config extends AdminController
     function extend(Request $request)
     {
         $adminConfigService = new AdminConfigService();
-
         $configFieldList = $adminConfigService->getConfigFielList()['data'];
         if ($request->isPost()) {
             foreach ($configFieldList as $index => $item) {
@@ -95,7 +95,6 @@ class Config extends AdminController
             $res = $adminConfigService->updateConfig($data);
             return json($res);
         }
-//        var_dump(json_encode($configFieldList));exit;
         $configList = Db::name('config')->where('groupid', 2)->select()->toArray();
         $configMap = [];
         foreach ($configList as $item) {
@@ -103,13 +102,32 @@ class Config extends AdminController
         }
         return view('extend', [
             'configFieldList' => $configFieldList,
-            'configMap'           => $configMap
+            'configMap'       => $configMap
         ]);
     }
 
-    function editExtend()
+    function editExtend(Request $request)
     {
-        return view('editExtend');
+        $configFieldService = new ConfigFieldService();
+        if ($request->isPost()) {
+            $data = [
+                'fid'       => $request->post("fid"),
+                'fieldname' => $request->post("fieldname"),
+                'type'      => $request->post("type"),
+                'setting'   => $request->post("setting"),
+            ];
+            $res = $configFieldService->addOrUpdateConfigField($data);
+            return json($res);
+        }
+
+        $fid = $request->get("fid");
+        $configField = null;
+        if (!empty($fid)) {
+            $configField = $configFieldService->getConfigField($fid)['data'];
+        }
+        return view('editExtend', [
+            'configField' => $configField
+        ]);
     }
 
     function doEditExtend()

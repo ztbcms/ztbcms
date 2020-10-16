@@ -9,17 +9,13 @@
                             <template v-if="item.type == 'input' ">
                                 <el-form-item :label="item.setting.title" >
                                     <el-input v-model="formData[item.fieldname]" :placeholder="item.tips" clearable :style="{width: '100%'}">
+                                        <template slot="append">只允许英文、数组、下划线</template>
                                     </el-input>
                                     <small style="color: #858689;">{{ item.tips }}</small>
                                 </el-form-item>
                             </template>
-
                         </template>
-<!--                        <el-form-item label="SMTP 函数发送" prop="mail_type">-->
-<!--                            <el-radio-group v-model="formData.mail_type" size="medium">-->
-<!--                                <el-radio v-for="(item, index) in mail_typeOptions" :key="index" :label="item.value" :disabled="item.disabled">{{item.label}}</el-radio>-->
-<!--                            </el-radio-group>-->
-<!--                        </el-form-item>-->
+
 
                         <el-form-item size="large">
                             <el-button type="primary" @click="submitForm">保存</el-button>
