@@ -95,10 +95,10 @@ class Config extends AdminController
             $res = $adminConfigService->updateConfig($data);
             return json($res);
         }
-        $configList = Db::name('config')->where('groupid', 2)->select()->toArray();
+        $config = $adminConfigService->getConfig()['data'];
         $configMap = [];
-        foreach ($configList as $item) {
-            $configMap[$item['varname']] = $item['value'];
+        foreach ($configFieldList as $item) {
+            $configMap[$item['fieldname']] = $config[$item['fieldname']];
         }
         return view('extend', [
             'configFieldList' => $configFieldList,
@@ -124,14 +124,15 @@ class Config extends AdminController
         $configField = null;
         if (!empty($fid)) {
             $configField = $configFieldService->getConfigField($fid)['data'];
+            $optionList = $configField['setting']['option'];
+            $option = [];
+            foreach ($optionList as $item) {
+                $option [] = $item['title'].'|'.$item['value'];
+            }
+            $configField['setting']['option'] = join('\n', $option);
         }
         return view('editExtend', [
-            'configField' => $configField
+            'configField' => $configField,
         ]);
-    }
-
-    function doEditExtend()
-    {
-
     }
 }

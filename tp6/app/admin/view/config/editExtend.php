@@ -53,16 +53,16 @@
             data() {
                 return {
                     formData: {
-                        fid: '',
-                        fieldname: '',
-                        type: 'input',
+                        fid: '{$configField ? $configField["fid"] : ""}',
+                        fieldname: '{$configField ? $configField["fieldname"] : ""}',
+                        type: '{$configField ? $configField["type"] : "input"}',
                         setting: {
-                            title: '',
-                            tips: '',
-                            option: '选项名称|选项值'
+                            title: '{$configField ? $configField["setting"]["title"] : ""}',
+                            tips: '{$configField ? $configField["setting"]["tips"] : ""}',
+                            option: '{$configField ? $configField["setting"]["option"] : "选项名称|选项值"}'
                         }
                     },
-                    configFieldJson: '{:json_encode($configField)}',
+                    configFieldJson: '',
                     rules: {
                         fieldname: [{
                             required: true,
@@ -100,10 +100,6 @@
             created() {
             },
             mounted() {
-                console.log(this.configFieldJson);
-                if(this.configFieldJson !== 'null'){
-                    this.formData = JSON.parse(this.configFieldJson)
-                }
             },
             methods: {
                 submitForm() {

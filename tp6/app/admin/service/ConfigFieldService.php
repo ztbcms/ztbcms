@@ -31,6 +31,20 @@ class ConfigFieldService extends BaseService
      */
     function addOrUpdateConfigField($configField)
     {
+
+        $setting = explode("\n", $configField['setting']['option']);
+        $settingList = [];
+        foreach ($setting as $item){
+            $split = explode('|', $item);
+            if(count($split) === 2){
+                $settingList[] = [
+                    'title' => $split[0],
+                    'value' => $split[1],
+                ];
+            }
+        }
+        $configField['setting']['option'] = $settingList;
+
         if (isset($configField['fid']) && !empty($configField['fid'])) {
             // 更新
             $fid = $configField['fid'];
@@ -54,6 +68,17 @@ class ConfigFieldService extends BaseService
             return self::createReturn(true, null, '操作完成');
         }
         // 新增
+
+        // 检测是否存在
+        $res = Db::name('config_field')->where('fieldname', $configField['fieldname'])->findOrEmpty();
+        if($res){
+            return self::createReturn(false, null, '键名已被占用');
+        }
+        $res = Db::name('config')->where('varname', $configField['fieldname'])->findOrEmpty();
+        if($res){
+            return self::createReturn(false, null, '键名已被占用');
+        }
+
         Db::startTrans();
         $res1 = Db::name('config_field')->insert([
             'fieldname'  => $configField['fieldname'],

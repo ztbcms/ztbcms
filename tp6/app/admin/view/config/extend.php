@@ -4,18 +4,51 @@
 
             <template>
                 <div>
-                    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
+                    <el-form ref="elForm" :model="formData" size="medium" label-width="180px">
                         <template v-for="item in configFieldList">
                             <template v-if="item.type == 'input' ">
-                                <el-form-item :label="item.setting.title" >
-                                    <el-input v-model="formData[item.fieldname]" :placeholder="item.tips" clearable :style="{width: '100%'}">
-                                        <template slot="append">只允许英文、数组、下划线</template>
+                                <el-form-item :label="item.setting.title">
+                                    <el-input v-model="formData[item.fieldname]" :placeholder="item.setting.tips" clearable :style="{width: '100%'}">
                                     </el-input>
-                                    <small style="color: #858689;">{{ item.tips }}</small>
                                 </el-form-item>
                             </template>
-                        </template>
 
+                            <template v-if="item.type == 'textarea' ">
+                                <el-form-item :label="item.setting.title">
+                                    <el-input v-model="formData[item.fieldname]" :placeholder="item.setting.tips" type="textarea" row="3" clearable :style="{width: '100%'}">
+                                    </el-input>
+                                </el-form-item>
+                            </template>
+
+                            <template v-if="item.type == 'select' ">
+                                <el-form-item :label="item.setting.title">
+                                    <el-select v-model="formData[item.fieldname]" :placeholder="item.setting.tips">
+                                        <el-option
+                                                v-for="item in item.setting.option"
+                                                :key="item.value"
+                                                :label="item.title"
+                                                :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </template>
+
+                            <template v-if="item.type == 'radio' ">
+                                <el-form-item :label="item.setting.title">
+                                    <el-radio-group v-model="formData[item.fieldname]" size="small">
+                                        <el-radio
+                                                v-for="item in item.setting.option"
+                                                :key="item.value"
+                                                :label="item.value"
+                                        >
+                                            {{item.title}}
+                                        </el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </template>
+
+
+                        </template>
 
                         <el-form-item size="large">
                             <el-button type="primary" @click="submitForm">保存</el-button>
@@ -59,7 +92,7 @@
                     this.$refs['elForm'].validate(valid => {
                         if (!valid) return
                         $.ajax({
-                            url: "{:api_url('/admin/Config/email')}",
+                            url: "{:api_url('/admin/Config/extend')}",
                             method: 'post',
                             dataType: 'json',
                             data: this.formData,

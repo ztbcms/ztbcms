@@ -36,7 +36,7 @@ class AdminConfigService extends BaseService
     function getConfig($key = '')
     {
         //TODO 缓存config
-        $configList = Db::name('config')->field('varname,value')->select();
+        $configList = Db::name('config')->field('varname,value')->select()->toArray();
         $config = [];
         foreach ($configList as $i => $v) {
             $config[$v['varname']] = $v['value'];
