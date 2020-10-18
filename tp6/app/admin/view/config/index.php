@@ -54,7 +54,7 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     formData: {
                         sitename: "{$Site.sitename}",
@@ -137,32 +137,18 @@
             },
             computed: {},
             watch: {},
-            created() {},
-            mounted() {
-
+            created: function() {},
+            mounted: function() {
             },
             methods: {
-                submitForm() {
+                submitForm: function() {
                     var that = this
-                    this.$refs['elForm'].validate(valid => {
+                    this.$refs['elForm'].validate(function(valid) {
                         if (!valid) return;
                         //  提交表单
-                        that.httpPost("{:api_url('/admin/Config/index')}", this.formData, function(res){
+                        that.httpPost("{:api_url('/admin/Config/index')}", that.formData, function(res){
                             layer.msg(res.msg)
                         })
-                        // $.ajax({
-                        //     url: "{:api_url('/admin/Config/index')}",
-                        //     method: 'post',
-                        //     dataType: 'json',
-                        //     data: this.formData,
-                        //     success: function (res) {
-                        //         if (!res.status) {
-                        //             layer.msg(res.info)
-                        //         } else {
-                        //             layer.msg(res.info)
-                        //         }
-                        //     }
-                        // });
                     })
                 }
             }

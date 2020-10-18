@@ -1,5 +1,14 @@
 ### 新增菜单
 
+```shell
+# 安装模块
+/home/admin/Module/doInstallModule?module={模块名}
+
+# 卸载模块
+/home/admin/Module/doUninstallModule?module={模块名}
+
+```
+
 ```php
 
 │ 消息 
@@ -41,6 +50,12 @@
 ├──── 权限组列表 {{domain}}/Admin/AccessGroup/accessGroupList => {{domain}}/home/Admin/AccessGroup/accessGroupList
 ├──── 权限组详情 {{domain}}/home/Admin/AccessGroup/accessGroupDetails
 
+├─ 系统设置
+│
+├──── 站点配置 {{domain}}/home/Admin/Config/index
+├──── 邮箱配置 {{domain}}/home/Admin/Config/email
+├──── 拓展配置 {{domain}}/home/Admin/Config/extend
+├──── 添加配置 {{domain}}/home/Admin/Config/editExtend
 
 ├─ 模块
 │

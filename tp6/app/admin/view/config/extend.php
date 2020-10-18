@@ -66,7 +66,7 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     formData: {},
                     configFieldListJson: '{:json_encode($configFieldList)}',
@@ -76,26 +76,22 @@
             },
             computed: {},
             watch: {},
-            created() {
+            created: function() {
             },
-            mounted() {
-                console.log(this.configFieldListJson)
+            mounted: function() {
                 this.configFieldList = JSON.parse(this.configFieldListJson)
                 this.formData = JSON.parse(this.configMapJson)
-                // for(var i=0;i<this.configFieldList;i++){
-                //     var item = this.configFieldList[i];
-                //     this.formData[item.fieldname] = ''
-                // }
             },
             methods: {
-                submitForm() {
-                    this.$refs['elForm'].validate(valid => {
+                submitForm: function() {
+                    var that = this
+                    this.$refs['elForm'].validate(function(valid){
                         if (!valid) return
                         $.ajax({
                             url: "{:api_url('/admin/Config/extend')}",
                             method: 'post',
                             dataType: 'json',
-                            data: this.formData,
+                            data: that.formData,
                             success: function (res) {
                                 layer.msg(res.msg)
                             }

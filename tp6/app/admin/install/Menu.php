@@ -212,6 +212,50 @@ return [
                 ]
             ],
 
+            //设置
+            [
+                "parentid" => 0,
+                "name" => "设置",
+                "route" => "admin/Config/index",
+                "type" => 0,
+                "status" => 1,
+                "remark" => "",
+                "child" => [
+                    [
+                        "route" => "admin/Config/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "站点设置",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Config/email",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "邮箱配置",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Config/extend",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "拓展配置",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Config/editExtend",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "添加拓展配置",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                ]
+            ],
+
 
         ]
     ],

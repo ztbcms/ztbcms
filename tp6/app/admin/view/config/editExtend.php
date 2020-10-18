@@ -50,7 +50,7 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     formData: {
                         fid: '{$configField ? $configField["fid"] : ""}',
@@ -97,17 +97,17 @@
             },
             computed: {},
             watch: {},
-            created() {
+            created: function() {
             },
-            mounted() {
+            mounted: function() {
             },
             methods: {
-                submitForm() {
+                submitForm: function() {
                     var that = this
-                    this.$refs['elForm'].validate(valid => {
+                    this.$refs['elForm'].validate(function(valid){
                         if (!valid) return;
                         //  提交表单
-                        that.httpPost("{:api_url('/admin/Config/editExtend')}", this.formData, function (res) {
+                        that.httpPost("{:api_url('/admin/Config/editExtend')}", that.formData, function (res) {
                             layer.msg(res.msg)
                         })
                     })

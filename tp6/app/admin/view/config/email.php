@@ -57,7 +57,7 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     formData: {
                         mail_type: "{$Site.mail_type}",
@@ -100,16 +100,6 @@
                             message: '密码验证不能为空',
                             trigger: 'change'
                         }],
-                        mail_user: [{
-                            required: true,
-                            message: '请输入验证用户名',
-                            trigger: 'blur'
-                        }],
-                        mail_password: [{
-                            required: true,
-                            message: '请输入验证密码',
-                            trigger: 'blur'
-                        }],
                     },
                     mail_typeOptions: [{
                         "label": "SMTP 函数发送",
@@ -126,23 +116,18 @@
             },
             computed: {},
             watch: {},
-            created() {
+            created: function() {
             },
-            mounted() {
+            mounted: function() {
             },
             methods: {
-                submitForm() {
-                    this.$refs['elForm'].validate(valid => {
+                submitForm: function() {
+                    var that = this
+                    this.$refs['elForm'].validate(function(valid){
                         if (!valid) return
-                        $.ajax({
-                            url: "{:api_url('/admin/Config/email')}",
-                            method: 'post',
-                            dataType: 'json',
-                            data: this.formData,
-                            success: function (res) {
-                                layer.msg(res.msg)
-                            }
-                        });
+                        that.httpPost("{:api_url('/admin/Config/email')}", that.formData, function(res){
+                            layer.msg(res.msg)
+                        })
                     })
                 }
             }

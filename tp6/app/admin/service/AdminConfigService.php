@@ -50,9 +50,10 @@ class AdminConfigService extends BaseService
     /**
      * 更新配置项
      *
-     * @param  array  $keyValue
+     * @param  array $keyValue
      *
      * @return array
+     * @throws \think\db\concern\PDOException
      * @throws \think\db\exception\DbException
      */
     function updateConfig(array $keyValue = []){
