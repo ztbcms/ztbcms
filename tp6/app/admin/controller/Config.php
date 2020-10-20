@@ -120,23 +120,78 @@ class Config extends AdminController
         $adminConfigService = new AdminConfigService();
         if ($request->isPost()) {
             $data = [
-                'mail_type'     => $request->post("mail_type"),
-                'mail_server'   => $request->post("mail_server"),
-                'mail_port'     => $request->post("mail_port"),
-                'mail_from'     => $request->post("mail_from"),
-                'mail_fname'    => $request->post("mail_fname"),
-                'mail_auth'     => $request->post("mail_auth"),
-                'mail_user'     => $request->post("mail_user"),
-                'mail_password' => $request->post("mail_password"),
+                'attachment_driver'            => $request->post("attachment_driver"),
+                'attachment_aliyun_key_id'     => $request->post("attachment_aliyun_key_id"),
+                'attachment_aliyun_key_secret' => $request->post("attachment_aliyun_key_secret"),
+                'attachment_aliyun_endpoint'   => $request->post("attachment_aliyun_endpoint"),
+                'attachment_aliyun_bucket'     => $request->post("attachment_aliyun_bucket"),
+                'attachment_aliyun_domain'     => $request->post("attachment_aliyun_domain"),
+                'uploadmaxsize'                => $request->post("uploadmaxsize"),
+                'uploadallowext'               => $request->post("uploadallowext"),
+                'qtuploadmaxsize'              => $request->post("qtuploadmaxsize"),
+                'qtuploadallowext'             => $request->post("qtuploadallowext"),
+                'fileexclude'                  => $request->post("fileexclude"),
+                'ftphost'                      => $request->post("ftphost"),
+                'ftpport'                      => $request->post("ftpport"),
+                'ftpuppat'                     => $request->post("ftpuppat"),
+                'ftpuser'                      => $request->post("ftpuser"),
+                'ftppassword'                  => $request->post("ftppassword"),
+                'ftppasv'                      => $request->post("ftppasv"),
+                'ftpssl'                       => $request->post("ftpssl"),
+                'ftptimeout'                   => $request->post("ftptimeout"),
+                'watermarkenable'              => $request->post("watermarkenable"),
+                'watermarkminwidth'            => $request->post("watermarkminwidth"),
+                'watermarkminheight'           => $request->post("watermarkminheight"),
+                'watermarkimg'                 => $request->post("watermarkimg"),
+                'watermarkpct'                 => $request->post("watermarkpct"),
+                'watermarkquality'             => $request->post("watermarkquality"),
+                'watermarkpos'                 => $request->post("watermarkpos"),
             ];
             $res = $adminConfigService->updateConfig($data);
             return json($res);
         }
 
-        $config = $adminConfigService->getConfig()['data'];
-        return view('email', [
-            'Site' => $config
-        ]);
+        if ($request->get('_action') === 'getDetail') {
+            // 获取详情
+            $_config = $adminConfigService->getConfig()['data'];
+            $fields = [
+                'attachment_driver',
+                'attachment_aliyun_key_id',
+                'attachment_aliyun_key_secret',
+                'attachment_aliyun_endpoint',
+                'attachment_aliyun_bucket',
+                'attachment_aliyun_domain',
+                'uploadmaxsize',
+                'uploadallowext',
+                'qtuploadmaxsize',
+                'qtuploadallowext',
+                'fileexclude',
+                'ftphost',
+                'ftpport',
+                'ftpuppat',
+                'ftpuser',
+                'ftppassword',
+                'ftppasv',
+                'ftpssl',
+                'ftptimeout',
+                'watermarkenable',
+                'watermarkminwidth',
+                'watermarkminheight',
+                'watermarkimg',
+                'watermarkpct',
+                'watermarkquality',
+                'watermarkpos',
+            ];
+            $config = [];
+            foreach ($fields as $i => $key) {
+                $config[$key] = isset($_config[$key]) ? $_config[$key] : '';
+            }
+            return self::makeJsonReturn(true, [
+                'config' => $config,
+            ]);
+        }
+
+        return view('attach');
     }
 
     /**

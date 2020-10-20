@@ -54,6 +54,7 @@
 │
 ├──── 站点配置 {{domain}}/home/Admin/Config/index
 ├──── 邮箱配置 {{domain}}/home/Admin/Config/email
+├──── 邮箱配置 {{domain}}/home/Admin/Config/attach
 ├──── 拓展配置 {{domain}}/home/Admin/Config/extend
 ├──── 添加配置 {{domain}}/home/Admin/Config/editExtend
 
