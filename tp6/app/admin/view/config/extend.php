@@ -69,9 +69,7 @@
             data: function() {
                 return {
                     formData: {},
-                    configFieldListJson: '{:json_encode($configFieldList)}',
                     configFieldList: [],
-                    configMapJson: '{:json_encode($configMap)}',
                 }
             },
             computed: {},
@@ -79,8 +77,7 @@
             created: function() {
             },
             mounted: function() {
-                this.configFieldList = JSON.parse(this.configFieldListJson)
-                this.formData = JSON.parse(this.configMapJson)
+                this.getDetail()
             },
             methods: {
                 submitForm: function() {
@@ -96,6 +93,16 @@
                                 layer.msg(res.msg)
                             }
                         });
+                    })
+                },
+                // 获取详情
+                getDetail: function() {
+                    var that = this
+                    var formData = {}
+                    formData['_action'] = 'getDetail'
+                    that.httpGet("{:api_url('/admin/Config/extend')}", formData, function(res){
+                        that.formData = res.data.configMap
+                        that.configFieldList = res.data.configFieldList
                     })
                 }
             }

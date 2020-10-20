@@ -46,6 +46,7 @@
             </template>
         </el-col>
     </el-card>
+
 </div>
 
 <script>
@@ -57,13 +58,13 @@
             data: function() {
                 return {
                     formData: {
-                        sitename: "{$Site.sitename}",
-                        siteurl: "{$Site.siteurl}",
-                        sitefileurl: "{$Site.sitefileurl}",
-                        siteemail: "{$Site.siteemail}",
-                        sitekeywords: "{$Site.sitekeywords}",
-                        siteinfo: "{$Site.siteinfo}",
-                        checkcode_type: "{$Site.checkcode_type}",
+                        sitename: "",
+                        siteurl: "",
+                        sitefileurl: "",
+                        siteemail: "",
+                        sitekeywords: "",
+                        siteinfo: "",
+                        checkcode_type: "",
                     },
                     rules: {
                         sitename: [{
@@ -139,8 +140,10 @@
             watch: {},
             created: function() {},
             mounted: function() {
+                this.getDetail()
             },
             methods: {
+                // 表单提交
                 submitForm: function() {
                     var that = this
                     this.$refs['elForm'].validate(function(valid) {
@@ -149,6 +152,15 @@
                         that.httpPost("{:api_url('/admin/Config/index')}", that.formData, function(res){
                             layer.msg(res.msg)
                         })
+                    })
+                },
+                // 获取详情
+                getDetail: function() {
+                    var that = this
+                    var formData = {}
+                    formData['_action'] = 'getDetail'
+                    that.httpGet("{:api_url('/admin/Config/index')}", formData, function(res){
+                        that.formData = res.data
                     })
                 }
             }

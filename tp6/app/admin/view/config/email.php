@@ -60,14 +60,14 @@
             data: function() {
                 return {
                     formData: {
-                        mail_type: "{$Site.mail_type}",
-                        mail_server: "{$Site.mail_server}",
-                        mail_port: "{$Site.mail_port}",
-                        mail_from: "{$Site.mail_from}",
-                        mail_fname: "{$Site.mail_fname}",
-                        mail_auth: "{$Site.mail_auth}",
-                        mail_user: "{$Site.mail_user}",
-                        mail_password: "{$Site.mail_password}",
+                        mail_type: "",
+                        mail_server: "",
+                        mail_port: "",
+                        mail_from: "",
+                        mail_fname: "",
+                        mail_auth: "",
+                        mail_user: "",
+                        mail_password: "",
                     },
                     rules: {
                         mail_type: [{
@@ -119,6 +119,7 @@
             created: function() {
             },
             mounted: function() {
+                this.getDetail()
             },
             methods: {
                 submitForm: function() {
@@ -128,6 +129,15 @@
                         that.httpPost("{:api_url('/admin/Config/email')}", that.formData, function(res){
                             layer.msg(res.msg)
                         })
+                    })
+                },
+                // 获取详情
+                getDetail: function() {
+                    var that = this
+                    var formData = {}
+                    formData['_action'] = 'getDetail'
+                    that.httpGet("{:api_url('/admin/Config/email')}", formData, function(res){
+                        that.formData = res.data
                     })
                 }
             }

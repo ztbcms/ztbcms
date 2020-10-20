@@ -1,45 +1,40 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <el-col :sm="24" :md="18">
+            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="160px">
+                <el-form-item label="键名" prop="fieldname">
+                    <el-input v-model="formData.fieldname" placeholder="请输入键名" clearable :style="{width: '100%'}">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="名称" prop="setting.title">
+                    <el-input v-model="formData['setting']['title']" placeholder="请输入名称" clearable :style="{width: '100%'}">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="类型" prop="type">
+                    <el-select v-model="formData.type" placeholder="请选择类型" clearable
+                               :style="{width: '100%'}">
+                        <el-option v-for="(item, index) in typeOptions" :key="index" :label="item.label"
+                                   :value="item.value"
+                                   :disabled="item.disabled"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="提示" prop="setting.tips">
+                    <el-input v-model="formData['setting']['tips']" placeholder="请输入提示" clearable :style="{width: '100%'}">
+                    </el-input>
+                </el-form-item>
 
-            <template>
-                <div>
-                    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="160px">
-                        <el-form-item label="键名" prop="fieldname">
-                            <el-input v-model="formData.fieldname" placeholder="请输入键名" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="名称" prop="setting.title">
-                            <el-input v-model="formData['setting']['title']" placeholder="请输入名称" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="类型" prop="type">
-                            <el-select v-model="formData.type" placeholder="请选择类型" clearable
-                                       :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in typeOptions" :key="index" :label="item.label"
-                                           :value="item.value"
-                                           :disabled="item.disabled"></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="提示" prop="setting.tips">
-                            <el-input v-model="formData['setting']['tips']" placeholder="请输入提示" clearable :style="{width: '100%'}">
-                            </el-input>
-                        </el-form-item>
+                <template v-if="formData.type === 'select' || formData.type === 'radio'">
+                    <el-form-item label="选项" prop="setting.option">
+                        <el-input v-model="formData['setting']['option']" type="textarea" placeholder="请输入每行一个选项"
+                                  :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
+                        <small style="color: #858689;"><span style="color: red">*</span>每行一个选项，示例：选项名称|选项值</small>
+                    </el-form-item>
+                </template>
 
-                        <template v-if="formData.type === 'select' || formData.type === 'radio'">
-                            <el-form-item label="选项" prop="setting.option">
-                                <el-input v-model="formData['setting']['option']" type="textarea" placeholder="请输入每行一个选项"
-                                          :autosize="{minRows: 4, maxRows: 4}" :style="{width: '100%'}"></el-input>
-                                <small style="color: #858689;"><span style="color: red">*</span>每行一个选项</small>
-                            </el-form-item>
-                        </template>
-
-                        <el-form-item size="large">
-                            <el-button type="primary" @click="submitForm">保存</el-button>
-                        </el-form-item>
-                    </el-form>
-                </div>
-            </template>
+                <el-form-item size="large">
+                    <el-button type="primary" @click="submitForm">保存</el-button>
+                </el-form-item>
+            </el-form>
         </el-col>
     </el-card>
 </div>

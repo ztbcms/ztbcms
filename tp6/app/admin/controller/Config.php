@@ -19,7 +19,9 @@ class Config extends AdminController
 {
     /**
      * 基础设置
-     * @param Request $request
+     *
+     * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -29,28 +31,41 @@ class Config extends AdminController
     {
         $adminConfigService = new AdminConfigService();
         if ($request->isPost()) {
+            // 更新
             $data = [
-                'sitename' => $request->post("sitename"),
-                'siteurl' => $request->post("siteurl"),
-                'sitefileurl' => $request->post("sitefileurl"),
-                'siteemail' => $request->post("siteemail"),
-                'sitekeywords' => $request->post("sitekeywords"),
-                'siteinfo' => $request->post("siteinfo"),
+                'sitename'       => $request->post("sitename"),
+                'siteurl'        => $request->post("siteurl"),
+                'sitefileurl'    => $request->post("sitefileurl"),
+                'siteemail'      => $request->post("siteemail"),
+                'sitekeywords'   => $request->post("sitekeywords"),
+                'siteinfo'       => $request->post("siteinfo"),
                 'checkcode_type' => $request->post("checkcode_type"),
             ];
             $res = $adminConfigService->updateConfig($data);
             return json($res);
         }
 
-        $config = $adminConfigService->getConfig()['data'];
-        return view('index', [
-            'Site' => $config
-        ]);
+        if ($request->get('_action') === 'getDetail') {
+            // 获取详情
+            $_config = $adminConfigService->getConfig()['data'];
+            $fields = [
+                'sitename', 'siteurl', 'sitefileurl', 'siteemail', 'sitekeywords', 'siteinfo', 'checkcode_type'
+            ];
+            $config = [];
+            foreach ($fields as $i => $key) {
+                $config[$key] = $_config[$key];
+            }
+            return self::makeJsonReturn(true, $config);
+        }
+
+        return view('index');
     }
 
     /**
      * 邮箱设置
-     * @param Request $request
+     *
+     * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -61,28 +76,40 @@ class Config extends AdminController
         $adminConfigService = new AdminConfigService();
         if ($request->isPost()) {
             $data = [
-                'mail_type' => $request->post("mail_type"),
-                'mail_server' => $request->post("mail_server"),
-                'mail_port' => $request->post("mail_port"),
-                'mail_from' => $request->post("mail_from"),
-                'mail_fname' => $request->post("mail_fname"),
-                'mail_auth' => $request->post("mail_auth"),
-                'mail_user' => $request->post("mail_user"),
+                'mail_type'     => $request->post("mail_type"),
+                'mail_server'   => $request->post("mail_server"),
+                'mail_port'     => $request->post("mail_port"),
+                'mail_from'     => $request->post("mail_from"),
+                'mail_fname'    => $request->post("mail_fname"),
+                'mail_auth'     => $request->post("mail_auth"),
+                'mail_user'     => $request->post("mail_user"),
                 'mail_password' => $request->post("mail_password"),
             ];
             $res = $adminConfigService->updateConfig($data);
             return json($res);
         }
 
-        $config = $adminConfigService->getConfig()['data'];
-        return view('email', [
-            'Site' => $config
-        ]);
+        if ($request->get('_action') === 'getDetail') {
+            // 获取详情
+            $_config = $adminConfigService->getConfig()['data'];
+            $fields = [
+                'mail_type', 'mail_server', 'mail_port', 'mail_from', 'mail_fname', 'mail_auth', 'mail_user', 'mail_password'
+            ];
+            $config = [];
+            foreach ($fields as $i => $key) {
+                $config[$key] = $_config[$key];
+            }
+            return self::makeJsonReturn(true, $config);
+        }
+
+        return view('email');
     }
 
     /**
      * 附件设置
-     * @param Request $request
+     *
+     * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -93,13 +120,13 @@ class Config extends AdminController
         $adminConfigService = new AdminConfigService();
         if ($request->isPost()) {
             $data = [
-                'mail_type' => $request->post("mail_type"),
-                'mail_server' => $request->post("mail_server"),
-                'mail_port' => $request->post("mail_port"),
-                'mail_from' => $request->post("mail_from"),
-                'mail_fname' => $request->post("mail_fname"),
-                'mail_auth' => $request->post("mail_auth"),
-                'mail_user' => $request->post("mail_user"),
+                'mail_type'     => $request->post("mail_type"),
+                'mail_server'   => $request->post("mail_server"),
+                'mail_port'     => $request->post("mail_port"),
+                'mail_from'     => $request->post("mail_from"),
+                'mail_fname'    => $request->post("mail_fname"),
+                'mail_auth'     => $request->post("mail_auth"),
+                'mail_user'     => $request->post("mail_user"),
                 'mail_password' => $request->post("mail_password"),
             ];
             $res = $adminConfigService->updateConfig($data);
@@ -114,7 +141,9 @@ class Config extends AdminController
 
     /**
      * 拓展配置
-     * @param Request $request
+     *
+     * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\concern\PDOException
      * @throws \think\db\exception\DataNotFoundException
@@ -137,20 +166,28 @@ class Config extends AdminController
             $res = $adminConfigService->updateConfig($data);
             return json($res);
         }
-        $config = $adminConfigService->getConfig()['data'];
-        $configMap = [];
-        foreach ($configFieldList as $item) {
-            $configMap[$item['fieldname']] = $config[$item['fieldname']];
+
+        if ($request->get('_action') === 'getDetail') {
+            // 获取详情
+            $config = $adminConfigService->getConfig()['data'];
+            $configMap = [];
+            foreach ($configFieldList as $item) {
+                $configMap[$item['fieldname']] = $config[$item['fieldname']];
+            }
+            return self::makeJsonReturn(true, [
+                'configFieldList' => $configFieldList,
+                'configMap'       => $configMap
+            ]);
         }
-        return view('extend', [
-            'configFieldList' => $configFieldList,
-            'configMap' => $configMap
-        ]);
+
+        return view('extend');
     }
 
     /**
      * 添加/更新拓展配置
-     * @param Request $request
+     *
+     * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DbException
      */
@@ -159,10 +196,10 @@ class Config extends AdminController
         $configFieldService = new ConfigFieldService();
         if ($request->isPost()) {
             $data = [
-                'fid' => $request->post("fid"),
+                'fid'       => $request->post("fid"),
                 'fieldname' => $request->post("fieldname"),
-                'type' => $request->post("type"),
-                'setting' => $request->post("setting"),
+                'type'      => $request->post("type"),
+                'setting'   => $request->post("setting"),
             ];
             $res = $configFieldService->addOrUpdateConfigField($data);
             return json($res);
@@ -175,7 +212,7 @@ class Config extends AdminController
             $optionList = $configField['setting']['option'];
             $option = [];
             foreach ($optionList as $item) {
-                $option [] = $item['title'] . '|' . $item['value'];
+                $option [] = $item['title'].'|'.$item['value'];
             }
             $configField['setting']['option'] = join('\n', $option);
         }
