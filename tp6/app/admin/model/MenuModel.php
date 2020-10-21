@@ -41,7 +41,7 @@ class MenuModel extends Model
                 }
                 if (!empty($a['is_tp6'])) {
                     //如果是tp6 返回 /home/module/controller/action 格式 TODO
-                    $url = build_url("{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
+                    $url = build_url("/{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
                 } else {
                     $url = url("{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true)->build();
                 }
@@ -157,6 +157,7 @@ class MenuModel extends Model
                 'listorder' => isset($rs['listorder']) ? $rs['listorder'] : 0,
                 'parameter' => isset($rs['parameter']) ? $rs['parameter'] : '',
                 'icon' => isset($rs['icon']) ? $rs['icon'] : '',
+                'is_tp6' => isset($rs['is_tp6']) ? $rs['is_tp6'] : '1',//默认是tp6
             ), $route);
             $newId = Db::name('menu')->insertGetId($newData);
             if (!$newId) {

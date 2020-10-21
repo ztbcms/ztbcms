@@ -36,7 +36,7 @@ class AdminConfigService extends BaseService
     function getConfig($key = '')
     {
         //TODO 缓存config
-        $configList = Db::name('config')->field('varname,value')->select();
+        $configList = Db::name('config')->field('varname,value')->select()->toArray();
         $config = [];
         foreach ($configList as $i => $v) {
             $config[$v['varname']] = $v['value'];
@@ -45,5 +45,35 @@ class AdminConfigService extends BaseService
             return self::createReturn(true, $config[$key]);
         }
         return self::createReturn(true, $config);
+    }
+
+    /**
+     * 更新配置项
+     *
+     * @param  array $keyValue
+     *
+     * @return array
+     * @throws \think\db\concern\PDOException
+     * @throws \think\db\exception\DbException
+     */
+    function updateConfig(array $keyValue = []){
+        Db::startTrans();
+        foreach ($keyValue as $key => $value){
+            Db::name('config')->where('varname', $key)->update([
+                'value' => $value
+            ]);
+        }
+        Db::commit();
+
+        return self::createReturn(true, null, '配置更新完成');
+    }
+
+    function getConfigFielList(){
+        $lists = Db::name('config_field')->select()->toArray();
+        foreach ($lists as &$item){
+            $item['setting'] = unserialize($item['setting']);
+        }
+
+        return self::createReturn(true, $lists);
     }
 }
