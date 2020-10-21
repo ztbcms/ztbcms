@@ -272,6 +272,34 @@ return [
                 ]
             ],
 
+            //日志
+            [
+                "parentid" => 0,
+                "name" => "日志管理",
+                "route" => "admin/Logs/loginLogList",
+                "type" => 0,
+                "status" => 1,
+                "remark" => "",
+                "child" => [
+                    [
+                        "route" => "admin/Logs/loginLogList",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "登录日志管理",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Logs/adminOperationLogList",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "后台操作日志管理",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                ]
+            ],
+
 
         ]
     ],
