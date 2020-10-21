@@ -33,6 +33,7 @@
 
                 <el-form-item size="large">
                     <el-button type="primary" @click="submitForm">保存</el-button>
+                    <el-button v-if="formData && formData.fid" type="danger" @click="deleteItem">删除</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -105,6 +106,21 @@
                         that.httpPost("{:api_url('/admin/Config/editExtend')}", that.formData, function (res) {
                             layer.msg(res.msg)
                         })
+                    })
+                },
+                deleteItem: function() {
+                   layer.confirm('确认删除?', this.doDeleteItem.bind(this))
+                },
+                doDeleteItem: function() {
+                    var that = this
+                    var formData = {fid: this.formData.fid}
+                    that.httpPost("{:api_url('/admin/Config/doDeleteExtendField')}", formData, function (res) {
+                        layer.msg(res.msg)
+                        if(window.parent !== window){
+                            setTimeout(function(){
+                                window.parent.layer.closeAll()
+                            }, 500)
+                        }
                     })
                 }
             }

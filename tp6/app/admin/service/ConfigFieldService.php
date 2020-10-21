@@ -11,6 +11,13 @@ use think\facade\Db;
 
 class ConfigFieldService extends BaseService
 {
+    /**
+     * 获取拓展字段列表
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     function getConfigFielList()
     {
         $lists = Db::name('config_field')->select()->toArray();
@@ -103,6 +110,12 @@ class ConfigFieldService extends BaseService
         return self::createReturn(true, null, '操作完成');
     }
 
+    /**
+     * 获取配置字段
+     * @param $fid
+     *
+     * @return array
+     */
     function getConfigField($fid)
     {
         $configField = Db::name('config_field')->where('fid', $fid)->findOrEmpty();
@@ -112,6 +125,37 @@ class ConfigFieldService extends BaseService
         }
 
         return self::createReturn(false, null);
+    }
+
+    /**
+     * 删除拓展配置字段
+     * @param $fid
+     *
+     * @return array
+     * @throws \think\db\exception\DbException
+     */
+    function deleteConfigField($fid){
+        if (empty($fid)) {
+            return self::createReturn(false, null, '请指定需要删除的扩展配置项');
+        }
+
+        //扩展字段详情
+        $config = $this->getConfigField($fid)['data'];
+        if (empty($config)) {
+            return self::createReturn(false, null, '该扩展配置项不存在');
+        }
+        //删除
+        Db::startTrans();
+        $res1 = Db::name('config_field')->where('fid', $fid)->delete();
+        $res2 = Db::name('config')->where('varname', $config['fieldname'])->delete();
+
+        if($res1 && $res2){
+            Db::commit();
+            return self::createReturn(true, null, '操作完成');
+        }
+
+        Db::rollback();
+        return self::createReturn(true, null, '操作完成');
     }
 
 }

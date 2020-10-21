@@ -261,6 +261,14 @@ return [
                         "remark" => "",
                         "child" => []
                     ],
+                    [
+                        "route" => "admin/Config/doDeleteExtendField",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除配置字段",
+                        "remark" => "",
+                        "child" => []
+                    ],
                 ]
             ],
 

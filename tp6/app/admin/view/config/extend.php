@@ -10,6 +10,9 @@
                                 <el-form-item :label="item.setting.title">
                                     <el-input v-model="formData[item.fieldname]" :placeholder="item.setting.tips" clearable :style="{width: '100%'}">
                                     </el-input>
+                                    <div>
+                                        <el-button type="text" @click="toEdit(item)">编辑</el-button>
+                                    </div>
                                 </el-form-item>
                             </template>
 
@@ -17,6 +20,9 @@
                                 <el-form-item :label="item.setting.title">
                                     <el-input v-model="formData[item.fieldname]" :placeholder="item.setting.tips" type="textarea" row="3" clearable :style="{width: '100%'}">
                                     </el-input>
+                                    <div>
+                                        <el-button type="text" @click="toEdit(item)">编辑</el-button>
+                                    </div>
                                 </el-form-item>
                             </template>
 
@@ -30,6 +36,9 @@
                                                 :value="item.value">
                                         </el-option>
                                     </el-select>
+                                    <div>
+                                        <el-button type="text" @click="toEdit(item)">编辑</el-button>
+                                    </div>
                                 </el-form-item>
                             </template>
 
@@ -44,9 +53,12 @@
                                             {{item.title}}
                                         </el-radio>
                                     </el-radio-group>
+                                    <div>
+                                        <el-button type="text" @click="toEdit(item)">编辑</el-button>
+                                    </div>
+
                                 </el-form-item>
                             </template>
-
 
                         </template>
 
@@ -103,6 +115,15 @@
                     that.httpGet("{:api_url('/admin/Config/extend')}", formData, function(res){
                         that.formData = res.data.configMap
                         that.configFieldList = res.data.configFieldList
+                    })
+                },
+                toEdit: function(item){
+                    var url = "{:api_url('/admin/Config/editExtend')}" + '?fid=' + item.fid
+                    layer.open({
+                        type: 2,
+                        title: '安装',
+                        content: url,
+                        area: ['670px', '550px'],
                     })
                 }
             }

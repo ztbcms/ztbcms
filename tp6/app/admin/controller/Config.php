@@ -275,4 +275,18 @@ class Config extends AdminController
             'configField' => $configField,
         ]);
     }
+
+    /**
+     * 删除拓展字段
+     * @param  Request  $request
+     *
+     * @return \think\response\Json
+     * @throws \think\db\exception\DbException
+     */
+    function doDeleteExtendField(Request $request){
+        $configFieldService = new ConfigFieldService();
+        $fid = $request->post("fid");
+        $res = $configFieldService->deleteConfigField($fid);
+        return json($res);
+    }
 }
