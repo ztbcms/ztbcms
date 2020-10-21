@@ -9,8 +9,8 @@
 
 ```
 
+后台菜单请添加到`admin/install/Menu.php`
 ```php
-
 │ 消息 
 │
 ├─ 所有消息 {{domain}}/Admin/AdminMessage/index => {{domain}}/home/Admin/AdminMessage/index                                                
