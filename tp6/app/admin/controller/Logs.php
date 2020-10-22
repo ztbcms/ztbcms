@@ -31,33 +31,29 @@ class Logs extends AdminController
      */
     public function loginLogList(Request $request)
     {
-        if ($request->isAjax()) {
-            $where = array();
-            $username = Input('username');
+        $action = input('action','','trim');
+        if ($action == 'getAjaxList') {
+            $where = [];
+            $username = input('username','','trim');
             if (!empty($username)) {
                 $where['username'] = array('like', '%'.$username.'%');
             }
-
-            $start_time = Input('start_time');
-            $end_time = Input('end_time');
+            $start_time = input('start_time','','trim');
+            $end_time = input('end_time','','trim');
             $logintime = [];
             if (!empty($start_time) && !empty($end_time)) {
                 $logintime = [$start_time, $end_time];
             }
-
-            $loginip = Input('loginip');
+            $loginip = input('loginip','','trim');
             if (!empty($loginip)) {
                 $where['loginip '] = array('like', "%{$loginip}%");
             }
-
-            $status = Input('status');
+            $status = input('status','','trim');
             if ($status != '') {
                 $where['status'] = $status;
             }
-
-            $page = Input('page', 1);
-            $limit = Input('limit', 20);
-
+            $page = input('page', 1,'trim');
+            $limit = input('limit', 20,'trim');
             $res = LoginlogService::getLoginLogList($where, 'id desc', $page, $limit, $logintime);
             return json($res);
         } else {
@@ -86,35 +82,30 @@ class Logs extends AdminController
      */
     public function adminOperationLogList(Request $request)
     {
-        if ($request->isAjax()) {
+        $action = input('action','','trim');
+        if ($action == 'getAjaxList') {
             $where = [];
-
-            $uid = Input('uid');
+            $uid = input('uid','','trim');
             if (!empty($uid)) {
                 $where['uid'] = array('eq', $uid);
             }
-
-            $start_time = Input('start_time');
-            $end_time = Input('end_time');
+            $start_time = input('start_time','','trim');
+            $end_time = input('end_time','','trim');
             $time = [];
             if (!empty($start_time) && !empty($end_time)) {
                 $time = [$start_time, $end_time];
             }
-
-            $ip = Input('ip');
+            $ip = input('ip','','trim');
             if (!empty($ip)) {
                 $where['ip '] = array('like', "%{$ip}%");
             }
-
-            $status = Input('status');
+            $status = input('status','','trim');
             if ($status != '') {
                 $where['status'] = (int) $status;
             }
-
-            $page = Input('page', 1);
-            $limit = Input('limit', 20);
-            $sort_time = Input('sort_time');
-
+            $page = input('page', 1,'trim');
+            $limit = input('limit', 20,'trim');
+            $sort_time = input('sort_time','','trim');
             $order = ["id" => "desc"];
             if (!empty($sort_time)) {
                 $order = ['time' => $sort_time == 'desc' ? 'desc' : 'asc'];

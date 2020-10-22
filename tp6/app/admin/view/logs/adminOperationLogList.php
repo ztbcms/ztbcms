@@ -173,7 +173,8 @@
                         status: this.form.status,
                         start_time: this.form.start_time,
                         end_time: this.form.end_time,
-                        sort_time: this.form.sort_time
+                        sort_time: this.form.sort_time,
+                        action : 'getAjaxList'
                     };
                     $.ajax({
                         url: "{:api_url('/Admin/Logs/adminOperationLogList')}",
