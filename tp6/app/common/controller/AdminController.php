@@ -30,6 +30,12 @@ class AdminController extends BaseController
     //是否为超级管理员
     protected $is_administrator;
 
+    //引入中间件
+    protected $middleware = [
+        //操作日志记录
+        \app\admin\middleware\OperationLog::class
+    ];
+
     public function __construct(App $app)
     {
         parent::__construct($app);

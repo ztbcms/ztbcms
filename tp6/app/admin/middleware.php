@@ -7,7 +7,5 @@ return [
     // \think\middleware\LoadLangPack::class,
     // Session初始化
      \think\middleware\SessionInit::class,
-    //操作日志记录
-    \app\admin\middleware\OperationLog::class
 
 ];

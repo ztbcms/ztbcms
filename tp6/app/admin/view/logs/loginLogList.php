@@ -136,9 +136,8 @@
                     page: 1,
                     limit: 20,
                     total_pages: 0,
-                    total_items: 0,
+                    total_items: 0
                 },
-
                 form: {
                     search_date: [],
                     uid: '',
@@ -146,7 +145,7 @@
                     start_time: '',
                     end_time: '',
                     status: '',
-                    sort_time: '',//排序：时间
+                    sort_time: ''//排序：时间
                 }
             },
             watch: {
@@ -158,7 +157,7 @@
                 }
             },
             filters: {
-                formatTime(timestamp) {
+                formatTime:function(timestamp) {
                     var date = new Date();
                     date.setTime(parseInt(timestamp) * 1000);
                     return moment(date).format('YYYY-MM-DD HH:mm:ss')
@@ -181,7 +180,7 @@
                         url: "{:api_url('/Admin/Logs/loginLogList')}",
                         data: where,
                         dataType: 'json',
-                        type: 'post',
+                        type: 'get',
                         success: function (res) {
                             var data = res.data;
                             that.pagination.page = data.page;
@@ -198,17 +197,18 @@
                         url: "{:api_url('/Admin/Logs/deleteLoginLog')}",
                         data: {},
                         dataType: 'json',
-                        type: 'get',
+                        type: 'post',
                         success: function (res) {
                             if (res.status) {
                                 ELEMENT.Message.success(res.msg)
                             } else {
                                 ELEMENT.Message.error(res.msg)
                             }
+                            that.getList()
                         }
                     })
                 },
-                handleClickTabs(tab) {
+                handleClickTabs:function(tab) {
                     if (tab.index == 0) {
                         this.form.status = '';
                     }
@@ -220,7 +220,7 @@
                     }
                     this.getList()
                 },
-                handleSortChange(event) {
+                handleSortChange:function(event) {
                     if (event.prop == 'time') {
                         if (event.order.toLowerCase().indexOf('asc') >= 0) {
                             this.form.sort_time = 'asc';

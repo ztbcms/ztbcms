@@ -31,7 +31,7 @@ class Logs extends AdminController
      */
     public function loginLogList(Request $request)
     {
-        if ($request->isPost()) {
+        if ($request->isAjax()) {
             $where = array();
             $username = Input('username');
             if (!empty($username)) {
@@ -86,7 +86,7 @@ class Logs extends AdminController
      */
     public function adminOperationLogList(Request $request)
     {
-        if ($request->isPost()) {
+        if ($request->isAjax()) {
             $where = [];
 
             $uid = Input('uid');

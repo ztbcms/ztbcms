@@ -31,27 +31,19 @@ class OperationlogModel extends Model
      * @return bool
      */
     public function record(\think\Response $request) {
-        $fangs = 'GET';
-        if (Request::instance()->isGet()) {
-            $fangs = 'GET';
-        } else if (Request::instance()->isPost()) {
-            $fangs = 'POST';
-        }
-
-        if(request()->url() == '/home/admin/AdminMessage/getAdminMsgList?page=1&limit=10&read_status=0') {
-            //不记录长轮训的日志信息
+        if (Request::instance()->isPost()) {
+            $content = json_decode($request->getContent(),true);
+            $url = request()->url();
+            $logData['uid'] = AdminUserService::getInstance()->getInfo()['id'] ?: 0;
+            $logData['status'] = $content['status'] ? 1 : 0;
+            $logData['info'] = "提示语：{$content['msg']}<br/>路由：{$url},<br/>请求方式：POST";
+            $logData['get'] = request()->url();
+            $logData['time'] = time();
+            $logData['ip'] = request()->ip();
+            return $this->insert($logData) !== false ? true : false;
+        } else {
             return  true;
         }
-
-        $content = json_decode($request->getContent(),true);
-        $url = request()->url();
-        $logData['uid'] = AdminUserService::getInstance()->getInfo()['id'] ?: 0;
-        $logData['status'] = $content['status'] ? 1 : 0;
-        $logData['info'] = "提示语：{$content['msg']}<br/>路由：{$url},<br/>请求方式：{$fangs}";
-        $logData['get'] = request()->url();
-        $logData['time'] = time();
-        $logData['ip'] = $_SERVER['REMOTE_ADDR'];
-        return $this->insert($logData) !== false ? true : false;
     }
 
 }

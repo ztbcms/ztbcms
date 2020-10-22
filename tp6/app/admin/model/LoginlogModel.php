@@ -31,7 +31,7 @@ class LoginlogModel extends Model
     public function addLoginLog($data)
     {
         $data['logintime'] = time();
-        $data['loginip'] = $_SERVER['REMOTE_ADDR'];
+        $data['loginip'] = request()->ip();
         return $this->insert($data) !== false ? true : false;
     }
 }

@@ -8,10 +8,15 @@ namespace app\admin\middleware;
 
 use app\admin\model\OperationlogModel;
 
+/**
+ * 操作日志管理
+ * Class OperationLog
+ * @package app\admin\middleware
+ */
 class OperationLog
 {
     /**
-     * 开始
+     * 进入请求
      * @param $request
      * @param  \Closure  $next
      * @return mixed
@@ -22,7 +27,7 @@ class OperationLog
     }
 
     /**
-     * 回调
+     * 请求返回回调
      * @param  \think\Response  $response
      */
     public function end(\think\Response $response)
