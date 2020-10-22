@@ -16,6 +16,7 @@ use think\Request;
 /**
  * 日志管理
  * Class Logs
+ *
  * @package app\admin\controller
  */
 class Logs extends AdminController
@@ -23,37 +24,39 @@ class Logs extends AdminController
 
     /**
      * 登录记录列表
+     *
      * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function loginLogList(Request $request)
+    function loginLogList(Request $request)
     {
-        $action = input('action','','trim');
-        if ($action == 'getAjaxList') {
+        $action = input('_action', '', 'trim');
+        if ($action == 'getList') {
             $where = [];
-            $username = input('username','','trim');
+            $username = input('username', '', 'trim');
             if (!empty($username)) {
                 $where['username'] = array('like', '%'.$username.'%');
             }
-            $start_time = input('start_time','','trim');
-            $end_time = input('end_time','','trim');
+            $start_time = input('start_time', '', 'trim');
+            $end_time = input('end_time', '', 'trim');
             $logintime = [];
             if (!empty($start_time) && !empty($end_time)) {
                 $logintime = [$start_time, $end_time];
             }
-            $loginip = input('loginip','','trim');
+            $loginip = input('loginip', '', 'trim');
             if (!empty($loginip)) {
                 $where['loginip '] = array('like', "%{$loginip}%");
             }
-            $status = input('status','','trim');
+            $status = input('status', '', 'trim');
             if ($status != '') {
                 $where['status'] = $status;
             }
-            $page = input('page', 1,'trim');
-            $limit = input('limit', 20,'trim');
+            $page = input('page', 1, 'trim');
+            $limit = input('limit', 20, 'trim');
             $res = LoginlogService::getLoginLogList($where, 'id desc', $page, $limit, $logintime);
             return json($res);
         } else {
@@ -63,9 +66,10 @@ class Logs extends AdminController
 
     /**
      * 删除一个月以前的任务
+     *
      * @return \think\response\Json
      */
-    public function deleteLoginLog()
+    function deleteLoginLog()
     {
         $LoginlogModel = new LoginlogModel();
         $LoginlogModel->deleteAMonthago();
@@ -74,38 +78,40 @@ class Logs extends AdminController
 
     /**
      * 获取后台操作日志列表
+     *
      * @param  Request  $request
+     *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function adminOperationLogList(Request $request)
+    function adminOperationLogList(Request $request)
     {
-        $action = input('action','','trim');
-        if ($action == 'getAjaxList') {
+        $action = input('_action', '', 'trim');
+        if ($action == 'getList') {
             $where = [];
-            $uid = input('uid','','trim');
+            $uid = input('uid', '', 'trim');
             if (!empty($uid)) {
                 $where['uid'] = array('eq', $uid);
             }
-            $start_time = input('start_time','','trim');
-            $end_time = input('end_time','','trim');
+            $start_time = input('start_time', '', 'trim');
+            $end_time = input('end_time', '', 'trim');
             $time = [];
             if (!empty($start_time) && !empty($end_time)) {
                 $time = [$start_time, $end_time];
             }
-            $ip = input('ip','','trim');
+            $ip = input('ip', '', 'trim');
             if (!empty($ip)) {
                 $where['ip '] = array('like', "%{$ip}%");
             }
-            $status = input('status','','trim');
+            $status = input('status', '', 'trim');
             if ($status != '') {
                 $where['status'] = (int) $status;
             }
-            $page = input('page', 1,'trim');
-            $limit = input('limit', 20,'trim');
-            $sort_time = input('sort_time','','trim');
+            $page = input('page', 1, 'trim');
+            $limit = input('limit', 20, 'trim');
+            $sort_time = input('sort_time', '', 'trim');
             $order = ["id" => "desc"];
             if (!empty($sort_time)) {
                 $order = ['time' => $sort_time == 'desc' ? 'desc' : 'asc'];
@@ -119,9 +125,10 @@ class Logs extends AdminController
 
     /**
      * 删除后台操作日志
+     *
      * @return \think\response\Json
      */
-    public function deleteAdminOperationLog()
+    function deleteAdminOperationLog()
     {
         $OperationlogModel = new OperationlogModel();
         $OperationlogModel->deleteAMonthago();
