@@ -58,6 +58,12 @@
 ├──── 拓展配置 {{domain}}/home/Admin/Config/extend
 ├──── 添加配置 {{domain}}/home/Admin/Config/editExtend
 
+├─ 日志管理
+│
+├──── 后台登录日志 {{domain}}/home/admin/Logs/loginLogList
+├──── 后台操作日志 {{domain}}/home/admin/Logs/adminOperationLogList
+
+
 ├─ 模块
 │
 ├──── 模块管理 
