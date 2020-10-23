@@ -14,7 +14,7 @@ return array(
     //模块介绍地址
     'address' => 'http://doc.ztbcms.com/module/',
     //模块作者
-    'author' => 'Jayins',
+    'author' => 'Jayin',
     //作者地址
     'authorsite' => 'http://ztbcms.com',
     //作者邮箱

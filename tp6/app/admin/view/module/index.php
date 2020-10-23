@@ -122,12 +122,16 @@
                 },
                 // 安装
                 toInstall: function(moduleInfo){
+                    var that = this
                     var url = "{:api_url('/admin/module/install')}"+'?module=' + moduleInfo.module
                     layer.open({
                         type: 2,
                         title: '安装',
                         content: url,
                         area: ['670px', '550px'],
+                        end: function(){
+                            that.getList()
+                        }
                     })
                 },
             },
