@@ -668,7 +668,7 @@
                     }
                 },
                 // 关闭其他
-                closeOtherTag: function() {
+                closeOtherTag: function(index) {
                     var that = this
                     if(this.iframeUrl !== this.tags[index].url){
                         this.iframeUrl = this.tags[index].url
