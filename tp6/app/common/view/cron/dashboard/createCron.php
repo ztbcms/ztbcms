@@ -117,7 +117,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="执行文件">
-                <el-select v-model="form.cron_file" placeholder="请选择">
+                <el-select v-model="form.cron_file" placeholder="请选择" style="width: 400px">
                     <?php foreach ($cronFileList as $value): ?>
                         <el-option
                                 key="{$value}"
@@ -129,7 +129,6 @@
             </el-form-item>
             <el-form-item>
                 <el-button @click="submit" type="primary">保存</el-button>
-                <el-button @click="backList" type="default">取消</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -208,13 +207,10 @@
                 }
             },
             methods: {
-                backList: function () {
-                    location.href = "{:urlx('common/cron.dashboard/cron')}"
-                },
                 getCronDetail: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/cron.dashboard/getCronDetail')}",
+                        url: "{:api_url('/common/cron.dashboard/getCronDetail')}",
                         data: {cron_id: this.cronId},
                         dataType: 'json',
                         type: 'get',
@@ -229,14 +225,11 @@
                                     cron_file: cron.cron_file,
                                 };
                                 _this.loop_data = Object.assign(_this.loop_data, res.data.loop_data);
-                                console.log('_this.loop_data', _this.loop_data)
                             }
                         }
                     })
                 },
                 submit: function () {
-                    console.log('form', this.form);
-                    console.log('loop_data', this.loop_data);
                     if (!this.form.subject) {
                         layer.msg('任务标题不能为空');
                         return
@@ -247,16 +240,17 @@
                     }
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/cron.dashboard/createCron')}",
+                        url: "{:api_url('/common/cron.dashboard/createCron')}",
                         data: {cron_id: this.cronId, form: this.form, loop_data: this.loop_data},
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
-                            // var data = res.data;
                             if (res.status) {
                                 layer.msg('保存成功');
                                 setTimeout(function () {
-                                    _this.backList();
+                                    if(window.parent !== window){
+                                        window.parent.layer.closeAll()
+                                    }
                                 }, 1000)
                             }
                         }

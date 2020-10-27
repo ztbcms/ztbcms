@@ -17,10 +17,6 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
-                    <el-button onclick="javascript:location.href='{:urlx(\'common/cron.dashboard/cron\')}';"
-                               type="default">
-                        任务列表
-                    </el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -99,14 +95,14 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange(e) {
+                currentPageChange: function(e) {
                     this.currentPage = e;
                     this.getList();
                 },
                 getList: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/cron.dashboard/schedulingLog')}",
+                        url: "{:api_url('/common/cron.dashboard/schedulingLog')}",
                         data: Object.assign({
                             page: this.currentPage
                         }, this.searchForm),

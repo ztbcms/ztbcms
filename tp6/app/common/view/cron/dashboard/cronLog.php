@@ -24,10 +24,6 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
-                    <el-button onclick="javascript:location.href='{:urlx(\'common/cron.dashboard/cron\')}';"
-                               type="default">
-                        任务列表
-                    </el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -82,11 +78,11 @@
                     prop="result_msg"
                     label="查看信息">
                 <template slot-scope="props">
-                    <el-button @click="$alert(props.row.result_msg).catch(()=>{})" type="primary">查看</el-button>
+                    <el-button @click="$alert(props.row.result_msg)" type="primary">查看</el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <div style="text-align: center;margin-top: 20px">
+        <div style="margin-top: 20px">
             <el-pagination
                     background
                     @current-change="currentPageChange"
@@ -123,14 +119,14 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange(e) {
+                currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
                 },
                 getList: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/cron.dashboard/cronLog')}",
+                        url: "{:api_url('/common/cron.dashboard/cronLog')}",
                         data: Object.assign({
                             page: this.currentPage
                         }, this.searchForm),
@@ -145,7 +141,7 @@
                             _this.currentPage = data.current_page;
                         }
                     })
-                },
+                }
             }
         });
     })
