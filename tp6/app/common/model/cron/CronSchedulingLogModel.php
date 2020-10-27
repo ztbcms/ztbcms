@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-04
- * Time: 13:41.
- */
 
 namespace app\common\model\cron;
-
 
 use think\Model;
 

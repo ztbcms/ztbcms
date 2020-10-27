@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-03
- * Time: 16:22.
- */
 
 namespace app\common\model\cron;
 
@@ -45,16 +39,16 @@ class CronModel extends Model
         } catch (\Exception $exception) {
             //异常
             $this->errorCount++;
+            $errorStr = $exception->getMessage() . ' ' . $exception->getFile() . " 第 " . $exception->getLine() . " 行.\n";
+            $errorStr .= $exception->getTraceAsString();
 
             $end_time = time();
             $use_time = $end_time - $start_time;
             $result = CronLogModel::RESULT_FAIL;
-            $result_msg = $exception->getMessage();
-
+            $result_msg =$errorStr;
         } catch (\Error $error) {
             //错误
             $this->errorCount++;
-
             $errorStr = $error->getMessage() . ' ' . $error->getFile() . " 第 " . $error->getLine() . " 行.\n";
             $errorStr .= $error->getTraceAsString();
 

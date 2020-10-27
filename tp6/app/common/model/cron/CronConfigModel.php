@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-03
- * Time: 16:17.
- */
 
 namespace app\common\model\cron;
 

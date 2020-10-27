@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-03
- * Time: 14:07.
- */
 
 namespace app\common\controller\cron;
 
@@ -145,7 +139,7 @@ class Dashboard extends AdminController
             $cronModel->loop_daytime = $loopDaytime;
             $cronModel->next_time = $nextTime;
             $cronModel->created_time = time();
-            $cronModel->modified_time = time();
+            $cronModel->modified_time = 0;
             if ($cronModel->save()) {
                 return self::createReturn(true, [], 'ok');
             } else {
