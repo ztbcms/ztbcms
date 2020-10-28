@@ -63,7 +63,7 @@
                     var that = this;
                     var data = {};
                     $.ajax({
-                        url: "{:url('/home/common/cron.dashboard/getCronStatus')}",
+                        url: "{:api_url('/common/cron.dashboard/getCronStatus')}",
                         data: data,
                         dataType: 'json',
                         type: 'get',
@@ -76,11 +76,12 @@
                     })
                 },
                 toSetCronEnable: function (value) {
-                    this.$confirm('修改密钥将会影响计划任务运行，请在用户流量少的情况下进行操作。确认要操作？').then(() => {
-                        this.setCronEnable(value);
-                    }).catch(() => {
-                        this.getStatus()
-                    });
+                    var that = this;
+                    layer.confirm('修改密钥将会影响计划任务运行，请在用户流量少的情况下进行操作。确认要操作？',{title: '提示'}, function(){
+                        that.setCronEnable(value);
+                    }, function(){
+
+                    })
                 },
                 setCronEnable: function (value) {
                     var that = this;
@@ -88,7 +89,7 @@
                         enable: value
                     };
                     $.ajax({
-                        url: "{:url('/home/common/cron.dashboard/setCronEnable')}",
+                        url: "{:api_url('/common/cron.dashboard/setCronEnable')}",
                         data: data,
                         dataType: 'json',
                         type: 'post',
@@ -102,11 +103,11 @@
                 },
                 toSetSecretKey: function () {
                     var that = this;
-                    this.$confirm('修改密钥将会影响计划任务运行，请在用户流量少的情况下进行操作。确认要操作？').then(() => {
-                        that.setSecretKey();
-                    }).catch(() => {
-                        that.getStatus()
-                    });
+                    layer.confirm('修改密钥将会影响计划任务运行，请在用户流量少的情况下进行操作。确认要操作？',{title: '提示'}, function(){
+                        that.setSecretKey()
+                    }, function(){
+
+                    })
                 },
                 setSecretKey: function () {
                     var that = this;
@@ -114,7 +115,7 @@
                         secret_key: that.cron_config.secret_key
                     };
                     $.ajax({
-                        url: "{:url('/home/common/cron.dashboard/setCronSecretKey')}",
+                        url: "{:api_url('/common/cron.dashboard/setCronSecretKey')}",
                         data: data,
                         dataType: 'json',
                         type: 'post',

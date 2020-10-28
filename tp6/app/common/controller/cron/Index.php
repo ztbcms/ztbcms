@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-04
- * Time: 11:52.
- */
 
 namespace app\common\controller\cron;
-
 
 use app\BaseController;
 use app\common\model\cron\CronConfigModel;

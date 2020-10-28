@@ -101,7 +101,7 @@
             // 插入export default里面的内容
             components: {},
             props: [],
-            data() {
+            data: function () {
                 return {
                     info: {
                         id: "{$info.id}",
@@ -130,9 +130,9 @@
                 }
             },
             watch: {},
-            created() {
+            created: function () {
             },
-            mounted() {
+            mounted: function () {
                 this.getAccessGroupTreeArray();
                 this.fetchData();
             },
@@ -157,7 +157,7 @@
                         })
                     }
                 },
-                submitForm() {
+                submitForm: function () {
                     var that = this;
                     var data = {
                         id: that.info.id,
@@ -253,7 +253,7 @@
                             }
                         }
                     });
-                },
+                }
             }
         });
     });

@@ -83,7 +83,7 @@
                 parseTime: function (time,format) {
                     return Ztbcms.formatTime(time, format)
                 },
-                ellipsis(value) {
+                ellipsis: function (value) {
                     if (!value) return "";
                     if (value.length > 120) {
                         return value.slice(0, 120) + "...";

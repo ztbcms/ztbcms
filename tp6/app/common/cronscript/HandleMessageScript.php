@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-05
- * Time: 09:08.
- */
 
 namespace app\common\cronscript;
 

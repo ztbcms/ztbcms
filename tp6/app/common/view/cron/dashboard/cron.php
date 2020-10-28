@@ -4,12 +4,10 @@
             <el-button @click="createCron" type="primary">
                 新增任务
             </el-button>
-            <el-button onclick="javascript:location.href='{:urlx(\'common/cron.dashboard/schedulingLog\')}';"
-                       type="default">
+            <el-button @click="openSchedulingLog" type="primary">
                 调度日志
             </el-button>
-            <el-button onclick="javascript:location.href='{:urlx(\'common/cron.dashboard/cronLog\')}';"
-                       type="default">
+            <el-button @click="openTaskLog"  type="primary">
                 任务日志
             </el-button>
         </div>
@@ -63,12 +61,12 @@
                     align="center"
                     label="操作">
                 <template slot-scope="props">
-                    <el-button @click="editCron(props.row.cron_id)" type="primary">
+                    <el-button @click="editCron(props.row.cron_id)" type="primary" size="mini">
                         编辑
                     </el-button>
-                    <el-button @click="deleteCron(props.row.cron_id)" type="danger"> 删除
+                    <el-button @click="runCronAction(props.row.cron_id)" type="primary" size="mini">立即执行
                     </el-button>
-                    <el-button @click="runCronAction(props.row.cron_id)" type="success">立即执行
+                    <el-button @click="deleteCron(props.row.cron_id)" type="danger" size="mini"> 删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -101,9 +99,9 @@
                 this.getList();
             },
             methods: {
-                runCronAction(cronId) {
+                runCronAction: function (cronId) {
                     $.ajax({
-                        url: "{:urlx('common/cron.dashboard/runAction')}",
+                        url: "{:api_url('/common/cron.dashboard/runAction')}",
                         data: {cron_id: cronId},
                         dataType: 'json',
                         type: 'post',
@@ -112,35 +110,67 @@
                         }
                     })
                 },
-                deleteCron(cronId) {
-                    var _this = this;
-                    this.$confirm('是否确认删除？').then(() => {
-                        $.ajax({
-                            url: "{:urlx('common/cron.dashboard/deleteCron')}",
-                            data: {cron_id: cronId},
-                            dataType: 'json',
-                            type: 'post',
-                            success: function (res) {
-                                _this.getList();
-                            }
-                        })
-                    }).catch(() => {
+                deleteCron: function (cronId) {
+                    var _this = this
+                    layer.confirm('是否确认删除?', {title: '提示'}, function () {
+                        _this.doDeleteCron(cronId)
+                    })
+                },
+                doDeleteCron: function (cronId) {
+                    var _this = this
+                    $.ajax({
+                        url: "{:api_url('/common/cron.dashboard/deleteCron')}",
+                        data: {cron_id: cronId},
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            layer.msg(res.msg)
+                            _this.getList();
+                        }
+                    })
+                },
+                editCron: function (cronId) {
+                    var _this = this
+                    var url = "{:api_url('/common/cron.dashboard/createCron')}?cron_id=" + cronId;
+                    layer.open({
+                        type: 2,
+                        title: '操作',
+                        shadeClose: true,
+                        area: ['70%', '70%'],
+                        content: url,
+                        end: function(){
+                           _this.getList()
+                        }
                     });
                 },
-                editCron(cronId) {
-                    location.href = "{:urlx('common/cron.dashboard/createCron')}?cron_id=" + cronId;
-                },
                 createCron: function () {
-                    location.href = "{:urlx('common/cron.dashboard/createCron')}";
+                    var _this = this
+                    var url = "{:api_url('/common/cron.dashboard/createCron')}";
+                    layer.open({
+                        type: 2,
+                        title: '操作',
+                        shadeClose: true,
+                        area: ['70%', '70%'],
+                        content: url,
+                        end: function(){
+                            _this.getList()
+                        }
+                    });
                 },
-                currentPageChange(e) {
+                openSchedulingLog: function(){
+                    Ztbcms.openNewIframeByUrl('调度日志', "{:api_url('/common/cron.dashboard/schedulingLog')}")
+                },
+                openTaskLog: function(){
+                    Ztbcms.openNewIframeByUrl('任务日志', "{:api_url('/common/cron.dashboard/cronLog')}")
+                },
+                currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
                 },
                 getList: function () {
-                    var _this = this;
+                    var _this = this
                     $.ajax({
-                        url: "{:urlx('common/cron.dashboard/getCronList')}",
+                        url: "{:api_url('/common/cron.dashboard/getCronList')}",
                         data: {
                             page: this.currentPage
                         },
@@ -155,7 +185,7 @@
                             _this.currentPage = data.current_page;
                         }
                     })
-                },
+                }
             }
         });
     })

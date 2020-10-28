@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-03
- * Time: 14:07.
- */
 
 namespace app\common\controller\cron;
 
+use app\admin\service\ModuleService;
 use app\common\controller\AdminController;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronLogModel;
@@ -80,12 +75,18 @@ class Dashboard extends AdminController
         }
     }
 
+    /**
+     * 删除计划任务
+     * @param  Request  $request
+     *
+     * @return array
+     */
     function deleteCron(Request $request)
     {
         $cronId = $request->post('cron_id');
         $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
         if (!$cron->isEmpty() && $cron->delete()) {
-            return self::createReturn(true, [''], 'ok');
+            return self::createReturn(true, [''], '删除成功');
         } else {
             return self::createReturn(false, [], '删除失败');
         }
@@ -138,7 +139,7 @@ class Dashboard extends AdminController
             $cronModel->loop_daytime = $loopDaytime;
             $cronModel->next_time = $nextTime;
             $cronModel->created_time = time();
-            $cronModel->modified_time = time();
+            $cronModel->modified_time = 0;
             if ($cronModel->save()) {
                 return self::createReturn(true, [], 'ok');
             } else {
@@ -152,21 +153,27 @@ class Dashboard extends AdminController
 
     private function _getCronFileList()
     {
-        $dir = APP_PATH;
-        $Dirs = new Dir($dir);
-        $moduleList = $Dirs->toArray();
+        $moduleService = new ModuleService();
+        $localModuleList = $moduleService->getLocalModuleList()['data'];
+        $moduleList = array_map(function($item){
+            return $item['module'];
+        }, $localModuleList);
+        $extraModuleList = ['admin', 'common'];
+        foreach ($extraModuleList as $item){
+            $moduleList []= $item;
+        }
         $cronFileList = [];
         //遍历模块
         foreach ($moduleList as $k => $module) {
-            $cronscript_filename = app_path() . $module['filename'] . DIRECTORY_SEPARATOR . 'CronScript';
-            if (file_exists($cronscript_filename)) {
-                $CronDirs = new Dir($cronscript_filename);
+            $cronscript_dir = base_path() . strtolower($module) . DIRECTORY_SEPARATOR . 'cronscript';
+            if (is_dir($cronscript_dir)) {
+                $CronDirs = new Dir($cronscript_dir);
                 $cronFiles = $CronDirs->toArray();
                 //遍历 Module/CronScript 模块下的脚本
                 foreach ($cronFiles as $index => $cronFile) {
                     $cron_classname = str_replace('.php', '', $cronFile['filename']);
                     if ($cron_classname != 'CronScript') {
-                        $cronFileList[] = 'app\\' . $module['filename'] . '\\' . 'cronscript' . '\\' . $cron_classname;
+                        $cronFileList[] = 'app\\' . $module . '\\' . 'cronscript' . '\\' . $cron_classname;
                     }
                 }
             }
