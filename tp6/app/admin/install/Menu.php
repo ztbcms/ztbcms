@@ -1,6 +1,15 @@
 <?php
 
 return [
+    // 概览
+    [
+        "parentid" => 0,
+        "name" => "概览",
+        "route" => "admin/Main/index",
+        "type" => 0,
+        "status" => 1,
+        "remark" => "",
+    ],
     // 消息
     [
         "parentid" => 0,
