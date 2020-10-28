@@ -70,7 +70,7 @@
             // 插入export default里面的内容
             components: {},
             props: [],
-            data() {
+            data: function() {
                 return {
                     info: {
                         id: "{$info.id}",
@@ -83,7 +83,6 @@
                 }
             },
             computed: {
-
                 selectedItemIds: function(){
                     var that = this;
                     var ids = [];
@@ -173,8 +172,7 @@
                         area: ['70%', '70%'],
                         content: "{:api_url('/admin/AccessGroup/selectAccessGroupList')}"+'?selected_ids=' + this.selectedItemIds
                     });
-                },
-
+                }
             }
         });
     });

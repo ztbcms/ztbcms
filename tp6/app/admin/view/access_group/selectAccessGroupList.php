@@ -97,7 +97,7 @@
                         }
                     })
                 },
-                submitForm : function () {
+                submitForm: function () {
                     if(parent.window.selectAccessGroupListCallback){
                         parent.window.selectAccessGroupListCallback(this.multipleSelection)
                     }
