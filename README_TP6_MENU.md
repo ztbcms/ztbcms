@@ -11,9 +11,14 @@
 
 后台菜单请添加到`admin/install/Menu.php`
 ```php
-│ 消息 
+│ 概览
 │
-├─ 所有消息 {{domain}}/Admin/AdminMessage/index => {{domain}}/home/Admin/AdminMessage/index                                                
+├─ 概览 {{domain}}/Admin/Main/index => {{domain}}/home/Admin/Main/index
+├──── 获取概览页数据 {{domain}}/Admin/MainApi/getDashboardInfo => {{domain}}/home/Admin/Main/getMainInfo
+│
+│ 消息
+│
+├─ 所有消息 {{domain}}/Admin/AdminMessage/index => {{domain}}/home/Admin/AdminMessage/index
 ├─ 未读消息 {{domain}}/Admin/AdminMessage/noRead => {{domain}}/home/Admin/AdminMessage/noRead
 ├─ 系统消息 {{domain}}/Admin/AdminMessage/system => {{domain}}/home/Admin/AdminMessage/system
 │
