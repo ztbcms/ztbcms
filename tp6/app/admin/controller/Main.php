@@ -35,7 +35,7 @@ class Main extends AdminController
      * 获取概览页数据
      * @return \think\response\Json
      */
-    public function getDashboardInfo()
+    public function getMainInfo()
     {
         //服务器信息
         $returnData = [

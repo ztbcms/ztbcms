@@ -14,6 +14,7 @@
 │ 概览
 │
 ├─ 概览 {{domain}}/Admin/Main/index => {{domain}}/home/Admin/Main/index
+├──── 获取概览页数据 {{domain}}/Admin/MainApi/getDashboardInfo => {{domain}}/home/Admin/Main/getMainInfo
 │
 │ 消息
 │

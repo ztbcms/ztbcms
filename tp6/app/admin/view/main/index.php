@@ -228,10 +228,10 @@
                 getInfo: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Main/getDashboardInfo')}",
+                        url: "{:api_url('/admin/Main/getMainInfo')}",
                         data: {},
                         dataType: 'json',
-                        type: 'post',
+                        type: 'get',
                         success: function (res) {
                             var data = res.data;
                             that.systemInfo = data.system_info;
