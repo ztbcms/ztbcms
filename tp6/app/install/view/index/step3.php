@@ -83,7 +83,7 @@
                     </tr>
                     <tr>
                         <td class="tar">网站域名：</td>
-                        <td><input type="text" name="siteurl" value="" id="siteurl" class="input" autoComplete="off"></td>
+                        <td><input type="text" name="siteurl" value="/" id="siteurl" class="input" autoComplete="off"></td>
                         <td>
                             <div id="J_install_tip_siteurl"><span class="gray">请以“/”结尾</span></div>
                         </td>

@@ -1,6 +1,7 @@
 -- ----------------------------
 -- 计划任务
 -- ----------------------------
+DROP TABLE IF EXISTS `cms_tp6_cron`;
 CREATE TABLE `cms_tp6_cron` (
   `cron_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '计划任务ID',
   `type` tinyint(2) DEFAULT '0' COMMENT '计划任务类型',
@@ -17,6 +18,7 @@ CREATE TABLE `cms_tp6_cron` (
   KEY `idx_next_time` (`next_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务表';
 
+DROP TABLE IF EXISTS `cms_tp6_cron_log`;
 CREATE TABLE `cms_tp6_cron_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `cron_id` int(11) NOT NULL COMMENT '计划任务ID',
@@ -29,6 +31,7 @@ CREATE TABLE `cms_tp6_cron_log` (
   KEY `result` (`result`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志';
 
+DROP TABLE IF EXISTS `cms_tp6_cron_scheduling_log`;
 CREATE TABLE `cms_tp6_cron_scheduling_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `start_time` int(11) NOT NULL COMMENT '开始时间',
@@ -40,6 +43,7 @@ CREATE TABLE `cms_tp6_cron_scheduling_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='调度运行日志';
 
 -- 配置表
+DROP TABLE IF EXISTS `cms_tp6_cron_config`;
 CREATE TABLE `cms_tp6_cron_config` (
   `key` varchar(32) NOT NULL DEFAULT '' COMMENT '键',
   `value` varchar(256) NOT NULL DEFAULT '' COMMENT '值',

@@ -893,7 +893,7 @@ CREATE TABLE `cms_user_token` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-
+DROP TABLE IF EXISTS `cms_access_group`;
 CREATE TABLE `cms_access_group` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL DEFAULT '' COMMENT '名称',
@@ -903,7 +903,7 @@ CREATE TABLE `cms_access_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组';
 
-
+DROP TABLE IF EXISTS `cms_access_group_role`;
 CREATE TABLE `cms_access_group_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
@@ -913,6 +913,7 @@ CREATE TABLE `cms_access_group_role` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色的权限组';
 
+DROP TABLE IF EXISTS `cms_access_group_items`;
 CREATE TABLE `cms_access_group_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,

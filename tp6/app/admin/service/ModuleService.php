@@ -7,6 +7,8 @@
 namespace app\admin\service;
 
 
+use app\admin\libs\module\ModuleInstaller;
+use app\admin\libs\module\ModuleUninstaller;
 use app\common\service\BaseService;
 use think\facade\Db;
 
@@ -40,13 +42,17 @@ class ModuleService extends BaseService
     /**
      * 安装模块
      *
-     * @param $moduleName
+     * @param $module
      *
-     * @return bool
      */
-    function install($moduleName)
+    function install($module)
     {
-        return true;
+        $moduleName = strtolower($module);
+        if (empty($moduleName)) {
+            return self::createReturn(false, null, '参数异常');
+        }
+        $installer = new ModuleInstaller($moduleName);
+        return $installer->run();
     }
 
     /**
@@ -54,9 +60,14 @@ class ModuleService extends BaseService
      *
      * @param $moduleMame
      */
-    function uninstall($moduleMame)
+    function uninstall($module)
     {
-        return true;
+        $moduleName = strtolower($module);
+        if (empty($moduleName)) {
+            return self::createReturn(false, null, '参数异常');
+        }
+        $installer = new ModuleUninstaller($moduleName);
+        return $installer->run();
     }
 
     /**

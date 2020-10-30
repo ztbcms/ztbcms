@@ -8,8 +8,10 @@ namespace app\install\controller;
 
 use app\admin\libs\helper\SqlHelper;
 use app\admin\libs\helper\StringHelper;
+use app\admin\service\ModuleService;
 use app\BaseController;
 use think\facade\Db;
+use think\facade\Log;
 
 class Index extends BaseController
 {
@@ -18,7 +20,7 @@ class Index extends BaseController
         parent::initialize();
 
         //检查是否已经安装过
-        if (is_file(app_path() . 'install.lock')) {
+        if (is_file(app_path().'install.lock')) {
             response('你已经安装过该系统，如果想重新安装，请先删除站点 install.lock 文件，然后再安装。')->send();
             exit;
         }
@@ -125,8 +127,9 @@ class Index extends BaseController
         ]);
     }
 
-    function step5(){
-        touch(app_path() . 'install.lock');
+    function step5()
+    {
+        touch(app_path().'install.lock');
         return view('step5');
     }
 
@@ -214,7 +217,6 @@ class Index extends BaseController
         $conn = Db::connect('install');
         //读取数据文件
         $sqldata = file_get_contents(app_path().'data/cms.sql');
-        $testdata = true;
         //读取测试数据
         if ($testdata) {
             $sqldataDemo = file_get_contents(app_path().'data/cms_demo.sql');
@@ -225,11 +227,11 @@ class Index extends BaseController
          * 执行SQL语句
          */
         $counts = count($sqlFormat);
-
         for ($i = $n; $i < $counts; $i++) {
             $sql = trim($sqlFormat[$i]);
             if (strstr($sql, 'CREATE TABLE')) {
                 preg_match('/CREATE TABLE `([^ ]*)`/', $sql, $matches);
+                // 删除旧表
 //                $pre_sql = "DROP TABLE IF EXISTS `$matches[1]`";
 //                $conn->execute($pre_sql);
                 $ret = $conn->execute($sql);
@@ -267,7 +269,12 @@ class Index extends BaseController
         $strConfig = str_replace('#AUTHCODE#', StringHelper::genRandomString(18), $strConfig);
         $strConfig = str_replace('#COOKIE_PREFIX#', StringHelper::genRandomString(3)."_", $strConfig);
         $strConfig = str_replace('#DATA_CACHE_PREFIX#', StringHelper::genRandomString(3)."_", $strConfig);
-        file_put_contents(config_path().'dataconfig.php', $strConfig);
+        $res = file_put_contents(config_path().'dataconfig.php', $strConfig);
+
+        if (!$res) {
+            $message = '<li><span class="correct_span">&radic;</span>写入配置文件，失败</li> ';
+            return self::makeJsonReturn(true, ['msg' => $message]);
+        }
 
         //插入管理员
         //生成随机认证码
@@ -295,15 +302,22 @@ class Index extends BaseController
         $query = "INSERT INTO `{$dbPrefix}user` (username, nickname,password,verify,email,remark,create_time,update_time,status,role_id,info) 
           VALUES ('{$admin_data['username']}','{$admin_data['nickname']}','{$admin_data['password']}','{$admin_data['verify']}','{$admin_data['email']}','{$admin_data['remark']}','{$admin_data['create_time']}','{$admin_data['update_time']}','{$admin_data['status']}','{$admin_data['role_id']}','{$admin_data['info']}');";
         $res = $conn->execute($query);
-
-        if ($res) {
-            $message = '成功添加管理员<br />成功写入配置文件<br>安装完成．';
-            $arr = array('n' => 999999, 'msg' => $message);
-        } else {
-            $message = '<strong style="color: red;">添加管理员失败</strong><br/>';
-            $arr = array('n' => 999998, 'msg' => $message);
+        if (!$res) {
+            $message = '<li><span class="correct_span">&radic;</span>添加管理员，失败</li> ';
+            return self::makeJsonReturn(true, ['msg' => $message]);
         }
-        return self::makeJsonReturn(true, $arr);
+
+        $moduleService = new ModuleService();
+        $install_modules = ['admin', 'common'];
+        foreach ($install_modules as $module) {
+            $res = $moduleService->install($module);
+            if (!$res['status']) {
+                $message = '<li><span class="correct_span">&radic;</span>安装模块'.$module.'，失败</li> ';
+                return self::makeJsonReturn(true, ['msg' => $message]);
+            }
+        }
+
+        return self::makeJsonReturn(true, ['n' => 999999, 'msg' => '安装完成'], '安装完成');
     }
 
 
