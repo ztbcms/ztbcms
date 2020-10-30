@@ -6,6 +6,7 @@
 
 namespace app\admin\libs\module;
 
+use app\admin\libs\helper\SqlHelper;
 use app\admin\model\MenuModel;
 use app\admin\model\ModuleModel;
 use app\admin\service\ModuleService;
@@ -191,29 +192,9 @@ class ModuleInstaller extends BaseService
      */
     function _resolveSQL($sql)
     {
-        // 处理前缀
+        // 前缀
         $tablepre = Config::get('database.connections.'.Config::get('database.default').'.prefix');
-        $sql = str_replace("cms_", $tablepre, $sql);
-
-        // 多行sql聚合为单行
-        $sql = str_replace("\r", "\n", $sql);
-        $ret = array();
-        $num = 0;
-        $queriesarray = explode(";\n", trim($sql));
-        unset($sql);
-        foreach ($queriesarray as $query) {
-            $ret[$num] = '';
-            $queries = explode("\n", trim($query));
-            $queries = array_filter($queries);
-            foreach ($queries as $query) {
-                $str1 = substr($query, 0, 1);
-                if ($str1 != '#' && $str1 != '-') {
-                    $ret[$num] .= $query;
-                }
-            }
-            $num++;
-        }
-        return $ret;
+        return SqlHelper::splitSQL($sql, $tablepre);
     }
 
     /**
