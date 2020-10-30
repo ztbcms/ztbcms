@@ -10,10 +10,20 @@ use app\admin\libs\helper\SqlHelper;
 use app\admin\libs\helper\StringHelper;
 use app\BaseController;
 use think\facade\Db;
-use Think\Model;
 
 class Index extends BaseController
 {
+    protected function initialize()
+    {
+        parent::initialize();
+
+        //检查是否已经安装过
+        if (is_file(app_path() . 'install.lock')) {
+            response('你已经安装过该系统，如果想重新安装，请先删除站点 install.lock 文件，然后再安装。')->send();
+            exit;
+        }
+    }
+
     function index()
     {
         return view('index');
@@ -91,7 +101,7 @@ class Index extends BaseController
             'os'         => PHP_OS,
             'function'   => $function,
             'err'        => $err,
-            'phpv'       => @phpversion(),
+            'phpv'       => phpversion(),
             'mysql'      => $mysql,
             'uploadSize' => $uploadSize,
             'session'    => $session,
@@ -113,6 +123,11 @@ class Index extends BaseController
         return view('step4', [
             'data' => json_encode($data)
         ]);
+    }
+
+    function step5(){
+        touch(app_path() . 'install.lock');
+        return view('step5');
     }
 
     /**
@@ -148,9 +163,6 @@ class Index extends BaseController
             // 数据库连接参数
             'params'   => [],
         ];
-        var_dump($db_config['connections']['install']);
-        var_dump(input('post.'));
-        var_dump(input('dbName'));
         config($db_config, 'database');
         try {
             $res = Db::connect('install', true)->execute('show databases like \''.input('dbName').'\'');
@@ -166,16 +178,14 @@ class Index extends BaseController
     //数据库安装
     public function doInstall()
     {
-//        $n = intval($_GET['n']);
         $n = input('get.n', 0, 'intval');
 
-        $dbHost = input('dbHost', '', 'trim');
-        $dbPort = input('dbPort', '', 'trim');
-        $dbName = input('dbName', '', 'trim');
-        $dbHost = input('dbHost', '', 'trim');
-        $dbUser = input('dbUser', '', 'trim');
-        $dbPwd = input('dbPwd', '', 'trim');
-        $dbPrefix = input('dbPrefix', '', 'trim');
+        $dbHost = input('db_host', '', 'trim');
+        $dbPort = input('db_port', '', 'trim');
+        $dbName = input('db_name', '', 'trim');
+        $dbUser = input('db_user', '', 'trim');
+        $dbPwd = input('db_pwd', '', 'trim');
+        $dbPrefix = input('db_prefix', '', 'trim');
 
         $username = input('manager', '', 'trim');
         $password = input('manager_pwd', '', 'trim');
@@ -202,24 +212,15 @@ class Index extends BaseController
         }
 
         $conn = Db::connect('install');
-
         //读取数据文件
-        $sqldata = file_get_contents(base_path().'data/cms.sql');
+        $sqldata = file_get_contents(app_path().'data/cms.sql');
+        $testdata = true;
         //读取测试数据
         if ($testdata) {
-            $sqldataDemo = file_get_contents(base_path().'data/cms_demo.sql');
+            $sqldataDemo = file_get_contents(app_path().'data/cms_demo.sql');
             $sqldata = $sqldata."\r\n".$sqldataDemo;
-        } else {
-            //不加测试数据的时候，删除d目录的文件
-//            try {
-//                $Dir = new \Dir();
-//                $Dir->delDir(SITE_PATH . 'd/file/contents/');
-//            } catch (\Exception $exc) {
-//
-//            }
         }
         $sqlFormat = SqlHelper::splitSQL($sqldata, $dbPrefix);
-
         /**
          * 执行SQL语句
          */
@@ -227,10 +228,10 @@ class Index extends BaseController
 
         for ($i = $n; $i < $counts; $i++) {
             $sql = trim($sqlFormat[$i]);
-
             if (strstr($sql, 'CREATE TABLE')) {
                 preg_match('/CREATE TABLE `([^ ]*)`/', $sql, $matches);
-                $conn->execute("DROP TABLE IF EXISTS `$matches[1]`");
+//                $pre_sql = "DROP TABLE IF EXISTS `$matches[1]`";
+//                $conn->execute($pre_sql);
                 $ret = $conn->execute($sql);
 
                 if ($ret === 0) {
@@ -238,20 +239,14 @@ class Index extends BaseController
                 } else {
                     $message = '<li><span class="correct_span error_span">&radic;</span>创建数据表'.$matches[1].'，失败</li>';
                 }
-                $i++;
-                $arr = array('n' => $i, 'msg' => $message);
-                return self::makeJsonReturn(true, $arr);
+                $arr = array('n' => $i + 1, 'msg' => $message);
+                return self::makeJsonReturn(true, $arr, $message);
             } else {
+                // 非创建表的，直接执行
                 $ret = $conn->execute($sql);
-                $message = '';
-                $arr = array('n' => $i, 'msg' => $message);
-                return self::makeJsonReturn(true, $arr);
             }
         }
 
-//        if ($i == 999999) {
-//            exit;
-//        }
 
         //更新配置信息
         $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_name' WHERE varname='sitename'");
@@ -262,17 +257,17 @@ class Index extends BaseController
         $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$manager_email' WHERE varname='siteemail'");
 
         //读取配置文件，并替换真实配置数据
-        $strConfig = file_get_contents(base_path().'data/config.php');
+        $strConfig = file_get_contents(app_path().'data/config.php');
         $strConfig = str_replace('#DB_HOST#', $dbHost, $strConfig);
         $strConfig = str_replace('#DB_NAME#', $dbName, $strConfig);
         $strConfig = str_replace('#DB_USER#', $dbUser, $strConfig);
         $strConfig = str_replace('#DB_PWD#', $dbPwd, $strConfig);
         $strConfig = str_replace('#DB_PORT#', $dbPort, $strConfig);
         $strConfig = str_replace('#DB_PREFIX#', $dbPrefix, $strConfig);
-        $strConfig = str_replace('#AUTHCODE#', genRandomString(18), $strConfig);
-        $strConfig = str_replace('#COOKIE_PREFIX#', genRandomString(3)."_", $strConfig);
-        $strConfig = str_replace('#DATA_CACHE_PREFIX#', genRandomString(3)."_", $strConfig);
-        @file_put_contents(config().'dataconfig.php', $strConfig);
+        $strConfig = str_replace('#AUTHCODE#', StringHelper::genRandomString(18), $strConfig);
+        $strConfig = str_replace('#COOKIE_PREFIX#', StringHelper::genRandomString(3)."_", $strConfig);
+        $strConfig = str_replace('#DATA_CACHE_PREFIX#', StringHelper::genRandomString(3)."_", $strConfig);
+        file_put_contents(config_path().'dataconfig.php', $strConfig);
 
         //插入管理员
         //生成随机认证码

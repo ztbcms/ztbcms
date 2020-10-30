@@ -7,13 +7,7 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="header">
-        <h1 class="logo">logo</h1>
-        <div class="icon_install">安装向导</div>
-        <div class="version">
-            <?php echo \think\facade\Config::get('admin.cms_version'); ?>
-        </div>
-    </div>
+    {include file="index/header" /}
 
     <div class="section">
         <div class="main cc">
@@ -34,7 +28,7 @@ ZTBCMS 免责声明
         <div class="bottom tac"><a href="{:api_url('/install/index/step2')}" class="btn">接 受</a></div>
     </div>
 </div>
-<div class="footer"> &copy; {:date("Y")} <a href="http://www.ztbcms.com" target="_blank">http://www.ztbcms.com</a>（ZTBCMS内容管理系统）</div>
+{include file="index/footer" /}
 
 </body>
 </html>

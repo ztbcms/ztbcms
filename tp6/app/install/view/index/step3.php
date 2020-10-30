@@ -7,13 +7,7 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="header">
-        <h1 class="logo">logo</h1>
-        <div class="icon_install">安装向导</div>
-        <div class="version">
-            <?php echo \think\facade\Config::get('admin.cms_version'); ?>
-        </div>
-    </div>
+    {include file="index/header" /}
     <section class="section">
         <div class="step">
             <ul>
@@ -33,42 +27,42 @@
                     </tr>
                     <tr>
                         <td class="tar">数据库服务器：</td>
-                        <td><input type="text" name="dbhost" id="dbhost" value="127.0.0.1" class="input"></td>
+                        <td><input type="text" name="db_host" id="dbhost" value="127.0.0.1" class="input"></td>
                         <td>
                             <div id="J_install_tip_dbhost"><span class="gray">数据库服务器地址，一般为127.0.0.1</span></div>
                         </td>
                     </tr>
                     <tr>
                         <td class="tar">数据库端口：</td>
-                        <td><input type="text" name="dbport" id="dbport" value="3306" class="input"></td>
+                        <td><input type="text" name="db_port" id="dbport" value="3306" class="input"></td>
                         <td>
                             <div id="J_install_tip_dbport"><span class="gray">数据库服务器端口，一般为3306</span></div>
                         </td>
                     </tr>
                     <tr>
                         <td class="tar">数据库用户名：</td>
-                        <td><input type="text" name="dbuser" id="dbuser" value="root" class="input"></td>
+                        <td><input type="text" name="db_user" id="dbuser" value="root" class="input"></td>
                         <td>
                             <div id="J_install_tip_dbuser"></div>
                         </td>
                     </tr>
                     <tr>
                         <td class="tar">数据库密码：</td>
-                        <td><input type="text" name="dbpw" id="dbpw" value="" class="input" autoComplete="off" onblur="TestDbPwd()"></td>
+                        <td><input type="text" name="db_pwd" id="dbpw" value="" class="input" autoComplete="off" onblur="TestDbPwd()"></td>
                         <td>
                             <div id="J_install_tip_dbpw"></div>
                         </td>
                     </tr>
                     <tr>
                         <td class="tar">数据库名：</td>
-                        <td><input type="text" name="dbname" id="dbname" value="ztbcms" class="input"></td>
+                        <td><input type="text" name="db_name" id="dbname" value="ztbcms" class="input"></td>
                         <td>
                             <div id="J_install_tip_dbname">请预先创建数据库</div>
                         </td>
                     </tr>
                     <tr>
                         <td class="tar">数据库表前缀：</td>
-                        <td><input type="text" name="dbprefix" id="dbprefix" value="ztb_" class="input"></td>
+                        <td><input type="text" name="db_prefix" id="dbprefix" value="ztb_" class="input"></td>
                         <td>
                             <div id="J_install_tip_dbprefix"><span class="gray">建议使用默认，同一数据库安装多个ZTBCMS时需修改</span></div>
                         </td>
@@ -194,7 +188,7 @@
                 db_host: '数据库服务器地址，一般为127.0.0.1',
                 db_port: '数据库服务器端口，一般为3306',
                 db_user: '',
-                db_pw: '',
+                db_pwd: '',
                 db_name: '',
                 db_prefix: '建议使用默认，同一数据库安装多个时需修改',
                 manager: '创始人帐号，拥有站点后台所有管理权限',
@@ -231,22 +225,22 @@
                 onkeyup: false,
                 focusInvalid: false,
                 rules: {
-                    dbhost: {
+                    db_host: {
                         required: true
                     },
-                    dbport: {
+                    db_port: {
                         required: true
                     },
-                    dbuser: {
+                    db_user: {
                         required: true
                     },
-                    dbpw: {
+                    db_pwd: {
                         required: true
                     },
-                    dbname: {
+                    db_name: {
                         required: true
                     },
-                    dbprefix: {
+                    db_prefix: {
                         required: true
                     },
                     manager: {
@@ -293,22 +287,22 @@
 
                 },
                 messages: {
-                    dbhost: {
+                    db_host: {
                         required: '数据库服务器地址不能为空'
                     },
-                    dbport: {
+                    db_port: {
                         required: '数据库服务器端口不能为空'
                     },
-                    dbuser: {
+                    db_user: {
                         required: '数据库用户名不能为空'
                     },
-                    dbpw: {
+                    db_pwd: {
                         required: '数据库密码不能为空'
                     },
-                    dbname: {
+                    db_name: {
                         required: '数据库名不能为空'
                     },
-                    dbprefix: {
+                    db_prefix: {
                         required: '数据库表前缀不能为空'
                     },
                     manager: {
@@ -337,6 +331,6 @@
         });
     </script>
 </div>
-
+{include file="index/footer" /}
 </body>
 </html>

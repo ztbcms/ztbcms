@@ -41,26 +41,29 @@
                 url: url,
                 data: data,
                 dataType: 'json',
-                success: function (msg) {
-                    if (msg.n == '999999') {
+                success: function (res) {
+                    if(res.data.msg){
+                        $('#loginner').append(res.data.msg);
+                    }
+
+                    if (res.data.n == '999999') {
                         $('#dosubmit').attr("disabled", false);
                         $('#dosubmit').removeAttr("disabled");
                         $('#dosubmit').removeClass("nonext");
-                        setTimeout('gonext()', 2000);
+                        setTimeout('gonext()', 1500);
+                        return;
                     }
-                    if (msg.n) {
-                        $('#loginner').append(msg.msg);
-                        reloads(msg.n);
+                    if (res.data.n && res.data.n >= 0) {
+                        reloads(res.data.n);
                     } else {
-                        //alert('指定的数据库不存在，系统也无法创建，请先通过其他方式建立好数据库！');
-                        alert(msg.msg);
+                        alert(res.data.msg);
                     }
                 }
             });
         }
 
         function gonext() {
-            window.location.href = "{:api_url('/admin/install/step5')}";
+            window.location.href = "{:api_url('/install/index/step5')}";
         }
 
         $(document).ready(function () {
@@ -68,6 +71,6 @@
         })
     </script>
 </div>
-<include file="footer"/>
+{include file="index/footer" /}
 </body>
 </html>

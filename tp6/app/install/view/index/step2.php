@@ -8,13 +8,7 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="header">
-        <h1 class="logo">logo</h1>
-        <div class="icon_install">安装向导</div>
-        <div class="version">
-            <?php echo \think\facade\Config::get('admin.cms_version'); ?>
-        </div>
-    </div>
+    {include file="index/header" /}
   <section class="section">
     <div class="step">
       <ul>
@@ -101,7 +95,7 @@
     <div class="bottom tac"> <a href="{:api_url('/install/index/step2')}" class="btn">重新检测</a><a href="{:api_url('/install/index/step3')}" class="btn next">下一步</a> </div>
   </section>
 </div>
-<div class="footer"> &copy; {:date("Y")} <a href="http://www.ztbcms.com" target="_blank">http://www.ztbcms.com</a>（ZTBCMS内容管理系统）</div>
+{include file="index/footer" /}
 <script>
 $(function(){
 	var errSum = parseInt('{$err}');
