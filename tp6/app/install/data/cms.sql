@@ -874,7 +874,7 @@ CREATE TABLE `cms_user` (
   `avatar` varchar(256) NOT NULL DEFAULT '' COMMENT '头像链接',
   `phone` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `account` (`username`)
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
 
 -- ----------------------------
