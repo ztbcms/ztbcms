@@ -284,7 +284,7 @@ class Index extends BaseController
             'last_login_ip'   => $ip,
             'verify'          => $verify,
             'email'           => $manager_email,
-            'remark'          => '备注信息',
+            'remark'          => '',
             'create_time'     => $time,
             'update_time'     => $time,
             'status'          => '1',
