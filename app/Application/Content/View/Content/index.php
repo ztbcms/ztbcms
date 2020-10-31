@@ -17,20 +17,20 @@
     }
 </style>
 <script type="text/javascript">
-var B_frame_height = parent.$("#B_frame").height()-8;
-$(window).on('resize', function () {
-    setTimeout(function () {
-		B_frame_height = parent.$("#B_frame").height()-8;
-        frameheight();
-    }, 100);
-});
-function frameheight(){
-	$("#iframe_categorys").height(B_frame_height);
-	$("#iframe_categorys_list").height(B_frame_height);
-}
-(function (){
-	frameheight();
-})();
+// var B_frame_height = parent.$("#B_frame").height()-8;
+// $(window).on('resize', function () {
+//     setTimeout(function () {
+// 		B_frame_height = parent.$("#B_frame").height()-8;
+//         frameheight();
+//     }, 100);
+// });
+// function frameheight(){
+// 	$("#iframe_categorys").height(B_frame_height);
+// 	$("#iframe_categorys_list").height(B_frame_height);
+// }
+// (function (){
+// 	frameheight();
+// })();
 </script>
 </body>
 </html>
