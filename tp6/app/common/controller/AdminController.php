@@ -13,6 +13,7 @@ use app\admin\libs\system\Rbac;
 use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
+use app\admin\service\RbacService;
 use app\BaseController;
 use app\common\model\UserModel;
 use app\common\model\UserTokenModel;
@@ -102,18 +103,7 @@ class AdminController extends BaseController
      */
     private function hasAccessPermission($user_id, string $base_url = '')
     {
-        $user = AdminUserService::getInstance()->getAdminUserInfoById($user_id)['data'];
-        if (empty($user)) {
-            return false;
-        }
         // TODO: 适配过渡版本
-        if (strpos($base_url, '/home/') === 0) {
-            $base_url = str_replace('/home/', '', $base_url);
-        }
-        // 超级管理员
-        if ($user['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
-            return true;
-        }
         if (!empty($base_url)) {
             $items = explode('/', $base_url);
             $app = $items[0];
@@ -124,30 +114,10 @@ class AdminController extends BaseController
             $controller = strtoupper(request()->controller());
             $action = strtoupper(request()->action());
         }
+        $rbacService = new RbacService();
+        $res = $rbacService->enableUserAccess($user_id, $app, $controller, $action);
 
-        $accessList = Rbac::getAccessList($user_id);
-        // app
-        if (isset($accessList['%'])) {
-            return true;
-        }
-        if (!isset($accessList[$app])) {
-            return false;
-        }
-        // controller+action
-        if (isset($accessList[$app]['%'])) {
-            return true;
-        }
-        $controllers = explode('.', $controller);
-        $c = [];
-        // 计算可能得controller模式，如 a.b.c 、a.b.%、a.%.%
-        foreach ($controllers as $i => $v) {
-            $c [] = $v;
-            $pass_controller = trim(join('.', $c).'.'.trim(str_repeat('%.', count($controllers) - ($i + 1)), '.'), '.');
-            if (isset($accessList[$app][$pass_controller]) && isset($accessList[$app][$pass_controller][$action])) {
-                return true;
-            }
-        }
-        return false;
+        return $res['status'];
     }
 
     // 错误展示

@@ -238,4 +238,20 @@ class AdminUserService extends BaseService
 
         return self::createReturn(false, null, '找不到信息');
     }
+
+    /**
+     * 登录用户是否有权限
+     * @param $app
+     * @param $controller
+     * @param $action
+     *
+     * @return mixed
+     */
+    function hasPermission($app, $controller, $action){
+        $userInfo = $this->getInfo();
+        $rbacService = new RbacService();
+        return $rbacService->enableUserAccess($userInfo['id'], $app, $controller, $action)['status'];
+    }
+
+
 }
