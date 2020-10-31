@@ -9,7 +9,7 @@ namespace app\admin\controller;
 use app\admin\model\AccessGroupModel;
 use app\admin\model\RoleModel;
 use app\common\controller\AdminController;
-use app\admin\service\RbacService;
+use app\admin\service\AccessGroupService;
 use app\admin\service\MenuService;
 
 /**
@@ -47,7 +47,7 @@ class AccessGroup extends AdminController
     public function getRoleAccessGroup()
     {
         $role_id = input('role_id', '', 'trim');
-        $res = RbacService::getRoleAccessGroup($role_id);
+        $res = AccessGroupService::getRoleAccessGroup($role_id);
         return json($res);
     }
 
@@ -62,7 +62,7 @@ class AccessGroup extends AdminController
     {
         $role_id = input('role_id');
         $accessGroupList = input('post.accessGroupList', []);
-        $res = RbacService::updateRoleAccessGroup($role_id, $accessGroupList);
+        $res = AccessGroupService::updateRoleAccessGroup($role_id, $accessGroupList);
         return json($res);
     }
 
@@ -83,7 +83,7 @@ class AccessGroup extends AdminController
      */
     public function getAccessGroupList()
     {
-        $accessGroupTreeArray = RbacService::getAccessGroupTreeArray();
+        $accessGroupTreeArray = AccessGroupService::getAccessGroupTreeArray();
         return json(self::createReturn(true, $accessGroupTreeArray));
     }
 
@@ -106,7 +106,7 @@ class AccessGroup extends AdminController
     public function deleteAccessGroup()
     {
         $group_id = input('group_id', '', 'trim');
-        $res = RbacService::deleteAccessGroup([$group_id]);
+        $res = AccessGroupService::deleteAccessGroup([$group_id]);
         return json($res);
     }
 
@@ -142,7 +142,7 @@ class AccessGroup extends AdminController
      */
     public function getAccessGroupTreeArray()
     {
-        $accessGroupTreeArray = RbacService::getAccessGroupTreeArray(0);
+        $accessGroupTreeArray = AccessGroupService::getAccessGroupTreeArray(0);
         foreach ($accessGroupTreeArray as $k => $v) {
             $accessGroupTreeArray[$k]['view_name'] = '|—'.str_repeat('—', $v['level'] * 1).$v['name'];
         }
@@ -160,7 +160,7 @@ class AccessGroup extends AdminController
         $parentid = input('parentid', '', 'trim');
         $description = input('description', '', 'trim');
         $status = input('status', '', 'trim');
-        $res = RbacService::createAccessGroup($id,$name, $parentid, $description, $status);
+        $res = AccessGroupService::createAccessGroup($id,$name, $parentid, $description, $status);
         return json($res);
     }
 
@@ -172,7 +172,7 @@ class AccessGroup extends AdminController
     {
         $group_id = input('group_id', '', 'trim');
         $accessGroupItems = input('accessGroupItems');
-        $res = RbacService::updateAccessGroupItems($group_id, $accessGroupItems);
+        $res = AccessGroupService::updateAccessGroupItems($group_id, $accessGroupItems);
         return json($res);
     }
 
@@ -186,7 +186,7 @@ class AccessGroup extends AdminController
     public function getAccessGroupById()
     {
         $id = input('id', '', 'trim');
-        $accessGroup = RbacService::getAccessGroupById($id);
+        $accessGroup = AccessGroupService::getAccessGroupById($id);
         return json($accessGroup);
     }
 

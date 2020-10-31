@@ -13,11 +13,11 @@ use app\admin\model\AccessModel;
 use app\common\service\BaseService;
 
 /**
- * 权限管理
- * Class RbacService
+ * 权限组管理
+ * Class AccessGroupService
  * @package app\admin\service
  */
-class RbacService extends BaseService
+class AccessGroupService extends BaseService
 {
 
     /**
