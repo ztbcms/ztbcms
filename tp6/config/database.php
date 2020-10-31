@@ -1,9 +1,14 @@
 <?php
 //引入cms数据库配置
-if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
-    $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
+if (file_exists(root_path() . "config/dataconfig.php")) {
+    $cmsDataConfig = include root_path() . "config/dataconfig.php";
 } else {
-    throw new \Exception('找不到dataconfig.php文件');
+    // 兼容 tp3.2
+    if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
+        $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
+    } else {
+        throw new \Exception('找不到dataconfig.php文件');
+    }
 }
 
 return [
