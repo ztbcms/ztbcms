@@ -7,7 +7,6 @@
 namespace app\admin\service;
 
 
-use app\admin\libs\system\Rbac;
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
 use app\common\service\BaseService;
@@ -195,8 +194,6 @@ class AdminUserService extends BaseService
         //更新状态
         $adminUserModel = new AdminUserModel();
         $adminUserModel->loginStatus((int) $userInfo['id']);
-        //注册权限
-        Rbac::saveAccessList((int) $userInfo['id']);
     }
 
     /**

@@ -9,8 +9,6 @@
 namespace app\common\controller;
 
 
-use app\admin\libs\system\Rbac;
-use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
