@@ -7,7 +7,6 @@
 namespace app\admin\service;
 
 
-use app\admin\libs\system\Rbac;
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
 use app\common\service\BaseService;
@@ -195,8 +194,6 @@ class AdminUserService extends BaseService
         //更新状态
         $adminUserModel = new AdminUserModel();
         $adminUserModel->loginStatus((int) $userInfo['id']);
-        //注册权限
-        Rbac::saveAccessList((int) $userInfo['id']);
     }
 
     /**
@@ -238,4 +235,20 @@ class AdminUserService extends BaseService
 
         return self::createReturn(false, null, '找不到信息');
     }
+
+    /**
+     * 登录用户是否有权限
+     * @param $app
+     * @param $controller
+     * @param $action
+     *
+     * @return mixed
+     */
+    function hasPermission($app, $controller, $action){
+        $userInfo = $this->getInfo();
+        $rbacService = new RbacService();
+        return $rbacService->enableUserAccess($userInfo['id'], $app, $controller, $action)['status'];
+    }
+
+
 }
