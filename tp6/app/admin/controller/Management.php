@@ -20,6 +20,8 @@ use think\facade\Request;
  */
 class Management extends AdminController
 {
+    protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword'];
+
     /**
      * 用户基本信息
      */

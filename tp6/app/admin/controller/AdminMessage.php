@@ -18,7 +18,7 @@ use think\facade\View;
  */
 class AdminMessage extends AdminController
 {
-    protected $noNeedPermission = ['getAdminMsgList'];
+    protected $noNeedPermission = ['getAdminMsgList', 'readMsg', 'readMsgAll'];
 
     /**
      * 所有通知
@@ -83,7 +83,7 @@ class AdminMessage extends AdminController
             $ids = [$ids];
         }
         if (empty($ids)) {
-            return self::makeJsonReturn(false, null, '参数错误');
+            return self::makeJsonReturn(true, null, '操作完成');
         }
 
         $res = AdminMessageService::readAdminMessage($ids, $this->user->id);
@@ -97,7 +97,7 @@ class AdminMessage extends AdminController
     {
         // 消息类型
         $type = Request::param('type', '');
-        if ($type)  {
+        if ($type) {
             $where['type'] = $type;
         }
         $res = AdminMessageService::readAllAdminMessage($this->user->id, $type);

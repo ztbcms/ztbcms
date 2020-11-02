@@ -3,12 +3,12 @@
         <el-row>
             <el-col :span="5"><h3>未读通知</h3></el-col>
             <el-col :span="19">
-                <div style="float: right">
-                    <el-button class="filter-item" type="primary"  @click="readAll">
+                <div style="text-align: right;margin-top: 1em;">
+                    <el-button class="filter-item" type="primary" size="mini"  @click="readAll">
                         标记所有为已读
                     </el-button>
 
-                    <el-button class="filter-item" plain @click="readNowPage">
+                    <el-button class="filter-item" type="primary" size="mini" @click="readNowPage">
                         标记本页为已读
                     </el-button>
                 </div>
