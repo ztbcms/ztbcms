@@ -14,6 +14,7 @@ use think\facade\Db;
 
 class AdminApi extends AdminController
 {
+    protected $noNeedPermission = ['getPermissionInfo', 'getAdminUserInfo'];
 
     /**
      * 获取后台权限信息

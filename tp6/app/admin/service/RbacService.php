@@ -89,6 +89,9 @@ class RbacService extends BaseService
             return self::createReturn(true, null, '权限检验通过');
         }
         $accessList = $this->getUserAccessList($user_id)['data'];
+        $app = strtoupper($app);
+        $controller = strtoupper($controller);
+        $action = strtoupper($action);
         // app
         if (isset($accessList['%'])) {
             return self::createReturn(true, null, '权限检验通过');

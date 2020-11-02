@@ -23,6 +23,19 @@ use think\facade\View;
 
 class AdminController extends BaseController
 {
+
+    /**
+     * 无需登录的方法,同时也就不需要鉴权了
+     * @var array
+     */
+    protected $noNeedLogin = [];
+
+    /**
+     * 无需鉴权的方法,但需要登录
+     * @var array
+     */
+    protected $noNeedPermission = [];
+
     /**
      * @var UserModel|null
      */
@@ -40,6 +53,12 @@ class AdminController extends BaseController
     public function __construct(App $app)
     {
         parent::__construct($app);
+
+        // 该方法是否需要登录
+        if($this->_checkActionMatch($app->request->action(), $this->noNeedLogin)){
+            // 不需要
+            return;
+        }
         if (AdminUserService::getInstance()->isLogin()) {
             //tp6 直接登录
             $info = AdminUserService::getInstance()->getInfo();
@@ -64,6 +83,11 @@ class AdminController extends BaseController
         $this->is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
 
         // 权限检测
+        // 该方法是否需要权限检测
+        if($this->_checkActionMatch($app->request->action(), $this->noNeedPermission)){
+            // 不需要
+            return;
+        }
         $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
         if (!$hasPremission) {
             $this->_handleNoPermiassion();
@@ -104,6 +128,9 @@ class AdminController extends BaseController
     private function hasAccessPermission($user_id, string $base_url = '')
     {
         // TODO: 适配过渡版本
+        if (strpos($base_url, '/home/') === 0) {
+            $base_url = str_replace('/home/', '', $base_url);
+        }
         if (!empty($base_url)) {
             $items = explode('/', $base_url);
             $app = $items[0];
@@ -116,8 +143,31 @@ class AdminController extends BaseController
         }
         $rbacService = new RbacService();
         $res = $rbacService->enableUserAccess($user_id, $app, $controller, $action);
-
         return $res['status'];
+    }
+
+    /**
+     * 检测控制器的方法是否匹配
+     *
+     * @param $action
+     * @param $arr
+     *
+     * @return bool
+     */
+    function _checkActionMatch($action, $arr){
+        $arr = is_array($arr) ? $arr : explode(',', $arr);
+        if (!$arr) {
+            return false;
+        }
+
+        $arr = array_map('strtolower', $arr);
+        // 是否存在
+        if (in_array(strtolower($action), $arr) || in_array('*', $arr)) {
+            return true;
+        }
+
+        // 没找到匹配
+        return false;
     }
 
     // 错误展示
