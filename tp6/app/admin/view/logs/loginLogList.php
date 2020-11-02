@@ -27,10 +27,11 @@
                     <el-button type="primary" @click="getList" size="medium">
                         筛选
                     </el-button>
-
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'logs', 'deleteLoginLog')){ ?>
                     <el-button @click="deletelog" type="primary" plain size="medium">
                         删除一个月前的操作日志
                     </el-button>
+                    <?php } ?>
                 </el-col>
             </el-row>
         </div>
@@ -178,7 +179,7 @@
                         _action : 'getList'
                     };
                     $.ajax({
-                        url: "{:api_url('/Admin/Logs/loginLogList')}",
+                        url: "{:api_url('/admin/Logs/loginLogList')}",
                         data: where,
                         dataType: 'json',
                         type: 'get',
@@ -195,8 +196,10 @@
                 deletelog: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/Admin/Logs/deleteLoginLog')}",
-                        data: {},
+                        url: "{:api_url('/admin/Logs/deleteLoginLog')}",
+                        data: {
+                            day: 30
+                        },
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {

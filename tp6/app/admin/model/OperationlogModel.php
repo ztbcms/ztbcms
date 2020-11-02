@@ -16,13 +16,17 @@ class OperationlogModel extends Model
     protected $name = 'operationlog';
 
     /**
-     * 删除一个月前的日志
-     * @return boolean
+     * 删除登录日志(X天前的数据)
+     *
+     * @param  int  $day  N
+     *
+     * @return bool
      */
-    public function deleteAMonthago()
+    public function deleteOperationLog($day = 30)
     {
-        $status = $this->where(array("time" => array("lt", time() - (86400 * 30))))->delete();
-        return $status !== false ? true : false;
+        $limit_time = time() - $day * 24 * 60 * 60;
+        $this->where('time', '<=', $limit_time)->delete();
+        return true;
     }
 
     /**

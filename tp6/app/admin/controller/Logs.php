@@ -65,14 +65,15 @@ class Logs extends AdminController
     }
 
     /**
-     * 删除一个月以前的任务
+     * 删除登录日志
      *
      * @return \think\response\Json
      */
     function deleteLoginLog()
     {
+        $day = input('day', 30, 'intval');
         $LoginlogModel = new LoginlogModel();
-        $LoginlogModel->deleteAMonthago();
+        $LoginlogModel->deleteLoginLog($day);
         return json(self::createReturn(true, '', '删除成功'));
     }
 
@@ -130,8 +131,9 @@ class Logs extends AdminController
      */
     function deleteAdminOperationLog()
     {
+        $day = input('day', 30, 'intval');
         $OperationlogModel = new OperationlogModel();
-        $OperationlogModel->deleteAMonthago();
+        $OperationlogModel->deleteOperationLog($day);
         return json(self::createReturn(true, '', '删除成功'));
     }
 }

@@ -305,7 +305,15 @@ return [
                         "route" => "admin/Logs/loginLogList",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "登录日志管理",
+                        "name" => "登录日志",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Logs/deleteLoginLog",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除登录日志",
                         "remark" => "",
                         "child" => []
                     ],
@@ -313,7 +321,15 @@ return [
                         "route" => "admin/Logs/adminOperationLogList",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "后台操作日志管理",
+                        "name" => "操作日志",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Logs/deleteAdminOperationLog",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除操作日志",
                         "remark" => "",
                         "child" => []
                     ],

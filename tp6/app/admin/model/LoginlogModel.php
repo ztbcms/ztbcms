@@ -8,24 +8,36 @@ namespace app\admin\model;
 
 use think\Model;
 
+/**
+ * 登录日志
+ * Class LoginlogModel
+ *
+ * @package app\admin\model
+ */
 class LoginlogModel extends Model
 {
 
     protected $name = 'loginlog';
 
     /**
-     * 删除一个月前的日志
-     * @return boolean
+     * 删除登录日志(X天前的数据)
+     *
+     * @param  int  $day  N
+     *
+     * @return bool
      */
-    public function deleteAMonthago()
+    public function deleteLoginLog($day = 30)
     {
-        $status = $this->where(array("logintime" => array("lt", time() - (86400 * 30))))->delete();
-        return $status !== false ? true : false;
+        $limit_time = time() - $day * 24 * 60 * 60;
+        $this->where('logintime', '<=', $limit_time)->delete();
+        return true;
     }
 
     /**
      * 添加登录日志
+     *
      * @param  array  $data
+     *
      * @return boolean
      */
     public function addLoginLog($data)
