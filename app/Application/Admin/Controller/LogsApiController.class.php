@@ -7,11 +7,14 @@
 
 namespace Admin\Controller;
 
+use Common\Controller\AdminBase;
+
 /**
  * 后台日志接口
+ *
  * @package Admin\Controller
  */
-class LogsApiController extends AdminApiBaseController
+class LogsApiController extends AdminBase
 {
     /**
      * 获取后台操作总日志

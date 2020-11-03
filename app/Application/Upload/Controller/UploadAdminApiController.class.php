@@ -8,17 +8,17 @@
 namespace Upload\Controller;
 
 
-use Admin\Controller\AdminApiBaseController;
 use Admin\Service\User;
 use Attachment\Model\AttachmentGroupModel;
 use Attachment\Model\AttachmentModel;
+use Common\Controller\AdminBase;
 use Upload\Service\WatermarkService;
 
 /**
  * 后台上传管理接口
  * @package Upload\Controller
  */
-class UploadAdminApiController extends AdminApiBaseController
+class UploadAdminApiController extends AdminBase
 {
 
     const isadmin = 1; //后台上传

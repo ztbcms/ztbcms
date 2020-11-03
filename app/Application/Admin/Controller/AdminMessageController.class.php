@@ -18,6 +18,7 @@ use Common\Controller\AdminBase;
  */
 class AdminMessageController extends AdminBase
 {
+    protected $noNeedPermission = ['getAdminMsgList'];
     /**
      * 所有通知
      */

@@ -24,44 +24,67 @@ class AdminBase extends CMS {
     protected $uid;
     protected $userInfo;
 
+    /**
+     * 无需登录的方法,同时也就不需要鉴权了
+     * @var array
+     */
+    protected $noNeedLogin = [];
+
+    /**
+     * 无需鉴权的方法,但需要登录
+     * @var array
+     */
+    protected $noNeedPermission = [];
+
     //初始化
 	protected function _initialize() {
-		C(array(
-			"USER_AUTH_ON" => true, //是否开启权限认证
-			"USER_AUTH_TYPE" => 1, //默认认证类型 1 登录认证 2 实时认证
-			"REQUIRE_AUTH_CONTROLLER" => "", //需要认证控制器
-			"NOT_AUTH_CONTROLLER" => "Public", //无需认证控制器
-            "REQUIRE_AUTH_ACTION" => "", //需要认证的操作
-            "NOT_AUTH_ACTION" => "", //无需认证的操作
-			"USER_AUTH_GATEWAY" => C('USER_AUTH_GATEWAY', null , U("Admin/Public/login")) , //登录地址
-		));
-		if (false == RBAC::AccessDecision(MODULE_NAME)) {
-			//检查是否登录
-			if (false === RBAC::checkLogin()) {
-				//未登录
-                if (IS_AJAX) {
-                    //接口返回
-                    $this->ajaxReturn(self::createReturn(false, [
-                        'user_auth_gateway' => C('USER_AUTH_GATEWAY')
-                    ], '请登录', 401));
-                } else {
-                    //跳转到登录界面
-                    $this->assign('user_auth_gateway', C('USER_AUTH_GATEWAY'));
-                    $this->display(C('TMPL_ACTION_PAGE_UNAUTHORIZED'));
-                }
-                exit;
-			}
-			//没有操作权限
+        // 该方法是否需要登录
+        if ($this->_checkActionMatch(ACTION_NAME, $this->noNeedLogin)) {
+            // 不需要
+            return;
+        }
+        //检查是否登录
+        if (false === RBAC::checkLogin()) {
+            //未登录
             if (IS_AJAX) {
-                $this->ajaxReturn(self::createReturn(false, null, '无权限', 403));
+                //接口返回
+                $this->ajaxReturn(self::createReturn(false, [
+                    'user_auth_gateway' => C('USER_AUTH_GATEWAY')
+                ], '请登录', 401));
             } else {
-                $this->display(C('TMPL_ACTION_PAGE_FORBIDDEN'));
+                //跳转到登录界面
+                $this->assign('user_auth_gateway', C('USER_AUTH_GATEWAY'));
+                $this->display(C('TMPL_ACTION_PAGE_UNAUTHORIZED'));
             }
             exit;
-		}
-		parent::_initialize();
-		//验证登录
-		$this->competence();
+        }
+        //验证登录
+        $this->competence();
+
+        // 该方法是否需要权限检测
+        if ($this->_checkActionMatch(ACTION_NAME, $this->noNeedPermission)) {
+            // 不需要
+        } else {
+            C(array(
+                "USER_AUTH_ON"            => true, //是否开启权限认证
+                "USER_AUTH_TYPE"          => 1, //默认认证类型 1 登录认证 2 实时认证
+                "REQUIRE_AUTH_CONTROLLER" => "", //需要认证控制器
+                "NOT_AUTH_CONTROLLER"     => "Public", //无需认证控制器
+                "REQUIRE_AUTH_ACTION"     => "", //需要认证的操作
+                "NOT_AUTH_ACTION"         => "", //无需认证的操作
+                "USER_AUTH_GATEWAY"       => C('USER_AUTH_GATEWAY', null, U("Admin/Public/login")), //登录地址
+            ));
+            if (false == RBAC::AccessDecision(MODULE_NAME)) {
+                //没有操作权限
+                if (IS_AJAX) {
+                    $this->ajaxReturn(self::createReturn(false, null, '无权限', 403));
+                } else {
+                    $this->display(C('TMPL_ACTION_PAGE_FORBIDDEN'));
+                }
+                exit;
+            }
+        }
+        parent::_initialize();
 	}
 
 	/**
@@ -130,5 +153,29 @@ class AdminBase extends CMS {
 		$Page->SetPager('default', '<span class="all">共有{recordcount}条信息</span>{first}{prev}{liststart}{list}{listend}{next}{last}');
 		return $Page;
 	}
+
+    /**
+     * 检测控制器的方法是否匹配
+     *
+     * @param $action
+     * @param $arr
+     *
+     * @return bool
+     */
+    function _checkActionMatch($action, $arr){
+        $arr = is_array($arr) ? $arr : explode(',', $arr);
+        if (!$arr) {
+            return false;
+        }
+
+        $arr = array_map('strtolower', $arr);
+        // 是否存在
+        if (in_array(strtolower($action), $arr) || in_array('*', $arr)) {
+            return true;
+        }
+
+        // 没找到匹配
+        return false;
+    }
 
 }

@@ -15,8 +15,9 @@ use Common\Controller\AdminBase;
  * 后台通用接口【无需检查权限】
  * @package Admin\Controller
  */
-class AdminApiController extends AdminApiBaseController
+class AdminApiController extends AdminBase
 {
+    protected $noNeedPermission = ['getMenuList', 'getPermissionInfo', 'getAdminUserInfo', 'logout'];
     /**
      * 获取后台用户的菜单
      */
