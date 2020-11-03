@@ -163,10 +163,10 @@ class Main extends AdminController
     protected function _getAlertMessage()
     {
         $msg = [];
-        if (file_exists(app_path() . '../Install')) {
+        if (file_exists(base_path() . '/install')) {
             $msg [] = [
                 'type' => 'warning', //success,info,warning,error
-                'msg' => '您还没有删除 Install 模块，出于安全的考虑，我们建议您删除 Install 模块(/app/Application/Install)'
+                'msg' => '您还没有删除 Install 模块，出于安全的考虑，我们建议您删除 Install 模块(/app/install)'
             ];
         }
         return $msg;
