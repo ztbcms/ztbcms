@@ -8,11 +8,7 @@ class Index extends BaseController
 {
     public function index()
     {
-        return 'think';
+        return view('index');
     }
 
-    public function hello($name = 'ThinkPHP6')
-    {
-        return 'hello,' . $name;
-    }
 }
