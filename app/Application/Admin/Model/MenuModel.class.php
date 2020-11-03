@@ -191,7 +191,7 @@ class MenuModel extends Model
                 }
                 if (!empty($a['is_tp6'])) {
                     //如果是tp6 返回 /home/module/controller/action 格式
-                    $url = strtolower("/home/{$name}/{$controller}/{$action}{$fu}");
+                    $url = "/home/{$name}/{$controller}/{$action}{$fu}";
                 } else {
                     $url = U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id));
                 }
