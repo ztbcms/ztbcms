@@ -6,7 +6,6 @@
 
 namespace app\admin\model;
 
-use Think\Cache;
 use think\Model;
 
 /**
@@ -323,7 +322,10 @@ class RoleModel extends Model
     {
         $MenuModel = new MenuModel();
         $menu = $MenuModel
-            ->where('parentid', $parentid)
+            ->where([
+                ['parentid','=', $parentid],
+                ['is_tp6','=', 1],
+            ])
             ->order('listorder desc')
             ->select();
         $list = $this->getMenuAccessList($menu, $roleid, $isadmin, $userInfo,false);
@@ -351,7 +353,7 @@ class RoleModel extends Model
     function getSelectMenuId($roleid, $isadmin, $userInfo, $excludeSelectedParent = false)
     {
         $MenuModel = new MenuModel();
-        $menu = $MenuModel->select();
+        $menu = $MenuModel->where('is_tp6','=', 1)->select();
         $list = $this->getMenuAccessList($menu, $roleid, $isadmin, $userInfo);
         $checkedMenuId = [];
         $parmentMenuMap = [];

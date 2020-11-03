@@ -27,7 +27,7 @@ class MenuService extends BaseService
     static function getMenuList()
     {
         $MenuModel = new MenuModel();
-        $menu = $MenuModel->order(array("listorder" => "ASC"))->select();
+        $menu = $MenuModel->where('is_tp6','=', '1')->order(array("listorder" => "ASC"))->select();
         $menu = self::getTree($menu);
         foreach ($menu as $k => $v) {
             $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']).' '.$v['name'];

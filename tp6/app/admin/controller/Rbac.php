@@ -164,7 +164,7 @@ class Rbac extends AdminController
         $res['list'] = $menulist;
         $res['roleid'] = $roleid;
         $res['name'] = $RoleModel->getRoleIdName($roleid);
-        $res['select_menu_id'] = $RoleModel->getSelectMenuId($roleid, $this->is_administrator, $userInfo);
+        $res['select_menu_id'] = $RoleModel->getSelectMenuId($roleid, $this->is_administrator, $userInfo, true);
         return json(self::createReturn(true, $res));
     }
 
