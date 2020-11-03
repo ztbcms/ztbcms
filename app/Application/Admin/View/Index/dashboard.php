@@ -545,7 +545,7 @@
                 msgListTotal: 0
             },
             filters: {
-                ellipsis(value) {
+                ellipsis: function(value) {
                     if (!value) return "";
                     if (value.length > 70) {
                         return value.slice(0, 70) + "...";
@@ -568,7 +568,7 @@
                         this.tags.push({
                             name: data.name,
                             url: data.url,
-                            breadcrumb,
+                            breadcrumb:breadcrumb,
                             defaultActive: data.id
                         })
                         setTimeout(function() {
@@ -661,7 +661,8 @@
                     this.$refs.contextmenu.style.top = pageY + 'px'
                 },
                 // 刷新
-                refreshTag: function(index = 0) {
+                refreshTag: function(index) {
+                    index = index || 0
                     if(index >= 0){
                         var iframeUrl = this.iframeUrls[index]
                         document.getElementById('iframe-'+index).contentWindow.location.href = iframeUrl
@@ -709,7 +710,7 @@
                     }
                 },
                 // 获取菜单
-                getMenuList() {
+                getMenuList: function() {
                     var that = this
                     var PermissionInLoading = this.$loading({
                         lock: true,
@@ -752,7 +753,7 @@
                     })
                 },
                 //注册事件
-                registerEvent() {
+                registerEvent: function() {
                     window.addEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
                     window.__adminOpenNewFrame = function(config) {
                         var title = config.title || ''
@@ -766,12 +767,12 @@
                         window.parent.dispatchEvent(event)
                     }
                 },
-                unregisterEvent() {
+                unregisterEvent: function() {
                     window.__adminOpenNewFrame = null
                     window.removeEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
                 },
                 // 获取管理员信息
-                getAdminUserInfo() {
+                getAdminUserInfo: function() {
                     var that = this
                     $.ajax({
                         url: '/Admin/AdminApi/getAdminUserInfo',
@@ -791,14 +792,14 @@
                  * @param title 标题
                  * @param url 对应的URL
                  */
-                openNewFrame(title, url) {
+                openNewFrame: function(title, url) {
                     this.goUrl([title], {
                         name: title,
                         url: url,
                     })
                 },
                 // 打开新窗口
-                handleEvent_adminOpenNewFrame(event) {
+                handleEvent_adminOpenNewFrame: function(event) {
                     this.openNewFrame(event.detail.title, event.detail.url)
                 },
                 /**
@@ -933,10 +934,10 @@
                     return this.hasRolePermission('/Admin/Index/cache')
                 }
             },
-            created () {
+            created: function () {
                 this.onresize()
             },
-            mounted () {
+            mounted: function () {
                 var that = this
                 this.init()
                 this.registerEvent()

@@ -8,10 +8,12 @@
 namespace Admin\Controller;
 
 
+use Common\Controller\AdminBase;
 use Libs\Helper\MysqlHelper;
 
-class MainApiController extends AdminApiBaseController
+class MainApiController extends AdminBase
 {
+    protected $noNeedPermission = ['getDashboardInfo'];
     /**
      * 系统信息
      * @return array

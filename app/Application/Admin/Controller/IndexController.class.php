@@ -11,6 +11,7 @@ use Admin\Service\User;
 
 class IndexController extends AdminBase {
 
+    protected $noNeedPermission = ['index'];
     //后台框架首页
     public function index() {
         $this->display('dashboard');
