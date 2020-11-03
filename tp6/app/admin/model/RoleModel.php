@@ -340,18 +340,40 @@ class RoleModel extends Model
 
     /**
      * 获取拥有的菜单id
+     *
      * @param $roleid
+     * @param $isadmin
+     * @param $userInfo
+     * @param  bool  $excludeSelectedParent 去除选择的中父菜单选项(为了适配部分前端)
+     *
      * @return mixed
      */
-    function getSelectMenuId($roleid,$isadmin,$userInfo)
+    function getSelectMenuId($roleid, $isadmin, $userInfo, $excludeSelectedParent = false)
     {
         $MenuModel = new MenuModel();
         $menu = $MenuModel->select();
         $list = $this->getMenuAccessList($menu, $roleid, $isadmin, $userInfo);
-        $menuId = [];
-        foreach ($list as $k => $v){
-            if($v['checked']) $menuId[] = $v['id'];
+        $checkedMenuId = [];
+        $parmentMenuMap = [];
+        foreach ($list as $k => $v) {
+            if ($v['checked']) {
+                $checkedMenuId[] = $v['id'];
+            }
+            if(!empty($v['parentid'])){
+                $parmentMenuMap[$v['parentid']] = true;
+            }
         }
+        $menuId = [];
+        if($excludeSelectedParent){
+            foreach ($checkedMenuId as $i => $v){
+                if(!isset($parmentMenuMap[$v])){
+                    $menuId []= $v;
+                }
+            }
+        } else {
+            $menuId = $checkedMenuId;
+        }
+
         return $menuId;
     }
 

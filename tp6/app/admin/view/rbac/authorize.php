@@ -13,7 +13,6 @@
                             default-expand-all
                             node-key="id"
                             ref="tree"
-                            :default-expanded-keys="defaultKeys"
                             :default-checked-keys="defaultKeys"
                             highlight-current
                             :props="defaultProps">
@@ -48,7 +47,7 @@
                     defaultProps: {
                         children: 'children',
                         label: 'label'
-                    }
+                    },
                 }
             },
             computed: {},
@@ -66,17 +65,19 @@
                 submitForm: function() {
                     var that = this;
                     var checked_keys = that.$refs.tree.getCheckedKeys().toString();
+                    var half_checked_keys = that.$refs.tree.getHalfCheckedKeys().toString();
+                    // 选中+半选中也需要记录
+                    var keys = checked_keys + ',' + half_checked_keys
                     $.ajax({
                         url: "{:api_url('/admin/Rbac/addEditAuthorize')}",
                         data: {
-                            menuid : checked_keys,
+                            menuid : keys,
                             roleid : that.roleid
                         },
                         type: "post",
                         dataType: 'json',
                         success: function (res) {
                             if (res.status) {
-                                //添加成功
                                 layer.msg(res.msg);
                                 setTimeout(function () {
                                     parent.window.layer.closeAll();
