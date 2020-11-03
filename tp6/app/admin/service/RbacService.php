@@ -33,12 +33,6 @@ class RbacService extends BaseService
         if (empty($user_id)) {
             throw new ValidateException('请指定用户');
         }
-        //TODO 增加缓存
-        $cache_key = 'access_user_'.$user_id;
-        $accessList = Cache::get($cache_key);
-        if (!empty($accessList)) {
-            return self::createReturn(true, $accessList);
-        }
         //用户信息
         $userInfo = Db::name('user')->where('id', $user_id)->findOrEmpty();
         if (empty($userInfo)) {
@@ -61,7 +55,6 @@ class RbacService extends BaseService
             $action = strtoupper($acc['action']);
             $accessList[$app][$controller][$action] = $action;
         }
-        Cache::tag('access')->set($cache_key, $accessList);
         return self::createReturn(true, $accessList);
     }
 
