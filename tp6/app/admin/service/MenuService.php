@@ -8,6 +8,7 @@
 namespace app\admin\service;
 
 use app\admin\model\MenuModel;
+use app\admin\model\RoleModel;
 use app\admin\validate\Menu;
 use app\common\service\BaseService;
 use think\exception\ValidateException;
@@ -27,7 +28,7 @@ class MenuService extends BaseService
     static function getMenuList()
     {
         $MenuModel = new MenuModel();
-        $menu = $MenuModel->where('is_tp6','=', '1')->order(array("listorder" => "ASC"))->select();
+        $menu = $MenuModel->order(array("listorder" => "ASC"))->select();
         $menu = self::getTree($menu);
         foreach ($menu as $k => $v) {
             $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']).' '.$v['name'];
@@ -279,5 +280,37 @@ class MenuService extends BaseService
             }
         }
         return $ret;
+    }
+
+    /**
+     * 获取角色的权限菜单
+     *
+     * @param $role_id
+     * @param  int  $menu_parentid
+     *
+     * @return array
+     */
+    static function getMenuByRole($role_id, $menu_parentid = 0){
+        // 只获取tp6菜单
+        $menuList = MenuModel::where(array('parentid' => $menu_parentid, 'status' => 1, 'is_tp6' => 1))->order('listorder ASC,id ASC')->select()->toArray();
+        $array = array();
+        $rbacService = new RbacService();
+        foreach ($menuList as $v) {
+            //方法
+            $app = $v['app'];
+            $controller = $v['controller'];
+            $action = $v['action'];
+            //如果是菜单项
+            if ($v['type'] == 0) {
+                $controller = $v['controller'].$v['id'];
+                $action = $v['action'].$v['id'];
+            }
+            //是否有权限
+            $res = $rbacService->enableRoleAccess($role_id, $app, $controller, $action);
+            if ($res['status']) {
+                $array[] = $v;
+            }
+        }
+        return self::createReturn(true, $array);
     }
 }

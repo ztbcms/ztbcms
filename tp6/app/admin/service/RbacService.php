@@ -9,6 +9,7 @@ namespace app\admin\service;
 use app\admin\model\AccessModel;
 use app\admin\model\RoleModel;
 use app\common\service\BaseService;
+use think\exception\ErrorException;
 use think\exception\ValidateException;
 use think\facade\Cache;
 use think\facade\Db;
@@ -38,8 +39,22 @@ class RbacService extends BaseService
         if (empty($userInfo)) {
             return self::createReturn(false, null, '找不到用户');
         }
-        //角色ID
-        $role_id = $userInfo['role_id'];
+
+        return $this->getRoleAccessList($userInfo['role_id']);
+    }
+
+    /**
+     * 获取角色的访问列表
+     *
+     * @param  int|string  $role_id  角色ID
+     *
+     * @return array
+     */
+    function getRoleAccessList($role_id)
+    {
+        if (empty($role_id)) {
+            throw new ValidateException('请指定角色');
+        }
         //检查角色
         $roleinfo = Db::name('role')->where('id', $role_id)->findOrEmpty();
         if (empty($roleinfo) || empty($roleinfo['status'])) {
@@ -75,11 +90,25 @@ class RbacService extends BaseService
             return $res;
         }
         $userInfo = $res['data'];
+        return $this->enableRoleAccess($userInfo['role_id'], $app, $controller, $action);
+    }
+
+    /**
+     * 检测角色是否可以访问权限菜单
+     *
+     * @param $role_id
+     * @param $app
+     * @param $controller
+     * @param $action
+     *
+     * @return array
+     */
+    function enableRoleAccess($role_id, $app, $controller, $action){
         // 超级管理员
-        if ($userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if ($role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return self::createReturn(true, null, '权限检验通过');
         }
-        $accessList = $this->getUserAccessList($user_id)['data'];
+        $accessList = $this->getRoleAccessList($role_id)['data'];
         $app = strtoupper($app);
         $controller = strtoupper($controller);
         $action = strtoupper($action);

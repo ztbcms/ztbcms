@@ -6,6 +6,8 @@
 
 namespace app\admin\model;
 
+use app\admin\service\MenuService;
+use app\common\libs\helper\TreeHelper;
 use app\common\service\BaseService;
 use think\facade\Db;
 use think\Model;
@@ -64,6 +66,54 @@ class MenuModel extends Model
             }
         }
         return $ret;
+    }
+
+    function getAdminUserMenuTree2($role_id, $parentid = 0, $level = 1){
+        //获取角色的所有权限
+        $menuList = MenuService::getMenuByRole($role_id)['data'];
+
+        $list = [];
+        // 数据格式化
+        foreach ($menuList as $a) {
+            $id = $a['id'];
+            $name = $a['app'];
+            $controller = $a['controller'];
+            $action = $a['action'];
+            //附带参数
+            $fu = "";
+            if ($a['parameter']) {
+                $fu = "?" . $a['parameter'];
+            }
+            if (!empty($a['is_tp6'])) {
+                //如果是tp6 返回 /home/module/controller/action 格式 TODO
+                $url = build_url("/{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
+            } else {
+                $url = url("{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true)->build();
+            }
+            $array = array(
+                "icon" => $a['icon'],
+                "id" => $id . $name,
+                "pid" => $a['parentid'],
+                "name" => $a['name'],
+                "url" => $url,
+                "path" => "/{$id}{$name}/{$controller}/{$action}",
+                "items" => []
+            );
+
+            $child = $this->getAdminUserMenuTree($role_id, $a['id'], $level);
+            //由于后台管理界面只支持三层，超出的不层级的不显示
+            if ($child && $level <= 3) {
+                $array['items'] = $child;
+            }
+
+            $list [] = $array;
+        }
+
+        return TreeHelper::arrayToTree($list, 0, [
+            'parentKey' => 'pid',
+            'childrenKey' => 'items',
+            'maxLevel' => 3
+        ]);
     }
 
 

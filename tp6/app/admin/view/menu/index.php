@@ -60,14 +60,13 @@
                 <template slot-scope="scope">
                     <el-button type="text" size="mini" @click="linkMenuAdd(scope.row.id)">添加子菜单</el-button>
                     <el-button type="text" size="mini" @click="details(scope.row.id)">修改</el-button>
-                    <el-button type="text" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color: #e74c3c;">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
 
         <div class="pagination-container">
             <el-pagination
-                    background
                     layout="prev, pager, next, jumper"
                     :total="listQuery.total"
                     v-show="listQuery.total > 0"
@@ -132,6 +131,7 @@
                     var that = this;
                     var url = '{:api_url("/admin/Menu/doDelete")}';
                     layer.confirm('您确定需要删除？', {
+                        title: '提示',
                         btn: ['确定','取消'] //按钮
                     }, function(){
                         var data = {
@@ -206,7 +206,7 @@
             },
             mounted: function () {
                 this.getList();
-            },
+            }
         })
     })
 </script>
