@@ -16,5 +16,9 @@ class DeleteCronLogScript extends CronScript
 
         $res = CronSchedulingLogModel::where('start_time', '<=', $limit_time)->delete();
         Log::info('[Cron/DeleteCronLogScript]'.'删除调度运行日志记录数:'.$res);
+
+        return self::createReturn(true,[
+            'start_time' => $limit_time
+        ],'删除计划任务日志成功');
     }
 }
