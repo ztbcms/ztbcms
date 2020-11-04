@@ -118,12 +118,16 @@
                     })
                 },
                 toEdit: function(item){
+                    var that = this
                     var url = "{:api_url('/admin/Config/editExtend')}" + '?fid=' + item.fid
                     layer.open({
                         type: 2,
                         title: '安装',
                         content: url,
                         area: ['670px', '550px'],
+                        end: function(){
+                            that.getDetail()
+                        }
                     })
                 }
             }

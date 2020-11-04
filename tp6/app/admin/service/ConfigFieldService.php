@@ -107,6 +107,7 @@ class ConfigFieldService extends BaseService
         }
 
         Db::commit();
+        AdminConfigService::getInstance()->clearConfigCache();
         return self::createReturn(true, null, '操作完成');
     }
 
@@ -151,6 +152,7 @@ class ConfigFieldService extends BaseService
 
         if($res1 && $res2){
             Db::commit();
+            AdminConfigService::getInstance()->clearConfigCache();
             return self::createReturn(true, null, '操作完成');
         }
 
