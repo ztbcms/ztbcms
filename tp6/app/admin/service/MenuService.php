@@ -286,14 +286,13 @@ class MenuService extends BaseService
      * 获取角色的权限菜单
      *
      * @param $role_id
-     * @param  int  $menu_parentid
      *
      * @return array
      */
-    static function getMenuByRole($role_id, $menu_parentid = 0){
+    static function getMenuByRole($role_id){
         // 只获取tp6菜单
-        $menuList = MenuModel::where(array('parentid' => $menu_parentid, 'status' => 1, 'is_tp6' => 1))->order('listorder ASC,id ASC')->select()->toArray();
-        $array = array();
+        $menuList = MenuModel::where([ 'status' => 1, 'is_tp6' => 1])->order('listorder ASC,id ASC')->select()->toArray();
+        $array = [];
         $rbacService = new RbacService();
         foreach ($menuList as $v) {
             //方法
