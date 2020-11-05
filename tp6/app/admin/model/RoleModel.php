@@ -6,6 +6,7 @@
 
 namespace app\admin\model;
 
+use app\common\libs\helper\TreeHelper;
 use think\Model;
 
 /**
@@ -32,7 +33,7 @@ class RoleModel extends Model
      */
     public function getAccessList($role_id)
     {
-        $priv_data = [];
+        $accessList = [];
         if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
             //超级管理员返回全部
             return [
@@ -47,17 +48,17 @@ class RoleModel extends Model
         $AccessModel = new AccessModel();
         $data = $AccessModel->getAccessList($role_id);
         if (empty($data)) {
-            return $priv_data;
+            return $accessList;
         }
         foreach ($data as $k => $rs) {
-            $priv_data[$k] = array(
+            $accessList[$k] = [
                 'role_id'    => $rs['role_id'],
                 'app'        => $rs['app'],
                 'controller' => $rs['controller'],
                 'action'     => $rs['action'],
-            );
+            ];
         }
-        return $priv_data;
+        return $accessList;
     }
 
     /**
@@ -69,14 +70,14 @@ class RoleModel extends Model
      */
     public function getArrchildid($role_id)
     {
-        $roleList = $this->getTreeArray();
+        $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select()->toArray();
+        // 子角色
+        $sonRoleList = TreeHelper::getSonNodeFromArray($roleData, $role_id, [
+            'parentKey' => 'parentid'
+        ]);
         $arrchildid = $role_id;
-        if (is_array($roleList)) {
-            foreach ($roleList as $k => $cat) {
-                if ($cat['parentid'] && $k != $role_id && $cat['parentid'] == $role_id) {
-                    $arrchildid .= ','.$this->getArrchildid($k);
-                }
-            }
+        foreach ($sonRoleList as $role) {
+            $arrchildid .= ','.$role['id'];
         }
         return $arrchildid;
     }
