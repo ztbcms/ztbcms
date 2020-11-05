@@ -107,13 +107,13 @@
                     limit: 20,
                     total: 0
                 },
-                Manager:[],
+                Manager:[]
             },
             watch: {},
             filters: {},
             methods: {
                 details: function (id) {
-                    var that = this
+                    var that = this;
                     var url = "{:api_url('admin/Management/details')}";
                     if (id !== 0) {
                         url += "&id=" + id;
@@ -156,7 +156,7 @@
                     });
                 },
                 // 删除管理员
-                doDelete(id){
+                doDelete:function(id){
                     var that = this;
                     $.ajax({
                         url:"{:api_url('/admin/Management/delete')}",
@@ -167,18 +167,18 @@
                         dataType:"json",
                         success:function (res) {
                             if(res.status){
-                                that.$message.success(res.msg)
+                                that.$message.success(res.msg);
                                 that.getList();
                             }else{
                                 that.$message.error(res.msg)
                             }
                         }
                     })
-                },
+                }
             },
             mounted: function () {
                 this.getList();
-            },
+            }
         })
     })
 </script>

@@ -163,7 +163,7 @@
                     url += '&id=' + id;
                     this.__openWindow(url);
                 },
-                __openWindow(url) {
+                __openWindow:function(url) {
                     var that = this;
                     layer.open({
                         type: 2,

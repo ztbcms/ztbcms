@@ -29,13 +29,23 @@ class CronModel extends Model
         try {
             $cron = new $class();
             $start_time = time();
-            $cron->run($this->cron_id);
+            $result_msg = $cron->run($this->cron_id);
+
+            if(!$result_msg) {
+                $result_msg = [
+                    'status' => true,
+                    'msg' => '执行未报错，未返回结果',
+                ];
+            }
+
+            if(!is_string($result_msg)) {
+                $result_msg = json_encode($result_msg,true);
+            }
 
             //处理完成
             $end_time = time();
             $use_time = $end_time - $start_time;
             $result = CronLogModel::RESULT_SUCCESS;
-            $result_msg = "ok";
         } catch (\Exception $exception) {
             //异常
             $this->errorCount++;
@@ -63,7 +73,6 @@ class CronModel extends Model
         $cronLog->use_time = $use_time;
         $cronLog->result_msg = $result_msg;
         $cronLog->save();
-
         return true;
     }
 

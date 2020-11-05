@@ -18,6 +18,9 @@
                 <el-form-item label="">
                     <el-input v-model="searchMessage.target_type" placeholder="来源类型"></el-input>
                 </el-form-item>
+
+                <br>
+
                 <el-form-item label="">
                     <el-input v-model="searchMessage.sender" placeholder="发送者"></el-input>
                 </el-form-item>
@@ -30,6 +33,9 @@
                 <el-form-item label="">
                     <el-input v-model="searchMessage.receiver_type" placeholder="接收者类型"></el-input>
                 </el-form-item>
+
+                <br>
+
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
                 </el-form-item>
@@ -109,7 +115,7 @@
                 </template>
             </el-table-column>
             <el-table-column
-                    min-width="100"
+                    min-width="150"
                     align="center"
                     fixed="right"
                     label="操作">
@@ -183,7 +189,7 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange(e) {
+                currentPageChange:function(e) {
                     this.currentPage = e;
                     this.getList();
                 },

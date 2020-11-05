@@ -90,7 +90,7 @@
                         dataType:"json",
                         type:"post",
                         data:  that.form,
-                        success(res){
+                        success:function(res){
                             if(res.status){
                                 that.$message.success(res.msg);
                                 if (window !== window.parent) {
@@ -111,7 +111,7 @@
                         url:"{:api_url('/admin/Rbac/getrolemanage')}",
                         type:"get",
                         dataType:"json",
-                        success(res){
+                        success:function(res){
                             that.role_list = res.data
                         }
                     })
@@ -127,7 +127,7 @@
                         data:{
                             id:id
                         },
-                        success(res){
+                        success:function(res){
                             if(res.status){
                                 that.form = res.data
                             }

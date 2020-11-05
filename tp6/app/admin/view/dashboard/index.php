@@ -924,10 +924,10 @@
                 return this.hasRolePermission('/admin/Index/cache')
             }
         },
-        created () {
+        created :function() {
             this.onresize()
         },
-        mounted () {
+        mounted :function() {
             var that = this
             this.init()
             this.registerEvent()

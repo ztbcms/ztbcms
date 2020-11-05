@@ -129,7 +129,7 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange(e) {
+                currentPageChange:function(e) {
                     this.currentPage = e;
                     this.getList();
                 },

@@ -158,7 +158,7 @@
                     }
                 },
                 methods: {
-                    handleUploadProgress(event, file, fileList) {
+                    handleUploadProgress:function(event, file, fileList) {
                         console.log('handleUploadProgress', event, file, fileList);
                         this.uploadLoading = this.$loading({
                             lock: true,
@@ -220,14 +220,14 @@
                     },
 
                     // 获取指定分类的图片
-                    selectGroup(group_id) {
+                    selectGroup:function(group_id) {
                         this.now_group = group_id;
                         this.uploadData.group_id = group_id;
                         // 获取图片列表
                         this.getGalleryByGroupIdList()
                     },
                     // 获取分组列表
-                    getGalleryGroup() {
+                    getGalleryGroup:function() {
                         var that = this;
                         $.ajax({
                             url: "{:urlx('common/upload.panel/getGalleryGroup')}",
@@ -242,112 +242,124 @@
                         })
                     },
                     // 添加分组
-                    addGroup() {
+                    addGroup:function() {
                         var that = this;
-                        this.$prompt('请输入分组名称', '新增分组', {
-                            confirmButtonText: '确定',
+                        that.$prompt('请输入分组名称', '新增分组', {
+                            confirmButtonText: '保存',
                             cancelButtonText: '取消',
-                        }).then(({value}) => {
-                            $.ajax({
-                                url: "{:urlx('common/upload.panel/addGalleryGroup')}",
-                                dataType: "json",
-                                type: "post",
-                                data: {
-                                    group_name: value,
-                                    group_type: that.group_type
-                                },
-                                success(res) {
-                                    if (res.status) {
-                                        that.$message({
-                                            type: 'success',
-                                            message: res.msg
-                                        });
-                                        that.getGalleryGroup();
-                                    } else {
-                                        that.$message({
-                                            type: 'false',
-                                            message: res.msg
-                                        });
-                                    }
+                            inputValue: '',
+                            roundButton: true,
+                            closeOnClickModal: false,
+                            beforeClose: function(action, instance, done){
+                                if(action == 'confirm'){
+                                    $.ajax({
+                                        url: "{:urlx('common/upload.panel/addGalleryGroup')}",
+                                        dataType: "json",
+                                        type: "post",
+                                        data: {
+                                            group_name: instance.inputValue,
+                                            group_type: that.group_type
+                                        },
+                                        success:function(res) {
+                                            if (res.status) {
+                                                that.$message({
+                                                    type: 'success',
+                                                    message: res.msg
+                                                });
+                                                that.getGalleryGroup();
+                                            } else {
+                                                that.$message({
+                                                    type: 'false',
+                                                    message: res.msg
+                                                });
+                                            }
+                                            done();
+                                        }
+                                    })
+                                }else{
+                                    done();
                                 }
-                            })
-                        }).catch(() => {
-                        });
+                            }
+                        }).then(function(e){}).catch(function(){});
                     },
                     // 显示修改分类名称框
-                    editGroup(group_id, group_name) {
-                        this.$prompt('请输入分组名称', '编辑分组', {
-                            confirmButtonText: '确定',
+                    editGroup:function(group_id, group_name) {
+                        var that = this;
+                        that.$prompt('请输入分组名称', '编辑分组', {
+                            confirmButtonText: '保存',
                             cancelButtonText: '取消',
-                            inputValue: group_name
-                        }).then(({value}) => {
-                            var that = this;
-                            $.ajax({
-                                url: "{:urlx('common/upload.panel/editGalleryGroup')}",
-                                dataType: "json",
-                                type: "post",
-                                data: {
-                                    group_id: group_id,
-                                    group_name: value
-                                },
-                                success(res) {
-                                    if (res.status) {
-                                        that.$message({
-                                            type: 'success',
-                                            message: res.msg
-                                        });
-                                        that.getGalleryGroup();
-                                    } else {
-                                        that.$message({
-                                            type: 'false',
-                                            message: res.msg
-                                        });
-                                    }
+                            inputValue: group_name,
+                            roundButton: true,
+                            closeOnClickModal: false,
+                            beforeClose: function(action, instance, done){
+                                if(action == 'confirm'){
+                                    $.ajax({
+                                        url: "{:urlx('common/upload.panel/editGalleryGroup')}",
+                                        dataType: "json",
+                                        type: "post",
+                                        data: {
+                                            group_id: group_id,
+                                            group_name: instance.inputValue
+                                        },
+                                        success:function(res) {
+                                            if (res.status) {
+                                                that.$message({
+                                                    type: 'success',
+                                                    message: res.msg
+                                                });
+                                                that.getGalleryGroup();
+                                            } else {
+                                                that.$message({
+                                                    type: 'false',
+                                                    message: res.msg
+                                                });
+                                            }
+                                            done();
+                                        }
+                                    })
+                                }else{
+                                    done();
                                 }
-                            })
-                        }).catch(() => {
-                        });
+                            }
+                        }).then(function(e){}).catch(function(){});
                     },
                     // 删除分类
-                    handleClose(group_id) {
+                    handleClose:function(group_id) {
                         var that = this;
-                        that.$confirm('是否确定删除该分组吗？').then(() => {
-                            $.ajax({
-                                url: "{:urlx('common/upload.panel/delGalleryGroup')}",
-                                dataType: "json",
-                                type: "post",
-                                data: {
-                                    group_id: group_id
-                                },
-                                success(res) {
-                                    if (res.status) {
-                                        that.getGalleryGroup();
-                                        that.$message({
-                                            type: 'success',
-                                            message: res.msg
-                                        });
-                                    } else {
-                                        that.$message({
-                                            type: 'false',
-                                            message: res.msg
-                                        });
-                                    }
+                        var deleteClose = layer.confirm('是否确定删除该分组吗？', {
+                            btn: ['确定','取消'] //按钮
+                        }, function(){
+                            var data = {
+                                group_id: group_id
+                            };
+                            that.httpPost("{:urlx('common/upload.panel/delGalleryGroup')}", data, function(res){
+                                if (res.status) {
+                                    that.getGalleryGroup();
+                                    that.$message({
+                                        type: 'success',
+                                        message: res.msg
+                                    });
+                                } else {
+                                    that.$message({
+                                        type: 'false',
+                                        message: res.msg
+                                    });
                                 }
-                            })
-                        }).catch(err => {
+                                layer.close(deleteClose);
+                            });
                         });
                     },
                     // 移动分组
                     moveGroup: function () {
                         var that = this;
-                        var files;
+                        var files = [];
                         for (var i = 0; i < this.selectdFileList.length; i++) {
                             files.push(this.selectdFileList[i])
                         }
                         $.ajax({
                             url: "{:urlx('common/upload.panel/moveGralleryGroup')}",
                             data: {
-                                files,
+                                files : files,
                                 group_id: that.move_group_id
                             },
                             dataType: 'json',
@@ -405,7 +417,7 @@
                         $.ajax({
                             url: "{:urlx('common/upload.panel/deleteFiles')}",
                             data: {
-                                files
+                                files : files
                             },
                             dataType: 'json',
                             type: 'post',
@@ -415,7 +427,7 @@
                                 that.getGalleryByGroupIdList()
                             }
                         })
-                    },
+                    }
                 },
                 mounted: function () {
                     //获取分组列表
