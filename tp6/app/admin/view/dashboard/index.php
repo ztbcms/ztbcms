@@ -799,7 +799,6 @@
              */
             hasRolePermission: function(access_router) {
                 var roleAccessList = this.roleAccessList
-
                 var access_router_arr = access_router.split('/')
 
                 if (access_router_arr.length < 4) {
@@ -836,7 +835,7 @@
             },
             // 点击清理缓存
             click_cleancache: function(){
-                this.openNewFrame('缓存更新', '/admin/Index/cache')
+                this.openNewFrame('缓存更新', '/home/admin/cache/cache')
             },
             // 点击退出
             click_logout: function(){
@@ -921,7 +920,7 @@
             },
             // 是否有清理缓存权限
             hasPermission_cleanCache: function() {
-                return this.hasRolePermission('/admin/Index/cache')
+                return this.hasRolePermission('/admin/Cache/cache')
             }
         },
         created :function() {

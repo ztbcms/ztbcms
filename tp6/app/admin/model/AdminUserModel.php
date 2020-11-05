@@ -209,6 +209,7 @@ class AdminUserModel extends Model
 
         try {
             validate(User::class)->check($data);
+            $data['info'] = '';
             $this->create($data);
             return true;
         } catch (ValidateException $e) {

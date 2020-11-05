@@ -149,7 +149,7 @@ class Management extends AdminController
         $AdminUserModel = new AdminUserModel();
         $id = Request::param('id');
         $where['id'] = $id;
-        $res = $AdminUserModel->where($where)->find();
+        $res = $AdminUserModel->where($where)->withoutField('create_time,update_time')->find();
         $res['password'] = '';
         $res['status'] = (string) $res['status'];
         if ($res) {
