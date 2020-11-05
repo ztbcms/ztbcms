@@ -18,6 +18,14 @@ return [
                 "remark" => "",
                 "child" => []
             ],
+            [
+                "route" => "admin/Cache/cache",
+                "type" => 1,
+                "status" => 0,
+                "name" => "清除缓存",
+                "remark" => "",
+                "child" => []
+            ],
         ]
     ],
 
