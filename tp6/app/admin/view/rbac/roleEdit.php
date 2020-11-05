@@ -59,7 +59,7 @@
                         dataType: "json",
                         type: "post",
                         data: that.form,
-                        success(res) {
+                        success:function(res) {
                             if (res.status) {
                                 that.$message.success(res.msg);
                                 if (window !== window.parent) {

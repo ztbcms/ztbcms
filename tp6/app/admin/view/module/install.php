@@ -40,7 +40,7 @@
             el: '#app',
             components: {},
             props: [],
-            data() {
+            data:function() {
                 return {
                     formData: {
                         'module': "{$config['module']}"
@@ -52,13 +52,13 @@
             },
             computed: {},
             watch: {},
-            created() {
+            created:function() {
             },
-            mounted() {
+            mounted:function() {
 
             },
             methods: {
-                submitForm(type) {
+                submitForm:function(type) {
                     var that = this
                     var url = ''
                     if (type === 'install') {
