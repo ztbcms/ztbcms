@@ -126,7 +126,7 @@
                         content: url,
                         area: ['670px', '550px'],
                         end: function(){
-                            that.getDetail();
+                            that.getDetail()
                         }
                     })
                 }

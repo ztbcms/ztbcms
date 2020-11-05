@@ -93,7 +93,7 @@ CREATE TABLE `cms_tp6_message_send_log` (
   `create_time` int(11) DEFAULT '0' COMMENT '日志创建时间',
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------

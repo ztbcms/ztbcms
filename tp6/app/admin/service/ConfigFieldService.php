@@ -72,7 +72,7 @@ class ConfigFieldService extends BaseService
             ]);
 
             //更新缓存的Config清理
-            (new AdminConfigService)->clearConfigCache();
+            AdminConfigService::getInstance()->clearConfigCache();
             return self::createReturn(true, null, '操作完成');
         }
         // 新增
@@ -109,7 +109,7 @@ class ConfigFieldService extends BaseService
 
         Db::commit();
         //更新缓存的Config清理
-        (new AdminConfigService)->clearConfigCache();
+        AdminConfigService::getInstance()->clearConfigCache();
         return self::createReturn(true, null, '操作完成');
     }
 
@@ -154,6 +154,7 @@ class ConfigFieldService extends BaseService
 
         if($res1 && $res2){
             Db::commit();
+            AdminConfigService::getInstance()->clearConfigCache();
             return self::createReturn(true, null, '操作完成');
         }
 

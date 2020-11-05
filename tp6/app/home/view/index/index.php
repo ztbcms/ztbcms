@@ -212,9 +212,9 @@
 
 <div class="exception">
     <span>点击进入：</span>
-    <a title="管理后台" href="{:api_url('admin/login/index')}">管理后台</a>
+    <a title="管理后台" href="{:api_url('/admin/login/index')}">管理后台</a>
     <span>|</span>
-    <a title="安装应用" href="{:api_url('install/index/index')}">安装框架</a>
+    <a title="安装应用" href="{:api_url('/install/index/index')}">安装框架</a>
 </div>
 
 <div class="copyright">
