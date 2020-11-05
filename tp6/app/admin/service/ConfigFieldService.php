@@ -38,7 +38,6 @@ class ConfigFieldService extends BaseService
      */
     function addOrUpdateConfigField($configField)
     {
-
         $setting = explode("\n", $configField['setting']['option']);
         $settingList = [];
         foreach ($setting as $item){
@@ -72,6 +71,8 @@ class ConfigFieldService extends BaseService
                 'info'    => $configField['setting']['title'] ?: '',
             ]);
 
+            //更新缓存的Config清理
+            AdminConfigService::getInstance()->clearConfigCache();
             return self::createReturn(true, null, '操作完成');
         }
         // 新增
@@ -107,6 +108,7 @@ class ConfigFieldService extends BaseService
         }
 
         Db::commit();
+        //更新缓存的Config清理
         AdminConfigService::getInstance()->clearConfigCache();
         return self::createReturn(true, null, '操作完成');
     }

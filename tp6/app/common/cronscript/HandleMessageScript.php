@@ -16,5 +16,10 @@ class HandleMessageScript extends CronScript
         foreach ($messages as $message) {
             $message->handMessage();
         }
+
+        return self::createReturn(true,[
+            'process_status' => MessageModel::PROCESS_STATUS_UNPROCESS,
+            'process_num' => MessageModel::MAX_PROCESS_NUMBER
+        ],'处理消息信息成功');
     }
 }

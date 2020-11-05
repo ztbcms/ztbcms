@@ -83,6 +83,18 @@ CREATE TABLE `cms_tp6_message_msg` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `cms_tp6_message_send_log`;
+CREATE TABLE `cms_tp6_message_send_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `message_id` int(11) DEFAULT '0' COMMENT '消息id',
+  `sender` varchar(256) DEFAULT '' COMMENT '消息处理器',
+  `status` tinyint(3) DEFAULT '0' COMMENT '处理状态0不成，1处理成功',
+  `result_msg` varchar(1024) DEFAULT '' COMMENT '处理结果',
+  `create_time` int(11) DEFAULT '0' COMMENT '日志创建时间',
+  `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4;
+
 
 -- ----------------------------
 -- 上传处理
