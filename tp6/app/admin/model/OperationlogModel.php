@@ -6,6 +6,7 @@
 
 namespace app\admin\model;
 
+use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
 use think\Model;
 use think\facade\Request;
@@ -36,6 +37,12 @@ class OperationlogModel extends Model
      */
     public function record(\think\Response $request) {
         if (Request::instance()->isPost()) {
+
+            //未开启的状态下不进行记录
+            $admin_operation_switch = AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
+            if(!is_numeric($admin_operation_switch)) return true;
+            if($admin_operation_switch != 1) return true;
+
             $content = json_decode($request->getContent(),true);
             $url = request()->url();
             $logData['uid'] = AdminUserService::getInstance()->getInfo()['id'] ?: 0;
