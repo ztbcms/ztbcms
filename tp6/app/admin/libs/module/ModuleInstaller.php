@@ -6,7 +6,7 @@
 
 namespace app\admin\libs\module;
 
-use app\admin\libs\helper\SqlHelper;
+use app\common\libs\helper\SqlHelper;
 use app\admin\model\MenuModel;
 use app\admin\model\ModuleModel;
 use app\admin\service\ModuleService;

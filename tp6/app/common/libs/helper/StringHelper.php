@@ -3,7 +3,7 @@
  * User: jayinton
  */
 
-namespace app\admin\libs\helper;
+namespace app\common\libs\helper;
 
 
 /**
