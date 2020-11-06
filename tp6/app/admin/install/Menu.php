@@ -62,6 +62,14 @@ return [
                 "remark" => "",
                 "child" => []
             ],
+            [
+                "route" => "admin/AdminMessage/sendMessage",
+                "type" => 1,
+                "status" => 1,
+                "name" => "发送后台消息",
+                "remark" => "",
+                "child" => []
+            ],
         ]
     ],
 
