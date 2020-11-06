@@ -26,12 +26,12 @@ class RoleModel extends Model
 
     /**
      * 根据角色ID返回全部权限
-     *
+     * @deprecated 
      * @param  string  $role_id  角色ID
      *
      * @return array
      */
-    public function getAccessList($role_id)
+    function getAccessList($role_id)
     {
         $accessList = [];
         if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
@@ -62,13 +62,13 @@ class RoleModel extends Model
     }
 
     /**
-     * 通过递归的方式获取该角色下的全部子角色
+     * 获取该角色下的全部子角色
      *
      * @param  string  $role_id
      *
      * @return string
      */
-    public function getArrchildid($role_id)
+    function getArrchildid($role_id)
     {
         $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select()->toArray();
         // 子角色
@@ -83,17 +83,25 @@ class RoleModel extends Model
     }
 
     /**
-     * 返回Tree使用的数组
+     * 获取该角色下的全部子角色ID列表
+     *
+     * @param  string  $role_id
+     * @param  bool  $include_self 是否包括当前角色
+     *
      * @return array
      */
-    function getTreeArray()
+    function getChildrenRoleIdList($role_id, $include_self = false)
     {
-        $roleList = array();
         $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select()->toArray();
-        foreach ($roleData as $rs) {
-            $roleList[$rs['id']] = $rs;
+        // 子角色
+        $sonRoleList = TreeHelper::getSonNodeFromArray($roleData, $role_id, [
+            'parentKey' => 'parentid'
+        ]);
+        $list = $include_self ? [$role_id]:[];
+        foreach ($sonRoleList as $role) {
+            $list [] = $role['id'];
         }
-        return $roleList;
+        return $list;
     }
 
     /**

@@ -7,11 +7,11 @@ namespace app\admin\service;
 
 
 use app\admin\model\AccessModel;
+use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\service\BaseService;
-use think\exception\ErrorException;
+use think\exception\InvalidArgumentException;
 use think\exception\ValidateException;
-use think\facade\Cache;
 use think\facade\Db;
 
 /**
@@ -52,21 +52,21 @@ class RbacService extends BaseService
     function getRoleAccessList($role_id)
     {
         if (empty($role_id)) {
-            throw new ValidateException('请指定角色');
+            throw new InvalidArgumentException('请指定角色');
         }
         //检查角色
         $roleinfo = Db::name('role')->where('id', $role_id)->findOrEmpty();
         if (empty($roleinfo) || empty($roleinfo['status'])) {
-            return self::createReturn(false, null, '找不到角色');
+            throw new InvalidArgumentException('找不到角色');
         }
-        //该角色全部权限
-        $accessModel = new AccessModel();
-        $access = $accessModel->getAccessList($role_id);
-        $accessList = array();
+        //查询出该角色拥有的全部权限列表
+        $accessService = new AccessService();
+        $access = $accessService->getAccessListByRoleId($role_id)['data'];
+        $accessList = [];
         foreach ($access as $acc) {
-            $app = strtoupper($acc['app']);
-            $controller = strtoupper($acc['controller']);
-            $action = strtoupper($acc['action']);
+            $app = strtolower($acc['app']);
+            $controller = strtolower($acc['controller']);
+            $action = strtolower($acc['action']);
             $accessList[$app][$controller][$action] = $action;
         }
         return self::createReturn(true, $accessList);
@@ -102,15 +102,16 @@ class RbacService extends BaseService
      *
      * @return array
      */
-    function enableRoleAccess($role_id, $app, $controller, $action){
+    function enableRoleAccess($role_id, $app, $controller, $action)
+    {
         // 超级管理员
         if ($role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return self::createReturn(true, null, '权限检验通过');
         }
         $accessList = $this->getRoleAccessList($role_id)['data'];
-        $app = strtoupper($app);
-        $controller = strtoupper($controller);
-        $action = strtoupper($action);
+        $app = strtolower($app);
+        $controller = strtolower($controller);
+        $action = strtolower($action);
         // app
         if (isset($accessList['%'])) {
             return self::createReturn(true, null, '权限检验通过');
@@ -133,6 +134,59 @@ class RbacService extends BaseService
             }
         }
         return self::createReturn(false, null, '无权限');
+    }
+
+
+    /**
+     * 授权角色权限(菜单)
+     *
+     * @param  int|string  $role_id  角色ID
+     * @param  array  $menuIdList  菜单Id列表
+     *
+     * @return array
+     */
+    function authorizeRoleAccess($role_id, $menuIdList = [])
+    {
+        //被选中的菜单项
+        if (empty($menuIdList)) {
+            throw new InvalidArgumentException('请选择授权菜单');
+        }
+        if (empty($role_id)) {
+            throw new InvalidArgumentException('请选择授权角色');
+        }
+
+        //取得菜单数据
+        $menuModel = new MenuModel();
+        $menuList = $menuModel->where('id', 'in', $menuIdList)->select()->toArray();
+        $accessList = [];
+        //检测数据合法性
+        foreach ($menuList as $menu) {
+            $info = [
+                'app'        => $menu['app'],
+                'controller' => $menu['controller'],
+                'action'     => $menu['action'],
+                'role_id'    => $role_id,
+                'status'     => 1
+            ];
+            //菜单项
+            if (intval($menu['type']) === 0) {
+                $info['controller'] = $info['controller'].$menu['id'];
+                $info['action'] = $info['action'].$menu['id'];
+            }
+            $accessList[] = $info;
+        }
+        $accessModel = new AccessModel();
+        $accessModel->startTrans();
+        //删除旧的权限
+        $accessModel->where("role_id", '=', $role_id)->delete();
+        $res = $accessModel->insertAll($accessList);
+        if (!$res) {
+            $accessModel->rollback();
+            return self::createReturn(false, null, '授权异常');
+        }
+
+        $accessModel->commit();
+        return self::createReturn(true, null, '授权成功');
     }
 
 }

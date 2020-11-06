@@ -60,11 +60,6 @@
                                 修改
                             </el-button>
 
-                            <el-button type="primary" class="itembtn" size="mini" @click="gotoAdminPage(scope.row.id)"
-                                       v-if="scope.row.id != 1">
-                                栏目权限
-                            </el-button>
-
                             <el-button type="primary" class="itembtn" size="mini" @click="gotomanagerPage(scope.row.id)">
                                 成员管理
                             </el-button>
@@ -160,7 +155,7 @@
                 },
                 roleEdit: function (id) {
                     var url = '{:api_url("/admin/Rbac/roleEdit")}';
-                    url += '&id=' + id;
+                    url += '?id=' + id;
                     this.__openWindow(url);
                 },
                 __openWindow:function(url) {
@@ -207,42 +202,25 @@
                 //成员管理
                 gotomanagerPage: function (id) {
                     var url = "{:api_url('/admin/Management/index')}";
-                    url = url + '&role_id=' + id;
+                    url = url + '?role_id=' + id;
                     this.__openWindow(url);
                 },
                 //权限设置
                 openAuth: function (id) {
                     var url = "{:api_url('/admin/Rbac/authorize')}";
-                    url += '&id=' + id;
+                    url += '?id=' + id;
                     this.__openWindow(url);
                 },
                 //权限组管理
                 getRoleAccessGroup: function (id) {
                     var url = "{:api_url('/admin/AccessGroup/accessGroupRoleSetting')}";
-                    url = url + '&role_id=' + id
+                    url = url + '?role_id=' + id
                     this.__openWindow(url);
-                },
-
-                //栏目管理 todo 未修改
-                gotoAdminPage: function (id) {
-
-                    var url = '/admin/Rbac/setting_cat_priv';
-                    url = url + '&roleid=' + id
-
-                    layer.open({
-                        type: 2,
-                        title: '栏目管理',
-                        content: url,
-                        area: ['100%', '100%'],
-                        end: function () {
-                        }
-                    })
-                },
-
+                }
             },
             mounted: function () {
                 this.getList();
-            },
+            }
         })
     })
 </script>

@@ -8,7 +8,7 @@ namespace app\admin\controller;
 
 
 use app\admin\model\MenuModel;
-use app\admin\model\RoleModel;
+use app\admin\service\AccessService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 
@@ -27,8 +27,8 @@ class AdminApi extends AdminController
 
         $menuModel = new MenuModel();
         $menuList = $menuModel->getAdminUserMenuTree($adminUserInfo['role_id']);
-        $roleModel = new RoleModel();
-        $role_access_list = $roleModel->getAccessList($adminUserInfo['role_id']);
+        $accessService = new AccessService();
+        $role_access_list = $accessService->getAccessListByRoleId($adminUserInfo['role_id'])['data'];
         $ret = [
             'menuList' => $menuList,
             'roleAccessList' => $role_access_list

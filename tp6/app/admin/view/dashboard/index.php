@@ -652,7 +652,8 @@
                 this.$refs.contextmenu.style.top = pageY + 'px'
             },
             // 刷新
-            refreshTag: function(index = 0) {
+            refreshTag: function(index) {
+                index = index || 0
                 if(index >= 0){
                     var iframeUrl = this.iframeUrls[index]
                     document.getElementById('iframe-'+index).contentWindow.location.href = iframeUrl
