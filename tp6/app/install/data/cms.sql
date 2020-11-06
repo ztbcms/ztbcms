@@ -342,6 +342,7 @@ INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读�
 INSERT INTO `cms_config` VALUES ('50', 'attachment_aliyun_expire_time', 'OSS-临时访问链接过期时间', '1', '86400');
 INSERT INTO `cms_config` VALUES ('51', 'site_domain', '网站域名', 1, '');
 INSERT INTO `cms_config` VALUES ('52', 'site_file_domain', '网站附件域名', 1, '');
+INSERT INTO `cms_config` VALUES ('53', 'admin_operation_switch', '是否打开后台操作日志的记录', 1, 1);
 
 
 -- ----------------------------

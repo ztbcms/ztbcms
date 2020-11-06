@@ -33,6 +33,11 @@
                             删除一个月前的操作日志
                         </el-button>
                     <?php } ?>
+
+                    <el-button v-if="admin_operation_switch == 0" @click="switchingAdminOperation(1)" type="success" plain size="medium">开启操作记录</el-button>
+
+                    <el-button v-if="admin_operation_switch == 1" @click="switchingAdminOperation(0)" type="danger" plain size="medium">关闭操作记录</el-button>
+
                 </el-col>
             </el-row>
         </div>
@@ -138,7 +143,6 @@
                     total_pages: 0,
                     total_items: 0,
                 },
-
                 form: {
                     search_date: [],
                     uid: '',
@@ -146,8 +150,9 @@
                     start_time: '',
                     end_time: '',
                     status: '',
-                    sort_time: '',//排序：时间
-                }
+                    sort_time: ''//排序：时间
+                },
+                admin_operation_switch : 1
             },
             watch: {
                 'form.search_date': function (newValue) {
@@ -236,12 +241,40 @@
                             return;
                         }
                     }
-                    this.form.sort_time = ''
+                    this.form.sort_time = '';
                     this.getList();
+                },
+                getAdminOperationSwitch :function () {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/admin/Logs/adminOperationLogList')}",
+                        data: {_action: 'getAdminOperationSwitch'},
+                        dataType: 'json',
+                        type: 'get',
+                        success: function (res) {
+                            that.admin_operation_switch = res.data;
+                        }
+                    })
+                },
+                switchingAdminOperation : function (admin_operation_switch) {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/admin/Logs/adminOperationLogList')}",
+                        data: {
+                            _action: 'switchingAdminOperation',
+                            admin_operation_switch : admin_operation_switch
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            that.getAdminOperationSwitch();
+                        }
+                    })
                 }
             },
             mounted: function () {
                 this.getList();
+                this.getAdminOperationSwitch();
             }
         })
     })
