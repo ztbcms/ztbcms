@@ -6,12 +6,11 @@
 namespace app\install\controller;
 
 
-use app\admin\libs\helper\SqlHelper;
-use app\admin\libs\helper\StringHelper;
+use app\common\libs\helper\SqlHelper;
+use app\common\libs\helper\StringHelper;
 use app\admin\service\ModuleService;
 use app\BaseController;
 use think\facade\Db;
-use think\facade\Log;
 
 class Index extends BaseController
 {

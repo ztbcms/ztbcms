@@ -10,7 +10,7 @@ namespace app\admin\controller;
 use app\common\controller\AdminController;
 use think\facade\App;
 use think\facade\View;
-use app\admin\libs\helper\FileHelper;
+use app\common\libs\helper\FileHelper;
 
 class Cache extends AdminController
 {

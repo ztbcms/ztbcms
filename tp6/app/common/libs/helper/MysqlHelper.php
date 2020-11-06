@@ -5,7 +5,7 @@
  * Time 10:38
  */
 
-namespace app\admin\libs\helper;
+namespace app\common\libs\helper;
 
 use app\common\service\BaseService;
 
