@@ -6,13 +6,15 @@
 
 namespace app\admin\model;
 
+use think\Model;
+
 /**
  * 角色权限
  * Class AccessModel
  *
  * @package app\admin\model
  */
-class AccessModel extends \think\Model
+class AccessModel extends Model
 {
     protected $name = 'access';
 
@@ -85,35 +87,5 @@ class AccessModel extends \think\Model
             $accessList[] = $info;
         }
         return $accessList;
-    }
-
-    /**
-     * 角色授权
-     * @param array $addauthorize 授权数据
-     * @param string|int $roleid 角色id
-     * @return boolean
-     */
-    public function batchAuthorize($addauthorize, $roleid = 0) {
-
-        if (empty($addauthorize)) {
-            $this->error = '没有需要授权的权限！';
-            return false;
-        }
-
-        if (empty($roleid)) {
-            if (empty($addauthorize[0]['role_id'])) {
-                $this->error = '角色ID不能为空！';
-                return false;
-            }
-            $roleid = $addauthorize[0]['role_id'];
-        }
-
-        foreach ($addauthorize as $k => $rs) {
-            unset($addauthorize[$k]['type']);
-        }
-
-        //删除旧的权限
-        $this->where(array("role_id" => $roleid))->delete();
-        return $this->insertAll($addauthorize) !== false ? true : false;
     }
 }

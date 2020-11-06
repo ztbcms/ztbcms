@@ -9,7 +9,7 @@ CREATE TABLE `cms_access` (
   `app` varchar(255) NOT NULL DEFAULT '' COMMENT '模块',
   `controller` varchar(255) NOT NULL DEFAULT '' COMMENT '控制器',
   `action` varchar(255) NOT NULL DEFAULT '' COMMENT '方法',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否有效',
+  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否有效 0无效 1有效',
   KEY `role_id` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色权限表';
 
@@ -454,7 +454,7 @@ CREATE TABLE `cms_menu` (
   `controller` varchar(255) NOT NULL DEFAULT '' COMMENT '控制键',
   `action` varchar(255) NOT NULL DEFAULT '' COMMENT '方法',
   `parameter` varchar(255) NOT NULL DEFAULT '' COMMENT '附加参数',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型 0无需权限验证菜单 1需权限验证菜单',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否禁用',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `listorder` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序ID',
