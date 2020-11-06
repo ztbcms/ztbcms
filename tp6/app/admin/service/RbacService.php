@@ -52,21 +52,21 @@ class RbacService extends BaseService
     function getRoleAccessList($role_id)
     {
         if (empty($role_id)) {
-            throw new ValidateException('请指定角色');
+            throw new InvalidArgumentException('请指定角色');
         }
         //检查角色
         $roleinfo = Db::name('role')->where('id', $role_id)->findOrEmpty();
         if (empty($roleinfo) || empty($roleinfo['status'])) {
-            return self::createReturn(false, null, '找不到角色');
+            throw new InvalidArgumentException('找不到角色');
         }
-        //该角色全部权限
-        $accessModel = new AccessModel();
-        $access = $accessModel->getAccessList($role_id);
-        $accessList = array();
+        //查询出该角色拥有的全部权限列表
+        $accessService = new AccessService();
+        $access = $accessService->getAccessListByRoleId($role_id)['data'];
+        $accessList = [];
         foreach ($access as $acc) {
-            $app = strtoupper($acc['app']);
-            $controller = strtoupper($acc['controller']);
-            $action = strtoupper($acc['action']);
+            $app = strtolower($acc['app']);
+            $controller = strtolower($acc['controller']);
+            $action = strtolower($acc['action']);
             $accessList[$app][$controller][$action] = $action;
         }
         return self::createReturn(true, $accessList);
@@ -109,9 +109,9 @@ class RbacService extends BaseService
             return self::createReturn(true, null, '权限检验通过');
         }
         $accessList = $this->getRoleAccessList($role_id)['data'];
-        $app = strtoupper($app);
-        $controller = strtoupper($controller);
-        $action = strtoupper($action);
+        $app = strtolower($app);
+        $controller = strtolower($controller);
+        $action = strtolower($action);
         // app
         if (isset($accessList['%'])) {
             return self::createReturn(true, null, '权限检验通过');
