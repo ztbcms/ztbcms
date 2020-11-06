@@ -15,8 +15,7 @@ use think\facade\Cache;
 use think\facade\Db;
 
 /**
- * 角色权限管理
- * Class RbacService
+ * 角色权限服务
  *
  * @package app\admin\service
  */

@@ -13,7 +13,7 @@ use app\common\service\BaseService;
 use think\facade\Db;
 
 /**
- * 模块管理
+ * 模块服务
  * Class ModuleService
  *
  * @package app\admin\service
@@ -21,7 +21,7 @@ use think\facade\Db;
 class ModuleService extends BaseService
 {
     //系统模块，隐藏
-    const SystemModuleList = ['admin', 'common', 'install', 'attachment', 'template'];
+    const SystemModuleList = ['admin', 'common', 'install'];
 
     /**
      * 是否已安装
@@ -44,6 +44,10 @@ class ModuleService extends BaseService
      *
      * @param $module
      *
+     * @return array|int|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     function install($module)
     {
@@ -58,7 +62,10 @@ class ModuleService extends BaseService
     /**
      * 卸载模块
      *
-     * @param $moduleMame
+     * @param $module
+     *
+     * @return array|int|string
+     * @throws \think\db\exception\DbException
      */
     function uninstall($module)
     {
@@ -103,7 +110,6 @@ class ModuleService extends BaseService
         return self::createReturn(true, $map);
     }
 
-
     /**
      * 获取模块信息
      *
@@ -127,7 +133,15 @@ class ModuleService extends BaseService
         return self::createReturn(true, $moduleConfig);
     }
 
-    function getLocalModuleList($page = 1, $limit = 1000)
+    /**
+     * 获取本地模块
+     *
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function getLocalModuleList()
     {
         //取得模块目录名称
         $dirs = glob(base_path().'*');
