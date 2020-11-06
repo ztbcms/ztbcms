@@ -31,7 +31,7 @@ class RoleModel extends Model
      *
      * @return array
      */
-    public function getAccessList($role_id)
+    function getAccessList($role_id)
     {
         $accessList = [];
         if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
@@ -62,13 +62,13 @@ class RoleModel extends Model
     }
 
     /**
-     * 通过递归的方式获取该角色下的全部子角色
+     * 获取该角色下的全部子角色
      *
      * @param  string  $role_id
      *
      * @return string
      */
-    public function getArrchildid($role_id)
+    function getArrchildid($role_id)
     {
         $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select()->toArray();
         // 子角色
@@ -80,20 +80,6 @@ class RoleModel extends Model
             $arrchildid .= ','.$role['id'];
         }
         return $arrchildid;
-    }
-
-    /**
-     * 返回Tree使用的数组
-     * @return array
-     */
-    function getTreeArray()
-    {
-        $roleList = array();
-        $roleData = $this->order(array("listorder" => "asc", "id" => "desc"))->select()->toArray();
-        foreach ($roleData as $rs) {
-            $roleList[$rs['id']] = $rs;
-        }
-        return $roleList;
     }
 
     /**

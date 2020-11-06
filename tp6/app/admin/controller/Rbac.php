@@ -10,6 +10,7 @@ use app\admin\model\AccessModel;
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
+use app\admin\service\RbacService;
 use app\common\controller\AdminController;
 use think\facade\Request;
 use app\admin\validate\Role;
@@ -179,49 +180,10 @@ class Rbac extends AdminController
         if (!$roleid) return json(self::createReturn(false,'','需要授权的角色不存在！'));
 
         //被选中的菜单项
-        $menuidAll = explode(',', $menuid);
+        $menuIdList = explode(',', $menuid);
+        $rbacService = new RbacService();
+        return $rbacService->authorizeRoleAccess($roleid, $menuIdList);
 
-        if (is_array($menuidAll) && count($menuidAll) > 0) {
-            //取得菜单数据
-            $MenuModel = new MenuModel();
-            $menu_info = $MenuModel->select();
-
-            $addauthorize = array();
-            //检测数据合法性
-            foreach ($menuidAll as $menuid) {
-                $menuInfo = $MenuModel->where(['id'=>$menuid])->find();
-                if (empty($menuInfo)) {
-                    continue;
-                }
-
-                $info = array(
-                    'app' => $menuInfo['app'],
-                    'controller' => $menuInfo['controller'],
-                    'action' => $menuInfo['action'],
-                    'type' => $menuInfo['type'],
-                );
-
-                //菜单项
-                if ($info['type'] == (int)0) {
-                    $info['app'] = $info['app'];
-                    $info['controller'] = $info['controller'] . $menuid;
-                    $info['action'] = $info['action'] . $menuid;
-                }
-                $info['role_id'] = $roleid;
-                $info['status'] = $info['type'] ? 1 : 0;
-                $addauthorize[] = $info;
-            }
-
-            $AccessModel = new AccessModel();
-            if($AccessModel->batchAuthorize($addauthorize, $roleid)) {
-                return json(self::createReturn(true,'','授权成功！'));
-            } else {
-                $error = $AccessModel->error;
-                return json(self::createReturn(false,'',$error));
-            }
-        } else {
-            return json(self::createReturn(false,'','没有接收到数据，执行清除授权成功！'));
-        }
     }
 
 }
