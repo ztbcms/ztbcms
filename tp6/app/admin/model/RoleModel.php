@@ -26,7 +26,7 @@ class RoleModel extends Model
 
     /**
      * 根据角色ID返回全部权限
-     * @deprecated 
+     * @deprecated
      * @param  string  $role_id  角色ID
      *
      * @return array

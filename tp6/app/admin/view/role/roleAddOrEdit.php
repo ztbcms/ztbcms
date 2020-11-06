@@ -34,7 +34,9 @@
                     </el-form>
                 </div>
             </el-col>
-            <el-col :span="16"><div class="grid-content "></div></el-col>
+            <el-col :span="16">
+                <div class="grid-content "></div>
+            </el-col>
         </el-row>
 
 
@@ -51,32 +53,36 @@
             el: '#app',
             data: {
                 form: {
-                    id:"",
+                    id: "{$id|default=''}",
                     name: '',
                     remark: '',
                     status: '1'
                 },
-                roleList:[]
+                roleList: []
             },
             watch: {},
             filters: {},
             methods: {
-                onSubmit: function(){
+                onSubmit: function () {
                     var that = this;
+                    var url = "{:api_url('/admin/Role/roleAdd')}"
+                    if(this.form.id){
+                        url = "{:api_url('/admin/Role/roleEdit')}"
+                    }
                     $.ajax({
-                        url:"{:api_url('/admin/Rbac/roleAddEdit')}",
-                        dataType:"json",
-                        type:"post",
-                        data:  that.form,
-                        success:function(res){
-                            if(res.status){
+                        url: url,
+                        dataType: "json",
+                        type: "post",
+                        data: that.form,
+                        success: function (res) {
+                            if (res.status) {
                                 that.$message.success(res.msg);
                                 if (window !== window.parent) {
                                     setTimeout(function () {
                                         window.parent.layer.closeAll();
                                     }, 1000);
                                 }
-                            }else{
+                            } else {
                                 that.$message.error(res.msg);
                             }
                         }
@@ -84,22 +90,39 @@
 
                 },
                 //获取所有角色
-                getroleList:function () {
+                getRoleList: function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/admin/Rbac/getrolemanage')}",
-                        type:"get",
-                        dataType:"json",
-                        success:function(res){
-                            if(res.status){
+                        url: "{:api_url('/admin/Role/index')}?_action=getList",
+                        type: "get",
+                        dataType: "json",
+                        success: function (res) {
+                            if (res.status) {
                                 that.roleList = res.data
                             }
                         }
                     })
                 },
+                getDetail: function (id) {
+                    var that = this;
+                    $.ajax({
+                        url: "{:api_url('/admin/Role/roleEdit')}?_action=getDetail&id=" + id,
+                        type: "get",
+                        dataType: "json",
+                        success: function (res) {
+                            if (res.status) {
+                                that.form = res.data
+                                that.form.status = that.form.status + ''
+                            }
+                        }
+                    })
+                }
             },
             mounted: function () {
-                this.getroleList();
+                this.getRoleList();
+                if(this.form.id){
+                    this.getDetail(this.form.id)
+                }
             }
         })
     })

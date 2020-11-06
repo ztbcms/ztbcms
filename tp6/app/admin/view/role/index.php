@@ -135,7 +135,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Rbac/getrolemanage')}",
+                        url: "{:api_url('/admin/Role/index')}?_action=getList",
                         type: "get",
                         dataType: "json",
                         success: function (res) {
@@ -143,18 +143,17 @@
                                 that.Manager = res.data
                             }
                         }
-
                     })
                 },
                 search: function () {
                     this.getList();
                 },
                 roleAdd: function () {
-                    var url = '{:api_url("/admin/Rbac/roleAdd")}';
+                    var url = '{:api_url("/admin/Role/roleAdd")}';
                     this.__openWindow(url);
                 },
                 roleEdit: function (id) {
-                    var url = '{:api_url("/admin/Rbac/roleEdit")}';
+                    var url = '{:api_url("/admin/Role/roleEdit")}';
                     url += '?id=' + id;
                     this.__openWindow(url);
                 },
@@ -184,7 +183,7 @@
                 toDelete: function (id) {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Rbac/roleDelete')}",
+                        url: "{:api_url('/admin/Role/roleDelete')}",
                         type: "get",
                         data: {id: id},
                         dataType: "json",
@@ -207,7 +206,7 @@
                 },
                 //权限设置
                 openAuth: function (id) {
-                    var url = "{:api_url('/admin/Rbac/authorize')}";
+                    var url = "{:api_url('/admin/Role/authorize')}";
                     url += '?id=' + id;
                     this.__openWindow(url);
                 },
