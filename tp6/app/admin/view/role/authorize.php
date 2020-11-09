@@ -69,7 +69,7 @@
                     // 选中+半选中也需要记录
                     var keys = checked_keys + ',' + half_checked_keys
                     $.ajax({
-                        url: "{:api_url('/admin/Rbac/addEditAuthorize')}",
+                        url: "{:api_url('/admin/Role/addEditAuthorize')}",
                         data: {
                             menuid : keys,
                             roleid : that.roleid
@@ -91,7 +91,7 @@
                 //获取菜单详情
                 getDetails: function () {
                     var that = this;
-                    $.post("{:api_url('/admin/Rbac/getAuthorizeList')}", {
+                    $.post("{:api_url('/admin/Role/getAuthorizeList')}", {
                         id: that.id,
                     }, function (res) {
                         that.data = res.data.list;
@@ -109,5 +109,3 @@
     });
 </script>
 
-</body>
-</html>
