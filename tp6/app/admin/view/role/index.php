@@ -169,12 +169,12 @@
                         }
                     })
                 },
-                handleDelete: function (index) {
+                handleDelete: function (id) {
                     var that = this;
                     layer.confirm('是否确定删除该内容吗？', {
                         btn: ['确认', '取消'] //按钮
                     }, function () {
-                        that.toDelete(index);
+                        that.toDelete(id);
                         layer.closeAll();
                     }, function () {
                         layer.closeAll();
@@ -182,21 +182,14 @@
                 },
                 toDelete: function (id) {
                     var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Role/roleDelete')}",
-                        type: "get",
-                        data: {id: id},
-                        dataType: "json",
-                        success: function (res) {
-                            if (res.status) {
-                                that.$message.success(res.msg);
-                                that.getList();
-                            } else {
-                                that.$message.error(res.msg);
-                            }
+                    that.httpPost("{:api_url('/admin/Role/roleDelete')}",  {id: id}, function(res){
+                        if (res.status) {
+                            that.$message.success(res.msg);
+                            that.getList();
+                        } else {
+                            that.$message.error(res.msg);
                         }
-
-                    })
+                    } )
                 },
                 //成员管理
                 gotomanagerPage: function (id) {

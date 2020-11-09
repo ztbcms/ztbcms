@@ -13,7 +13,6 @@ use app\admin\service\RbacService;
 use app\admin\service\RoleService;
 use app\common\controller\AdminController;
 use think\facade\Request;
-use think\exception\ValidateException;
 
 /**
  * 角色权限
@@ -86,6 +85,8 @@ class Role extends AdminController
     /**
      * 获取角色列表
      *
+     * @deprecated
+     *
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -147,13 +148,9 @@ class Role extends AdminController
         if ($id == $this->user->role_id) {
             return json(self::createReturn(false, null, '您不能删除自己使用的角色'));
         }
-        $RoleModel = new RoleModel();
-        if ($RoleModel->roleDelete($id)) {
-            return json(self::createReturn(true, null, '删除成功'));
-        } else {
-            $error = $RoleModel->error;
-            return json(self::createReturn(false, null, $error ? $error : '删除失败'));
-        }
+        $roleService = new RoleService();
+        $res = $roleService->deleteRole($id);
+        return json($res);
     }
 
     /**
