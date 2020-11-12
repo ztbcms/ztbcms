@@ -108,7 +108,7 @@
                 getroleList:function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/admin/Rbac/getrolemanage')}",
+                        url:"{:api_url('/admin/Role/getRoleList')}",
                         type:"get",
                         dataType:"json",
                         success:function(res){

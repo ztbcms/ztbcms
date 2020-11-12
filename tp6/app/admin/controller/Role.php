@@ -12,6 +12,7 @@ use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
 use app\admin\service\RoleService;
 use app\common\controller\AdminController;
+use app\common\libs\helper\TreeHelper;
 use think\facade\Request;
 
 /**
@@ -21,6 +22,7 @@ use think\facade\Request;
  */
 class Role extends AdminController
 {
+    protected $noNeedPermission = ['getRoleList'];
     /**
      * 角色列表
      */
@@ -91,22 +93,22 @@ class Role extends AdminController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getrolemanage()
+    public function getRoleList()
     {
         $RoleModel = new RoleModel();
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
-        if (!$this->is_administrator) {
-            $list = $RoleModel->where('parentid='.$this->user->role_id)->select();
-            $pid = $this->user->role_id;
+        if (!$this->user['role_id']) {
+            $list = $RoleModel->where('parentid='.$this->user->role_id)->select()->toArray();
+            $pid = $this->user['role_id'];
         } else {
-            $list = $RoleModel->select();
+            $list = $RoleModel->select()->toArray();
             $pid = 0;
         }
         $list = $RoleModel->getTree($list, $pid);
         foreach ($list as $k => $v) {
-            $list[$k]['name'] = str_repeat("ㄧ", $v['level']).' '.$v['name'];
+            $list[$k]['name'] = str_repeat('—', $v['level']).' '.$v['name'];
         }
-        return json(self::createReturn(true, $list, '获取成功'));
+        return json(self::createReturn(true, $list));
     }
 
     /**
