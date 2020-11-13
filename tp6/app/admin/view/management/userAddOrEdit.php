@@ -112,28 +112,19 @@
 
                 //获取信息
                 getManagerByid:function (id) {
-                    var that = this;
-                    $.ajax({
-                        url:"{:api_url('/admin/Management/getDetails')}",
-                        type:"post",
-                        dataType:"json",
-                        data:{
-                            id:id
-                        },
-                        success:function(res){
-                            if(res.status){
-                                that.form = res.data
-                            }
-                            that.loading = false
+                    var that = this
+                    this.loading = true
+                    this.httpGet("{:api_url('/admin/Management/getDetail')}", {id: id}, function(res){
+                        if(res.status){
+                            that.form = res.data
                         }
+                        that.loading = false
                     })
                 }
             },
             mounted: function () {
                 this.getRoleList()
                 if(this.form.id){
-                    this.loading = true
-                    this.is_edit = true
                     this.getManagerByid(this.form.id)
                 }
             },

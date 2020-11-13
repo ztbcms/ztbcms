@@ -9,6 +9,7 @@ namespace app\admin\controller;
 
 use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
+use app\admin\service\AdminManagerService;
 use app\admin\service\AdminUserService;
 use app\admin\service\RoleService;
 use app\common\controller\AdminController;
@@ -40,9 +41,9 @@ class Management extends AdminController
     function editMyBasicsInfo()
     {
         $save = array(
-            'nickname'    => Request::param('nickname'),
-            'email'       => Request::param('email'),
-            'remark'      => Request::param('remark'),
+            'nickname' => Request::param('nickname'),
+            'email' => Request::param('email'),
+            'remark' => Request::param('remark'),
             'update_time' => time()
         );
         $AdminUserModel = new AdminUserModel();
@@ -99,26 +100,40 @@ class Management extends AdminController
     }
 
     /**
-     * 管理员管理
+     * 新增
+     * @return \think\response\Json|\think\response\View
      */
-    function details()
-    {
-        $id = Request::param('id');
-        return view('details', [
-            'id' => $id
-        ]);
-    }
-
     function userAdd()
     {
-        $id = Request::param('id');
-        return view('userAddOrEdit', [
-            'id' => $id
-        ]);
+        if (Request::isPost()) {
+            $data = Request::post();
+            if (empty($data['password']) || $data['password'] !== $data['pwdconfirm']) {
+                return json(self::createReturn(false, null, '密码不一致'));
+            }
+            $adminManagerService = new AdminManagerService();
+            $res = $adminManagerService->addOrEditAdminManager($data);
+            return json($res);
+        }
+        return view('userAddOrEdit');
     }
 
+    /**
+     * 编辑
+     * @return \think\response\Json|\think\response\View
+     */
     function userEdit()
     {
+        if (Request::isPost()) {
+            $data = Request::post();
+            if (!empty($data['password'])) {
+                if ($data['password'] !== $data['pwdconfirm']) {
+                    return json(self::createReturn(false, null, '密码不一致'));
+                }
+            }
+            $adminManagerService = new AdminManagerService();
+            $res = $adminManagerService->addOrEditAdminManager($data);
+            return json($res);
+        }
         $id = Request::param('id');
         return view('userAddOrEdit', [
             'id' => $id
@@ -153,7 +168,7 @@ class Management extends AdminController
                 return $item['id'];
             }, $son_role_list);
             // 超管可以管理全部管理员，包括其他管理角色
-            if($this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID){
+            if ($this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
                 $son_role_id_list [] = $this->user['role_id'];
             }
             //如果没有找到下级role_ids 则默认为0
@@ -168,7 +183,7 @@ class Management extends AdminController
             if ($User_value['last_login_time']) {
                 $list[$k]['last_login_time'] = date("Y-m-d H:i:s", $User_value['last_login_time']);
             }
-            $list[$k]['role_name'] = $RoleModel->where('id='.$User_value['role_id'])->value('name');
+            $list[$k]['role_name'] = $RoleModel->where('id=' . $User_value['role_id'])->value('name');
         }
         return json(self::createReturn(true, $list));
     }
@@ -176,14 +191,14 @@ class Management extends AdminController
     /**
      * 获取管理员详情
      */
-    public function getDetails()
+    function getDetail()
     {
         $AdminUserModel = new AdminUserModel();
         $id = Request::param('id');
         $where['id'] = $id;
         $res = $AdminUserModel->where($where)->withoutField('create_time,update_time')->find();
         $res['password'] = '';
-        $res['status'] = (string) $res['status'];
+        $res['status'] = (string)$res['status'];
         if ($res) {
             return json(self::createReturn(true, $res));
         } else {
@@ -194,7 +209,7 @@ class Management extends AdminController
     /**
      * 添加或者编辑管理员
      */
-    public function addEditManagement()
+    function addEditManagement()
     {
         $id = Request::param('id');
 
@@ -229,7 +244,7 @@ class Management extends AdminController
     public function delete()
     {
         $id = Request::param('id', '', 'trim');
-        if ((int) $id == $this->user->id) {
+        if ((int)$id == $this->user->id) {
             return json(self::createReturn(false, [], '你不能删除你自己！'));
         }
 

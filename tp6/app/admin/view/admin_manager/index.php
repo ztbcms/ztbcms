@@ -166,20 +166,12 @@
                 // 删除管理员
                 doDelete:function(id){
                     var that = this;
-                    $.ajax({
-                        url:"{:api_url('/admin/Management/delete')}",
-                        type: "get",
-                        data:{
-                            "id":id
-                        },
-                        dataType:"json",
-                        success:function (res) {
-                            if(res.status){
-                                that.$message.success(res.msg);
-                                that.getList();
-                            }else{
-                                that.$message.error(res.msg)
-                            }
+                    this.httpPost("{:api_url('/admin/Management/roleDelete')}", {"id":id}, function(res){
+                        if(res.status){
+                            that.$message.success(res.msg);
+                            that.getList();
+                        }else{
+                            that.$message.error(res.msg)
                         }
                     })
                 }

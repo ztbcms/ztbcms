@@ -26,10 +26,10 @@
                             <template>
                                 <el-select v-model="form.role_id" clearable placeholder="请选择">
                                     <el-option
-                                            v-for="item in role_list"
-                                            :key="item.id"
-                                            :label="item.name"
-                                            :value="item.id">
+                                        v-for="item in role_list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
                                     </el-option>
                                 </el-select>
                             </template>
@@ -85,66 +85,49 @@
             methods: {
                 onSubmit: function(){
                     var that = this;
-                    $.ajax({
-                        url:"{:api_url('/admin/Management/addEditManagement')}",
-                        dataType:"json",
-                        type:"post",
-                        data:  that.form,
-                        success:function(res){
-                            if(res.status){
-                                that.$message.success(res.msg);
-                                if (window !== window.parent) {
-                                    setTimeout(function () {
-                                        window.parent.layer.closeAll()
-                                    }, 1000);
-                                }
-                            }else{
-                                that.$message.error(res.msg);
+                    var url = "{:api_url('/admin/Management/userAdd')}"
+                    if(this.form.id){
+                        url = "{:api_url('/admin/Management/userEdit')}"
+                    }
+                    this.httpPost(url, that.form, function (res){
+                        if(res.status){
+                            that.$message.success(res.msg);
+                            if (window !== window.parent) {
+                                setTimeout(function () {
+                                    window.parent.layer.closeAll()
+                                }, 1000);
                             }
+                        }else{
+                            that.$message.error(res.msg);
                         }
                     })
                 },
                 //获取所有角色
-                getroleList:function () {
+                getRoleList:function () {
                     var that = this;
-                    $.ajax({
-                        url:"{:api_url('/admin/Role/getRoleList')}",
-                        type:"get",
-                        dataType:"json",
-                        success:function(res){
-                            that.role_list = res.data
-                        }
+                    this.httpGet("{:api_url('/admin/Role/getRoleList')}", {}, function (res){
+                        that.role_list = res.data
                     })
                 },
 
                 //获取信息
                 getManagerByid:function (id) {
-                    var that = this;
-                    $.ajax({
-                        url:"{:api_url('/admin/Management/getDetails')}",
-                        type:"post",
-                        dataType:"json",
-                        data:{
-                            id:id
-                        },
-                        success:function(res){
-                            if(res.status){
-                                that.form = res.data
-                            }
-                            that.loading = false
+                    var that = this
+                    this.loading = true
+                    this.httpGet("{:api_url('/admin/Management/getDetail')}", {id: id}, function(res){
+                        if(res.status){
+                            that.form = res.data
                         }
+                        that.loading = false
                     })
                 }
             },
             mounted: function () {
-                this.getroleList()
+                this.getRoleList()
                 if(this.form.id){
-                    this.loading = true
-                    this.is_edit = true
                     this.getManagerByid(this.form.id)
                 }
-            },
-
+            }
         })
     })
 </script>
