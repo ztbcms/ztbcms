@@ -148,10 +148,26 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/details",
+                        "route" => "admin/Management/userAdd",
                         "type" => 1,
                         "status" => 1,
                         "name" => "添加管理员",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Management/userEdit",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "编辑管理员",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Management/userDelete",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "删除管理员",
                         "remark" => "",
                         "child" => []
                     ],

@@ -24,11 +24,10 @@ class Management extends AdminController
 {
     protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword', 'getManagementList'];
 
-
     /**
      * 用户基本信息
      */
-    public function myBasicsInfo()
+    function myBasicsInfo()
     {
         return view(
             'myBasicsInfo', ['user' => $this->user]
@@ -38,7 +37,7 @@ class Management extends AdminController
     /**
      * 编辑我的基本资料
      */
-    public function editMyBasicsInfo()
+    function editMyBasicsInfo()
     {
         $save = array(
             'nickname'    => Request::param('nickname'),
@@ -54,7 +53,7 @@ class Management extends AdminController
     /**
      * 修改密码
      */
-    public function chanpass()
+    function chanpass()
     {
         return view('chanpass', ['user' => $this->user]);
     }
@@ -62,7 +61,7 @@ class Management extends AdminController
     /**
      * 编辑用户密码
      */
-    public function changePassword()
+    function changePassword()
     {
         $oldPass = Request::param('password', '', 'trim');
         $newPass = Request::param('new_password', '', 'trim');
@@ -91,7 +90,7 @@ class Management extends AdminController
     /**
      * 管理员列表
      */
-    public function index()
+    function index()
     {
         $role_id = Request::param('role_id');
         return view('index', [
@@ -102,10 +101,26 @@ class Management extends AdminController
     /**
      * 管理员管理
      */
-    public function details()
+    function details()
     {
         $id = Request::param('id');
         return view('details', [
+            'id' => $id
+        ]);
+    }
+
+    function userAdd()
+    {
+        $id = Request::param('id');
+        return view('userAddOrEdit', [
+            'id' => $id
+        ]);
+    }
+
+    function userEdit()
+    {
+        $id = Request::param('id');
+        return view('userAddOrEdit', [
             'id' => $id
         ]);
     }
@@ -114,7 +129,7 @@ class Management extends AdminController
      * 获取管理员列表(只能登录用户管理下级角色的成员)
      * 当前登录角色查看指定角色时，若当前登录角色等于或高于指定角色，可以查看指定角色的管理员列表；否则没有权限展示
      */
-    public function getManagementList()
+    function getManagementList()
     {
         $AdminUserModel = new AdminUserModel();
         $RoleModel = new RoleModel();
