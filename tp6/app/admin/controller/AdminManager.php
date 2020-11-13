@@ -1,8 +1,7 @@
 <?php
+
 /**
- * User: Cycle3
- * Date: 2020/9/23
- * Time: 16:40
+ * author: Jayin <tonjayin@gmail.com>
  */
 
 namespace app\admin\controller;
@@ -18,12 +17,10 @@ use think\facade\Request;
 
 /**
  * 管理员
- *
- * @package app\admin\controller
  */
-class Management extends AdminController
+class AdminManager extends AdminController
 {
-    protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword', 'getManagementList'];
+    protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword', 'getManagerList'];
 
     /**
      * 用户基本信息
@@ -47,7 +44,7 @@ class Management extends AdminController
             'update_time' => time()
         );
         $AdminUserModel = new AdminUserModel();
-        $AdminUserModel->where(['id' => $this->user->id])->save($save);
+        $AdminUserModel->where('id', $this->user->id)->save($save);
         return json(self::createReturn(true, [], '操作成功'));
     }
 
@@ -79,7 +76,7 @@ class Management extends AdminController
         $AdminUserModel = new AdminUserModel();
         if ($AdminUserModel->changePassword($this->user->id, $newPass, $oldPass)) {
             //退出登录
-            (new AdminUserService)->logout();
+            (new AdminUserService())->logout();
             return json(self::createReturn(true, [
                 'rediret_url' => api_url("/admin/Login/index") //跳转链接
             ], '密码已经更新，请重新登录'));
@@ -103,7 +100,7 @@ class Management extends AdminController
      * 新增
      * @return \think\response\Json|\think\response\View
      */
-    function userAdd()
+    function managerAdd()
     {
         if (Request::isPost()) {
             $data = Request::post();
@@ -114,14 +111,14 @@ class Management extends AdminController
             $res = $adminManagerService->addOrEditAdminManager($data);
             return json($res);
         }
-        return view('userAddOrEdit');
+        return view('managerAddOrEdit');
     }
 
     /**
      * 编辑
      * @return \think\response\Json|\think\response\View
      */
-    function userEdit()
+    function managerEdit()
     {
         if (Request::isPost()) {
             $data = Request::post();
@@ -135,7 +132,7 @@ class Management extends AdminController
             return json($res);
         }
         $id = Request::param('id');
-        return view('userAddOrEdit', [
+        return view('managerAddOrEdit', [
             'id' => $id
         ]);
     }
@@ -144,7 +141,7 @@ class Management extends AdminController
      * 获取管理员列表(只能登录用户管理下级角色的成员)
      * 当前登录角色查看指定角色时，若当前登录角色等于或高于指定角色，可以查看指定角色的管理员列表；否则没有权限展示
      */
-    function getManagementList()
+    function getManagerList()
     {
         $AdminUserModel = new AdminUserModel();
         $RoleModel = new RoleModel();
@@ -207,7 +204,7 @@ class Management extends AdminController
     }
 
     //管理员删除
-    function userDelete()
+    function managerDelete()
     {
         $id = Request::param('id', '', 'trim');
         if ($id == $this->user->id) {
@@ -218,5 +215,4 @@ class Management extends AdminController
         $res = $adminManagerService->deleteAdminManager($id);
         return json($res);
     }
-
 }

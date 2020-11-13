@@ -7,6 +7,7 @@
 namespace app\admin\service;
 
 use app\admin\model\AdminUserModel;
+use app\admin\model\RoleModel;
 use app\admin\validate\User;
 use app\common\libs\helper\StringHelper;
 use app\common\service\BaseService;
@@ -32,7 +33,7 @@ class AdminManagerService extends BaseService
             'remark' => $user_data['remark'],
             'role_id' => $user_data['role_id'],
             'status' => $user_data['status'],
-            'info' => isset($user_data['info'] ) ? $user_data['info'] : '',
+            'info' => isset($user_data['info']) ? $user_data['info'] : '',
         ];
         $adminUserModel = new AdminUserModel();
         $id = null;
@@ -71,12 +72,34 @@ class AdminManagerService extends BaseService
         }
     }
 
-
+    /**
+     * 删除管理员
+     * @param $user_id
+     * @return array
+     */
     function deleteAdminManager($user_id)
     {
-
+        if (empty($user_id)) {
+            return self::createReturn(false, null, '请指定需要删除的用户ID');
+        }
+        if ($user_id == 1) {
+            return self::createReturn(false, null, '该管理员不能被删除');
+        }
+        $roleModel = new RoleModel();
+        $res = $roleModel->where('id', $user_id)->delete();
+        if ($res) {
+            return self::createReturn(true, null, '删除成功');
+        } else {
+            return self::createReturn(false, null, '删除失败');
+        }
     }
 
+    /**
+     * 密码hash
+     * @param $password
+     * @param string $verify
+     * @return string
+     */
     static function hashPassword($password, $verify = "")
     {
         return md5($password . md5($verify));

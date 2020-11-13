@@ -121,10 +121,9 @@
             methods: {
                 editItem: function (id) {
                     var that = this;
-                    var url = "{:api_url('/admin/Management/userAdd')}"
+                    var url = "{:api_url('/admin/AdminManager/managerAdd')}"
                     if (id) {
-                        url = "{:api_url('/admin/Management/userEdit')}";
-                        url += "?id=" + id
+                        url = "{:api_url('/admin/AdminManager/managerEdit')}?id=" + id
                     }
                     layer.open({
                         type: 2,
@@ -139,7 +138,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/admin/Management/getManagementList')}",
+                        url:"{:api_url('/admin/AdminManager/getManagerList')}",
                         type: "get",
                         dataType:"json",
                         data:{
@@ -166,7 +165,7 @@
                 // 删除管理员
                 doDelete:function(id){
                     var that = this;
-                    this.httpPost("{:api_url('/admin/Management/roleDelete')}", {"id":id}, function(res){
+                    this.httpPost("{:api_url('/admin/AdminManager/managerDelete')}", {"id":id}, function(res){
                         if(res.status){
                             that.$message.success(res.msg);
                             that.getList();

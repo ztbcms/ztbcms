@@ -127,8 +127,7 @@
                 if(this.form.id){
                     this.getManagerByid(this.form.id)
                 }
-            },
-
+            }
         })
     })
 </script>
