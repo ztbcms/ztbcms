@@ -7,12 +7,25 @@ namespace app\admin\service;
 
 
 use app\admin\model\AccessModel;
+use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\service\BaseService;
 use think\exception\InvalidArgumentException;
 
+/**
+ * 角色服务
+ *
+ * @package app\admin\service
+ */
 class RoleService extends BaseService
 {
+    /**
+     * 添加/编辑角色
+     *
+     * @param $roleData
+     *
+     * @return array
+     */
     function addOrEditRole($roleData)
     {
         $data = [

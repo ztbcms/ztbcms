@@ -9,6 +9,7 @@ namespace app\admin\controller;
 
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
+use app\admin\service\MenuService;
 use app\admin\service\RbacService;
 use app\admin\service\RoleService;
 use app\common\controller\AdminController;
@@ -23,10 +24,11 @@ use think\facade\Request;
 class Role extends AdminController
 {
     protected $noNeedPermission = ['getRoleList', 'getAuthorizeList'];
+
     /**
      * 角色列表
      */
-    public function index()
+    function index()
     {
         $action = input('_action', '', 'trim');
         if (Request::isGet() && $action == 'getList') {
@@ -40,7 +42,7 @@ class Role extends AdminController
      * 新增角色
      *
      */
-    public function roleAdd()
+    function roleAdd()
     {
         if (Request::isPost()) {
             return $this->roleAddEdit();
@@ -52,7 +54,7 @@ class Role extends AdminController
      * 编辑角色
      *
      */
-    public function roleEdit()
+    function roleEdit()
     {
         if (Request::isPost()) {
             return $this->roleAddEdit();
@@ -78,7 +80,7 @@ class Role extends AdminController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getRoleList()
+    function getRoleList()
     {
         $RoleModel = new RoleModel();
         $pid = 0;
@@ -100,7 +102,7 @@ class Role extends AdminController
     /**
      * 添加或者编辑角色
      */
-    private function roleAddEdit()
+    function roleAddEdit()
     {
         $id = Request::param('id', '', 'trim');
         $name = Request::param('name', '', 'trim');
@@ -130,7 +132,7 @@ class Role extends AdminController
     /**
      * 删除角色
      */
-    public function roleDelete()
+    function roleDelete()
     {
         $id = Request::param('id', '', 'trim');
         if ($id == $this->user->role_id) {
@@ -144,9 +146,9 @@ class Role extends AdminController
     /**
      * 权限设置
      */
-    public function authorize()
+    function authorize()
     {
-        if(Request::isPost()){
+        if (Request::isPost()) {
             //添加或者编辑权限
             $menuid = Request::param('menuid');
             $roleid = Request::param('roleid');
@@ -168,25 +170,47 @@ class Role extends AdminController
     }
 
     /**
-     * 获取权限列表
+     * 获取角色权限列表
      */
-    public function getAuthorizeList()
+    function getAuthorizeList()
     {
         //角色ID
-        $roleid = Request::param('id', 0, 'intval');
-        $RoleModel = new RoleModel();
-
+        $role_id = Request::param('id', 0, 'intval');
+        $roleModel = new RoleModel();
         //获取登录管理员的授权信息
-        $userInfo = $this->user;
-        $is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
-        $menulist = $RoleModel->getMenuList($roleid, $is_administrator, $userInfo, 0);
+        $select_menu_ids = [];
+        //获取当前登录用户角色的所有权限菜单
+        $loginUsermenuList = MenuService::getMenuByRole($this->user['role_id'])['data'];
+        $rbacService = new RbacService();
+        $list = [];
+        // 数据格式化
+        foreach ($loginUsermenuList as $a) {
+            $array = [
+                'label'    => $a['name'],
+                'id'       => $a['id'],
+                'parentid' => $a['parentid'],
+                'type'     => $a['type'],
+                'status'   => $a['status'],
+            ];
 
-        $res['list'] = $menulist;
-        $res['roleid'] = $roleid;
-        $res['name'] = $RoleModel->getRoleIdName($roleid);
-        $res['select_menu_id'] = $RoleModel->getSelectMenuId($roleid, $is_administrator, $userInfo, true);
+            $list [] = $array;
+            if ($rbacService->enableRoleAccess($role_id, $a['app'], $a['controller'], $a['action'])['status']) {
+                $select_menu_ids [] = $a['id'];
+            }
+        }
+
+        $menuList = TreeHelper::arrayToTree($list, 0, [
+            'parentKey'   => 'parentid',
+            'childrenKey' => 'children',
+        ]);
+
+        $role_info = $roleModel->where('id', $role_id)->findOrEmpty();
+        $res['list'] = $menuList;
+        $res['role_id'] = $role_id;
+        $res['my_role_id'] = $this->user['role_id'];
+        $res['name'] = $role_info['name'];
+        $res['select_menu_id'] = $select_menu_ids;
         return json(self::createReturn(true, $res));
     }
-
 
 }

@@ -203,7 +203,7 @@ return [
                     [
                         "route" => "admin/Role/authorize",
                         "type" => 1,
-                        "status" => 0,
+                        "status" => 1,
                         "name" => "权限设置",
                         "remark" => "",
                         "child" => []
