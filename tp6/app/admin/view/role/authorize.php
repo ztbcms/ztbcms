@@ -69,7 +69,7 @@
                     // 选中+半选中也需要记录
                     var keys = checked_keys + ',' + half_checked_keys
                     $.ajax({
-                        url: "{:api_url('/admin/Role/addEditAuthorize')}",
+                        url: "{:api_url('/admin/Role/authorize')}",
                         data: {
                             menuid : keys,
                             roleid : that.roleid

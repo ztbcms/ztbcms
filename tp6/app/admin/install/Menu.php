@@ -163,13 +163,13 @@ return [
             [
                 "parentid" => 0,
                 "name" => "角色管理",
-                "route" => "admin/Rbac/index",
+                "route" => "admin/Role/index",
                 "type" => 0,
                 "status" => 1,
                 "remark" => "",
                 "child" => [
                     [
-                        "route" => "admin/Rbac/index",
+                        "route" => "admin/Role/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "角色列表",
@@ -177,7 +177,7 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Rbac/roleAdd",
+                        "route" => "admin/Role/roleAdd",
                         "type" => 1,
                         "status" => 1,
                         "name" => "添加角色",
@@ -185,7 +185,23 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Rbac/authorize",
+                        "route" => "admin/Role/roleEdit",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "编辑角色",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Role/roleDelete",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除角色",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Role/authorize",
                         "type" => 1,
                         "status" => 0,
                         "name" => "权限设置",

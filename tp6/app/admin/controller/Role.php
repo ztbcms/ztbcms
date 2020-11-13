@@ -22,7 +22,7 @@ use think\facade\Request;
  */
 class Role extends AdminController
 {
-    protected $noNeedPermission = ['getRoleList'];
+    protected $noNeedPermission = ['getRoleList', 'getAuthorizeList'];
     /**
      * 角色列表
      */
@@ -30,21 +30,8 @@ class Role extends AdminController
     {
         $action = input('_action', '', 'trim');
         if (Request::isGet() && $action == 'getList') {
-            $RoleModel = new RoleModel();
-            //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
-            if (!$this->is_administrator) {
-                $list = $RoleModel->where('parentid='.$this->user->role_id)->select();
-                $pid = $this->user->role_id;
-            } else {
-                $list = $RoleModel->select();
-                $pid = 0;
-            }
-            $list = $RoleModel->getTree($list, $pid);
-            foreach ($list as $k => $v) {
-                $list[$k]['name'] = str_repeat("ㄧ", $v['level']).' '.$v['name'];
-                $list[$k]['level'] = $v['level'];
-            }
-            return json(self::createReturn(true, $list, '获取成功'));
+
+            return $this->getRoleList();
         }
         return view('index');
     }
@@ -87,8 +74,6 @@ class Role extends AdminController
     /**
      * 获取角色列表
      *
-     * @deprecated
-     *
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -96,13 +81,14 @@ class Role extends AdminController
     public function getRoleList()
     {
         $RoleModel = new RoleModel();
+        $pid = 0;
+        $list = $RoleModel->select()->toArray();
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
-        if (!$this->user['role_id']) {
-            $list = $RoleModel->where('parentid='.$this->user->role_id)->select()->toArray();
+        if ($this->user['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
+            $list = TreeHelper::getSonNodeFromArray($list, $this->user['role_id'], [
+                'parentKey' => 'parentid'
+            ]);
             $pid = $this->user['role_id'];
-        } else {
-            $list = $RoleModel->select()->toArray();
-            $pid = 0;
         }
         $list = $RoleModel->getTree($list, $pid);
         foreach ($list as $k => $v) {
@@ -160,6 +146,21 @@ class Role extends AdminController
      */
     public function authorize()
     {
+        if(Request::isPost()){
+            //添加或者编辑权限
+            $menuid = Request::param('menuid');
+            $roleid = Request::param('roleid');
+
+            if (!$roleid) {
+                return json(self::createReturn(false, '', '需要授权的角色不存在！'));
+            }
+
+            //被选中的菜单项
+            $menuIdList = explode(',', $menuid);
+            $rbacService = new RbacService();
+            return $rbacService->authorizeRoleAccess($roleid, $menuIdList);
+        }
+
         $id = Request::param('id', 0, 'intval');
         return view('authorize', [
             'id' => $id
@@ -177,32 +178,15 @@ class Role extends AdminController
 
         //获取登录管理员的授权信息
         $userInfo = $this->user;
-        $menulist = $RoleModel->getMenuList($roleid, $this->is_administrator, $userInfo, 0);
+        $is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
+        $menulist = $RoleModel->getMenuList($roleid, $is_administrator, $userInfo, 0);
 
         $res['list'] = $menulist;
         $res['roleid'] = $roleid;
         $res['name'] = $RoleModel->getRoleIdName($roleid);
-        $res['select_menu_id'] = $RoleModel->getSelectMenuId($roleid, $this->is_administrator, $userInfo, true);
+        $res['select_menu_id'] = $RoleModel->getSelectMenuId($roleid, $is_administrator, $userInfo, true);
         return json(self::createReturn(true, $res));
     }
 
-    /**
-     * 添加或者编辑权限
-     */
-    public function addEditAuthorize()
-    {
-        $menuid = Request::param('menuid');
-        $roleid = Request::param('roleid');
-
-        if (!$roleid) {
-            return json(self::createReturn(false, '', '需要授权的角色不存在！'));
-        }
-
-        //被选中的菜单项
-        $menuIdList = explode(',', $menuid);
-        $rbacService = new RbacService();
-        return $rbacService->authorizeRoleAccess($roleid, $menuIdList);
-
-    }
 
 }
