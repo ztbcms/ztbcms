@@ -2,6 +2,13 @@
     <el-card>
         <div class="filter-container">
             <h3>管理员列表</h3>
+
+            <el-alert
+                    title="当前登录管理员只能管理层级比自己低的管理员，超级管理员除外"
+                    type="info"
+                    :closable="false"
+                    description="">
+            </el-alert>
         </div>
 
         <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="details('')">

@@ -10,7 +10,9 @@ namespace app\admin\controller;
 use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
+use app\admin\service\RoleService;
 use app\common\controller\AdminController;
+use app\common\libs\helper\TreeHelper;
 use think\facade\Request;
 
 /**
@@ -20,7 +22,8 @@ use think\facade\Request;
  */
 class Management extends AdminController
 {
-    protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword'];
+    protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword', 'getManagementList'];
+
 
     /**
      * 用户基本信息
@@ -108,30 +111,44 @@ class Management extends AdminController
     }
 
     /**
-     * 获取管理员列表
+     * 获取管理员列表(只能登录用户管理下级角色的成员)
+     * 当前登录角色查看指定角色时，若当前登录角色等于或高于指定角色，可以查看指定角色的管理员列表；否则没有权限展示
      */
     public function getManagementList()
     {
         $AdminUserModel = new AdminUserModel();
         $RoleModel = new RoleModel();
+        $roleService = new RoleService();
         $where = [];
-        $role_id = Request::param('role_id');
-        if (!$this->is_administrator) {
-            //如果非超级管理员，只能管理下级角色的成员
-            $roleWhere['parentid'] = $this->user->role_id;
-            if ($role_id) {
-                $roleWhere['id'] = $role_id;
-            }
-            $role_ids = $RoleModel->where($roleWhere)->column('id');
-            //如果没有找到下级role_ids 则默认为0
-            $where['role_id'] = ['in', implode(',', $role_ids)];
-        } else {
-            if ($role_id) {
-                $where['role_id'] = $role_id;
+        $role_id = Request::param('role_id', 0);
+        // 指定角色时，需要判断权限
+        if (!empty($role_id)) {
+            // 角色层级权限判断
+            $result = $roleService->compareRoleLevel($this->user['role_id'], $role_id)['data'];
+            if ($result <= 0) {
+                return json(self::createReturn(true, null, '当前登录用户无权限操作'));
             }
         }
+        if (empty($role_id)) {
+            // 没有指定角色，则获取当前登录用户角色的旗下角色
+            $role_list = $roleService->getRoleList()['data'];
+            $son_role_list = TreeHelper::getSonNodeFromArray($role_list, $this->user['role_id'], ['parentKey' => 'parentid']);
+            $son_role_id_list = array_map(function ($item)
+            {
+                return $item['id'];
+            }, $son_role_list);
+            // 超管可以管理全部管理员，包括其他管理角色
+            if($this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID){
+                $son_role_id_list [] = $this->user['role_id'];
+            }
+            //如果没有找到下级role_ids 则默认为0
+            $where[] = ['role_id', 'in', $son_role_id_list];
+        } else {
+            // 指定
+            $where[] = ['role_id', '=', $role_id];
+        }
 
-        $list = $AdminUserModel->where($where)->select();
+        $list = $AdminUserModel->where($where)->order('id desc')->select();
         foreach ($list as $k => $User_value) {
             if ($User_value['last_login_time']) {
                 $list[$k]['last_login_time'] = date("Y-m-d H:i:s", $User_value['last_login_time']);
