@@ -2,7 +2,7 @@
     <el-card  v-loading="loading">
         <h3>编辑管理员</h3>
         <el-row>
-            <el-col :span="8">
+            <el-col :xs="24" :md="8">
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="用户名">
@@ -66,7 +66,7 @@
             el: '#app',
             data: {
                 form: {
-                    id: "{$id}",
+                    id: "{$id|default=''}",
                     username: '',
                     password: '',
                     pwdconfirm: '',
@@ -85,9 +85,9 @@
             methods: {
                 onSubmit: function(){
                     var that = this;
-                    var url = "{:api_url('/admin/Management/userAdd')}"
+                    var url = "{:api_url('/admin/AdminManager/managerAdd')}"
                     if(this.form.id){
-                        url = "{:api_url('/admin/Management/userEdit')}"
+                        url = "{:api_url('/admin/AdminManager/managerEdit')}"
                     }
                     this.httpPost(url, that.form, function (res){
                         if(res.status){
@@ -114,7 +114,7 @@
                 getManagerByid:function (id) {
                     var that = this
                     this.loading = true
-                    this.httpGet("{:api_url('/admin/Management/getDetail')}", {id: id}, function(res){
+                    this.httpGet("{:api_url('/admin/AdminManager/getDetail')}", {id: id}, function(res){
                         if(res.status){
                             that.form = res.data
                         }

@@ -41,7 +41,7 @@ class AdminManagerService extends BaseService
             $id = $user_data['id'];
         } else {
             // 新增
-            $record = $adminUserModel->where('username', $data['username'])->findOrEmpty();
+            $record = $adminUserModel->where('username', $data['username'])->find();
             if ($record) {
                 return self::createReturn(false, null, '账户已经存在');
             }
@@ -85,8 +85,8 @@ class AdminManagerService extends BaseService
         if ($user_id == 1) {
             return self::createReturn(false, null, '该管理员不能被删除');
         }
-        $roleModel = new RoleModel();
-        $res = $roleModel->where('id', $user_id)->delete();
+        $adminUserModel = new AdminUserModel();
+        $res = $adminUserModel->where('id', $user_id)->delete();
         if ($res) {
             return self::createReturn(true, null, '删除成功');
         } else {
