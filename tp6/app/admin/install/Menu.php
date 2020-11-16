@@ -69,13 +69,13 @@ return [
     [
         "parentid" => 0,
         "name" => "我的面板",
-        "route" => "admin/Management/myInfo",
+        "route" => "admin/AdminManager/myInfo",
         "type" => 0,
         "status" => 1,
         "remark" => "",
         "child" => [
             [
-                "route" => "admin/Management/myBasicsInfo",
+                "route" => "admin/AdminManager/myBasicsInfo",
                 "type" => 1,
                 "status" => 1,
                 "name" => "修改个人信息",
@@ -83,7 +83,7 @@ return [
                 "child" => []
             ],
             [
-                "route" => "admin/Management/chanpass",
+                "route" => "admin/AdminManager/chanpass",
                 "type" => 1,
                 "status" => 1,
                 "name" => "修改密码",
@@ -134,13 +134,13 @@ return [
             [
                 "parentid" => 0,
                 "name" => "管理员管理",
-                "route" => "admin/Management/manage",
+                "route" => "admin/AdminManager/index",
                 "type" => 0,
                 "status" => 1,
                 "remark" => "",
                 "child" => [
                     [
-                        "route" => "admin/Management/index",
+                        "route" => "admin/AdminManager/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "管理员",
@@ -148,7 +148,7 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/userAdd",
+                        "route" => "admin/AdminManager/managerAdd",
                         "type" => 1,
                         "status" => 1,
                         "name" => "添加管理员",
@@ -156,17 +156,17 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/userEdit",
+                        "route" => "admin/Management/managerEdit",
                         "type" => 1,
-                        "status" => 1,
+                        "status" => 0,
                         "name" => "编辑管理员",
                         "remark" => "",
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/userDelete",
+                        "route" => "admin/Management/managerDelete",
                         "type" => 1,
-                        "status" => 1,
+                        "status" => 0,
                         "name" => "删除管理员",
                         "remark" => "",
                         "child" => []
@@ -225,7 +225,7 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/index",
+                        "route" => "admin/AdminManager/index",
                         "type" => 1,
                         "status" => 0,
                         "name" => "成员管理",

@@ -455,7 +455,7 @@ CREATE TABLE `cms_menu` (
   `action` varchar(255) NOT NULL DEFAULT '' COMMENT '方法',
   `parameter` varchar(255) NOT NULL DEFAULT '' COMMENT '附加参数',
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型 0无需权限验证菜单 1需权限验证菜单',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否禁用',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态 0不展示 1展示',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `listorder` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序ID',
   `icon` varchar(255) NOT NULL DEFAULT '' COMMENT '图标',

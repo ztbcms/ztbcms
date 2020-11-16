@@ -11,9 +11,11 @@
             </el-alert>
         </div>
 
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerAdd')){ ?>
         <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="editItem(0)">
             添加管理员
         </el-button>
+        <?php } ?>
 
         <el-table
                 :key="tableKey"
@@ -67,8 +69,13 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="editItem(scope.row.id)" >修改</el-button>
-                    <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerEdit')){ ?>
+                        <el-button type="primary" size="mini" @click="editItem(scope.row.id)" >修改</el-button>
+                    <?php } ?>
+
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerDelete')){ ?>
+                        <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <?php } ?>
                 </template>
             </el-table-column>
         </el-table>

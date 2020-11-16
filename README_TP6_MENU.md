@@ -6,7 +6,6 @@
 
 # 卸载模块
 /home/admin/Module/doUninstallModule?module={模块名}
-
 ```
 
 后台菜单请添加到`admin/install/Menu.php`
@@ -26,8 +25,8 @@
 │
 ├─ 个人信息
 │ 
-├──── 修改个人信息   {{domain}}/Admin/Adminmanage/myinfo => {{domain}}/home/Admin/Management/myBasicsInfo
-├──── 修改密码   {{domain}}/Admin/Adminmanage/chanpass => {{domain}}/home/admin/Management/chanpass
+├──── 修改个人信息   {{domain}}/Admin/Adminmanage/myinfo => {{domain}}/home/Admin/AdminManager/myBasicsInfo
+├──── 修改密码   {{domain}}/Admin/Adminmanage/chanpass => {{domain}}/home/admin/AdminManager/chanpass
 │
 │ 设置
 │
@@ -38,8 +37,8 @@
 ├
 ├─ 管理员管理
 │
-├──── 管理员列表 {{domain}}/Admin/Management/index => {{domain}}/home/Admin/Management/index
-├──── 管理员详情 {{domain}}/Admin/Management/add || edit => {{domain}}/home/Admin/Management/details
+├──── 管理员列表 {{domain}}/Admin/Management/index => {{domain}}/home/Admin/AdminManager/index
+├──── 管理员详情 {{domain}}/Admin/Management/add || edit => {{domain}}/home/Admin/AdminManager/userAdd / userEdit
 ├
 ├─ 角色管理
 │
@@ -74,6 +73,15 @@
 ├──── 模块管理 
         ├──── 本地模块 {{domain}}/admin/module/index=> {{domain}}/home/admin/module/index
 
+```
+
+## 菜单权限
+
+按照管理员权限展示对应前端
+```php
+<?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'authorize')){ ?>
+// 你的前端代码
+<?php } ?>
 ```
 
 
