@@ -65,8 +65,9 @@ class AdminConfigService extends BaseService
             $config[$v['varname']] = $v['value'];
         }
         if (!empty($key)) {
-            Cache::tag(self::CacheTagName)->set($cache_key, $config[$key]);
-            return self::createReturn(true, $config[$key]);
+            $value = isset($config[$key]) ? $config[$key] : null;
+            Cache::tag(self::CacheTagName)->set($cache_key, $value);
+            return self::createReturn(true, $value);
         }
         Cache::tag(self::CacheTagName)->set($cache_key, $config);
         return self::createReturn(true, $config);

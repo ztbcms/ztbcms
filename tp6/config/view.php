@@ -23,5 +23,6 @@ return [
     // 标签库标签结束标记
     'taglib_end' => '}',
     'layout_on' => true,
-    'layout_name' => "../../common/view/element_layout"
+    // TODO 指定tp6
+    'layout_name' => defined('IS_THINKPHP_V6') ? "../../common/view/element_layout_tp6" : "../../common/view/element_layout"
 ];

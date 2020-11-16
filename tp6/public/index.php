@@ -14,6 +14,9 @@ namespace think;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Ztbcms: 定义常量
+define('IS_THINKPHP_V6', true);
+
 // 执行HTTP应用并响应
 $http = (new App())->http;
 
