@@ -26,7 +26,7 @@ class RoleModel extends Model
 
     /**
      * 根据角色ID返回全部权限
-     * @deprecated 
+     * @deprecated
      * @param  string  $role_id  角色ID
      *
      * @return array
@@ -64,6 +64,7 @@ class RoleModel extends Model
     /**
      * 获取该角色下的全部子角色
      *
+     * @deprecated
      * @param  string  $role_id
      *
      * @return string
@@ -134,6 +135,7 @@ class RoleModel extends Model
 
     /**
      * 删除角色
+     * @deprecated
      * @param $roleid
      * @return bool
      * @throws \think\db\exception\DataNotFoundException

@@ -2,11 +2,20 @@
     <el-card>
         <div class="filter-container">
             <h3>管理员列表</h3>
+
+            <el-alert
+                    title="当前登录管理员只能管理层级比自己低的管理员，超级管理员除外"
+                    type="info"
+                    :closable="false"
+                    description="">
+            </el-alert>
         </div>
 
-        <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="details('')">
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerAdd')){ ?>
+        <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="editItem(0)">
             添加管理员
         </el-button>
+        <?php } ?>
 
         <el-table
                 :key="tableKey"
@@ -60,8 +69,13 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="details(scope.row.id)" >修改</el-button>
-                    <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerEdit')){ ?>
+                        <el-button type="primary" size="mini" @click="editItem(scope.row.id)" >修改</el-button>
+                    <?php } ?>
+
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerDelete')){ ?>
+                        <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <?php } ?>
                 </template>
             </el-table-column>
         </el-table>
@@ -112,11 +126,11 @@
             watch: {},
             filters: {},
             methods: {
-                details: function (id) {
+                editItem: function (id) {
                     var that = this;
-                    var url = "{:api_url('admin/Management/details')}";
-                    if (id !== 0) {
-                        url += "&id=" + id;
+                    var url = "{:api_url('/admin/AdminManager/managerAdd')}"
+                    if (id) {
+                        url = "{:api_url('/admin/AdminManager/managerEdit')}?id=" + id
                     }
                     layer.open({
                         type: 2,
@@ -131,7 +145,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url:"{:api_url('/admin/Management/getManagementList')}",
+                        url:"{:api_url('/admin/AdminManager/getManagerList')}",
                         type: "get",
                         dataType:"json",
                         data:{
@@ -158,20 +172,12 @@
                 // 删除管理员
                 doDelete:function(id){
                     var that = this;
-                    $.ajax({
-                        url:"{:api_url('/admin/Management/delete')}",
-                        type: "get",
-                        data:{
-                            "id":id
-                        },
-                        dataType:"json",
-                        success:function (res) {
-                            if(res.status){
-                                that.$message.success(res.msg);
-                                that.getList();
-                            }else{
-                                that.$message.error(res.msg)
-                            }
+                    this.httpPost("{:api_url('/admin/AdminManager/managerDelete')}", {"id":id}, function(res){
+                        if(res.status){
+                            that.$message.success(res.msg);
+                            that.getList();
+                        }else{
+                            that.$message.error(res.msg)
                         }
                     })
                 }

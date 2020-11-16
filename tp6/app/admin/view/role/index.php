@@ -45,29 +45,39 @@
             <el-table-column label="操作" align="center" width="530" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
                         <span>
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AccessGroup', 'accessGroupRoleSetting')){ ?>
                             <el-button type="primary" class="itembtn" size="mini" @click="getRoleAccessGroup(scope.row.id)"
                                        v-if="scope.row.id != 1">
                                 权限组设置
                             </el-button>
+                            <?php } ?>
 
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'authorize')){ ?>
                             <el-button type="primary" class="itembtn" size="mini" @click="openAuth(scope.row.id)"
                                        :disabled="scope.row.id == 1">
                                 权限设置
                             </el-button>
+                            <?php } ?>
 
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'roleEdit')){ ?>
                             <el-button type="primary" class="itembtn" size="mini" @click="roleEdit(scope.row.id)"
                                        :disabled="scope.row.id == 1">
                                 修改
                             </el-button>
+                            <?php } ?>
 
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Management', 'index')){ ?>
                             <el-button type="primary" class="itembtn" size="mini" @click="gotomanagerPage(scope.row.id)">
                                 成员管理
                             </el-button>
+                            <?php } ?>
 
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'roleDelete')){ ?>
                             <el-button type="danger" class="itembtn" size="mini" @click="handleDelete(scope.row.id)"
                                        :disabled="scope.row.id == 1">
                                 删除
                             </el-button>
+                            <?php } ?>
                         </span>
                 </template>
 
@@ -135,7 +145,7 @@
                 getList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Rbac/getrolemanage')}",
+                        url: "{:api_url('/admin/Role/index')}?_action=getList",
                         type: "get",
                         dataType: "json",
                         success: function (res) {
@@ -143,18 +153,17 @@
                                 that.Manager = res.data
                             }
                         }
-
                     })
                 },
                 search: function () {
                     this.getList();
                 },
                 roleAdd: function () {
-                    var url = '{:api_url("/admin/Rbac/roleAdd")}';
+                    var url = '{:api_url("/admin/Role/roleAdd")}';
                     this.__openWindow(url);
                 },
                 roleEdit: function (id) {
-                    var url = '{:api_url("/admin/Rbac/roleEdit")}';
+                    var url = '{:api_url("/admin/Role/roleEdit")}';
                     url += '?id=' + id;
                     this.__openWindow(url);
                 },
@@ -170,12 +179,12 @@
                         }
                     })
                 },
-                handleDelete: function (index) {
+                handleDelete: function (id) {
                     var that = this;
                     layer.confirm('是否确定删除该内容吗？', {
                         btn: ['确认', '取消'] //按钮
                     }, function () {
-                        that.toDelete(index);
+                        that.toDelete(id);
                         layer.closeAll();
                     }, function () {
                         layer.closeAll();
@@ -183,21 +192,14 @@
                 },
                 toDelete: function (id) {
                     var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Rbac/roleDelete')}",
-                        type: "get",
-                        data: {id: id},
-                        dataType: "json",
-                        success: function (res) {
-                            if (res.status) {
-                                that.$message.success(res.msg);
-                                that.getList();
-                            } else {
-                                that.$message.error(res.msg);
-                            }
+                    that.httpPost("{:api_url('/admin/Role/roleDelete')}",  {id: id}, function(res){
+                        if (res.status) {
+                            that.$message.success(res.msg);
+                            that.getList();
+                        } else {
+                            that.$message.error(res.msg);
                         }
-
-                    })
+                    } )
                 },
                 //成员管理
                 gotomanagerPage: function (id) {
@@ -207,7 +209,7 @@
                 },
                 //权限设置
                 openAuth: function (id) {
-                    var url = "{:api_url('/admin/Rbac/authorize')}";
+                    var url = "{:api_url('/admin/Role/authorize')}";
                     url += '?id=' + id;
                     this.__openWindow(url);
                 },

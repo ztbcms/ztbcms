@@ -77,13 +77,13 @@ return [
     [
         "parentid" => 0,
         "name" => "我的面板",
-        "route" => "admin/Management/myInfo",
+        "route" => "admin/AdminManager/myInfo",
         "type" => 0,
         "status" => 1,
         "remark" => "",
         "child" => [
             [
-                "route" => "admin/Management/myBasicsInfo",
+                "route" => "admin/AdminManager/myBasicsInfo",
                 "type" => 1,
                 "status" => 1,
                 "name" => "修改个人信息",
@@ -91,7 +91,7 @@ return [
                 "child" => []
             ],
             [
-                "route" => "admin/Management/chanpass",
+                "route" => "admin/AdminManager/chanpass",
                 "type" => 1,
                 "status" => 1,
                 "name" => "修改密码",
@@ -142,13 +142,13 @@ return [
             [
                 "parentid" => 0,
                 "name" => "管理员管理",
-                "route" => "admin/Management/manage",
+                "route" => "admin/AdminManager/index",
                 "type" => 0,
                 "status" => 1,
                 "remark" => "",
                 "child" => [
                     [
-                        "route" => "admin/Management/index",
+                        "route" => "admin/AdminManager/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "管理员",
@@ -156,10 +156,26 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/details",
+                        "route" => "admin/AdminManager/managerAdd",
                         "type" => 1,
                         "status" => 1,
                         "name" => "添加管理员",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Management/managerEdit",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "编辑管理员",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Management/managerDelete",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除管理员",
                         "remark" => "",
                         "child" => []
                     ],
@@ -171,13 +187,13 @@ return [
             [
                 "parentid" => 0,
                 "name" => "角色管理",
-                "route" => "admin/Rbac/index",
+                "route" => "admin/Role/index",
                 "type" => 0,
                 "status" => 1,
                 "remark" => "",
                 "child" => [
                     [
-                        "route" => "admin/Rbac/index",
+                        "route" => "admin/Role/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "角色列表",
@@ -185,7 +201,7 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Rbac/roleAdd",
+                        "route" => "admin/Role/roleAdd",
                         "type" => 1,
                         "status" => 1,
                         "name" => "添加角色",
@@ -193,15 +209,31 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Rbac/authorize",
+                        "route" => "admin/Role/roleEdit",
                         "type" => 1,
                         "status" => 0,
+                        "name" => "编辑角色",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Role/roleDelete",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除角色",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Role/authorize",
+                        "type" => 1,
+                        "status" => 1,
                         "name" => "权限设置",
                         "remark" => "",
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/index",
+                        "route" => "admin/AdminManager/index",
                         "type" => 1,
                         "status" => 0,
                         "name" => "成员管理",

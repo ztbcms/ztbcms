@@ -5,7 +5,7 @@
             <template>
                 <div style="margin-bottom: 20px">
 
-                    <h3>{{ name }}</h3>
+                    <h3>{{ name }} 权限设置</h3>
 
                     <el-tree
                             :data="data"
@@ -40,7 +40,7 @@
                 return {
                     id : "{$id}",
                     name : '',
-                    roleid : '',
+                    role_id : '',
                     filterText: '',
                     defaultKeys : [],
                     data: [],
@@ -69,10 +69,10 @@
                     // 选中+半选中也需要记录
                     var keys = checked_keys + ',' + half_checked_keys
                     $.ajax({
-                        url: "{:api_url('/admin/Rbac/addEditAuthorize')}",
+                        url: "{:api_url('/admin/Role/authorize')}",
                         data: {
                             menuid : keys,
-                            roleid : that.roleid
+                            roleid : that.role_id
                         },
                         type: "post",
                         dataType: 'json',
@@ -91,12 +91,12 @@
                 //获取菜单详情
                 getDetails: function () {
                     var that = this;
-                    $.post("{:api_url('/admin/Rbac/getAuthorizeList')}", {
+                    $.get("{:api_url('/admin/Role/getAuthorizeList')}", {
                         id: that.id,
                     }, function (res) {
                         that.data = res.data.list;
                         that.defaultKeys = res.data.select_menu_id;
-                        that.roleid = res.data.roleid;
+                        that.role_id = res.data.role_id;
                         that.name = res.data.name;
                     }, 'json');
                 },
@@ -109,5 +109,3 @@
     });
 </script>
 
-</body>
-</html>

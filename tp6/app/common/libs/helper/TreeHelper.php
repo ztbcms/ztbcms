@@ -30,12 +30,16 @@ class TreeHelper
             'parentKey'   => isset($config['parentKey']) ? $config['parentKey'] : 'pid', // 父节点的ID字段名
             'childrenKey' => isset($config['childrenKey']) ? $config['childrenKey'] : 'children', // 子列表的key名
             'maxLevel'    => isset($config['maxLevel']) ? $config['maxLevel'] : 0,// 最大层级，0为不限制。父节点算一层
+            'levelKey'    => isset($config['levelKey']) ? $config['levelKey'] : 'level',// 层级的key名，按从1开始
         ];
         $nodeList = [];
         foreach ($array as $index => $item) {
             if ($item[$curConfig['parentKey']] == $pid) {
                 // 寻找下一级
                 if ($curConfig['maxLevel'] === 0 || $level + 1 <= $curConfig['maxLevel']) {
+                    if (!empty($curConfig['levelKey'])) {
+                        $item[$curConfig['levelKey']] = $level;
+                    }
                     $item[$curConfig['childrenKey']] = self::arrayToTree($array, $item[$curConfig['idKey']], $config, $level + 1);
                 }
                 $nodeList[] = $item;
