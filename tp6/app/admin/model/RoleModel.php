@@ -260,6 +260,7 @@ class RoleModel extends Model
 
     /**
      * 根据角色Id获取角色名
+     * @deprecated
      * @param  int  $roleId  角色id
      * @return string 返回角色名
      */
