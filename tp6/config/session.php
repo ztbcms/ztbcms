@@ -11,7 +11,7 @@ if (file_exists(root_path() . "config/dataconfig.php")) {
     if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
         $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
     } else {
-        throw new \Exception('找不到dataconfig.php文件');
+        //找不到dataconfig.php文件，请先安装ZTBCMS
     }
 }
 
@@ -27,5 +27,5 @@ return [
     // 过期时间
     'expire'         => 1440,
     // 前缀
-    'prefix'         => $cmsDataConfig['COOKIE_PREFIX'],
+    'prefix'         => $cmsDataConfig['COOKIE_PREFIX'] ?? '',
 ];

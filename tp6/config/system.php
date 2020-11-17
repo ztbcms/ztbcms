@@ -14,19 +14,19 @@ if (file_exists(root_path() . "config/dataconfig.php")) {
     if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
         $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
     } else {
-        throw new \Exception('找不到dataconfig.php文件');
+        //找不到dataconfig.php文件，请先安装ZTBCMSv
     }
 }
 
 return [
     /* 站点安全设置 */
-    "authcode" => $cmsDataConfig['AUTHCODE'], //密钥
+    "authcode" => $cmsDataConfig['AUTHCODE'] ?? '', //密钥
 
     /* Cookie设置 */
-    "cookie_prefix" => $cmsDataConfig['COOKIE_PREFIX'], //Cookie前缀
+    "cookie_prefix" => $cmsDataConfig['COOKIE_PREFIX'] ?? '', //Cookie前缀
 
     /* 数据缓存设置 */
-    'data_chache_prefix' => $cmsDataConfig['DATA_CACHE_PREFIX'], // 缓存前缀
+    'data_chache_prefix' => $cmsDataConfig['DATA_CACHE_PREFIX'] ?? '', // 缓存前缀
 ];
 
 
