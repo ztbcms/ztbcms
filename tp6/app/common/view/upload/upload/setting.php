@@ -175,7 +175,7 @@
                 // 插入export default里面的内容
                 components: {},
                 props: [],
-                data() {
+                data: function() {
                     return {
                         formData: {
                             attachment_driver: "{$config.attachment_driver}",
@@ -237,18 +237,18 @@
                 },
                 computed: {},
                 watch: {},
-                created() {
+                created: function() {
                 },
-                mounted() {
+                mounted: function() {
                 },
                 methods: {
-                    submitForm() {
-                        this.$refs['elForm'].validate(valid => {
+                    submitForm: function() {
+                        this.$refs['elForm'].validate(function(valid) {
                             if (!valid) return;
                             // TODO 提交表单
 
                             $.ajax({
-                                url: "{:urlx('common/upload.upload/setting')}",
+                                url: "{:api_url('common/upload.upload/setting')}",
                                 method: 'post',
                                 dataType: 'json',
                                 data: this.formData,

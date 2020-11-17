@@ -51,7 +51,7 @@
                     type: 2,
                     title: '',
                     closeBtn: false,
-                    content: '{:urlx("common/upload.panel/imageUEUpload")}',
+                    content: '{:api_url("common/upload.panel/imageUEUpload")}',
                     area: ['670px', '550px'],
                     end: function () {
                         console.log(0)

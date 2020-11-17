@@ -115,12 +115,6 @@
                             }
                         })
                     };
-                    if (record.status === 1) {
-                        this.$confirm('该记录已经处理完成，是否再次执行？').then(res => hand()).catch(err => {
-                        })
-                    } else {
-                        hand();
-                    }
                 },
                 openDetail: function (detail) {
                     this.$alert(JSON.stringify(detail));
@@ -151,7 +145,7 @@
                             _this.currentPage = data.current_page;
                         }
                     })
-                },
+                }
             }
         });
     })
