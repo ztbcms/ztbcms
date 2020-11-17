@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8"/>
     <title>安装向导</title>
-    <link rel="stylesheet" href="/statics/extres/install/css/install.css?v=9.0"/>
+    <link rel="stylesheet" href="/statics/modules/install/css/install.css"/>
+    <script src="/statics/modules/install/js/jquery.js"></script>
+    <script src="/statics/modules/install/js/validate.js"></script>
+    <script src="/statics/modules/install/js/ajaxForm.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -152,10 +155,7 @@
             </div>
         </form>
     </section>
-    <div style="width:0;height:0;overflow:hidden;"><img src="/statics/extres/install/images/install/pop_loading.gif"></div>
-    <script src="/statics/extres/install/js/jquery.js?v=9.0"></script>
-    <script src="/statics/extres/install/js/validate.js?v=9.0"></script>
-    <script src="/statics/extres/install/js/ajaxForm.js?v=9.0"></script>
+    <div style="width:0;height:0;overflow:hidden;"><img src="/statics/modules/install/images/install/pop_loading.gif"></div>
     <script>
         function TestDbPwd() {
 
