@@ -395,13 +395,13 @@
                     },
                     // 删除选中
                     clickDeleteSelected: function () {
+                        var that = this
                         this.$confirm('确认删除？', {
                             type: 'warning'
-                        }).then(res => {
+                        }).then(function(res) {
                             //确认回掉
-                            this.doDeleteSelected()
-                        }).catch(err => {
-                        });
+                            that.doDeleteSelected()
+                        })
                     },
                     doDeleteSelected: function () {
                         var that = this;

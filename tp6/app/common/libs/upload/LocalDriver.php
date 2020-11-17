@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
  * Date: 2020-09-15
- * Time: 18:23.
  */
 
 namespace app\common\libs\upload;
