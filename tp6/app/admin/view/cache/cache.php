@@ -60,10 +60,11 @@
                             "type": type
                         };
                         that.httpPost(url, data, function(res){
+                            layer.closeAll()
                             if(res.status){
-                                layer.msg('操作成功', {icon: 1});
+                                ELEMENT.Message.success(res.msg)
                             } else {
-                                layer.msg(res.msg);
+                                ELEMENT.Message.error(res.msg)
                             }
                         });
                     });

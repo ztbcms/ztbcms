@@ -836,7 +836,7 @@
             },
             // 点击清理缓存
             click_cleancache: function(){
-                this.openNewFrame('缓存更新', '/home/admin/cache/cache')
+                this.openNewFrame('缓存更新', "{:api_url('/admin/cache/cache')}")
             },
             // 点击退出
             click_logout: function(){
