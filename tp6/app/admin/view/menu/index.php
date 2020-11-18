@@ -178,7 +178,7 @@
                 details : function (id) {
                     var that = this;
                     var url = '{:api_url("/admin/Menu/details")}';
-                    if(id) url += '&id=' + id;
+                    if(id) url += '?id=' + id;
                     layer.open({
                         type: 2,
                         title: '管理',
@@ -192,7 +192,9 @@
                 linkMenuAdd: function (parentid) {
                     var that = this;
                     var url = '{:api_url("/admin/Menu/details")}';
-                    if(parentid) url += '&parentid=' + parentid;
+                    if(parentid) {
+                        url += '?parentid=' + parentid
+                    }
                     layer.open({
                         type: 2,
                         title: '管理',
@@ -202,7 +204,7 @@
                             that.getList();
                         }
                     })
-                },
+                }
             },
             mounted: function () {
                 this.getList();

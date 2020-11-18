@@ -76,7 +76,7 @@
                 return {
                     formData: {
                         id : "{$id}",
-                        parentid: "0",
+                        parentid: "{$parentid}",
                         name: '',
                         app: '',
                         controller: '',
@@ -147,15 +147,19 @@
             watch: {},
             created: function() {},
             mounted: function() {
+                if(this.formData.parentid){
+                    this.formData.parentid = parseInt(this.formData.parentid)
+                }
                 this.getMenuList();
-                // this.getModuleList();
-                if(this.formData.id) this.getDetails();
+                if(this.formData.id) {
+                    this.getDetails();
+                }
             },
             methods: {
                 submitForm: function() {
                     var that = this;
 
-                    that.$refs['elForm'].validate(valid => {
+                    that.$refs['elForm'].validate(function(valid){
                         if (!valid) return;
                         // TODO 提交表单
                         $.ajax({

@@ -41,3 +41,8 @@ TODO: AccessService
 
 定义了常量(tp6/index.php)IS_THINKPHP_V6来判定环境是否为tp6,稍后相关的判定可以删除的
 
+## 后台前端说明
+
+Javascript:
+- 请务必适用ES5的写法，增加兼容性（不要适用let const `=>`）
+
