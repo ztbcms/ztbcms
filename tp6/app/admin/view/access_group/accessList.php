@@ -18,7 +18,7 @@
 
                             </el-table-column>
 
-                            <el-table-column label="ID" align="center">
+                            <el-table-column label="ID" align="center" width="100">
                                 <template slot-scope="scope">
                                     <span>{{ scope.row.id }}</span>
                                 </template>

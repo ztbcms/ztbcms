@@ -135,7 +135,7 @@
                detail: function (id) {
                     var that = this;
                     var url = '{:api_url("/admin/AccessGroup/accessGroupDetails")}';
-                   if(id) url += '&id='+id;
+                   if(id) url += '?id='+id;
                     layer.open({
                         type: 2,
                         title: '管理',
@@ -154,7 +154,6 @@
     });
 </script>
 
-<link href="/statics/css/admin_style.css" rel="stylesheet"/>
 <style>
 
 </style>

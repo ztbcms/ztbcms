@@ -5,7 +5,7 @@
                 <div>
                     <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
 
-                        <h3> 角色信息 </h3>
+                        <h3>权限组设置</h3>
 
                         <el-form-item label="名称" prop="name">
                             <el-input v-model="info.name" placeholder="请输入名称" clearable
@@ -34,13 +34,15 @@
                             <el-radio v-model="info.status" label="0">禁止</el-radio>
                         </el-form-item>
 
-                        <el-button type="primary" style="margin-bottom: 20px;" @click="submitForm">基础信息保存</el-button>
+                        <el-form-item label="">
+                            <el-button type="primary" style="margin-bottom: 20px;" @click="submitForm">保存</el-button>
+                        </el-form-item>
 
-                        <el-button v-if="info.id != ''" type="primary" @click="clickSelectAccessList">添加权限</el-button>
-                        <el-button v-if="info.id != ''" type="primary" @click="clickSave">权限保存</el-button>
 
                         <div v-if="info.id != ''">
                             <h3> 权限列表 </h3>
+                            <el-button v-if="info.id != ''" type="primary" size="mini" @click="clickSelectAccessList">添加权限</el-button>
+                            <el-button v-if="info.id != ''" type="primary" size="mini"  @click="clickSave">保存权限列表</el-button>
 
                             <el-table
                                     :data="accessGroupItems"
@@ -141,7 +143,7 @@
                     var that = this;
                     if (that.info.id) {
                         $.ajax({
-                            url: "{:api_url('/admin/AccessGroup/getAccessGroupById')}&id=" + that.info.id,
+                            url: "{:api_url('/admin/AccessGroup/getAccessGroupById')}" + '?id=' + that.info.id,
                             type: "get",
                             dataType: "json",
                             success: function (res) {
@@ -208,7 +210,7 @@
                         shadeClose: true,
                         shade: 0.8,
                         area: ['70%', '70%'],
-                        content: "{:api_url('/admin/AccessGroup/accessList')}" + '&selected_ids=' + this.selectedItemIds.join(',')
+                        content: "{:api_url('/admin/AccessGroup/accessList')}" + '?selected_ids=' + this.selectedItemIds.join(',')
                     });
                 },
                 updateSelectAccessList: function(accessList){
