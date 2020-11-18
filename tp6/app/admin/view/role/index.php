@@ -205,7 +205,7 @@
                 },
                 //成员管理
                 gotomanagerPage: function (id) {
-                    var url = "{:api_url('/admin/Management/index')}";
+                    var url = "{:api_url('/admin/AdminManager/index')}";
                     url = url + '?role_id=' + id;
                     this.__openWindow(url);
                 },
