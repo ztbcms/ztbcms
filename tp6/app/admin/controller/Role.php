@@ -1,12 +1,12 @@
 <?php
 /**
- * User: Cycle3
- * Date: 2020/9/23
+ * Author: Jayin
  */
 
 namespace app\admin\controller;
 
 
+use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
 use app\admin\service\MenuService;
@@ -194,7 +194,7 @@ class Role extends AdminController
             ];
 
             $list [] = $array;
-            if ($rbacService->enableRoleAccess($role_id, $a['app'], $a['controller'], $a['action'])['status']) {
+            if ($a['type'] == MenuModel::TYPE_PERMISSION_MENU && $rbacService->enableRoleAccess($role_id, $a['app'], $a['controller'], $a['action'])['status']) {
                 $select_menu_ids [] = $a['id'];
             }
         }

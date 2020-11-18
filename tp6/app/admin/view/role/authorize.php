@@ -68,37 +68,35 @@
                     var half_checked_keys = that.$refs.tree.getHalfCheckedKeys().toString();
                     // 选中+半选中也需要记录
                     var keys = checked_keys + ',' + half_checked_keys
-                    $.ajax({
-                        url: "{:api_url('/admin/Role/authorize')}",
-                        data: {
-                            menuid : keys,
-                            roleid : that.role_id
-                        },
-                        type: "post",
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.status) {
-                                layer.msg(res.msg);
-                                setTimeout(function () {
-                                    parent.window.layer.closeAll();
-                                }, 1000)
-                            } else {
-                                layer.msg(res.msg)
-                            }
+                    var data = {
+                        menuid : keys,
+                        roleid : that.role_id
+                    }
+                    that.httpPost("{:api_url('/admin/Role/authorize')}", data, function (res) {
+                        if (res.status) {
+                            // layer.msg(res.msg);
+                            that.$message.success(res.msg)
+                            setTimeout(function () {
+                                parent.window.layer.closeAll();
+                            }, 1000)
+                        } else {
+                            // layer.msg(res.msg)
+                            that.$message.error(res.msg)
                         }
                     })
                 },
                 //获取菜单详情
                 getDetails: function () {
                     var that = this;
-                    $.get("{:api_url('/admin/Role/getAuthorizeList')}", {
-                        id: that.id,
-                    }, function (res) {
-                        that.data = res.data.list;
-                        that.defaultKeys = res.data.select_menu_id;
-                        that.role_id = res.data.role_id;
-                        that.name = res.data.name;
-                    }, 'json');
+                    var data = {id: that.id}
+                    that.httpGet("{:api_url('/admin/Role/getAuthorizeList')}", data, function (res) {
+                        if (res.status) {
+                            that.data = res.data.list;
+                            that.defaultKeys = res.data.select_menu_id;
+                            that.role_id = res.data.role_id;
+                            that.name = res.data.name;
+                        }
+                    })
                 },
                 filterNode: function(value, data) {
                     if (!value) return true;

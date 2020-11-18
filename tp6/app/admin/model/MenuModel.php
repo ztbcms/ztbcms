@@ -1,7 +1,6 @@
 <?php
 /**
- * User: jayinton
- * Date: 2020/9/18
+ * Author: jayinton
  */
 
 namespace app\admin\model;
@@ -15,6 +14,18 @@ use think\Model;
 class MenuModel extends Model
 {
     protected $name = 'menu';
+
+    // 菜单类型
+    // 无权限菜单
+    const TYPE_MENU = 0;
+    // 权限菜单
+    const TYPE_PERMISSION_MENU = 1;
+
+    // 展示菜单状态
+    // 不展示
+    const STATUS_UNSHOW = 0;
+    // 展示
+    const STATUS_SHOW = 1;
 
     /**
      * 获取后台管理员的菜单
