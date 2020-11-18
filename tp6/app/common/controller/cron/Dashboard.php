@@ -222,7 +222,7 @@ class Dashboard extends AdminController
     {
         $cronConfig = CronConfigModel::column('value', 'key');
         $cronStatus = $this->_getCronExecuteStatus();
-        $cronEntryUrl = $request->domain() . '/home/common/cron.index/index/cron_secret_key/' . $cronConfig[CronConfigModel::KEY_ENABLE_SECRET_KEY];
+        $cronEntryUrl = api_url('/common/cron.index/index/cron_secret_key/' . $cronConfig[CronConfigModel::KEY_ENABLE_SECRET_KEY]);
         return self::createReturn(true, [
             'cron_config' => $cronConfig,
             'cron_status' => $cronStatus,
