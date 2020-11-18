@@ -119,7 +119,7 @@
                 el: '#app',
                 data: {
                     uploadConfig: {
-                        uploadUrl: "{:urlx('common/upload.panel/imageUpload')}",
+                        uploadUrl: "{:api_url('common/upload.panel/imageUpload')}",
                         max_upload: 99,//同时上传文件数
                         accept: 'image/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
@@ -192,7 +192,7 @@
                             group_id: this.now_group,
                         };
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/getFilesByGroupIdList')}",
+                            url: "{:api_url('common/upload.panel/getFilesByGroupIdList')}",
                             data: where,
                             dataType: 'json',
                             type: 'get',
@@ -227,7 +227,7 @@
                     getGalleryGroup:function() {
                         var that = this;
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/getGalleryGroup')}",
+                            url: "{:api_url('common/upload.panel/getGalleryGroup')}",
                             dataType: 'json',
                             type: 'get',
                             success: function (res) {
@@ -248,7 +248,7 @@
                             beforeClose: function(action, instance, done){
                                 if(action == 'confirm'){
                                     $.ajax({
-                                        url: "{:urlx('common/upload.panel/addGalleryGroup')}",
+                                        url: "{:api_url('common/upload.panel/addGalleryGroup')}",
                                         dataType: "json",
                                         type: "post",
                                         data: {
@@ -288,7 +288,7 @@
                             beforeClose: function(action, instance, done){
                                 if(action == 'confirm'){
                                     $.ajax({
-                                        url: "{:urlx('common/upload.panel/editGalleryGroup')}",
+                                        url: "{:api_url('common/upload.panel/editGalleryGroup')}",
                                         dataType: "json",
                                         type: "post",
                                         data: {
@@ -326,7 +326,7 @@
                             var data = {
                                 group_id: group_id
                             };
-                            that.httpPost("{:urlx('common/upload.panel/delGalleryGroup')}", data, function(res){
+                            that.httpPost("{:api_url('common/upload.panel/delGalleryGroup')}", data, function(res){
                                 if (res.status) {
                                     that.getGalleryGroup();
                                     that.$message({
@@ -351,7 +351,7 @@
                             files.push(this.selectdFileList[i])
                         }
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/moveGralleryGroup')}",
+                            url: "{:api_url('common/upload.panel/moveGralleryGroup')}",
                             data: {
                                 files: files,
                                 group_id: this.move_group_id
@@ -395,13 +395,13 @@
                     },
                     // 删除选中
                     clickDeleteSelected: function () {
+                        var that = this
                         this.$confirm('确认删除？', {
                             type: 'warning'
-                        }).then(res => {
+                        }).then(function(res) {
                             //确认回掉
-                            this.doDeleteSelected()
-                        }).catch(err => {
-                        });
+                            that.doDeleteSelected()
+                        })
                     },
                     doDeleteSelected: function () {
                         var that = this;
@@ -411,7 +411,7 @@
                         }
 
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/deleteFiles')}",
+                            url: "{:api_url('common/upload.panel/deleteFiles')}",
                             data: {
                                 files: files
                             },

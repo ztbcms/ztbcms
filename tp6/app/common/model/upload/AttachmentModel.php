@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
  * Date: 2020-09-15
- * Time: 14:49.
  */
 
 namespace app\common\model\upload;
@@ -12,6 +10,11 @@ use app\common\service\upload\UploadService;
 use think\Model;
 use think\model\concern\SoftDelete;
 
+/**
+ * 附件
+ *
+ * @package app\common\model\upload
+ */
 class AttachmentModel extends Model
 {
     use SoftDelete;

@@ -60,7 +60,7 @@ class ModuleInstaller extends BaseService
         $config = $res['data'];
         //版本检查
         if ($config['adaptation']) {
-            if (version_compare(Config::get('admin.admin_version'), $config['adaptation'], '>=') == false) {
+            if (version_compare(Config::get('admin.cms_version'), $config['adaptation'], '>=') == false) {
                 return self::createReturn(false, null, '该模块要求系统最低版本为：'.$config['adaptation']);
             }
         }

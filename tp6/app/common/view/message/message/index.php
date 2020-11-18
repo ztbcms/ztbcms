@@ -161,7 +161,7 @@
                     var _this = this;
                     var hander = function () {
                         $.ajax({
-                            url: "{:urlx('common/message.message/handMessage')}",
+                            url: "{:api_url('/common/message.message/handMessage')}",
                             data: {message_id: message.id},
                             dataType: 'json',
                             type: 'post',
@@ -196,7 +196,7 @@
                 getList: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/message.message/getMessageList')}",
+                        url: "{:api_url('common/message.message/getMessageList')}",
                         data: Object.assign({
                             search_message: this.searchMessage,
                             page: this.currentPage

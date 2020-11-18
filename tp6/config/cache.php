@@ -5,14 +5,13 @@
 // +----------------------------------------------------------------------
 
 //引入cms数据库配置
+$cmsDataConfig = [];
 if (file_exists(root_path() . "config/dataconfig.php")) {
     $cmsDataConfig = include root_path() . "config/dataconfig.php";
 } else {
     // 兼容 tp3.2
     if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
         $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
-    } else {
-        throw new \Exception('找不到dataconfig.php文件');
     }
 }
 
@@ -28,7 +27,7 @@ return [
             // 缓存保存目录
             'path'       => '',
             // 缓存前缀
-            'prefix'     => $cmsDataConfig['DATA_CACHE_PREFIX'],
+            'prefix'     => $cmsDataConfig['DATA_CACHE_PREFIX'] ?? 'ztbcms',
             // 缓存有效期 0表示永久缓存
             'expire'     => 0,
             // 缓存标签前缀

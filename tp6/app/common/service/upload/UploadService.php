@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
  * Date: 2020-09-15
- * Time: 18:01.
  */
 
 namespace app\common\service\upload;
@@ -15,6 +13,11 @@ use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
 use function EasyWeChat\Kernel\Support\get_client_ip;
 
+/**
+ * 上传服务
+ *
+ * @package app\common\service\upload
+ */
 class UploadService extends BaseService
 {
     public $isPrivate = false;

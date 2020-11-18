@@ -6,7 +6,7 @@
                 <el-upload
                         :limit="9"
                         multiple
-                        action="{:urlx('common/upload.api/imageUpload')}"
+                        action="{:api_url('common/upload.api/imageUpload')}"
                         accept="image/*"
                         :on-success="handleUploadSuccess"
                         :on-error="handleUploadError"
@@ -22,7 +22,7 @@
                     <el-upload
                             :limit="9"
                             multiple
-                            action="{:urlx('common/upload.api/imageUpload')}"
+                            action="{:api_url('common/upload.api/imageUpload')}"
                             accept="image/*"
                             :on-success="handleUploadSuccess"
                             :on-error="handleUploadError"
@@ -39,7 +39,7 @@
                     <el-upload
                             :limit="9"
                             multiple
-                            action="{:urlx('common/upload.api/videoUpload')}"
+                            action="{:api_url('common/upload.api/videoUpload')}"
                             accept="video/*"
                             :on-success="handleUploadSuccess"
                             :on-error="handleUploadError"
@@ -55,7 +55,7 @@
                     <el-upload
                             :limit="9"
                             multiple
-                            action="{:urlx('common/upload.api/fileUpload')}"
+                            action="{:api_url('common/upload.api/fileUpload')}"
                             accept=".xls,.doc,.ppt,.xlsx,.docx,.pptx,.pdf"
                             :on-success="handleUploadSuccess"
                             :on-error="handleUploadError"
@@ -190,7 +190,7 @@
                             type: 2,
                             title: '',
                             closeBtn: false,
-                            content: "{:urlx('common/upload.panel/fileUpload')}",
+                            content: "{:api_url('common/upload.panel/fileUpload')}",
                             area: ['670px', '550px'],
                         })
                     },
@@ -213,7 +213,7 @@
                             type: 2,
                             title: '',
                             closeBtn: false,
-                            content: "{:urlx('common/upload.panel/videoUpload')}",
+                            content: "{:api_url('common/upload.panel/videoUpload')}",
                             area: ['670px', '550px'],
                         })
                     },
@@ -236,7 +236,7 @@
                             type: 2,
                             title: '',
                             closeBtn: false,
-                            content: "{:urlx('common/upload.panel/imageUpload')}&is_private=" + isPrivate,
+                            content: "{:api_url('common/upload.panel/imageUpload')}?is_private=" + isPrivate,
                             area: ['670px', '550px'],
                         })
                     },

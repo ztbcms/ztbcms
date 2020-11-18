@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8"/>
     <title>安装向导</title>
-    <link rel="stylesheet" href="/statics/extres/install/css/install.css?v=9.0"/>
-    <script type="text/javascript" src="/statics/extres/install/js/jquery.js"></script>
+    <link rel="stylesheet" href="/statics/modules/install/css/install.css"/>
+    <script type="text/javascript" src="/statics/modules/install/js/jquery.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -27,7 +27,7 @@
             <ul id="loginner">
             </ul>
         </div>
-        <div class="bottom tac"><a href="javascript:;" class="btn_old"><img src="/statics/extres/install/images/install/loading.gif" align="absmiddle"/>&nbsp;正在安装...</a></div>
+        <div class="bottom tac"><a href="javascript:;" class="btn_old"><img src="/statics/modules/install/images/install/loading.gif" align="absmiddle"/>&nbsp;正在安装...</a></div>
     </section>
     <script type="text/javascript">
         var n = 0;

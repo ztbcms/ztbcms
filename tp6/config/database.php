@@ -1,5 +1,6 @@
 <?php
 //引入cms数据库配置
+$cmsDataConfig = [];
 if (file_exists(root_path() . "config/dataconfig.php")) {
     $cmsDataConfig = include root_path() . "config/dataconfig.php";
 } else {
@@ -7,13 +8,13 @@ if (file_exists(root_path() . "config/dataconfig.php")) {
     if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
         $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
     } else {
-        throw new \Exception('找不到dataconfig.php文件');
+        //找不到dataconfig.php文件，请先安装ZTBCMS
     }
 }
 
 return [
     // 默认使用的数据库连接配置
-    'default' => $cmsDataConfig['DB_TYPE'],
+    'default' => $cmsDataConfig['DB_TYPE'] ?? 'mysql',
 
     // 自定义时间查询规则
     'time_query_rule' => [],
@@ -30,23 +31,23 @@ return [
     'connections' => [
         'mysql' => [
             // 数据库类型
-            'type' => $cmsDataConfig['DB_TYPE'],
+            'type' => $cmsDataConfig['DB_TYPE'] ?? 'mysql',
             // 服务器地址
-            'hostname' => $cmsDataConfig['DB_HOST'],
+            'hostname' => $cmsDataConfig['DB_HOST'] ?? '',
             // 数据库名
-            'database' => $cmsDataConfig['DB_NAME'],
+            'database' => $cmsDataConfig['DB_NAME'] ?? '',
             // 用户名
-            'username' => $cmsDataConfig['DB_USER'],
+            'username' => $cmsDataConfig['DB_USER'] ?? '',
             // 密码
-            'password' => $cmsDataConfig['DB_PWD'],
+            'password' => $cmsDataConfig['DB_PWD'] ?? '',
             // 端口
-            'hostport' => $cmsDataConfig['DB_PORT'],
+            'hostport' => $cmsDataConfig['DB_PORT'] ?? '3306',
             // 数据库连接参数
             'params' => [],
             // 数据库编码默认采用utf8
-            'charset' => $cmsDataConfig['DB_CHARSET'],
+            'charset' => $cmsDataConfig['DB_CHARSET'] ?? 'utf8',
             // 数据库表前缀
-            'prefix' => $cmsDataConfig['DB_PREFIX'],
+            'prefix' => $cmsDataConfig['DB_PREFIX'] ?? '',
 
             // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
             'deploy' => 0,

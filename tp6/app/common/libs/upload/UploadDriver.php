@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
  * Date: 2020/9/22
- * Time: 20:41.
  */
 
 namespace app\common\libs\upload;
@@ -26,7 +24,7 @@ abstract class UploadDriver
     /**
      * @param  mixed  $isPrivate
      */
-    public function setIsPrivate($isPrivate): void
+    public function setIsPrivate($isPrivate)
     {
         $this->isPrivate = $isPrivate;
     }

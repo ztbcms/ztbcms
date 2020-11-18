@@ -284,7 +284,7 @@ class MenuService extends BaseService
 
     /**
      * 获取角色的权限菜单
-     *
+     * TODO 优化，不用每次都检测权限
      * @param $role_id
      *
      * @return array

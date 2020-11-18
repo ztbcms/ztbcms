@@ -25,11 +25,11 @@ class Index extends BaseController
         }
     }
 
+    // 安装向导
     function index()
     {
         return view('index');
     }
-
 
     function step2()
     {
@@ -133,7 +133,7 @@ class Index extends BaseController
     }
 
     /**
-     * 测试链接数据库
+     * 测试链接数据库（添加测试数据库链接）
      *
      * @return \think\response\Json
      */
@@ -165,6 +165,7 @@ class Index extends BaseController
             // 数据库连接参数
             'params'   => [],
         ];
+        $db_config['connections']['default'] = 'install';
         config($db_config, 'database');
         try {
             $res = Db::connect('install', true)->execute('show databases like \''.input('dbName').'\'');
@@ -178,7 +179,7 @@ class Index extends BaseController
     }
 
     //数据库安装
-    public function doInstall()
+    function doInstall()
     {
         $n = input('get.n', 0, 'intval');
 
@@ -206,6 +207,7 @@ class Index extends BaseController
         //测试数据
         $testdata = input('testdata', '', 'intval');
 
+
         $res = $this->_doTestDbConnection();
         if (!$res['status']) {
             return self::makeJsonReturn(true, [
@@ -213,7 +215,11 @@ class Index extends BaseController
             ]);
         }
 
-        $conn = Db::connect('install');
+        // 切换 install 链接来安装
+        $db_config = config('database');
+        $db_config['default'] = 'install';
+        config($db_config, 'database');
+
         //读取数据文件
         $sqldata = file_get_contents(app_path().'data/cms.sql');
         //读取测试数据
@@ -233,7 +239,7 @@ class Index extends BaseController
                 // 删除旧表
 //                $pre_sql = "DROP TABLE IF EXISTS `$matches[1]`";
 //                $conn->execute($pre_sql);
-                $ret = $conn->execute($sql);
+                $ret = Db::execute($sql);
 
                 if ($ret === 0) {
                     $message = '<li><span class="correct_span">&radic;</span>创建数据表'.$matches[1].'，完成</li> ';
@@ -244,18 +250,17 @@ class Index extends BaseController
                 return self::makeJsonReturn(true, $arr, $message);
             } else {
                 // 非创建表的，直接执行
-                $ret = $conn->execute($sql);
+                $ret = Db::execute($sql);
             }
         }
 
-
         //更新配置信息
-        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_name' WHERE varname='sitename'");
-        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_url' WHERE varname='siteurl' ");
-        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$sitefileurl' WHERE varname='sitefileurl' ");
-        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_description' WHERE varname='siteinfo'");
-        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_keywords' WHERE varname='sitekeywords'");
-        $conn->execute("UPDATE `{$dbPrefix}config` SET  `value` = '$manager_email' WHERE varname='siteemail'");
+        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_name' WHERE varname='sitename'");
+        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_url' WHERE varname='siteurl' ");
+        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$sitefileurl' WHERE varname='sitefileurl' ");
+        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_description' WHERE varname='siteinfo'");
+        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_keywords' WHERE varname='sitekeywords'");
+        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$manager_email' WHERE varname='siteemail'");
 
         //读取配置文件，并替换真实配置数据
         $strConfig = file_get_contents(app_path().'data/config.php');
@@ -275,9 +280,8 @@ class Index extends BaseController
             return self::makeJsonReturn(true, ['msg' => $message]);
         }
 
-        //插入管理员
-        //生成随机认证码
-        $verify = StringHelper::genRandomString(6);
+        //添加超级管理员
+        $verify = StringHelper::genRandomString(6);//生成随机认证码
         $time = time();
         $ip = request()->ip();
         $password = md5($password.md5($verify));
@@ -297,15 +301,15 @@ class Index extends BaseController
             'role_id'         => '1',
             'info'            => '',
         ];
-
         $query = "INSERT INTO `{$dbPrefix}user` (username, nickname,password,verify,email,remark,create_time,update_time,status,role_id,info) 
           VALUES ('{$admin_data['username']}','{$admin_data['nickname']}','{$admin_data['password']}','{$admin_data['verify']}','{$admin_data['email']}','{$admin_data['remark']}','{$admin_data['create_time']}','{$admin_data['update_time']}','{$admin_data['status']}','{$admin_data['role_id']}','{$admin_data['info']}');";
-        $res = $conn->execute($query);
+        $res = Db::execute($query);
         if (!$res) {
             $message = '<li><span class="correct_span">&radic;</span>添加管理员，失败</li> ';
             return self::makeJsonReturn(true, ['msg' => $message]);
         }
 
+        // 安装默认模块
         $moduleService = new ModuleService();
         $install_modules = ['admin', 'common'];
         foreach ($install_modules as $module) {
@@ -315,6 +319,7 @@ class Index extends BaseController
                 return self::makeJsonReturn(true, ['msg' => $message]);
             }
         }
+
 
         return self::makeJsonReturn(true, ['n' => 999999, 'msg' => '安装完成'], '安装完成');
     }

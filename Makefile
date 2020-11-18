@@ -37,7 +37,15 @@ clean-install:
 	-@rm install.php
 	-@rm -rf app/Application/Install
 	-@rm -rf statics/extres/install
-	@echo '清除安装目录完毕!'	
+	@echo '清除安装目录完毕!'
+
+# 清理tp6
+clean-tp6:
+	@rm -f tp6/runtime/*.php
+	@rm -f tp6/runtime/*/*.php
+	@rm -f tp6/runtime/*/*/*.php
+	@rm -f tp6/runtime/*/*/*/*.php
+	@echo "清空完毕!"
 	
 	
 .PHONY: main serve setup-env setup-ubuntu-env clean-runtime clean-install

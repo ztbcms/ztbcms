@@ -5,10 +5,12 @@
             <h3>角色列表</h3>
         </div>
 
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Role', 'roleAdd')){ ?>
         <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary"
                    @click="roleAdd('')">
             添加角色
         </el-button>
+        <?php } ?>
 
         <el-table
                 :data="Manager"

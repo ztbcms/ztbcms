@@ -19,11 +19,12 @@ return [
             // 可见性
             'visibility' => 'public',
         ],
+        // 上传组件用这配置
         'ztbcms' => [
             // 磁盘类型
             'type' => 'local',
             // 磁盘路径
-            'root' => app()->getRootPath() . '../d/file',
+            'root' => defined('IS_THINKPHP_V6') ? app()->getRootPath() . 'public/d/file' : app()->getRootPath() . '../d/file',
             // 磁盘路径对应的外部URL路径
             'url' => '/d/file/',
             // 可见性

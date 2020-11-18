@@ -119,7 +119,7 @@
                 el: '#app',
                 data: {
                     uploadConfig: {
-                        uploadUrl: "{:urlx('common/upload.panel/imageUEUpload')}",
+                        uploadUrl: "{:api_url('common/upload.panel/imageUEUpload')}",
                         max_upload: 10,//同时上传文件数
                         accept: 'image/*', //接收文件类型，安全起见只限制文档类型的文件，有需要可以根据需求修改，注意不要不做限制！！
                     },
@@ -192,7 +192,7 @@
                             module: this.group_type //UEditor图片
                         };
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/getFilesByGroupIdList')}",
+                            url: "{:api_url('common/upload.panel/getFilesByGroupIdList')}",
                             data: where,
                             dataType: 'json',
                             type: 'get',
@@ -227,7 +227,7 @@
                     getGalleryGroup:function() {
                         var that = this;
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/getGalleryGroup')}",
+                            url: "{:api_url('common/upload.panel/getGalleryGroup')}",
                             dataType: 'json',
                             data: {
                                 group_type: that.group_type
@@ -250,7 +250,7 @@
                             beforeClose: function(action, instance, done){
                                 if(action == 'confirm'){
                                     $.ajax({
-                                        url: "{:urlx('common/upload.panel/addGalleryGroup')}",
+                                        url: "{:api_url('common/upload.panel/addGalleryGroup')}",
                                         dataType: "json",
                                         type: "post",
                                         data: {
@@ -291,7 +291,7 @@
                             beforeClose: function(action, instance, done){
                                 if(action == 'confirm'){
                                     $.ajax({
-                                        url: "{:urlx('common/upload.panel/editGalleryGroup')}",
+                                        url: "{:api_url('common/upload.panel/editGalleryGroup')}",
                                         dataType: "json",
                                         type: "post",
                                         data: {
@@ -329,7 +329,7 @@
                             var data = {
                                 group_id: group_id
                             };
-                            that.httpPost("{:urlx('common/upload.panel/delGalleryGroup')}", data, function(res){
+                            that.httpPost("{:api_url('common/upload.panel/delGalleryGroup')}", data, function(res){
                                 if (res.status) {
                                     that.getGalleryGroup();
                                     that.$message({
@@ -354,7 +354,7 @@
                             files.push(this.selectdFileList[i])
                         }
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/moveGralleryGroup')}",
+                            url: "{:api_url('common/upload.panel/moveGralleryGroup')}",
                             data: {
                                 files: files,
                                 group_id: this.move_group_id
@@ -414,7 +414,7 @@
                         }
 
                         $.ajax({
-                            url: "{:urlx('common/upload.panel/deleteFiles')}",
+                            url: "{:api_url('common/upload.panel/deleteFiles')}",
                             data: {
                                 files: files
                             },

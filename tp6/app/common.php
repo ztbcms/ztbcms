@@ -27,7 +27,14 @@ if (!function_exists('build_url')) {
      * @return string
      */
     function build_url($string, array $vars = [], $suffix = false, $domain = true){
-        return url('/home' . $string, $vars, $suffix, $domain)->build();
+        $prefix = '/home';
+        if (defined('IS_THINKPHP_V6')) {
+            $prefix = '';
+        }
+        if (strpos('/', $string) === 0) {
+            return url($prefix.$string, $vars, $suffix, $domain)->build();
+        }
+        return url($prefix.'/'.$string, $vars, $suffix, $domain)->build();
     }
 }
 

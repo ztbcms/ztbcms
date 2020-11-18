@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>安装向导</title>
-    <link rel="stylesheet" href="/statics/extres/install/css/install.css?v=9.0"/>
+    <link rel="stylesheet" href="/statics/modules/install/css/install.css"/>
 </head>
 <body>
 <div class="wrap">

@@ -101,7 +101,7 @@
                     var _this = this;
                     var hand = function () {
                         $.ajax({
-                            url: "{:urlx('common/message.message/handleAgainLog')}",
+                            url: "{:api_url('/common/message.message/handleAgainLog')}",
                             data: {log_id: record.id},
                             dataType: 'json',
                             type: 'post',
@@ -115,12 +115,6 @@
                             }
                         })
                     };
-                    if (record.status === 1) {
-                        this.$confirm('该记录已经处理完成，是否再次执行？').then(res => hand()).catch(err => {
-                        })
-                    } else {
-                        hand();
-                    }
                 },
                 openDetail: function (detail) {
                     this.$alert(JSON.stringify(detail));
@@ -136,7 +130,7 @@
                 getList: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:urlx('common/message.message/sendLog')}",
+                        url: "{:api_url('/common/message.message/sendLog')}",
                         data: Object.assign({
                             page: this.currentPage
                         }, this.searchForm),
@@ -151,7 +145,7 @@
                             _this.currentPage = data.current_page;
                         }
                     })
-                },
+                }
             }
         });
     })
