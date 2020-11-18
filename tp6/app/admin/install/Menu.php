@@ -227,7 +227,7 @@ return [
                     [
                         "route" => "admin/Role/authorize",
                         "type" => 1,
-                        "status" => 1,
+                        "status" => 0,
                         "name" => "权限设置",
                         "remark" => "",
                         "child" => []
