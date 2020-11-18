@@ -904,7 +904,7 @@
             },
             // 跳转到消息列表
             toShowMsg:function () {
-                this.openNewFrame('所有消息', '/home/admin/AdminMessage/index');
+                this.openNewFrame('所有消息', "{:api_url('/admin/AdminMessage/index')}");
                 this.showMsg = false
             }
         },
