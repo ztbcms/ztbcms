@@ -64,7 +64,7 @@ class AdminMessage extends AdminController
         // 消息类型
         $type = Request::param('type', '');
         if ($type) {
-            $where[] = ['type', '=', $type];
+            $where[] = ['target_type', '=', $type];
         }
 
         $order = 'read_status ASC,create_time DESC';

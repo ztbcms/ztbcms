@@ -3,7 +3,7 @@
         <el-row>
             <el-col :span="5">
                 <h3>系统通知</h3>
-                <pre>* 系统通知类型 type 为 'system' </pre>
+                <pre>* 系统通知类型 target_type 为 'system' </pre>
             </el-col>
             <el-col :span="19">
                 <div style="text-align: right;margin-top: 1em;">
