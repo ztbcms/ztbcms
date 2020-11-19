@@ -125,15 +125,12 @@ class AdminController extends BaseController
      */
     private function hasAccessPermission($user_id, string $base_url = '')
     {
-        // TODO: 适配过渡版本
-        if (strpos($base_url, '/home/') === 0) {
-            $base_url = str_replace('/home/', '', $base_url);
-        }
         if (!empty($base_url)) {
+            // 格式：/app/controller/action
             $items = explode('/', $base_url);
-            $app = $items[0];
-            $controller = $items[1];
-            $action = $items[2];
+            $app = $items[1];
+            $controller = $items[2];
+            $action = $items[3];
         } else {
             $app = strtoupper(app('http')->getName());
             $controller = strtoupper(request()->controller());

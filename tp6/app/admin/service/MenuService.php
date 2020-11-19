@@ -289,7 +289,7 @@ class MenuService extends BaseService
      */
     static function getMenuByRole($role_id){
         // 只获取tp6菜单
-        $menuList = MenuModel::where(['status' => MenuModel::STATUS_SHOW, 'is_tp6' => 1])->order('listorder ASC,id ASC')->select()->toArray();
+        $menuList = MenuModel::where(['is_tp6' => 1])->order('listorder ASC,id ASC')->select()->toArray();
         $array = [];
         $rbacService = new RbacService();
         foreach ($menuList as $v) {

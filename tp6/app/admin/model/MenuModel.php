@@ -41,6 +41,9 @@ class MenuModel extends Model
         $list = [];
         // 数据格式化
         foreach ($menuList as $a) {
+            if($a['status'] == MenuModel::STATUS_UNSHOW){
+                continue;
+            }
             $id = $a['id'];
             $name = $a['app'];
             $controller = $a['controller'];
