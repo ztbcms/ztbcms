@@ -69,23 +69,6 @@
                         <div class="card-changyong-label">常用功能</div>
                         <div class="card-changyong-data">
                             <el-row>
-                                <el-col :span="4">
-                                    <div class="col-data" @click="gotoPage1">
-                                        <div class="item-icon">
-                                            <i class="iconfont icon-shuju"></i>
-                                        </div>
-                                        <div class="item-label">内容管理</div>
-                                    </div>
-                                </el-col>
-
-                                <el-col :span="4">
-                                    <div class="col-data" @click="gotoPage2">
-                                        <div class="item-icon">
-                                            <i class="iconfont icon-empty"></i>
-                                        </div>
-                                        <div class="item-label">模型管理</div>
-                                    </div>
-                                </el-col>
 
                                 <el-col :span="4">
                                     <div class="col-data" @click="gotoPage3">
@@ -241,20 +224,15 @@
                     })
                 },
 
-                gotoPage1: function () {
-                    this.openNewIframeByUrl('内容管理', "{:api_url('/Content/Content/index')}")
-                },
-                gotoPage2: function () {
-                    this.openNewIframeByUrl('模型管理', "{:api_url('/Content/Models/index')}")
-                },
+
                 gotoPage3: function () {
-                    this.openNewIframeByUrl('站点配置', "{:api_url('/Admin/Config/index')}")
+                    this.openNewIframeByUrl('站点配置', "{:api_url('/admin/Config/index')}")
                 },
                 gotoPage4: function () {
-                    this.openNewIframeByUrl('管理员管理', "{:api_url('/Content/Content/index')}")
+                    this.openNewIframeByUrl('管理员管理', "{:api_url('/admin/AdminManager/index')}")
                 },
                 gotoPage5: function () {
-                    this.openNewIframeByUrl('开发文档', "http://ztbcms.com/")
+                    this.openNewIframeByUrl('开发文档', "http://www.ztbcms.com/")
                 }
             },
             mounted: function () {
