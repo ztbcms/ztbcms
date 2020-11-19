@@ -1,7 +1,7 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <el-col :sm="24" :md="18">
-            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="160px">
+            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="80px">
                 <el-form-item label="键名" prop="fieldname">
                     <el-input v-model="formData.fieldname" placeholder="请输入键名" clearable :style="{width: '100%'}">
                     </el-input>
@@ -32,7 +32,7 @@
                 </template>
 
                 <el-form-item size="large">
-                    <el-button type="primary" @click="submitForm">保存</el-button>
+                    <el-button type="primary" @click="submitForm" size="small">保存</el-button>
                     <el-button v-if="formData && formData.fid" type="danger" @click="deleteItem">删除</el-button>
                 </el-form-item>
             </el-form>
@@ -105,6 +105,11 @@
                         //  提交表单
                         that.httpPost("{:api_url('/admin/Config/editExtend')}", that.formData, function (res) {
                             layer.msg(res.msg)
+                            if(res.status){
+                                setTimeout(function(){
+                                    window.parent.layer.closeAll()
+                                }, 500)
+                            }
                         })
                     })
                 },
