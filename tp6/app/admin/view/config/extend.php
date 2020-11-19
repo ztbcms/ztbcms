@@ -1,8 +1,13 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
+        <h3>配置项列表</h3>
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Config', 'editExtend')){ ?>
+            <div>
+                <el-button @click="extendAdd" type="primary" size="small">添加配置项</el-button>
+            </div>
+        <?php } ?>
         <el-col :sm="24" :md="18">
-
-            <template>
+            <template v-if="configFieldList.length > 0 ">
                 <div>
                     <el-form ref="elForm" :model="formData" size="medium" label-width="180px">
                         <template v-for="item in configFieldList">
@@ -63,7 +68,7 @@
                         </template>
 
                         <el-form-item size="large">
-                            <el-button type="primary" @click="submitForm">保存</el-button>
+                            <el-button type="primary" @click="submitForm" size="small">保存</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -122,7 +127,20 @@
                     var url = "{:api_url('/admin/Config/editExtend')}" + '?fid=' + item.fid
                     layer.open({
                         type: 2,
-                        title: '安装',
+                        title: '编辑',
+                        content: url,
+                        area: ['670px', '550px'],
+                        end: function(){
+                            that.getDetail()
+                        }
+                    })
+                },
+                extendAdd: function () {
+                    var that = this
+                    var url = "{:api_url('/admin/Config/editExtend')}"
+                    layer.open({
+                        type: 2,
+                        title: '添加配置项',
                         content: url,
                         area: ['670px', '550px'],
                         end: function(){

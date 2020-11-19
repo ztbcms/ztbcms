@@ -322,14 +322,6 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Config/editExtend",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "添加拓展配置",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
                         "route" => "admin/Config/doDeleteExtendField",
                         "type" => 1,
                         "status" => 0,
