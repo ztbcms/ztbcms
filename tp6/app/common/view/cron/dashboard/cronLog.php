@@ -78,7 +78,7 @@
                     prop="result_msg"
                     label="查看信息">
                 <template slot-scope="props">
-                    <el-button @click="$alert(props.row.result_msg)" type="primary">查看</el-button>
+                    <el-button @click="openDetail(props.row.result_msg)" type="primary">查看</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -95,6 +95,12 @@
         </div>
     </el-card>
 </div>
+<style>
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+</style>
 <script>
     $(function () {
         new Vue({
@@ -122,6 +128,19 @@
                 currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
+                },
+                openDetail: function (detail) {
+                    var info = "<pre>"+ detail + "</pre>";
+                    layer.open({
+                        type: 1,
+                        skin:"",
+                        title: false,
+                        shadeClose: true,
+                        area: ['30%','25%'],
+                        content: info,
+                        cancel: function () {
+                        }
+                    })
                 },
                 getList: function () {
                     var _this = this;
