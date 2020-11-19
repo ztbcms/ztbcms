@@ -26,7 +26,7 @@ class Logs extends AdminController
     /**
      * 登录记录列表
      *
-     * @param  Request $request
+     * @param Request $request
      *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
@@ -40,7 +40,7 @@ class Logs extends AdminController
             $where = [];
             $username = input('username', '', 'trim');
             if (!empty($username)) {
-                $where['username'] = array('like', '%' . $username . '%');
+                $where[] = ['username', 'like', '%' . $username . '%'];
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
@@ -50,15 +50,20 @@ class Logs extends AdminController
             }
             $loginip = input('loginip', '', 'trim');
             if (!empty($loginip)) {
-                $where['loginip '] = array('like', "%{$loginip}%");
+                $where[] = ['loginip', 'like', "%" . $loginip . "%"];
             }
             $status = input('status', '', 'trim');
             if ($status != '') {
-                $where['status'] = $status;
+                $where[] = ['status', '=', $status];
+            }
+            $sort_time = input('sort_time', '', 'trim');
+            $order = ["id" => "desc"];
+            if (!empty($sort_time)) {
+                $order = ['logintime' => $sort_time == 'desc' ? 'desc' : 'asc'];
             }
             $page = input('page', 1, 'trim');
             $limit = input('limit', 20, 'trim');
-            $res = LoginlogService::getLoginLogList($where, 'id desc', $page, $limit, $logintime);
+            $res = LoginlogService::getLoginLogList($where, $order, $page, $limit, $logintime);
             return json($res);
         } else {
             return view('loginLogList');
@@ -81,7 +86,7 @@ class Logs extends AdminController
     /**
      * 获取后台操作日志列表
      *
-     * @param  Request $request
+     * @param Request $request
      *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
@@ -95,7 +100,7 @@ class Logs extends AdminController
             $where = [];
             $uid = input('uid', '', 'trim');
             if (!empty($uid)) {
-                $where['uid'] = array('eq', $uid);
+                $where[] = ['uid', '=', $uid];
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
@@ -105,11 +110,11 @@ class Logs extends AdminController
             }
             $ip = input('ip', '', 'trim');
             if (!empty($ip)) {
-                $where['ip '] = array('like', "%{$ip}%");
+                $where[] = ['ip', 'like', '%' . $ip . '%'];
             }
             $status = input('status', '', 'trim');
             if ($status != '') {
-                $where['status'] = (int)$status;
+                $where[] = ['status', '=', (int)$status];
             }
             $page = input('page', 1, 'trim');
             $limit = input('limit', 20, 'trim');
@@ -125,7 +130,7 @@ class Logs extends AdminController
             return json($getConfig);
         } else if ($action == 'switchingAdminOperation') {
             $admin_operation_switch = input('admin_operation_switch', '', 'trim');
-            $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch'=>$admin_operation_switch]);
+            $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
             return json($getConfig);
         } else {
             return view('adminOperationLogList');
