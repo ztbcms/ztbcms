@@ -24,6 +24,16 @@ class RoleModel extends Model
      */
     const SUPER_ADMIN_ROLE_ID = 1;
 
+    // 启用状态
+    /**
+     * 启用状态：启用
+     */
+    const STATUS_YES = 1;
+    /**
+     * 启用状态：禁用
+     */
+    const STATUS_NO = 0;
+
     /**
      * 根据角色ID返回全部权限
      * @deprecated

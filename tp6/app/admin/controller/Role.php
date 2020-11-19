@@ -84,7 +84,7 @@ class Role extends AdminController
     {
         $RoleModel = new RoleModel();
         $pid = 0;
-        $list = $RoleModel->select()->toArray();
+        $list = $RoleModel->where('status', RoleModel::STATUS_YES)->select()->toArray();
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
         if ($this->user['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
             $list = TreeHelper::getSonNodeFromArray($list, $this->user['role_id'], [

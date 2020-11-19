@@ -654,7 +654,7 @@ CREATE TABLE `cms_role` (
   `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL DEFAULT '' COMMENT '角色名称',
   `parentid` smallint(6) NOT NULL DEFAULT '0' COMMENT '父角色ID',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '启用状态 0禁用 1启用',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
