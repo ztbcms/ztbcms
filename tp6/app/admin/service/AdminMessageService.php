@@ -34,14 +34,16 @@ class AdminMessageService extends BaseService
 
     /**
      * 获取后台消息列表
-     *
-     * @param  array  $where
-     * @param  string  $order
-     * @param  int  $page
-     * @param  int  $limit
-     * @param  bool  $isRelation
+     * @param array $where
+     * @param string $order
+     * @param int $page
+     * @param int $limit
+     * @param bool $isRelation
      *
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     static function getAdminMessageList($where = [], $order = '', $page = 1, $limit = 20, $isRelation = false)
     {
@@ -62,18 +64,19 @@ class AdminMessageService extends BaseService
      *
      * 创建消息
      *
-     * @param  string  $title  消息标题
-     * @param  string  $content  消息内容
-     * @param  string  $receiver  接收者
-     * @param  string  $sender  发送者
-     * @param  string  $sender_type  发送者类型
-     * @param  string  $target  消息来源
-     * @param  string  $target_type  消息来源类型
-     * @param  string  $receiver_type  接收者类型
+     * @param string $title 消息标题
+     * @param string $content 消息内容
+     * @param string $receiver 接收者
+     * @param string $sender 发送者
+     * @param string $sender_type 发送者类型
+     * @param string $target 消息来源
+     * @param string $target_type 消息来源类型
+     * @param string $receiver_type 接收者类型
+     * @param string $type 消息类型
      *
      * @return int|string
      */
-    static function createMessage($title, $content, $receiver, $sender = "system", $sender_type = "system", $target = "system", $target_type = "system", $receiver_type = "admin_user_id")
+    static function createMessage($title, $content, $receiver, $sender = "system", $sender_type = "system", $target = "system", $target_type = "system", $receiver_type = "admin_user_id", $type = "")
     {
         $data = [
             'title'         => $title,
@@ -84,6 +87,7 @@ class AdminMessageService extends BaseService
             'target_type'   => $target_type,
             'receiver'      => $receiver,
             'receiver_type' => $receiver_type,
+            'type'          => $type,
             'create_time'   => time()
         ];
         return Db::name('admin_message')->insert($data);
@@ -93,19 +97,19 @@ class AdminMessageService extends BaseService
      *
      * 创建系统消息 （群发到每一个管理员）
      *
-     * @param  string  $title  消息标题
-     * @param  string  $content  消息内容
-     * @param  string  $sender  发送者
-     * @param  string  $sender_type  发送者类型
-     * @param  string  $target  消息源
-     * @param  string  $target_type  消息源类型
-     * @param  string  $receiver_type  接收者类型
+     * @param string $title 消息标题
+     * @param string $content 消息内容
+     * @param string $sender 发送者
+     * @param string $sender_type 发送者类型
+     * @param string $target 消息源
+     * @param string $target_type 消息源类型
+     * @param string $receiver_type 接收者类型
      *
      * @return array
      */
     static function createSystemMessage($title, $content, $sender = "system", $sender_type = "system", $target = "system", $target_type = "system", $receiver_type = "admin_user_id")
     {
-        $admin_ids = M('user')->where(['status' => 1])->getField('id', true);
+        $admin_ids = Db::name('user')->where('status', 1)->column('id');
         if ($admin_ids) {
             foreach ($admin_ids as $uid) {
                 $data = [
@@ -130,20 +134,20 @@ class AdminMessageService extends BaseService
     /**
      * 群发消息
      *
-     * @param  string  $title  消息标题
-     * @param  string  $content  消息内容
-     * @param  string  $sender  发送者
-     * @param  string  $sender_type  发送者类型
-     * @param  string  $target  消息源
-     * @param  string  $target_type  消息源类型
-     * @param  string  $receiver_type  接收者类型
+     * @param string $title 消息标题
+     * @param string $content 消息内容
+     * @param string $sender 发送者
+     * @param string $sender_type 发送者类型
+     * @param string $target 消息源
+     * @param string $target_type 消息源类型
+     * @param string $receiver_type 接收者类型
      *
      * @return array
      */
     static function createGroupMessage($title, $content, $sender = "system", $sender_type = "system", $target = "system", $target_type = "system", $receiver_type = "admin_user_id")
     {
         // 对所有管理员，发送消息
-        $admin_ids = M('user')->where(['status' => 1])->getField('id', true);
+        $admin_ids = Db::name('user')->where('status', 1)->column('id');
         if ($admin_ids) {
             foreach ($admin_ids as $uid) {
                 $data = [
@@ -167,11 +171,10 @@ class AdminMessageService extends BaseService
 
     /**
      * 更新后台消息中心
-     *
-     * @param       $id
-     * @param  array  $data
-     *
+     * @param $id
+     * @param array $data
      * @return array
+     * @throws \think\db\exception\DbException
      */
     static function updateAdminMessage($id, $data = [])
     {
@@ -183,13 +186,11 @@ class AdminMessageService extends BaseService
     }
 
     /**
-     *
      * 阅读消息（支持批量）
-     *
-     * @param  array  $ids
+     * @param array $ids
      * @param $receiver
-     *
      * @return array
+     * @throws \think\db\exception\DbException
      */
     static function readAdminMessage(array $ids, $receiver)
     {
@@ -210,7 +211,7 @@ class AdminMessageService extends BaseService
     /**
      * 已读所有
      * @param $receiver
-     * @param  string  $type
+     * @param string $type
      * @return array
      * @throws \think\db\exception\DbException
      */

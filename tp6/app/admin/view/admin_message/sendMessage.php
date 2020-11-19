@@ -4,7 +4,7 @@
 
             <template>
                 <div>
-                    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="160px">
+                    <el-form ref="elForm" :model="formData"  size="medium" label-width="160px">
                         <el-form-item label="消息标题" prop="title">
                             <el-input v-model="formData.title" placeholder="请输入消息标题" clearable :style="{width: '100%'}">
                             </el-input>
@@ -89,9 +89,7 @@
             computed: {},
             watch: {},
             created: function() {},
-            mounted: function() {
-                this.getDetail()
-            },
+            mounted: function() {},
             methods: {
                 // 表单提交
                 submitForm: function() {
