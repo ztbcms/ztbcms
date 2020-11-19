@@ -95,9 +95,10 @@ class RoleService extends BaseService
 
         //子角色列表
         $child = $roleModel->getChildrenRoleIdList($role_id);
-        if (count($child) > 1) {
-            return self::createReturn(false, null, '该角色下有子角色，请删除子角色才可以删除');
+        if (count($child) >= 1) {
+            return self::createReturn(false, null, '该角色下有子角色，无法删除');
         }
+
         $res = $roleModel->where('id', $role_id)->delete();
         if ($res) {
             $accessModel = new AccessModel();
