@@ -32,8 +32,8 @@ class AdminOperationLogService extends BaseService
     {
         $OperationlogModel = new OperationlogModel();
         $db = $OperationlogModel->where($where)->order($order)->page($page)->limit($limit);
-        if (!empty($logintime)) {
-            $db->whereTime('time', 'between', $logintime);
+        if (!empty($time)) {
+            $db->whereTime('time', 'between', $time);
         }
         if (!empty($order)) {
             $db->order($order);

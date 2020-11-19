@@ -159,6 +159,9 @@
                     if (newValue && newValue.length == 2) {
                         this.form.start_time = newValue[0]
                         this.form.end_time = newValue[1]
+                    }else{
+                        this.form.start_time = ''
+                        this.form.end_time = ''
                     }
                 }
             },
@@ -230,7 +233,7 @@
                     this.getList()
                 },
                 handleSortChange:function(event) {
-                    if (event.prop == 'time') {
+                    if (event.prop == 'time' && event.order != null) {
                         if (event.order.toLowerCase().indexOf('asc') >= 0) {
                             this.form.sort_time = 'asc'
                             this.getList();
