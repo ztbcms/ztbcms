@@ -1,7 +1,6 @@
 <?php
 /**
- * User: jayinton
- * Date: 2020/9/22
+ * Author: jayinton
  */
 
 namespace app\admin\model;
@@ -11,6 +10,11 @@ use think\exception\ValidateException;
 use think\facade\Db;
 use think\Model;
 
+/**
+ *  管理后台用户
+ *
+ * @package app\admin\model
+ */
 class AdminUserModel extends Model
 {
     protected $name = 'user';

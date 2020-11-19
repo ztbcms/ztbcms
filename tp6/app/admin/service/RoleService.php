@@ -7,6 +7,7 @@ namespace app\admin\service;
 
 
 use app\admin\model\AccessModel;
+use app\admin\model\AdminUserModel;
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\libs\helper\TreeHelper;
@@ -95,8 +96,14 @@ class RoleService extends BaseService
 
         //子角色列表
         $child = $roleModel->getChildrenRoleIdList($role_id);
-        if (count($child) >= 1) {
+        if (count($child) > 0) {
             return self::createReturn(false, null, '该角色下有子角色，无法删除');
+        }
+
+        $adminUserModel = new AdminUserModel();
+        $manager_amount = $adminUserModel->where('role_id', $role_id)->count();
+        if ($manager_amount > 0) {
+            return self::createReturn(false, null, '该角色下有成员，无法删除');
         }
 
         $res = $roleModel->where('id', $role_id)->delete();
