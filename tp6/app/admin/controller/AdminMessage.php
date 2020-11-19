@@ -107,17 +107,18 @@ class AdminMessage extends AdminController
     /**
      * 创建后台消息
      */
-    public function sendMessage(){
+    public function sendMessage()
+    {
         $action = input('_action', '', 'trim');
         $post = input('post.');
-        if($action == 'createMessage') {
+        if ($action == 'createMessage') {
             AdminMessageService::createMessage(
-                $post['title'],$post['content'],
-                $post['receiver'],$post['sender'],
-                $post['sender_type'],$post['target'],
-                $post['target_type'], $post['receiver_type']
+                $post['title'], $post['content'],
+                $post['receiver'], $post['sender'],
+                $post['sender_type'], $post['target'],
+                $post['target_type'], $post['receiver_type'], $post['type']
             );
-            return json(self::createReturn(true,'','发送成功'));
+            return json(self::createReturn(true, '', '发送成功'));
         }
         return View::fetch('sendMessage');
     }
