@@ -9,6 +9,7 @@
 namespace app\common\controller;
 
 
+use app\admin\model\AdminUserModel;
 use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
@@ -62,20 +63,16 @@ class AdminController extends BaseController
             $info = AdminUserService::getInstance()->getInfo();
             $this->user = UserModel::where('id', $info['id'])->findOrEmpty();
         } else {
-            // 适配 ztbcms v3跳转到 tp6
-            $sessionId = cookie('PHPSESSID');
-            if (!$sessionId) {
-                $this->_handleUnlogin();
-                return;
-            }
-            $userToken = UserTokenModel::where('session_id', $sessionId)->findOrEmpty();
-            if ($userToken->isEmpty()) {
-                $this->_handleUnlogin();
-                return;
-            }
-
-            $this->user = UserModel::where('id', $userToken->user_id)->findOrEmpty();
+            $this->_handleUnlogin();
+            return;
         }
+
+        // 账号是否被禁用
+        if($this->user['status'] == AdminUserModel::STATUS_DISABLE){
+            $this->_handleDisabled();
+            return;
+        }
+
 
         //判断是否为超级管理员
         $this->is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
@@ -112,6 +109,17 @@ class AdminController extends BaseController
             exit;
         } else {
             response(View::fetch('common/403'))->send();
+            exit;
+        }
+    }
+
+    // 账号已被禁用
+    private function _handleDisabled(){
+        if (request()->isAjax()) {
+            self::makeJsonReturn(false, null, '账号已被禁用', 403)->send();
+            exit;
+        } else {
+            response(View::fetch('common/403', ['title' => '账号已被禁用']))->send();
             exit;
         }
     }

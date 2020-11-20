@@ -88,8 +88,8 @@
         <div class="bullshit">
             <div class="bullshit__oops">OOPS!</div>
             <div class="bullshit__info"/>
-            <div class="bullshit__headline">你没有权限进入该页面</div>
-            <div class="bullshit__info">请检查您输入的网址是否正确或向网管反馈</div>
+            <div class="bullshit__headline">{$title|default='你没有权限进入该页面'}</div>
+            <div class="bullshit__info">{$msg|default='请检查您输入的网址是否正确或向网管反馈'}</div>
             <!--            <a href="/" class="bullshit__return-home">返回首页</a>-->
         </div>
     </div>

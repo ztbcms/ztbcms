@@ -19,6 +19,16 @@ class AdminUserModel extends Model
 {
     protected $name = 'user';
 
+    // 账号状态
+    /**
+     * 账号状态: 禁用
+     */
+    const STATUS_DISABLE = 0;
+    /**
+     * 账号状态: 正常
+     */
+    const STATUS_ENABLE = 1;
+
     /**
      * 获取用户信息
      *
