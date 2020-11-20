@@ -56,7 +56,7 @@ class RbacService extends BaseService
         }
         //检查角色
         $roleinfo = Db::name('role')->where('id', $role_id)->findOrEmpty();
-        if (empty($roleinfo) || empty($roleinfo['status'])) {
+        if (empty($roleinfo)) {
             throw new InvalidArgumentException('找不到角色');
         }
         //查询出该角色拥有的全部权限列表

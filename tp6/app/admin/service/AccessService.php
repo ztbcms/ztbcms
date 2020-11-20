@@ -30,7 +30,7 @@ class AccessService extends BaseService
     {
         //检查角色
         $roleinfo = Db::name('role')->where('id', $role_id)->findOrEmpty();
-        if (empty($roleinfo) || empty($roleinfo['status'])) {
+        if (empty($roleinfo)) {
             throw new InvalidArgumentException('找不到角色');
         }
         if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
