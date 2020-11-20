@@ -9,6 +9,7 @@
 namespace app\common\model;
 
 
+use app\admin\service\AdminConfigService;
 use think\facade\Cache;
 use think\Model;
 
@@ -35,18 +36,17 @@ class ConfigModel extends Model
     }
 
     /**
-     * 获取数据
-     * @param bool $force
+     * 获取配置
+     *
+     * @param  bool  $force
+     *
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
     static function getConfigs($force = false)
     {
-        if (Cache::has('Configs') && !$force) {
-            return Cache::get('Configs');
-        } else {
-            $configs = self::column('value', 'varname');
-            Cache::set('Configs', $configs);
-            return $configs;
-        }
+        return AdminConfigService::getInstance()->getConfig(null, !$force)['data'];
     }
 }
