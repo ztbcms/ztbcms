@@ -143,9 +143,6 @@ class AccessGroup extends AdminController
     public function getAccessGroupTreeArray()
     {
         $accessGroupTreeArray = AccessGroupService::getAccessGroupTreeArray(0);
-        foreach ($accessGroupTreeArray as $k => $v) {
-            $accessGroupTreeArray[$k]['view_name'] = '|—'.str_repeat('—', $v['level'] * 1).$v['name'];
-        }
         return json(self::createReturn(true, $accessGroupTreeArray));
     }
 

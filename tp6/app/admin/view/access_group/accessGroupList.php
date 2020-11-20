@@ -6,8 +6,9 @@
             <div id="app" style="padding-left: 20px;padding-top: 20px;" v-cloak>
 
                 <div class="filter-container">
+                    <h3>权限组</h3>
                     <div style="margin-bottom: 15px;">
-                        <el-button @click="detail('0')" size="small" type="success">
+                        <el-button @click="detail('0')" size="small" type="primary">
                             添加
                         </el-button>
                     </div>
@@ -20,23 +21,23 @@
                         highlight-current-row
                         style="width: 100%;"
                 >
-                    <el-table-column label="ID" align="center">
+                    <el-table-column label="ID" align="center" width="100">
                         <template slot-scope="scope">
                             <span>{{ scope.row.id }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="名称" align="">
                         <template slot-scope="scope">
-                            <template v-for="i in scope.row.level * 4"><span>&nbsp;</span></template>
-                            |—
+                            <template v-for="i in scope.row.level * 2"><span>&nbsp;</span></template>
+                            <template v-if="scope.row.level > 0"><span> ∟</span></template>
                             <span>{{ scope.row.name }}</span>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="启用" width="150px" align="center">
                         <template slot-scope="{row}">
-                            <span v-if="row.status == '1'">启用</span>
-                            <span v-else>关闭</span>
+                            <span v-if="row.status == '1'" style="color: green">启用</span>
+                            <span v-else style="color: red">关闭</span>
                         </template>
                     </el-table-column>
 

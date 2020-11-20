@@ -18,8 +18,11 @@
                                 <el-option
                                         v-for="item in accessGroupTreeArray"
                                         :key="item.value"
-                                        :label="item.view_name"
+                                        :label="item.name"
                                         :value="item.id">
+                                    <template v-for="i in item.level * 2"><span>&nbsp;</span></template>
+                                    <template v-if="item.level > 0"><span> ∟</span></template>
+                                    <span>{{ item.name }}</span>
                                 </el-option>
                             </el-select>
                         </el-form-item>

@@ -104,6 +104,8 @@ class AccessGroupService extends BaseService
      * 获取含有层次(level)树状的权限组
      *
      * 常用于前端列表页显示
+     *
+     * TODO: 改进为非递归写法
      * @param  int  $parentid
      * @param  int  $level
      * @param  array  $ret
