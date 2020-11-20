@@ -91,7 +91,7 @@ return [
                 "child" => []
             ],
             [
-                "route" => "admin/AdminManager/chanpass",
+                "route" => "admin/AdminManager/changePassword",
                 "type" => 1,
                 "status" => 1,
                 "name" => "修改密码",

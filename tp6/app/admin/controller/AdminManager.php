@@ -49,40 +49,37 @@ class AdminManager extends AdminController
     }
 
     /**
-     * 修改密码
-     */
-    function chanpass()
-    {
-        return view('chanpass', ['user' => $this->user]);
-    }
-
-    /**
-     * 编辑用户密码
+     * 编辑密码
      */
     function changePassword()
     {
-        $oldPass = Request::param('password', '', 'trim');
-        $newPass = Request::param('new_password', '', 'trim');
-        $new_pwdconfirm = Request::param('new_pwdconfirm', '', 'trim');
+        if(Request::isPost()){
+            $oldPass = Request::param('password', '', 'trim');
+            $newPass = Request::param('new_password', '', 'trim');
+            $new_pwdconfirm = Request::param('new_pwdconfirm', '', 'trim');
 
-        if (empty($oldPass)) {
-            return json(self::createReturn(false, null, '请输入旧密码'));
+            if (empty($oldPass)) {
+                return json(self::createReturn(false, null, '请输入旧密码'));
+            }
+
+            if ($newPass != $new_pwdconfirm) {
+                return json(self::createReturn(false, null, '两次密码不相同'));
+            }
+
+            $AdminUserModel = new AdminUserModel();
+            if ($AdminUserModel->changePassword($this->user->id, $newPass, $oldPass)) {
+                //退出登录
+                (new AdminUserService())->logout();
+                return json(self::createReturn(true, [
+                    'rediret_url' => api_url("/admin/Login/index") //跳转链接
+                ], '密码已经更新，请重新登录'));
+            } else {
+                return json(self::createReturn(false, null, '密码修改失败'));
+            }
         }
 
-        if ($newPass != $new_pwdconfirm) {
-            return json(self::createReturn(false, null, '两次密码不相同'));
-        }
+        return view('changePassword', ['user' => $this->user]);
 
-        $AdminUserModel = new AdminUserModel();
-        if ($AdminUserModel->changePassword($this->user->id, $newPass, $oldPass)) {
-            //退出登录
-            (new AdminUserService())->logout();
-            return json(self::createReturn(true, [
-                'rediret_url' => api_url("/admin/Login/index") //跳转链接
-            ], '密码已经更新，请重新登录'));
-        } else {
-            return json(self::createReturn(false, null, '密码更新失败'));
-        }
     }
 
     /**
