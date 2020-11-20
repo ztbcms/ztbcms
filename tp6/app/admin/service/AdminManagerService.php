@@ -37,13 +37,23 @@ class AdminManagerService extends BaseService
         ];
         $adminUserModel = new AdminUserModel();
         $id = null;
+        $check_username = $adminUserModel->where('username', $data['username'])->find();
+        $check_email = $adminUserModel->where('email', $data['email'])->find();
         if (isset($user_data['id']) && !empty($user_data['id'])) {
             $id = $user_data['id'];
+            if($check_username['id'] != $id){
+                return self::createReturn(false, null, '用户名已存在');
+            }
+            if($check_email['id'] != $id){
+                return self::createReturn(false, null, '邮箱已存在');
+            }
         } else {
             // 新增
-            $record = $adminUserModel->where('username', $data['username'])->find();
-            if ($record) {
-                return self::createReturn(false, null, '账户已经存在');
+            if ($check_username) {
+                return self::createReturn(false, null, '用户名已存在');
+            }
+            if ($check_email) {
+                return self::createReturn(false, null, '邮箱已存在');
             }
         }
         if (!empty($data['password'])) {
