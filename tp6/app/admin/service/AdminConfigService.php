@@ -45,32 +45,42 @@ class AdminConfigService extends BaseService
      * 获取配置
      *
      * @param  string  $key  配置的key,为空的时候返回全部
+     * @param  bool  $enable_cache  是否启用缓存
      *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    function getConfig($key = '')
+    function getConfig($key = '', $enable_cache = true)
     {
+        $key = $key ?? '';
         $cache_key = $this->_makeAdminConfigCacheKey($key);
-        $cache_data = Cache::get($cache_key);
-        if (!empty($cache_data)) {
-            return self::createReturn(true, $cache_data);
+        if ($enable_cache) {
+            $cache_data = Cache::get($cache_key);
+            if (!empty($cache_data)) {
+                return self::createReturn(true, $cache_data);
+            }
         }
-
-        $configList = Db::name('config')->field('varname,value')->select()->toArray();
-        $config = [];
-        foreach ($configList as $i => $v) {
-            $config[$v['varname']] = $v['value'];
+        $value = '';
+        if (empty($key)) {
+            // key为空，则获取全部配置
+            $configList = Db::name('config')->field('varname,value')->select()->toArray();
+            $value = [];
+            foreach ($configList as $i => $v) {
+                $value[$v['varname']] = $v['value'];
+            }
+        } else {
+            // key为指定配置项
+            $config = Db::name('config')->where('varname', $key)->field('varname,value')->find();
+            if ($config) {
+                $value = $config['value'];
+            }
         }
-        if (!empty($key)) {
-            $value = isset($config[$key]) ? $config[$key] : null;
+        if ($enable_cache) {
             Cache::tag(self::CacheTagName)->set($cache_key, $value);
-            return self::createReturn(true, $value);
         }
-        Cache::tag(self::CacheTagName)->set($cache_key, $config);
-        return self::createReturn(true, $config);
+        return self::createReturn(true, $value);
     }
 
     /**
@@ -79,22 +89,15 @@ class AdminConfigService extends BaseService
      * @param  array  $keyValue
      *
      * @return array
-     * @throws \think\db\concern\PDOException
-     * @throws \think\db\exception\DbException
      */
     function updateConfig(array $keyValue = [])
     {
         foreach ($keyValue as $key => $value) {
-            $res = Db::name('config')->where('varname', $key)->update([
+            Db::name('config')->where('varname', $key)->update([
                 'value' => $value
             ]);
-            if ($res) {
-                $cache_key = $this->_makeAdminConfigCacheKey($key);
-                Cache::tag(self::CacheTagName)->set($cache_key, $value);
-            }
-
         }
-        return self::createReturn(true, null, '配置更新完成');
+        return self::createReturn(true, null, '配置更新完成，更新缓存后生效');
     }
 
     /**

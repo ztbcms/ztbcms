@@ -33,7 +33,7 @@
 
                 <el-form-item size="large">
                     <el-button type="primary" @click="submitForm" size="small">保存</el-button>
-                    <el-button v-if="formData && formData.fid" type="danger" @click="deleteItem">删除</el-button>
+                    <el-button v-if="formData && formData.fid" type="danger" @click="deleteItem" size="small">删除</el-button>
                 </el-form-item>
             </el-form>
         </el-col>

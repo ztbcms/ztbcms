@@ -7,6 +7,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\service\AdminConfigService;
 use app\common\controller\AdminController;
 use think\facade\App;
 use think\facade\View;
@@ -24,6 +25,8 @@ class Cache extends AdminController
         set_time_limit(0);
         $type = input('type', '', 'trim');
         if ($type == 'site') {
+            // 系统设置缓存
+            AdminConfigService::getInstance()->clearConfigCache();
             //删除缓存的所有数据
             $path = App::getRootPath() . 'runtime\\';
             if (file_exists($path)) {

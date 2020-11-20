@@ -47,7 +47,7 @@ class Config extends AdminController
 
         if ($request->get('_action') === 'getDetail') {
             // 获取详情
-            $_config = $adminConfigService->getConfig()['data'];
+            $_config = $adminConfigService->getConfig(null, false)['data'];
             $fields = [
                 'sitename', 'siteurl', 'sitefileurl', 'siteemail', 'sitekeywords', 'siteinfo', 'checkcode_type'
             ];
@@ -91,7 +91,7 @@ class Config extends AdminController
 
         if ($request->get('_action') === 'getDetail') {
             // 获取详情
-            $_config = $adminConfigService->getConfig()['data'];
+            $_config = $adminConfigService->getConfig(null, false)['data'];
             $fields = [
                 'mail_type', 'mail_server', 'mail_port', 'mail_from', 'mail_fname', 'mail_auth', 'mail_user', 'mail_password'
             ];
@@ -153,7 +153,7 @@ class Config extends AdminController
 
         if ($request->get('_action') === 'getDetail') {
             // 获取详情
-            $_config = $adminConfigService->getConfig()['data'];
+            $_config = $adminConfigService->getConfig(null, false)['data'];
             $fields = [
                 'attachment_driver',
                 'attachment_aliyun_key_id',
@@ -200,7 +200,6 @@ class Config extends AdminController
      * @param  Request  $request
      *
      * @return \think\response\Json|\think\response\View
-     * @throws \think\db\concern\PDOException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -224,7 +223,7 @@ class Config extends AdminController
 
         if ($request->get('_action') === 'getDetail') {
             // 获取详情
-            $config = $adminConfigService->getConfig()['data'];
+            $config = $adminConfigService->getConfig(null, false)['data'];
             $configMap = [];
             foreach ($configFieldList as $item) {
                 $configMap[$item['fieldname']] = $config[$item['fieldname']];
