@@ -125,11 +125,19 @@ class RbacService extends BaseService
         }
         $controllers = explode('.', $controller);
         $c = [];
+
         // 计算可能得controller模式，如 a.b.c 、a.b.%、a.%.%
         foreach ($controllers as $i => $v) {
             $c [] = $v;
             $pass_controller = trim(join('.', $c).'.'.trim(str_repeat('%.', count($controllers) - ($i + 1)), '.'), '.');
-            if (isset($accessList[$app][$pass_controller]) && isset($accessList[$app][$pass_controller][$action])) {
+
+            //action 为 % 的情况下可以直接通过
+            if (isset($accessList[$app][$pass_controller]) &&
+                (
+                    isset($accessList[$app][$pass_controller][$action]) ||
+                    isset($accessList[$app][$pass_controller]['%'])
+                )
+            ) {
                 return self::createReturn(true, null, '权限检验通过');
             }
         }

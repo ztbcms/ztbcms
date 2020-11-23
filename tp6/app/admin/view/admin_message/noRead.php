@@ -94,9 +94,11 @@
             methods: {
                 getList: function () {
                     var that = this;
+                    var where = that.where;
+                    where['_action'] = 'getAdminMsgList';
                     $.ajax({
-                        url: "{:api_url('/admin/AdminMessage/getAdminMsgList')}",
-                        data: that.where,
+                        url: "{:api_url('/admin/AdminMessage/noRead')}",
+                        data: where,
                         type: 'get',
                         dataType: 'json',
                         success: function (res) {
@@ -112,9 +114,10 @@
                 read:function(id){
                     var that = this;
                     $.ajax({
-                        url: '{:api_url("/admin/AdminMessage/readMsg")}',
+                        url: '{:api_url("/admin/AdminMessage/noRead")}',
                         data: {
-                            'ids': [id]
+                            'ids': [id],
+                            '_action' : 'readMsg'
                         },
                         type: 'post',
                         dataType: 'json',
@@ -136,8 +139,10 @@
                 doReadAll:function(){
                     var that = this;
                     $.ajax({
-                        url: '{:api_url("/admin/AdminMessage/readMsgAll")}',
-                        data: {},
+                        url: '{:api_url("/admin/AdminMessage/noRead")}',
+                        data: {
+                            '_action' : 'readMsgAll'
+                        },
                         type: 'post',
                         dataType: 'json',
                         success: function (res) {
@@ -163,9 +168,10 @@
                         ids.push(that.tableData[item]['id']);
                     }
                     $.ajax({
-                        url: '{:api_url("/admin/AdminMessage/readMsg")}',
+                        url: '{:api_url("/admin/AdminMessage/noRead")}',
                         data: {
-                            ids:ids
+                            ids:ids,
+                            '_action' : 'readMsg'
                         },
                         type: 'post',
                         dataType: 'json',

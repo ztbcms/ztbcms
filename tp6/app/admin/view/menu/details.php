@@ -208,7 +208,7 @@
                         id: that.formData.id,
                     }, function (res) {
                         that.formData = res.data;
-                        that.formData.parentid = parseInt(that.formData.parentid)
+                        if(res.data.parentid !== '0') that.formData.parentid = parseInt(that.formData.parentid)
                         that.formData.is_tp6 = that.formData.is_tp6 + ''
                     }, 'json');
                 }

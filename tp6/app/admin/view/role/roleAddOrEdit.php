@@ -1,10 +1,12 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-        <h3>新增角色</h3>
+        <h3>角色管理</h3>
         <el-row>
             <el-col :span="8">
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
+
+                        <?php if ($is_superior == true){ ?>
                         <el-form-item label="父角色">
                             <el-select v-model="form.parentid" placeholder="请选择">
                                 <el-option
@@ -15,6 +17,9 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
+                        <?php } ?>
+
+
                         <el-form-item label="角色名称">
                             <el-input v-model="form.name"></el-input>
                         </el-form-item>
@@ -111,7 +116,7 @@
                         dataType: "json",
                         success: function (res) {
                             if (res.status) {
-                                that.form = res.data
+                                that.form = res.data;
                                 that.form.status = that.form.status + ''
                             }
                         }

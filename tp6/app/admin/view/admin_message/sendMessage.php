@@ -48,8 +48,16 @@
                         </el-form-item>
 
                         <el-form-item label="类型" prop="type">
-                            <el-input v-model="formData.type" placeholder="请输入类型" clearable :style="{width: '100%'}">
-                            </el-input>
+
+                            <el-select v-model="formData.type" placeholder="请选择" :style="{width: '100%'}">
+                                <el-option
+                                        v-for="item in typeOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+
                         </el-form-item>
 
 
@@ -83,7 +91,14 @@
                         receiver_type: "admin",
                         type: "notice",
                         _action : "createMessage"
-                    }
+                    },
+                    typeOptions: [{
+                        value: 'notice',
+                        label: '公告'
+                    }, {
+                        value: 'system',
+                        label: '系统消息'
+                    }]
                 }
             },
             computed: {},

@@ -135,6 +135,10 @@ class AdminController extends BaseController
     {
         if (!empty($base_url)) {
             // 格式：/app/controller/action
+
+            //去除参数的校验
+            $base_url = explode('&', $base_url)[0];
+
             $items = explode('/', $base_url);
             $app = $items[1];
             $controller = $items[2];

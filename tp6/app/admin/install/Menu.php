@@ -120,10 +120,42 @@ return [
                 "remark" => "",
                 "child" => [
                     [
+                        "route" => "admin/Menu/getMenuList",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "菜单列表数据",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Menu/getDetails",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "菜单详情数据",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Menu/addEditDetails",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "操作菜单",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Menu/doDelete",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除菜单",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
                         "route" => "admin/Menu/index",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "后台菜单",
+                        "name" => "后台菜单页面",
                         "remark" => "",
                         "child" => []
                     ],
@@ -131,7 +163,7 @@ return [
                         "route" => "admin/Menu/details",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "添加菜单",
+                        "name" => "添加菜单页面",
                         "remark" => "",
                         "child" => []
                     ],
@@ -164,7 +196,7 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/managerEdit",
+                        "route" => "admin/AdminManager/managerEdit",
                         "type" => 1,
                         "status" => 0,
                         "name" => "编辑管理员",
@@ -172,14 +204,21 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Management/managerDelete",
+                        "route" => "admin/AdminManager/managerDelete",
                         "type" => 1,
                         "status" => 0,
                         "name" => "删除管理员",
                         "remark" => "",
                         "child" => []
                     ],
-
+                    [
+                        "route" => "admin/AdminManager/getDetail",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "管理员详情",
+                        "remark" => "",
+                        "child" => []
+                    ]
                 ]
             ],
 
@@ -248,6 +287,14 @@ return [
                         "remark" => "",
                         "child" => []
                     ],
+                    [
+                        "route" => "admin/AccessGroup/getRoleAccessGroup",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "权限组设置详情",
+                        "remark" => "",
+                        "child" => []
+                    ],
 
                 ]
             ],
@@ -274,6 +321,30 @@ return [
                         "type" => 1,
                         "status" => 1,
                         "name" => "添加权限组",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/AccessGroup/getAccessGroupList",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "权限组列表",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/AccessGroup/getAccessGroupTreeArray",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "我的权限列表",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/AccessGroup/getAccessGroupById",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "我的权限详情",
                         "remark" => "",
                         "child" => []
                     ],

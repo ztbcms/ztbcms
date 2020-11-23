@@ -47,7 +47,10 @@ class Role extends AdminController
         if (Request::isPost()) {
             return $this->roleAddEdit();
         }
-        return view('roleAddOrEdit');
+
+        return view('roleAddOrEdit',[
+            'is_superior' => true
+        ]);
     }
 
     /**
@@ -68,8 +71,13 @@ class Role extends AdminController
             $info = $RoleModel->where(['id' => $id])->find();
             return self::makeJsonReturn(true, $info);
         }
+
+        if($this->is_administrator )  $is_superior = true;
+        else $is_superior = false;
+
         return view('roleAddOrEdit', [
-            'id' => $id
+            'id' => $id,
+            'is_superior' => $is_superior
         ]);
     }
 

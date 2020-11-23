@@ -25,6 +25,17 @@ class AdminMessage extends AdminController
      */
     public function index()
     {
+        $_action = input('_action','','trim');
+        if($_action == 'getAdminMsgList') {
+            //获取消息列表
+            return $this->getAdminMsgList();
+        } else if($_action == 'readMsg') {
+            //阅读通知
+            return $this->readMsg();
+        } else if($_action == 'readMsgAll') {
+            //阅读所有消息
+            return $this->readMsgAll();
+        }
         return View::fetch('index');
     }
 
@@ -33,6 +44,17 @@ class AdminMessage extends AdminController
      */
     public function noRead()
     {
+        $_action = input('_action','','trim');
+        if($_action == 'getAdminMsgList') {
+            //获取消息列表
+            return $this->getAdminMsgList();
+        } else if($_action == 'readMsg') {
+            //阅读通知
+            return $this->readMsg();
+        } else if($_action == 'readMsgAll') {
+            //阅读所有消息
+            return $this->readMsgAll();
+        }
         return View::fetch('noRead');
     }
 
@@ -41,6 +63,17 @@ class AdminMessage extends AdminController
      */
     public function system()
     {
+        $_action = input('_action','','trim');
+        if($_action == 'getAdminMsgList') {
+            //获取消息列表
+            return $this->getAdminMsgList();
+        } else if($_action == 'readMsg') {
+            //阅读通知
+            return $this->readMsg();
+        } else if($_action == 'readMsgAll') {
+            //阅读所有消息
+            return $this->readMsgAll();
+        }
         return View::fetch('system');
     }
 
@@ -50,19 +83,19 @@ class AdminMessage extends AdminController
      */
     public function getAdminMsgList()
     {
-        $page = Request::param('page', 1);
-        $limit = Request::param('limit', 15);
+        $page = input('page', 1);
+        $limit = input('limit', 15);
         // 默认接收者
-        $where = [
-            ['receiver', '=', $this->user->id]
-        ];
+        $where[] = ['receiver', '=', $this->user->id];
+
         // 阅读状态 0 未读 1 已读
-        $read_status = Request::param('read_status', '');
+        $read_status = input('read_status', '');
         if ($read_status !== '') {
             $where[] = ['read_status', '=', $read_status];
         }
+
         // 消息类型
-        $type = Request::param('type', '');
+        $type = input('type', '');
         if ($type) {
             $where[] = ['type', '=', $type];
         }
@@ -78,14 +111,13 @@ class AdminMessage extends AdminController
     public function readMsg()
     {
         // 更新状态为 已读
-        $ids = Request::param('ids', []);
+        $ids = input('ids', []);
         if (!is_array($ids)) {
             $ids = [$ids];
         }
         if (empty($ids)) {
             return self::makeJsonReturn(true, null, '操作完成');
         }
-
         $res = AdminMessageService::readAdminMessage($ids, $this->user->id);
         return json($res);
     }
