@@ -17,6 +17,9 @@
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id">
+                                            <template v-for="i in item.level * 2"><span>&nbsp;</span></template>
+                                            <template v-if="item.level > 0"><span> ∟</span></template>
+                                            <span>{{ item.name }}</span>
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -102,7 +105,7 @@
                 getRoleList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Role/index')}?_action=getList",
+                        url: "{:api_url('/admin/Role/getRoleList')}",
                         type: "get",
                         dataType: "json",
                         success: function (res) {
