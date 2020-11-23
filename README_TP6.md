@@ -13,8 +13,8 @@ cd tp6 && composer install
 - 后台入口：http://ztbcms.ztbweb.cn/admin/public/login
 
 tp6版本
-- 后台入口：http://ztbcms.ztbweb.cn/home/admin/Login/index
-- 安装向导：http://ztbcms.ztbweb.cn/home/install/index/index (重新安装请删除`tp6/app/install/install.lock`)
+- 后台入口：http://ztbcms.ztbweb.cn/admin/Login/index
+- 安装向导：http://ztbcms.ztbweb.cn/install/index/index (重新安装请删除`tp6/app/install/install.lock`)
 
 
 测试账号密码 admin/zhutibang

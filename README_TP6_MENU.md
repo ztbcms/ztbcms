@@ -2,10 +2,10 @@
 
 ```shell
 # 安装模块
-/home/admin/Module/doInstallModule?module={模块名}
+/admin/Module/doInstallModule?module={模块名}
 
 # 卸载模块
-/home/admin/Module/doUninstallModule?module={模块名}
+/admin/Module/doUninstallModule?module={模块名}
 ```
 
 后台菜单请添加到`admin/install/Menu.php`
