@@ -30,6 +30,8 @@
 
             <el-table-column label="菜单名称" align="">
                 <template slot-scope="scope">
+                    <template v-for="i in scope.row.level * 2"><span>&nbsp;</span></template>
+                    <template v-if="scope.row.level > 0"><span> ∟</span></template>
                     <span>{{ scope.row.name }}  | {{scope.row.app}}/{{scope.row.controller}}/{{scope.row.action}}</span>
                 </template>
             </el-table-column>
