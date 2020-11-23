@@ -1,12 +1,17 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-        <h3>新增角色</h3>
+        <h3>编辑角色</h3>
         <el-row>
             <el-col :span="8">
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="父角色">
                             <el-select v-model="form.parentid" placeholder="请选择">
+                                <el-option
+                                        :key="parentRole.id"
+                                        :label="parentRole.name"
+                                        :value="parentRole.id">
+                                </el-option>
                                 <el-option
                                         v-for="item in roleList"
                                         :key="item.id"
@@ -58,7 +63,11 @@
                     remark: '',
                     status: '1'
                 },
-                roleList: []
+                roleList: [],
+                parentRole: {
+                    id: 0,
+                    name: '无',
+                }
             },
             watch: {},
             filters: {},
