@@ -10,10 +10,18 @@
                         <el-form-item label="父角色">
                             <el-select v-model="form.parentid" placeholder="请选择">
                                 <el-option
+                                        :key="parentRole.id"
+                                        :label="parentRole.name"
+                                        :value="parentRole.id">
+                                </el-option>
+                                <el-option
                                         v-for="item in roleList"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id">
+                                            <template v-for="i in item.level * 2"><span>&nbsp;</span></template>
+                                            <template v-if="item.level > 0"><span> ∟</span></template>
+                                            <span>{{ item.name }}</span>
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -63,7 +71,11 @@
                     remark: '',
                     status: '1'
                 },
-                roleList: []
+                roleList: [],
+                parentRole: {
+                    id: 0,
+                    name: '无',
+                }
             },
             watch: {},
             filters: {},
@@ -98,7 +110,7 @@
                 getRoleList: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Role/index')}?_action=getList",
+                        url: "{:api_url('/admin/Role/getRoleList')}",
                         type: "get",
                         dataType: "json",
                         success: function (res) {

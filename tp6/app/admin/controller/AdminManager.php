@@ -27,25 +27,21 @@ class AdminManager extends AdminController
      */
     function myBasicsInfo()
     {
+        if (Request::isPost()) {
+            // 编辑我的基本资料
+            $user_data = array(
+                'nickname' => Request::param('nickname'),
+                'email'    => Request::param('email'),
+                'remark'   => Request::param('remark'),
+                'id'       => $this->user->id
+            );
+            $adminManagerService = new AdminManagerService();
+            $res = $adminManagerService->addOrEditAdminManager($user_data);
+            return json($res);
+        }
         return view(
             'myBasicsInfo', ['user' => $this->user]
         );
-    }
-
-    /**
-     * 编辑我的基本资料
-     */
-    function editMyBasicsInfo()
-    {
-        $save = array(
-            'nickname' => Request::param('nickname'),
-            'email' => Request::param('email'),
-            'remark' => Request::param('remark'),
-            'update_time' => time()
-        );
-        $AdminUserModel = new AdminUserModel();
-        $AdminUserModel->where('id', $this->user->id)->save($save);
-        return json(self::createReturn(true, [], '操作成功'));
     }
 
     /**
@@ -146,7 +142,7 @@ class AdminManager extends AdminController
         $where = [];
         $role_id = Request::param('role_id', 0);
         // 指定角色时，需要判断权限
-        if (!empty($role_id)) {
+        if (!empty($role_id) && $this->user['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
             // 角色层级权限判断
             $result = $roleService->compareRoleLevel($this->user['role_id'], $role_id)['data'];
             if ($result <= 0) {
