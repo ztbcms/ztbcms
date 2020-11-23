@@ -41,10 +41,10 @@ class AdminManagerService extends BaseService
         $check_email = $adminUserModel->where('email', $data['email'])->find();
         if (isset($user_data['id']) && !empty($user_data['id'])) {
             $id = $user_data['id'];
-            if($check_username['id'] != $id){
+            if($check_username && $check_username['id'] != $id){
                 return self::createReturn(false, null, '用户名已存在');
             }
-            if($check_email['id'] != $id){
+            if($check_email && $check_email['id'] != $id){
                 return self::createReturn(false, null, '邮箱已存在');
             }
         } else {
