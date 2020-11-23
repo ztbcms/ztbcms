@@ -17,7 +17,9 @@ class AdminManagerService extends BaseService
 {
     /**
      * 添加、编辑管理员
+     *
      * @param $user_data
+     *
      * @return array|bool
      */
     function addOrEditAdminManager($user_data)
@@ -25,27 +27,52 @@ class AdminManagerService extends BaseService
         if (empty($user_data) || !is_array($user_data)) {
             return self::createReturn(false, null, '参数异常');
         }
-        $data = [
-            'username' => $user_data['username'],
-            'password' => $user_data['password'],
-            'email' => $user_data['email'],
-            'nickname' => $user_data['nickname'],
-            'remark' => $user_data['remark'],
-            'role_id' => $user_data['role_id'],
-            'status' => $user_data['status'],
-            'info' => isset($user_data['info']) ? $user_data['info'] : '',
-        ];
+        $data = [];
+        isset($user_data['username']) && $data['username'] = $user_data['username'];
+        isset($user_data['password']) && $data['password'] = $user_data['password'];
+        isset($user_data['email']) && $data['email'] = $user_data['email'];
+        isset($user_data['nickname']) && $data['nickname'] = $user_data['nickname'];
+        isset($user_data['remark']) && $data['remark'] = $user_data['remark'];
+        isset($user_data['role_id']) && $data['role_id'] = $user_data['role_id'];
+        isset($user_data['status']) && $data['status'] = $user_data['status'];
+        isset($user_data['info']) && $data['info'] = $user_data['info'];
+
         $adminUserModel = new AdminUserModel();
-        $id = null;
-        $check_username = $adminUserModel->where('username', $data['username'])->find();
-        $check_email = $adminUserModel->where('email', $data['email'])->find();
-        if (isset($user_data['id']) && !empty($user_data['id'])) {
-            $id = $user_data['id'];
-            if($check_username && $check_username['id'] != $id){
-                return self::createReturn(false, null, '用户名已存在');
+        $user_id = $user_data['id'] ?? null;
+        // 校验用户名/邮箱
+        $check_username = null;
+        if (isset($data['username'])) {
+            $check_username = $adminUserModel->where('username', $data['username'])->find();
+        }
+        $check_email = null;
+        if (isset($data['email'])) {
+            $check_email = $adminUserModel->where('email', $data['email'])->find();
+        }
+
+        if (isset($data['password']) && !empty($data['password'])) {
+            $verify = StringHelper::genRandomString(6);
+            $data['verify'] = $verify;
+            $data['password'] = self::hashPassword($data['password'], $verify);
+        } else {
+            unset($data['password']);
+        }
+
+        if (!empty($user_id)) {
+            // 编辑
+            if (isset($data['username'])) {
+                if ($check_username && $check_username['id'] != $user_id) {
+                    return self::createReturn(false, null, '用户名已存在');
+                }
             }
-            if($check_email && $check_email['id'] != $id){
-                return self::createReturn(false, null, '邮箱已存在');
+            if (isset($data['email'])) {
+                if ($check_email && $check_email['id'] != $user_id) {
+                    return self::createReturn(false, null, '邮箱已存在');
+                }
+            }
+            $data['update_time'] = time();
+            $res = $adminUserModel->where('id', $user_id)->save($data);
+            if ($res) {
+                return self::createReturn(true, null, '更新成功');
             }
         } else {
             // 新增
@@ -55,36 +82,21 @@ class AdminManagerService extends BaseService
             if ($check_email) {
                 return self::createReturn(false, null, '邮箱已存在');
             }
-        }
-        if (!empty($data['password'])) {
-            $verify = StringHelper::genRandomString(6);
-            $data['verify'] = $verify;
-            $data['password'] = self::hashPassword($data['password'], $verify);
-        } else {
-            unset($data['password']);
-        }
-        try {
-            validate(User::class)->check($data);
-            if (empty($id)) {
-                $res = $adminUserModel->insert($data);
-                if ($res) {
-                    return self::createReturn(true, null, '添加管理员成功');
-                }
-            } else {
-                $res = $adminUserModel->where('id', $id)->save($data);
-                if ($res) {
-                    return self::createReturn(true, null, '更新成功');
-                }
+            $data['create_time'] = $data['update_time'] = time();
+            $res = $adminUserModel->insert($data);
+            if ($res) {
+                return self::createReturn(true, null, '添加管理员成功');
             }
-        } catch (ValidateException $e) {
-            // 验证失败 输出错误信息
-            return self::createReturn(false, null, $e->getError());
         }
+
+        return self::createReturn(true, null, '操作失败成功');
     }
 
     /**
      * 删除管理员
+     *
      * @param $user_id
+     *
      * @return array
      */
     function deleteAdminManager($user_id)
@@ -106,12 +118,14 @@ class AdminManagerService extends BaseService
 
     /**
      * 密码hash
+     *
      * @param $password
-     * @param string $verify
+     * @param  string  $verify
+     *
      * @return string
      */
     static function hashPassword($password, $verify = "")
     {
-        return md5($password . md5($verify));
+        return md5($password.md5($verify));
     }
 }
