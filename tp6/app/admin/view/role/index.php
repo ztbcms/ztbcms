@@ -18,7 +18,7 @@
                 style="width: 100%;"
         >
 
-            <el-table-column label="ID" align="center">
+            <el-table-column label="ID" align="center" width="100">
                 <template slot-scope="scope">
                     <span>{{ scope.row.id }}</span>
                 </template>
@@ -26,6 +26,8 @@
 
             <el-table-column label="角色名称" align="">
                 <template slot-scope="scope">
+                    <template v-for="i in scope.row.level * 2"><span>&nbsp;</span></template>
+                    <template v-if="scope.row.level > 0"><span> ∟</span></template>
                     <span>{{ scope.row.name }}</span>
                 </template>
             </el-table-column>

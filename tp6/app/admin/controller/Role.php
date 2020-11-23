@@ -76,25 +76,31 @@ class Role extends AdminController
     /**
      * 获取角色列表
      *
+     * 如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
+     *
+     * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     function getRoleList()
     {
+        $status = input('status', null);
+        $where = [];
+        if ($status !== null) {
+            $where [] = ['status', '=', $status];
+        }
         $RoleModel = new RoleModel();
-        $pid = 0;
-        $list = $RoleModel->where('status', RoleModel::STATUS_YES)->select()->toArray();
+        $list = $RoleModel->where($where)->select()->toArray();
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
-        if ($this->user['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
-            $list = TreeHelper::getSonNodeFromArray($list, $this->user['role_id'], [
+        if ($this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
+            $list =TreeHelper::arrayToTreeList($list,  0, [
                 'parentKey' => 'parentid'
             ]);
-            $pid = $this->user['role_id'];
-        }
-        $list = $RoleModel->getTree($list, $pid);
-        foreach ($list as $k => $v) {
-            $list[$k]['name'] = str_repeat('—', $v['level']).' '.$v['name'];
+        } else {
+            $list =TreeHelper::arrayToTreeList($list,  $this->user['role_id'], [
+                'parentKey' => 'parentid'
+            ]);
         }
         return json(self::createReturn(true, $list));
     }
