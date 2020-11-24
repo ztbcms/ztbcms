@@ -5,8 +5,6 @@
 
 namespace app\admin\model;
 
-use app\admin\validate\User;
-use think\exception\ValidateException;
 use think\facade\Db;
 use think\Model;
 
@@ -146,28 +144,5 @@ class AdminUserModel extends Model
             'password' => $this->hashPassword($newPass, $verify), 'verify' => $verify
         ));
         return $status !== false ? true : false;
-    }
-
-    /**
-     * 删除管理员
-     * @param $userId
-     * @return bool
-     */
-    public function deleteUser($userId){
-        $userId = (int) $userId;
-        if (empty($userId)) {
-            $this->error = '请指定需要删除的用户ID！';
-            return false;
-        }
-        if ($userId == 1) {
-            $this->error = '该管理员不能被删除！';
-            return false;
-        }
-        if (false !== $this->where(array('id' => $userId))->delete()) {
-            return true;
-        } else {
-            $this->error = '删除失败！';
-            return false;
-        }
     }
 }
