@@ -331,7 +331,7 @@ INSERT INTO `cms_config` VALUES ('38', 'generate', '是否生成首页', '1', '1
 INSERT INTO `cms_config` VALUES ('39', 'index_urlruleid', '首页URL规则', '1', '11');
 INSERT INTO `cms_config` VALUES ('40', 'indextp', '首页模板', '1', 'index.php');
 INSERT INTO `cms_config` VALUES ('41', 'tagurl', 'TagURL规则', '1', '8');
-INSERT INTO `cms_config` VALUES ('42', 'checkcode_type', '验证码类型', '1', '0');
+INSERT INTO `cms_config` VALUES ('42', 'checkcode_type', '验证码类型', '1', '1');
 INSERT INTO `cms_config` VALUES ('43', 'attachment_driver', '附件驱动', '1', 'Local');
 INSERT INTO `cms_config` VALUES ('44', 'attachment_aliyun_key_id', 'OSS-accessKeyId', '1', '');
 INSERT INTO `cms_config` VALUES ('45', 'attachment_aliyun_key_secret', 'OSS-accessKeySecret', '1', '');

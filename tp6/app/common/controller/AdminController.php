@@ -8,7 +8,6 @@ namespace app\common\controller;
 
 
 use app\admin\model\AdminUserModel;
-use app\admin\model\RoleModel;
 use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
 use app\BaseController;
