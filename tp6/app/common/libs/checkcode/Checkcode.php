@@ -51,11 +51,11 @@ class Checkcode
                 break;
             //纯字母
             case 2:
-                $this->charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXY Z';
+                $this->charset = 'abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 break;
-            //字母+数字
-            case 3:
-                $this->charset = '0123456789abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ';
+            //字母+数字 3
+            default:
+                $this->charset = '0123456789abcdefghikjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 break;
         }
     }

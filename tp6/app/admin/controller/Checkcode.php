@@ -20,7 +20,7 @@ class Checkcode extends BaseController
 {
     public function index()
     {
-        $checkcode_type = (int) AdminConfigService::getInstance()->getConfig('checkcode_type');
+        $checkcode_type = (int) AdminConfigService::getInstance()->getConfig('checkcode_type')['data'];
         $checkcode = new \app\common\libs\checkcode\Checkcode($checkcode_type);
         //验证码类型
         $checkcode->type = strtolower(Request::param('type', 'verify'));
