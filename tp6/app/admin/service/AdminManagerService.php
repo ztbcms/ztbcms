@@ -47,6 +47,11 @@ class AdminManagerService extends BaseService
         $check_email = null;
         if (isset($data['email'])) {
             $check_email = $adminUserModel->where('email', $data['email'])->find();
+
+            $validate = \think\facade\Validate::rule('email', 'email');
+            if(!$validate->check($data)){
+                return self::createReturn(false, null, '邮箱格式错误');
+            }
         }
 
         if (isset($data['password']) && !empty($data['password'])) {
@@ -82,10 +87,13 @@ class AdminManagerService extends BaseService
             if ($check_email) {
                 return self::createReturn(false, null, '邮箱已存在');
             }
+            if (!isset($data['role_id']) || empty($data['role_id'])){
+                return self::createReturn(false, null, '请选择角色');
+            }
             $data['create_time'] = $data['update_time'] = time();
             $res = $adminUserModel->insert($data);
             if ($res) {
-                return self::createReturn(true, null, '添加管理员成功');
+                return self::createReturn(true, null, '添加成功');
             }
         }
 
