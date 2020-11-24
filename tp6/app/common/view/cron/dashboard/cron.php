@@ -1,15 +1,24 @@
 <div id="app" v-cloak>
     <el-card>
         <div style="margin-bottom: 20px;">
-            <el-button @click="createCron" type="primary">
-                新增任务
-            </el-button>
+
+            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'cron')){ ?>
+                <el-button @click="createCron" type="primary">
+                    新增任务
+                </el-button>
+            <?php } ?>
+
+            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'schedulingLog')){ ?>
             <el-button @click="openSchedulingLog" type="primary">
                 调度日志
             </el-button>
+            <?php } ?>
+
+            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'cronLog')){ ?>
             <el-button @click="openTaskLog"  type="primary">
                 任务日志
             </el-button>
+            <?php } ?>
         </div>
         <el-table
                 :data="lists"

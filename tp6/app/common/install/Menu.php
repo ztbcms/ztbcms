@@ -36,7 +36,56 @@ return array(
                         "status" => 1,
                         "name" => "任务列表",
                         "remark" => "",
-                    ]
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/getCronStatus",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "获取任务概况",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/setCronEnable",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "定时任务开关",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/setCronSecretKey",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "定时任务秘钥设置",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/getCronList",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "定时任务列表",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/cron",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "新增任务",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/schedulingLog",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "调度日志",
+                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/cronLog",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "任务日志",
+                        "remark" => "",
+                    ],
                 ]
             ],
             [
@@ -59,7 +108,14 @@ return array(
                         "status" => 1,
                         "name" => "发送日志",
                         "remark" => "",
-                    ]
+                    ],
+                    [
+                        "route" => "common/message.message/getMessageList",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "获取消息列表",
+                        "remark" => "",
+                    ],
                 ]
             ],
             [
@@ -82,7 +138,14 @@ return array(
                         "status" => 1,
                         "name" => "上传示例",
                         "remark" => "",
-                    ]
+                    ],
+                    [
+                        "route" => "common/upload.%/%",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "上传基本权限（必选）",
+                        "remark" => "",
+                    ],
                 ]
             ],
         ],

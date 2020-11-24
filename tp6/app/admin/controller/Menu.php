@@ -72,7 +72,7 @@ class Menu extends AdminController
     {
         $id = Request::param('id', '', 'trim');
         $parentid = Request::param('parentid', '', 'trim');
-        return view('details', ['id' => $id, 'parentid' => (int) $parentid]);
+        return view('details', ['id' => $id, 'parentid' => (string) $parentid]);
     }
 
     /**

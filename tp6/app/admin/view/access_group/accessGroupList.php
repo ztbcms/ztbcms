@@ -43,8 +43,14 @@
 
                     <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
+
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AccessGroup', 'getAccessGroupById')){ ?>
                             <el-button type="primary" size="mini" @click="detail(scope.row.id)">修改</el-button>
-                            <el-button type="danger" size="mini" @click="clickDelteItem(scope.row.id)">删除</el-button>
+                            <?php } ?>
+
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AccessGroup', 'deleteAccessGroup')){ ?>
+                                <el-button type="danger" size="mini" @click="clickDelteItem(scope.row.id)">删除</el-button>
+                            <?php } ?>
                         </template>
                     </el-table-column>
                 </el-table>

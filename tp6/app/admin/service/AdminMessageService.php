@@ -38,14 +38,13 @@ class AdminMessageService extends BaseService
      * @param string $order
      * @param int $page
      * @param int $limit
-     * @param bool $isRelation
      *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    static function getAdminMessageList($where = [], $order = '', $page = 1, $limit = 20, $isRelation = false)
+    static function getAdminMessageList($where = [], $order = '', $page = 1, $limit = 20)
     {
         $db = Db::name('admin_message')->where($where)->order($order)->page($page)->limit($limit);
         if (!empty($order)) {
@@ -56,7 +55,6 @@ class AdminMessageService extends BaseService
         $total_page = ceil($total_items / $limit);
 
         return self::createReturnList(true, $items, $page, $limit, $total_items, $total_page);
-
     }
 
 

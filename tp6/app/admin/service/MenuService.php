@@ -8,6 +8,7 @@ namespace app\admin\service;
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\admin\validate\Menu;
+use app\common\libs\helper\TreeHelper;
 use app\common\service\BaseService;
 use think\exception\ValidateException;
 
@@ -26,11 +27,8 @@ class MenuService extends BaseService
     static function getMenuList()
     {
         $MenuModel = new MenuModel();
-        $menu = $MenuModel->order(array("listorder" => "ASC"))->select();
-        $menu = self::getTree($menu);
-        foreach ($menu as $k => $v) {
-            $menu[$k]['name'] = str_repeat("ㄧㄧ", $v['level']).' '.$v['name'];
-        }
+        $menu = $MenuModel->order(array("listorder" => "ASC"))->select()->toArray();
+        $menu = TreeHelper::getTreeShapeArray($menu);
         return self::createReturn(true, $menu, '获取成功');
     }
 
@@ -194,33 +192,6 @@ class MenuService extends BaseService
             }
         }
         return self::createReturn(true, $data);
-    }
-
-    /**
-     * 递归实现无限极分类
-     * @param $array
-     * @param  int  $pid  父ID
-     * @param  int  $level  分类级别
-     * @return array 分好类的数组 直接遍历即可 $level可以用来遍历缩进
-     */
-    static function getTree($array, $pid = 0, $level = 0)
-    {
-        //声明静态数组,避免递归调用时,多次声明导致数组覆盖
-        static $list = [];
-        foreach ($array as $key => $value) {
-            //第一次遍历,找到父节点为根节点的节点 也就是pid=0的节点
-            if ($value['parentid'] == $pid) {
-                //父节点为根节点的节点,级别为0，也就是第一级
-                $value['level'] = $level;
-                //把数组放到list中
-                $list[] = $value;
-                //把这个节点从数组中移除,减少后续递归消耗
-                unset($array[$key]);
-                //开始递归,查找父ID为该节点ID的节点,级别则为原级别+1
-                self::getTree($array, $value['id'], $level + 1);
-            }
-        }
-        return $list;
     }
 
     /**

@@ -5,9 +5,11 @@
             <h3>后台菜单</h3>
         </div>
 
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
         <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="details('')">
             添加菜单
         </el-button>
+        <?php } ?>
 
         <el-table
                 :key="tableKey"
@@ -30,6 +32,8 @@
 
             <el-table-column label="菜单名称" align="">
                 <template slot-scope="scope">
+                    <template v-for="i in scope.row.level * 2"><span>&nbsp;</span></template>
+                    <template v-if="scope.row.level > 0"><span> ∟</span></template>
                     <span>{{ scope.row.name }}  | {{scope.row.app}}/{{scope.row.controller}}/{{scope.row.action}}</span>
                 </template>
             </el-table-column>
@@ -58,9 +62,18 @@
 
             <el-table-column label="操作" align="center" width="280" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
+
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
                     <el-button type="text" size="mini" @click="linkMenuAdd(scope.row.id)">添加子菜单</el-button>
+                    <?php } ?>
+
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
                     <el-button type="text" size="mini" @click="details(scope.row.id)">修改</el-button>
-                    <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color: #e74c3c;">删除</el-button>
+                    <?php } ?>
+
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'doDelete')){ ?>
+                        <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color: #e74c3c;">删除</el-button>
+                    <?php } ?>
                 </template>
             </el-table-column>
         </el-table>

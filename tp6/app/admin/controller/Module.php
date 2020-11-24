@@ -68,8 +68,12 @@ class Module extends AdminController
         //当前分页
         $page = max($page, 1);
         //根据分页取到对应的模块列表数据
-        $list = $dirs_arr[intval($page - 1)];
 
+        if($dirs_arr) {
+            $list = $dirs_arr[intval($page - 1)];
+        } else {
+            $list = [];
+        }
         return self::makeJsonReturn(true, [
             'page'        => $page,
             'limit'       => $limit,

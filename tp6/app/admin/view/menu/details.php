@@ -6,10 +6,13 @@
                     <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
                         <el-form-item label="上级" prop="parentid">
                             <el-select v-model="formData.parentid" placeholder="请选择上级" clearable :style="{width: '100%'}">
-
                                 <el-option label="作为一级菜单" value="0"></el-option>
-                                <el-option v-for="(item, index) in parentidOptions" :key="index" :label="item.name"
-                                           :value="item.id" ></el-option>
+                                <el-option v-for="(item, index) in parentidOptions" :key="index"
+                                           :value="item.id" :label="item.name">
+                                    <template v-for="i in item.level * 2"><span>&nbsp;</span></template>
+                                    <template v-if="item.level > 0"><span> ∟</span></template>
+                                    <span>{{ item.name }}</span>
+                                </el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="名称" prop="name">
@@ -205,7 +208,7 @@
                         id: that.formData.id,
                     }, function (res) {
                         that.formData = res.data;
-                        that.formData.parentid = parseInt(that.formData.parentid)
+                        if(res.data.parentid !== '0') that.formData.parentid = parseInt(that.formData.parentid)
                         that.formData.is_tp6 = that.formData.is_tp6 + ''
                     }, 'json');
                 }
