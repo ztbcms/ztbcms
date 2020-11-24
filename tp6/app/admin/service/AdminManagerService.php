@@ -62,6 +62,10 @@ class AdminManagerService extends BaseService
             unset($data['password']);
         }
 
+        if (isset($data['nickname']) && empty($data['nickname'])) {
+            return self::createReturn(false, null, '昵称不能为空');
+        }
+
         if (!empty($user_id)) {
             // 编辑
             if (isset($data['username'])) {
