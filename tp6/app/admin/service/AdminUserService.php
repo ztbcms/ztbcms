@@ -87,18 +87,6 @@ class AdminUserService extends BaseService
     public function isLogin()
     {
         $userId = Encrypt::authcode(session(self::userUidKey), 'DECODE');
-        if (empty($userId)) {
-            // TODO 适配 ztbcms tp3登录跳转到 tp6
-            $sessionId = isset($_COOKIE['PHPSESSID']) ? $_COOKIE['PHPSESSID'] : null;
-            $token = Db::name('user_token')->where([
-                ['session_id', '=', $sessionId],
-                ['expire_time', '>', time()],
-            ])->find();
-            if($token){
-                return (int)$token['user_id'];
-            }
-            return false;
-        }
         return (int) $userId;
     }
 
@@ -109,17 +97,51 @@ class AdminUserService extends BaseService
             return false;
         }
         //验证
-        $userInfo = $this->getUserInfo($identifier, $password);
-        if (false == $userInfo) {
+        $res = $this->checkUserPassword($identifier, $password);
+        if(!$res['status']){
             //记录登录日志
             $this->record($identifier, $password, 0);
             return false;
         }
+        $userInfo = $res['data'];
         //记录登录日志
         $this->record($identifier, $password, 1);
         //注册登录状态
         $this->registerLogin($userInfo);
         return true;
+    }
+
+    /**
+     * 校验用户名+密码
+     * @param $username string 用户名
+     * @param $password string 密码, 密码为空时不校验密码
+     *
+     * @return array|false
+     */
+    function checkUserPassword($username, $password = '')
+    {
+        if (empty($username)) {
+            return false;
+        }
+        $adminUserModel = new AdminUserModel();
+        $userInfo = $adminUserModel->where('username', '=', $username)->findOrEmpty();
+        if (empty($userInfo)) {
+            return self::createReturn(false, null, '用户未注册');
+        }
+        //密码验证
+        if (!empty($password) && $adminUserModel->hashPassword($password, $userInfo['verify']) != $userInfo['password']) {
+            return self::createReturn(false, null, '密码不正确');
+        }
+        $info = $userInfo->toArray();
+        return self::createReturn(true, [
+            'id'       => $info['id'],
+            'username' => $info['username'],
+            'nickname' => $info['nickname'],
+            'email'    => $info['email'],
+            'role_id'  => $info['role_id'],
+            'avatar'   => $info['avatar'],
+            'phone'    => $info['phone'],
+        ], '登录成功');
     }
 
     /**
@@ -143,10 +165,6 @@ class AdminUserService extends BaseService
      */
     public function logout()
     {
-        // 删除凭证
-        Db::name('UserToken')->where([
-            ['session_id'  ,'=', cookie('PHPSESSID')],
-        ])->delete();
         session(null);
         return true;
     }
@@ -184,16 +202,12 @@ class AdminUserService extends BaseService
         $token = Encrypt::authcode((int) $userInfo['id'], '');
         session(self::userUidKey, $token);
 
-        Db::name('UserToken')->insert([
-            'session_id'  => cookie('PHPSESSID'),
-            'token'       => $token,
-            'user_id'     => (int) $userInfo['id'],
-            'expire_time' => time() + 7 * 86400,
-            'create_time' => time()
-        ]);
         //更新状态
         $adminUserModel = new AdminUserModel();
-        $adminUserModel->loginStatus((int) $userInfo['id']);
+        $adminUserModel->where('id', $userInfo['id'])->update([
+            'last_login_time' => time(),
+            'last_login_ip'   => request()->ip(),
+        ]);
     }
 
     /**

@@ -1,6 +1,6 @@
 
 <div class="main">
-    <form class="mainmenu" onsubmit='return false;' onkeydown="submitByEnter();">
+    <form class="mainmenu" onsubmit='return false;' onkeydown="submitByEnter">
         <div class="logo-box flex-between">
             <div class="title">{$Config.sitename}</div>
         </div>
@@ -206,16 +206,13 @@
 
     //刷新二维码
     function refreshs() {
-        document.getElementById('code_img').src = "{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"+"&time=" + Math.random();
+        document.getElementById('code_img').src = "{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"+"&refresh=1&time=" + Math.random();
     }
 
-    // refreshs();
-
     //按enter的时候触发点击效果
-    function submitByEnter()
+    function submitByEnter(event)
     {
-        if(event.keyCode == 13)
-        {
+        if(event && event.keyCode === 13) {
             $(".default").click();
         }
     }
@@ -240,18 +237,13 @@
                 form: data
             },
             success: function (res) {
-                //刷新二维码
-                refreshs();
-                if (!res.status) {
-                    var msg = res.msg;
-                    layer.msg(msg)
-                } else {
-                    var msg = res.msg;
-                    layer.msg(msg);
+                layer.msg(res.msg)
+                if (res.status) {
                     setTimeout(function () {
                         window.location.replace(res.data.forward)
                     }, 800)
                 }
+                refreshs();
             }
         })
     }

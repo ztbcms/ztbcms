@@ -97,7 +97,7 @@ class Login extends BaseController
                 'forward' => $forward
             ], "登录成功");
         } else {
-            return self::makeJsonReturn(true, null, "用户名或者密码错误，登录失败！");
+            return self::makeJsonReturn(false, null, "用户名或者密码错误");
         }
     }
 

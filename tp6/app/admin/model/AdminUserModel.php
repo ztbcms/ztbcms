@@ -29,9 +29,8 @@ class AdminUserModel extends Model
 
     /**
      * 获取用户信息
-     *
+     * @deprecated 请使用AdminUserService
      * @param  string|int  $identifier  用户名或者用户ID
-     *
      * @param  null  $password
      *
      * @return boolean|array
@@ -60,27 +59,6 @@ class AdminUserModel extends Model
             return false;
         }
         return $userInfo->toArray();
-    }
-
-    /**
-     * 更新登录状态信息
-     *
-     * @param  string  $userId
-     *
-     * @return boolean|array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    function loginStatus($userId)
-    {
-        $this->find((int) $userId);
-        $res = Db::name('user')->where('id', $userId)->update([
-            'last_login_time' => time(),
-            'last_login_ip'   => request()->ip(),
-        ]);
-
-        return !!$res;
     }
 
     /**

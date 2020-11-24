@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
  * Date: 2020-08-26
- * Time: 17:34.
  */
 
 namespace app\common\controller;
@@ -15,9 +13,7 @@ use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
 use app\BaseController;
 use app\common\model\UserModel;
-use app\common\model\UserTokenModel;
 use think\App;
-use think\facade\Db;
 use think\facade\View;
 
 class AdminController extends BaseController
@@ -73,7 +69,6 @@ class AdminController extends BaseController
             return;
         }
 
-
         //判断是否为超级管理员
         $this->is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
 
@@ -115,12 +110,12 @@ class AdminController extends BaseController
 
     // 账号已被禁用
     private function _handleDisabled(){
+        // 退出账户
+        AdminUserService::getInstance()->logout();
         if (request()->isAjax()) {
             self::makeJsonReturn(false, null, '账号已被禁用', 403)->send();
-            exit;
         } else {
             response(View::fetch('common/403', ['title' => '账号已被禁用']))->send();
-            exit;
         }
     }
 

@@ -124,16 +124,16 @@
                         "label": "选项二",
                         "value": 2
                     }],
-                    checkcode_typeOptions: [{
-                        "label": "数字字母混合",
-                        "value": '0'
-                    }, {
+                    checkcode_typeOptions: [ {
                         "label": "纯数字",
                         "value": '1'
                     }, {
                         "label": "纯字母",
                         "value": '2'
-                    }],
+                    },{
+                        "label": "数字字母混合",
+                        "value": '3'
+                    }]
                 }
             },
             computed: {},
