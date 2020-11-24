@@ -58,10 +58,8 @@
                         dataType: 'json',
                         data: this.form,
                         success: function (res) {
-                            if (!res.status) {
-                                layer.msg(res.msg)
-                            } else {
-                                layer.msg(res.msg)
+                            layer.msg(res.msg)
+                            if (res.status) {
                                 if (res.data.rediret_url) {
                                     //跳转到登录页
                                     setTimeout(function () {

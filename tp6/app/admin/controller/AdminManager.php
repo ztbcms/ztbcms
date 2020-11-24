@@ -49,7 +49,7 @@ class AdminManager extends AdminController
      */
     function changePassword()
     {
-        if(Request::isPost()){
+        if (Request::isPost()) {
             $oldPass = Request::param('password', '', 'trim');
             $newPass = Request::param('new_password', '', 'trim');
             $new_pwdconfirm = Request::param('new_pwdconfirm', '', 'trim');
@@ -62,20 +62,19 @@ class AdminManager extends AdminController
                 return json(self::createReturn(false, null, '两次密码不相同'));
             }
 
-            $AdminUserModel = new AdminUserModel();
-            if ($AdminUserModel->changePassword($this->user->id, $newPass, $oldPass)) {
+            $adminUserService = new AdminUserService();
+            $res = $adminUserService->changePassword($this->user->id, $newPass, $oldPass);
+            if ($res['status']) {
                 //退出登录
-                (new AdminUserService())->logout();
+                $adminUserService->logout();
                 return json(self::createReturn(true, [
                     'rediret_url' => api_url("/admin/Login/index") //跳转链接
                 ], '密码已经更新，请重新登录'));
             } else {
-                return json(self::createReturn(false, null, '密码修改失败'));
+                return json(self::createReturn(false, null, $res['msg']));
             }
         }
-
         return view('changePassword', ['user' => $this->user]);
-
     }
 
     /**

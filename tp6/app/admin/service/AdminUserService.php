@@ -9,6 +9,7 @@ namespace app\admin\service;
 
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
+use app\common\libs\helper\StringHelper;
 use app\common\service\BaseService;
 use app\common\util\Encrypt;
 use think\facade\Db;
@@ -262,6 +263,41 @@ class AdminUserService extends BaseService
         $userInfo = $this->getInfo();
         $rbacService = new RbacService();
         return $rbacService->enableUserAccess($userInfo['id'], $app, $controller, $action)['status'];
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param $user_id int|string 用户ID
+     * @param $newPassword string 新密码
+     * @param  string|null  $password 旧密码
+     *
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function changePassword($user_id, $newPassword, $password = null)
+    {
+        //获取会员信息
+        $adminUserModel = new AdminUserModel();
+        $res = $this->getAdminUserInfoById($user_id);
+        if(!$res['status']){
+            return self::createReturn(false, null, '该用户不存在');
+        }
+        $userInfo = $res['data'];
+        // 旧密码校验, 旧密码为null时不作校验
+        if($password !== null && !$this->checkUserPassword($userInfo['username'], $password)['status']){
+            return self::createReturn(false, null, '旧密码错误');
+        }
+        $verify = StringHelper::genRandomString(6);
+        $res = $adminUserModel->where('id', $userInfo['id'])->save([
+            'password' => $adminUserModel->hashPassword($newPassword, $verify),
+            'verify' => $verify
+        ]);
+        if($res){
+            return self::createReturn(true, null, '密码修改成功');
+        }
+        return self::createReturn(false, null, '更新密码异常');
     }
 
 
