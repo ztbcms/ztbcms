@@ -1,12 +1,12 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-        <el-col :sm="24" :md="18">
+        <el-col :sm="24" :md="9">
             <template>
                 <div>
                     <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
                         <el-form-item label="上级" prop="parentid">
                             <el-select v-model="formData.parentid" placeholder="请选择上级" clearable :style="{width: '100%'}">
-                                <el-option label="作为一级菜单" value="0"></el-option>
+                                <el-option :label="topOption.label" :value="topOption.value"></el-option>
                                 <el-option v-for="(item, index) in parentidOptions" :key="index"
                                            :value="item.id" :label="item.name">
                                     <template v-for="i in item.level * 2"><span>&nbsp;</span></template>
@@ -144,6 +144,10 @@
                         "label": "只作为菜单",
                         "value": '0'
                     }],
+                    topOption: {
+                        label: '作为一级菜单',
+                        value: '0'
+                    }
                 }
             },
             computed: {},
