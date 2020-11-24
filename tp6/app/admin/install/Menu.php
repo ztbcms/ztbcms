@@ -348,6 +348,14 @@ return [
                         "remark" => "",
                         "child" => []
                     ],
+                    [
+                        "route" => "admin/AccessGroup/deleteAccessGroup",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除权限组",
+                        "remark" => "",
+                        "child" => []
+                    ]
                 ]
             ],
 
@@ -465,6 +473,14 @@ return [
                 "type" => 1,
                 "status" => 1,
                 "name" => "本地模块",
+                "remark" => "",
+                "child" => []
+            ],
+            [
+                "route" => "admin/Module/getModuleList",
+                "type" => 1,
+                "status" => 0,
+                "name" => "本地模块列表",
                 "remark" => "",
                 "child" => []
             ],
