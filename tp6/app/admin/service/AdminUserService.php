@@ -22,8 +22,8 @@ use think\facade\Db;
  */
 class AdminUserService extends BaseService
 {
-    //存储用户uid的Key
-    const userUidKey = 'spf_userid';
+    //存储后台用户uid的Key
+    const userUidKey = 'admin_user_id';
     //超级管理员角色id
     const administratorRoleId = 1;
 

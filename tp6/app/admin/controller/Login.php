@@ -9,6 +9,7 @@ namespace app\admin\controller;
 use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
 use app\BaseController;
+use app\common\controller\AdminController;
 use think\facade\Config;
 use think\facade\Db;
 use think\facade\Request;
@@ -19,8 +20,9 @@ use think\facade\View;
  *
  * @package app\admin\controller
  */
-class Login extends BaseController
+class Login extends AdminController
 {
+    protected $noNeedLogin = ['index', 'doLogin'];
     /**
      * 登录页
      *

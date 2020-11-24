@@ -16,9 +16,14 @@ use app\common\model\UserModel;
 use think\App;
 use think\facade\View;
 
+/**
+ * 管理后台基础控制器
+ *  - 权限、登录校验
+ *  但凡涉及到管理后台的，请务必集成此类
+ * @package app\common\controller
+ */
 class AdminController extends BaseController
 {
-
     /**
      * 无需登录的方法,同时也就不需要鉴权了
      * @var array
@@ -36,9 +41,6 @@ class AdminController extends BaseController
      */
     protected $user;
 
-    //是否为超级管理员
-    protected $is_administrator;
-
     //引入中间件
     protected $middleware = [
         //操作日志记录
@@ -53,34 +55,32 @@ class AdminController extends BaseController
         if($this->_checkActionMatch($app->request->action(), $this->noNeedLogin)){
             // 不需要
             return;
-        }
-        if (AdminUserService::getInstance()->isLogin()) {
-            //tp6 直接登录
-            $info = AdminUserService::getInstance()->getInfo();
-            $this->user = UserModel::where('id', $info['id'])->findOrEmpty();
         } else {
-            $this->_handleUnlogin();
-            return;
-        }
+            if (AdminUserService::getInstance()->isLogin()) {
+                $info = AdminUserService::getInstance()->getInfo();
+                $this->user = UserModel::where('id', $info['id'])->findOrEmpty();
 
-        // 账号是否被禁用
-        if($this->user['status'] == AdminUserModel::STATUS_DISABLE){
-            $this->_handleDisabled();
-            return;
+                // 账号是否被禁用
+                if($this->user['status'] == AdminUserModel::STATUS_DISABLE){
+                    $this->_handleDisabled();
+                    return;
+                }
+            } else {
+                $this->_handleUnlogin();
+                return;
+            }
         }
-
-        //判断是否为超级管理员
-        $this->is_administrator = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
 
         // 权限检测
         // 该方法是否需要权限检测
         if($this->_checkActionMatch($app->request->action(), $this->noNeedPermission)){
             // 不需要
             return;
-        }
-        $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
-        if (!$hasPremission) {
-            $this->_handleNoPermiassion();
+        } else {
+            $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
+            if (!$hasPremission) {
+                $this->_handleNoPermiassion();
+            }
         }
     }
 

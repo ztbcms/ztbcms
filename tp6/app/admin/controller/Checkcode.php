@@ -8,7 +8,7 @@ namespace app\admin\controller;
 
 
 use app\admin\service\AdminConfigService;
-use app\BaseController;
+use app\common\controller\AdminController;
 use think\facade\Request;
 
 /**
@@ -16,9 +16,11 @@ use think\facade\Request;
  *
  * @package app\admin\controller
  */
-class Checkcode extends BaseController
+class Checkcode extends AdminController
 {
-    public function index()
+    protected $noNeedLogin = ['index'];
+
+    function index()
     {
         $checkcode_type = (int) AdminConfigService::getInstance()->getConfig('checkcode_type')['data'];
         $checkcode = new \app\common\libs\checkcode\Checkcode($checkcode_type);

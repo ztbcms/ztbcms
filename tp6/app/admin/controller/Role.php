@@ -71,9 +71,7 @@ class Role extends AdminController
             $info = $RoleModel->where(['id' => $id])->find();
             return self::makeJsonReturn(true, $info);
         }
-
-        if($this->is_administrator )  $is_superior = true;
-        else $is_superior = false;
+        $is_superior = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
 
         return view('roleAddOrEdit', [
             'id' => $id,
