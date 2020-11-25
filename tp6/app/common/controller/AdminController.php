@@ -13,6 +13,7 @@ use app\admin\service\RbacService;
 use app\BaseController;
 use app\common\model\UserModel;
 use think\App;
+use think\facade\Config;
 use think\facade\View;
 
 /**
@@ -90,7 +91,13 @@ class AdminController extends BaseController
             self::makeJsonReturn(false, null, '请登录账号', 401)->send();
             exit;
         } else {
-            response(View::fetch('common/401'))->send();
+            $file = 'common/401';
+            $template_file = app_path(Config::get('view.view_dir_name')).$file.'.'.Config::get('view.view_suffix');
+            if (!file_exists($template_file)) {
+                // 默认使用admin模块样式
+                $template_file = base_path().'admin'.DIRECTORY_SEPARATOR.Config::get('view.view_dir_name').DIRECTORY_SEPARATOR.$file.'.'.Config::get('view.view_suffix');
+            }
+            response(View::fetch($template_file))->send();
             exit;
         }
     }
@@ -102,7 +109,13 @@ class AdminController extends BaseController
             self::makeJsonReturn(false, null, '无权限', 403)->send();
             exit;
         } else {
-            response(View::fetch('common/403'))->send();
+            $file = 'common/403';
+            $template_file = app_path(Config::get('view.view_dir_name')).$file.'.'.Config::get('view.view_suffix');
+            if (!file_exists($template_file)) {
+                // 默认使用admin模块样式
+                $template_file = base_path().'admin'.DIRECTORY_SEPARATOR.Config::get('view.view_dir_name').DIRECTORY_SEPARATOR.$file.'.'.Config::get('view.view_suffix');
+            }
+            response(View::fetch($template_file))->send();
             exit;
         }
     }
@@ -113,8 +126,16 @@ class AdminController extends BaseController
         AdminUserService::getInstance()->logout();
         if (request()->isAjax()) {
             self::makeJsonReturn(false, null, '账号已被禁用', 403)->send();
+            exit;
         } else {
-            response(View::fetch('common/403', ['title' => '账号已被禁用']))->send();
+            $file = 'common/403';
+            $template_file = app_path(Config::get('view.view_dir_name')).$file.'.'.Config::get('view.view_suffix');
+            if (!file_exists($template_file)) {
+                // 默认使用admin模块样式
+                $template_file = base_path().'admin'.DIRECTORY_SEPARATOR.Config::get('view.view_dir_name').DIRECTORY_SEPARATOR.$file.'.'.Config::get('view.view_suffix');
+            }
+            response(View::fetch($template_file, ['title' => '账号已被禁用']))->send();
+            exit;
         }
     }
 
