@@ -194,7 +194,13 @@ class AdminController extends BaseController
 
     // 错误展示
     function showError($msg){
-        view('common/error', [
+        $file = 'common/error';
+        $template_file = app_path(Config::get('view.view_dir_name')).$file.'.'.Config::get('view.view_suffix');
+        if (!file_exists($template_file)) {
+            // 默认使用admin模块样式
+            $template_file = base_path().'admin'.DIRECTORY_SEPARATOR.Config::get('view.view_dir_name').DIRECTORY_SEPARATOR.$file.'.'.Config::get('view.view_suffix');
+        }
+        view($template_file, [
             'msg' => $msg
         ])->send();
     }
