@@ -35,18 +35,24 @@
                         <el-form-item label="备注" prop="remark">
                             <el-input v-model="formData.remark" placeholder="请输入备注" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
+
+                        <el-form-item label="类型" prop="type">
+                            <el-select v-model="formData.type" placeholder="请选择类型" clearable :style="{width: '100%'}">
+                                <el-option v-for="(item, index) in  typeOptions" :key="index" :label="item.label"
+                                           :value="item.value" :disabled="item.disabled"></el-option>
+                            </el-select>
+                            <el-alert title="菜单组：菜单的集合；权限菜单：需要进行权限校验的菜单"
+                                    type="info"
+                                    :closable="false">
+                            </el-alert>
+                        </el-form-item>
                         <el-form-item label="状态" prop="status">
                             <el-select v-model="formData.status" placeholder="请选择状态" clearable :style="{width: '100%'}">
                                 <el-option v-for="(item, index) in statusOptions" :key="index" :label="item.label"
                                            :value="item.value" :disabled="item.disabled"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="类型" prop="type">
-                            <el-select v-model="formData.type" placeholder="请选择类型" clearable :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in  typeOptions" :key="index" :label="item.label"
-                                           :value="item.value" :disabled="item.disabled"></el-option>
-                            </el-select>
-                        </el-form-item>
+
                         <el-form-item label="图标" prop="icon">
                             <el-input v-model="formData.icon" placeholder="请输入图标" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
@@ -138,10 +144,10 @@
                         "value": '0'
                     }],
                     typeOptions: [{
-                        "label": "权限认证+菜单",
+                        "label": "权限菜单",
                         "value": '1'
                     }, {
-                        "label": "只作为菜单",
+                        "label": "菜单组",
                         "value": '0'
                     }],
                     topOption: {
