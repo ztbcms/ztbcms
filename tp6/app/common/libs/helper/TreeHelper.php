@@ -57,7 +57,7 @@ class TreeHelper
 
     /**
      * 根据给定的散列数组结构，以列表层级的形式来呈现树状结构(常用于列表页展示树状层级)
-     * 格式如：
+     * 格式如：（子节点均在父节点之后）
      * [
      *  {id:1, level: 0, pid: 0},
      *  {id:2, level: 1, pid: 1},
@@ -78,7 +78,6 @@ class TreeHelper
         $curConfig = [
             'idKey'       => isset($config['idKey']) ? $config['idKey'] : 'id',// 节点的ID字段名
             'parentKey'   => isset($config['parentKey']) ? $config['parentKey'] : 'pid', // 父节点的ID字段名
-            'childrenKey' => isset($config['childrenKey']) ? $config['childrenKey'] : 'children', // 子列表的key名
             'maxLevel'    => isset($config['maxLevel']) ? $config['maxLevel'] : 0,// 最大层级，0为不限制。父节点算一层
             'levelKey'    => isset($config['levelKey']) ? $config['levelKey'] : 'level',// 层级的key名，按从0开始
         ];

@@ -190,9 +190,14 @@ class Role extends AdminController
         $role_id = Request::param('id', 0, 'intval');
         $roleModel = new RoleModel();
         //获取登录管理员的授权信息
-        $select_menu_ids = [];
+        $select_menu_ids = []; // 选中权限
+        $select_menu_paretids = []; // 选中的菜单项
         //获取当前登录用户角色的所有权限菜单
         $loginUsermenuList = MenuService::getMenuByRole($this->user['role_id'])['data'];
+        // 菜单排序，父类菜单靠前
+        $loginUsermenuList = TreeHelper::arrayToTreeList($loginUsermenuList, 0, [
+            'parentKey' => 'parentid'
+        ]);
         $rbacService = new RbacService();
         $list = [];
         // 数据格式化
@@ -204,10 +209,24 @@ class Role extends AdminController
                 'type'     => $a['type'],
                 'status'   => $a['status'],
             ];
-
             $list [] = $array;
-            if ($a['type'] == MenuModel::TYPE_PERMISSION_MENU && $rbacService->enableRoleAccess($role_id, $a['app'], $a['controller'], $a['action'])['status']) {
-                $select_menu_ids [] = $a['id'];
+            // 从父类菜单项开始检测权限，由上至下鉴权
+            if($a['type'] == MenuModel::TYPE_MENU){
+                //如果是菜单项
+                $controller = $a['controller'].$a['id'];
+                $action = $a['action'].$a['id'];
+            } else {
+                $controller = $a['controller'];
+                $action = $a['action'];
+            }
+            if ($rbacService->enableRoleAccess($role_id, $a['app'], $controller, $action)['status']) {
+                if($a['type'] == MenuModel::TYPE_MENU){
+                    $select_menu_paretids [] = $a['id'];
+                } else {
+                    if(in_array($a['parentid'], $select_menu_paretids) || $a['parentid'] == 0){
+                        $select_menu_ids [] = $a['id'];
+                    }
+                }
             }
         }
 
