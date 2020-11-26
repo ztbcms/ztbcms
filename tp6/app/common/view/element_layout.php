@@ -7,16 +7,16 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>系统后台</title>
     <!-- ztbcms 默认 iconfont -->
-    <link rel="stylesheet" href="/statics/css/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/admin/ztbcms/iconfont/iconfont.css">
     <!-- jQuery 2.x -->
-    <script src="/statics/admin/theme/adminlte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/statics/admin/jquery/jquery-2.2.3.min.js"></script>
     <!-- layer.js -->
     <script src="/statics/admin/layer/layer.js"></script>
     <!--  ztbcms工具类(必须在vue-common 前加载)  -->
-    <script src="/statics/js/ztbcms/ztbcms.js"></script>
+    <script src="/statics/admin/ztbcms/ztbcms.js"></script>
     <!-- vue.js -->
-    <script src="/statics/js/vue/vue.js"></script>
-    <script src="/statics/js/vue/vue-common.js"></script>
+    <script src="/statics/admin/vue/vue.js"></script>
+    <script src="/statics/admin/vue/vue-common.js"></script>
     <script>
         (function (vue) {
             //引入vue mixin
@@ -25,7 +25,7 @@
     </script>
 
     <!-- 时间格式化工具  -->
-    <script src="/statics/admin/theme/elementui/momentjs/2.24.0.js"></script>
+    <script src="/statics/admin/momentjs/2.24.0.js"></script>
 
     <!--  Element UI START  -->
     <!-- 引入样式 -->
