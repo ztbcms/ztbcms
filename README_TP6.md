@@ -25,3 +25,10 @@ php 版本要求 7.2或以上
 admin/RbacService        |     角色权限服务    |   
 admin/ModuleService      |     模块服务，模块安装、卸载    |   
 
+
+### Controller
+
+- 管理后台请继承AdminController(需要启动`Session`中间件，请参考`admin/middleware.php`)
+- 非管理后台请集成BaseController
+
+
