@@ -27,6 +27,10 @@ class Menu extends AdminController
      */
     function index()
     {
+        $_action = input('_action');
+        if($_action == 'getMenuList'){
+            return json(MenuService::getMenuList());
+        }
         return view();
     }
 
@@ -70,6 +74,14 @@ class Menu extends AdminController
      */
     public function details()
     {
+        $_action = input('_action');
+        if($_action == 'getMenuList') {
+            return json(MenuService::getMenuList());
+        } else if($_action == 'getDetails') {
+            $id = Request::param('id', '', 'trim');
+            $res = MenuService::getDetails($id);
+            return json($res);
+        }
         $id = Request::param('id', '', 'trim');
         $parentid = Request::param('parentid', '', 'trim');
         return view('details', ['id' => $id, 'parentid' => (string) $parentid]);

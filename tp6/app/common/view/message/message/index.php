@@ -161,8 +161,11 @@
                     var _this = this;
                     var hander = function () {
                         $.ajax({
-                            url: "{:api_url('/common/message.message/handMessage')}",
-                            data: {message_id: message.id},
+                            url: "{:api_url('/common/message.message/index')}",
+                            data: {
+                                message_id: message.id,
+                                _action : 'handMessage'
+                            },
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
@@ -196,10 +199,11 @@
                 getList: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:api_url('common/message.message/getMessageList')}",
+                        url: "{:api_url('common/message.message/index')}",
                         data: Object.assign({
                             search_message: this.searchMessage,
-                            page: this.currentPage
+                            page: this.currentPage,
+                            _action : 'getMessageList'
                         }, this.searchForm),
                         dataType: 'json',
                         type: 'get',

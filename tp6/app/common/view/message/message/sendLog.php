@@ -101,8 +101,11 @@
                     var _this = this;
                     var hand = function () {
                         $.ajax({
-                            url: "{:api_url('/common/message.message/handleAgainLog')}",
-                            data: {log_id: record.id},
+                            url: "{:api_url('/common/message.message/sendLog')}",
+                            data: {
+                                log_id: record.id,
+                                _action : 'handleAgainLog'
+                            },
                             dataType: 'json',
                             type: 'post',
                             success: function (res) {
@@ -132,7 +135,8 @@
                     $.ajax({
                         url: "{:api_url('/common/message.message/sendLog')}",
                         data: Object.assign({
-                            page: this.currentPage
+                            page: this.currentPage,
+                            _action : 'getSendLogList'
                         }, this.searchForm),
                         dataType: 'json',
                         type: 'get',

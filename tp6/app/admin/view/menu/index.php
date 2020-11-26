@@ -67,7 +67,7 @@
                     <el-button type="text" size="mini" @click="linkMenuAdd(scope.row.id)">添加子菜单</el-button>
                     <?php } ?>
 
-                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'details')){ ?>
                     <el-button type="text" size="mini" @click="details(scope.row.id)">修改</el-button>
                     <?php } ?>
 
@@ -123,11 +123,13 @@
             methods: {
                 getList: function () {
                     var that = this;
+                    var data = that.listQuery;
+                    data._action = 'getMenuList';
                     $.ajax({
-                        url: "{:api_url('/admin/Menu/getMenuList')}",
+                        url: "{:api_url('/admin/Menu/index')}",
                         type: "get",
                         dataType: "json",
-                        data: that.listQuery,
+                        data: data,
                         success: function (res) {
                             if (res.status) {
                                 that.list = res.data;

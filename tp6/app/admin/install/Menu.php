@@ -1,6 +1,16 @@
 <?php
 
 return [
+    //清除缓存
+    [
+        "parentid" => 0,
+        "name" => "清除缓存",
+        "route" => "admin/Cache/cache",
+        "type" => 1,
+        "status" => 0,
+        "remark" => "",
+        "child" => []
+    ],
     // 概览
     [
         "parentid" => 0,
@@ -9,26 +19,8 @@ return [
         "type" => 1,
         "status" => 1,
         "remark" => "",
-        "child" => [
-            [
-                "route" => "admin/Main/getMainInfo",
-                "type" => 1,
-                "status" => 0,
-                "name" => "获取概览页数据",
-                "remark" => "",
-                "child" => []
-            ],
-            [
-                "route" => "admin/Cache/cache",
-                "type" => 1,
-                "status" => 0,
-                "name" => "清除缓存",
-                "remark" => "",
-                "child" => []
-            ],
-        ]
+        "child" => []
     ],
-
     // 消息
     [
         "parentid" => 0,
@@ -114,24 +106,24 @@ return [
             [
                 "parentid" => 0,
                 "name" => "菜单管理",
-                "route" => "admin/Meu/index",
+                "route" => "admin/Menu/index",
                 "type" => 0,
                 "status" => 1,
                 "remark" => "",
                 "child" => [
                     [
-                        "route" => "admin/Menu/getMenuList",
+                        "route" => "admin/Menu/index",
                         "type" => 1,
-                        "status" => 0,
-                        "name" => "菜单列表数据",
+                        "status" => 1,
+                        "name" => "菜单列表",
                         "remark" => "",
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Menu/getDetails",
+                        "route" => "admin/Menu/details",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "菜单详情数据",
+                        "name" => "菜单详情",
                         "remark" => "",
                         "child" => []
                     ],
@@ -139,7 +131,7 @@ return [
                         "route" => "admin/Menu/addEditDetails",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "操作菜单",
+                        "name" => "添加编辑菜单",
                         "remark" => "",
                         "child" => []
                     ],
@@ -151,23 +143,6 @@ return [
                         "remark" => "",
                         "child" => []
                     ],
-                    [
-                        "route" => "admin/Menu/index",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "后台菜单页面",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/Menu/details",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "添加菜单页面",
-                        "remark" => "",
-                        "child" => []
-                    ],
-
                 ]
             ],
             //管理员管理
@@ -183,7 +158,7 @@ return [
                         "route" => "admin/AdminManager/index",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "管理员",
+                        "name" => "管理员列表",
                         "remark" => "",
                         "child" => []
                     ],
@@ -279,83 +254,6 @@ return [
                         "remark" => "",
                         "child" => []
                     ],
-                    [
-                        "route" => "admin/AccessGroup/accessGroupRoleSetting",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "权限组设置",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getRoleAccessGroup",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "权限组设置详情",
-                        "remark" => "",
-                        "child" => []
-                    ],
-
-                ]
-            ],
-
-            //权限组管理
-            [
-                "parentid" => 0,
-                "name" => "权限组管理",
-                "route" => "admin/AccessGroup/index",
-                "type" => 0,
-                "status" => 1,
-                "remark" => "",
-                "child" => [
-                    [
-                        "route" => "admin/AccessGroup/accessGroupList",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "权限组",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/accessGroupDetails",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "添加权限组",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getAccessGroupList",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "权限组列表",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getAccessGroupTreeArray",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "我的权限列表",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getAccessGroupById",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "我的权限详情",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/deleteAccessGroup",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "删除权限组",
-                        "remark" => "",
-                        "child" => []
-                    ]
                 ]
             ],
 
@@ -397,6 +295,14 @@ return [
                         "type" => 1,
                         "status" => 1,
                         "name" => "拓展配置",
+                        "remark" => "",
+                        "child" => []
+                    ],
+                    [
+                        "route" => "admin/Config/editExtend",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "添加编辑拓展配置",
                         "remark" => "",
                         "child" => []
                     ],
@@ -458,12 +364,11 @@ return [
 
         ]
     ],
-
     // 模块
     [
         "parentid" => 0,
         "name" => "模块",
-        "route" => "admin/AccessGroup/index",
+        "route" => "admin/Module/index",
         "type" => 0,
         "status" => 1,
         "remark" => "",
