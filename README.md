@@ -3,7 +3,6 @@
 > 基于 ThinkPHP 6 的高性能、模块化、快速开发框架 
 
 > High-performance, modular and rapid development framework based on ThinkPHP
-<p align="center"><a href="http://ztbcms.com" target="_blank"><img width="100" src="favicon.ico"></a></p>
  
 [ZTBCMS在线文档](http://ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp/content) 
 
@@ -36,24 +35,16 @@ $ git clone --branch master https://github.com/ztbcms/ztbcms.git
 $ git clone https://github.com/ztbcms/ztbcms.git
 ```
 
-初始化环境,详情请看[Makefile](Makefile)
-
-```shell
-#修改权限
-$ make setup-env
-```
-
-删除多余的`dev.gitignore`
-```shell
-$ rm dev.ignore
+安装依赖
+```shell script
+cd tp6 && composer install
 ```
 
 ## 版本描述
 
-版本含有4部分, 如`1.2.3.4`, 采用`MAJOR.MINOR.FEATURE.PATCH`来描述版本
+版本含有4部分, 如`1.2.3`, 采用`MAJOR.FEATURE.PATCH`来描述版本
 
 - MAJOR 大版本号,代码被大量重写,有大部分不兼容的更新
-- MINOR 有重要的核心结构改变,可能会导致部分第三方不兼容
 - FEATURE  有新特性/扩展加入或更新
 - PATCH bug修复
 
@@ -64,7 +55,6 @@ $ rm dev.ignore
 - 401 未登录授权
 - 403 禁止访问，没有权限
 - 404 找不到
-
 
 ### 页面操作
 
@@ -136,16 +126,12 @@ window.parent.dispatchEvent(event)
 
 拓展：ztbcms默认后台icon已经内置，请打开`/statics/css/iconfont/demo_index.html`查看
 
-## 后台IE兼容性
+## 管理后台兼容性
 
-IE 10或以上
+- IE 10或以上
 
-## 依赖说明
-
-```
-"intervention/image": "^2.5", // 图片处理 http://image.intervention.io/
-"overtrue/wechat": "^4.2" // 微信开发SDK https://www.easywechat.com/
-```
+Javascript:
+- 请务必使用ES 5的语法，增加兼容性（不要使用ES 6的`let`、`const` `=>`等语法糖）
 
 ## License 
 

@@ -3,11 +3,6 @@
 d/
 runtime/
 
+# 本地数据库配置
+tp6/config/local_dataconfig.php
 
-# 开发ZtbCMS用到的.gitignore
-#api/
-#statics/
-#app/Common/Conf/dataconfig.php
-#app/Template
-#install.lock
-#app/Libs/Driver/Passport/
