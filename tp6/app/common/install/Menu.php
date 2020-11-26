@@ -18,7 +18,7 @@ return array(
         "child" => [
             [
                 "route" => "common/cron.dashboard/index",
-                "type" => 1,
+                "type" => 0,
                 "status" => 1,
                 "name" => "计划任务",
                 "remark" => "",
@@ -62,7 +62,7 @@ return array(
             ],
             [
                 "route" => "common/message.message/index",
-                "type" => 1,
+                "type" => 0,
                 "status" => 1,
                 "name" => "消息管理",
                 "remark" => "",
@@ -85,7 +85,7 @@ return array(
             ],
             [
                 "route" => "common/upload.upload/setting",
-                "type" => 1,
+                "type" => 0,
                 "status" => 1,
                 "name" => "上传管理",
                 "remark" => "",
