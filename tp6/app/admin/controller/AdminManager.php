@@ -96,6 +96,18 @@ class AdminManager extends AdminController
     {
         if (Request::isPost()) {
             $data = Request::post();
+            if(!isset($data['username']) || empty($data['username'])){
+                return json(self::createReturn(false, null, '用户名不能为空'));
+            }
+            if(!isset($data['nickname']) || empty($data['nickname'])){
+                return json(self::createReturn(false, null, '呢称不能为空'));
+            }
+            if(!isset($data['role_id']) || empty($data['role_id'])){
+                return json(self::createReturn(false, null, '角色不能为空'));
+            }
+            if(!isset($data['email']) || empty($data['email'])){
+                return json(self::createReturn(false, null, '角色不能为空'));
+            }
             if (empty($data['password']) || $data['password'] !== $data['pwdconfirm']) {
                 return json(self::createReturn(false, null, '密码不一致'));
             }
@@ -114,6 +126,18 @@ class AdminManager extends AdminController
     {
         if (Request::isPost()) {
             $data = Request::post();
+            if(!isset($data['username']) || empty($data['username'])){
+                return json(self::createReturn(false, null, '用户名不能为空'));
+            }
+            if(!isset($data['nickname']) || empty($data['nickname'])){
+                return json(self::createReturn(false, null, '呢称不能为空'));
+            }
+            if(!isset($data['role_id']) || empty($data['role_id'])){
+                return json(self::createReturn(false, null, '角色不能为空'));
+            }
+            if(!isset($data['email']) || empty($data['email'])){
+                return json(self::createReturn(false, null, '邮箱不能为空'));
+            }
             if (!empty($data['password'])) {
                 if ($data['password'] !== $data['pwdconfirm']) {
                     return json(self::createReturn(false, null, '密码不一致'));
