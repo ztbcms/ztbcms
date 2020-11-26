@@ -131,6 +131,7 @@ class Logs extends AdminController
         } else if ($action == 'switchingAdminOperation') {
             $admin_operation_switch = input('admin_operation_switch', '', 'trim');
             $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
+            AdminConfigService::getInstance()->clearConfigCache();
             return json($getConfig);
         } else {
             return view('adminOperationLogList');
