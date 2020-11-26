@@ -38,31 +38,10 @@ return array(
                         "remark" => "",
                     ],
                     [
-                        "route" => "common/cron.dashboard/setCronEnable",
+                        "route" => "common/cron.dashboard/createCron",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "定时任务开关",
-                        "remark" => "",
-                    ],
-                    [
-                        "route" => "common/cron.dashboard/setCronSecretKey",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "定时任务秘钥设置",
-                        "remark" => "",
-                    ],
-                    [
-                        "route" => "common/cron.dashboard/getCronList",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "定时任务列表",
-                        "remark" => "",
-                    ],
-                    [
-                        "route" => "common/cron.dashboard/cron",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "新增任务",
+                        "name" => "新增编辑任务",
                         "remark" => "",
                     ],
                     [
@@ -100,13 +79,6 @@ return array(
                         "type" => 1,
                         "status" => 1,
                         "name" => "发送日志",
-                        "remark" => "",
-                    ],
-                    [
-                        "route" => "common/message.message/getMessageList",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "获取消息列表",
                         "remark" => "",
                     ],
                 ]

@@ -41,7 +41,8 @@ class Message extends AdminController
      */
     public function sendLog(Request $request)
     {
-        if ($request->isAjax()) {
+        $_action = input('_action');
+        if($_action == 'getSendLogList'){
             $where = [];
             $messageId = $request->get('message_id', '');
             if ($messageId) {
@@ -49,17 +50,25 @@ class Message extends AdminController
             }
             $lists = MessageSendLogModel::where($where)->order('id', 'DESC')->paginate(20);
             return self::createReturn(true, $lists, 'ok');
+        } else if($_action == 'handleAgainLog'){
+            return $this->handleAgainLog($request);
         }
-
         return View::fetch('sendLog');
     }
 
     /**
-     *  消息列表
-     * @return string
+     * 消息列表
+     * @param Request $request
+     * @return array|string
      */
-    public function index()
+    public function index(Request $request)
     {
+        $_action = input('_action');
+        if($_action == 'getMessageList'){
+            return $this->getMessageList($request);
+        } else if($_action == 'handMessage') {
+            return $this->handMessage($request);
+        }
         return View::fetch('index');
     }
 

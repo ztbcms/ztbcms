@@ -210,8 +210,11 @@
                 getCronDetail: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/getCronDetail')}",
-                        data: {cron_id: this.cronId},
+                        url: "{:api_url('/common/cron.dashboard/createCron')}",
+                        data: {
+                            cron_id: this.cronId,
+                            _action : 'getCronDetail'
+                        },
                         dataType: 'json',
                         type: 'get',
                         success: function (res) {
@@ -241,7 +244,12 @@
                     var _this = this;
                     $.ajax({
                         url: "{:api_url('/common/cron.dashboard/createCron')}",
-                        data: {cron_id: this.cronId, form: this.form, loop_data: this.loop_data},
+                        data: {
+                            cron_id: this.cronId,
+                            form: this.form,
+                            loop_data: this.loop_data,
+                            _action : 'submitCron'
+                        },
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {

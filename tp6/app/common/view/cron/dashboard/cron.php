@@ -2,7 +2,7 @@
     <el-card>
         <div style="margin-bottom: 20px;">
 
-            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'cron')){ ?>
+            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'createCron')){ ?>
                 <el-button @click="createCron" type="primary">
                     新增任务
                 </el-button>
@@ -70,11 +70,15 @@
                     align="center"
                     label="操作">
                 <template slot-scope="props">
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'createCron')){ ?>
                     <el-button @click="editCron(props.row.cron_id)" type="primary" size="mini">
                         编辑
                     </el-button>
+                    <?php } ?>
+
                     <el-button @click="runCronAction(props.row.cron_id)" type="primary" size="mini">立即执行
                     </el-button>
+
                     <el-button @click="deleteCron(props.row.cron_id)" type="danger" size="mini"> 删除
                     </el-button>
                 </template>
@@ -110,8 +114,11 @@
             methods: {
                 runCronAction: function (cronId) {
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/runAction')}",
-                        data: {cron_id: cronId},
+                        url: "{:api_url('/common/cron.dashboard/cron')}",
+                        data: {
+                            cron_id: cronId,
+                            _action : 'runAction'
+                        },
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
@@ -128,8 +135,11 @@
                 doDeleteCron: function (cronId) {
                     var _this = this
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/deleteCron')}",
-                        data: {cron_id: cronId},
+                        url: "{:api_url('/common/cron.dashboard/cron')}",
+                        data: {
+                            cron_id: cronId,
+                            _action : 'deleteCron'
+                        },
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
@@ -179,9 +189,10 @@
                 getList: function () {
                     var _this = this
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/getCronList')}",
+                        url: "{:api_url('/common/cron.dashboard/cron')}",
                         data: {
-                            page: this.currentPage
+                            page: this.currentPage,
+                            _action : 'getCronList'
                         },
                         dataType: 'json',
                         type: 'get',
