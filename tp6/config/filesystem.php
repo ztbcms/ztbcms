@@ -24,7 +24,7 @@ return [
             // 磁盘类型
             'type' => 'local',
             // 磁盘路径
-            'root' => defined('IS_THINKPHP_V6') ? app()->getRootPath() . 'public/d/file' : app()->getRootPath() . '../d/file',
+            'root' => app()->getRootPath() . 'public/d/file',
             // 磁盘路径对应的外部URL路径
             'url' => '/d/file/',
             // 可见性
