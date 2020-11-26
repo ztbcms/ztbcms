@@ -279,83 +279,6 @@ return [
                         "remark" => "",
                         "child" => []
                     ],
-                    [
-                        "route" => "admin/AccessGroup/accessGroupRoleSetting",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "权限组设置",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getRoleAccessGroup",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "权限组设置详情",
-                        "remark" => "",
-                        "child" => []
-                    ],
-
-                ]
-            ],
-
-            //权限组管理
-            [
-                "parentid" => 0,
-                "name" => "权限组管理",
-                "route" => "admin/AccessGroup/index",
-                "type" => 0,
-                "status" => 1,
-                "remark" => "",
-                "child" => [
-                    [
-                        "route" => "admin/AccessGroup/accessGroupList",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "权限组",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/accessGroupDetails",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "添加权限组",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getAccessGroupList",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "权限组列表",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getAccessGroupTreeArray",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "我的权限列表",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/getAccessGroupById",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "我的权限详情",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
-                        "route" => "admin/AccessGroup/deleteAccessGroup",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "删除权限组",
-                        "remark" => "",
-                        "child" => []
-                    ]
                 ]
             ],
 
@@ -458,12 +381,11 @@ return [
 
         ]
     ],
-
     // 模块
     [
         "parentid" => 0,
         "name" => "模块",
-        "route" => "admin/AccessGroup/index",
+        "route" => "admin/Module/index",
         "type" => 0,
         "status" => 1,
         "remark" => "",

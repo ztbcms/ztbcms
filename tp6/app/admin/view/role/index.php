@@ -49,12 +49,6 @@
             <el-table-column label="操作" align="center" width="530" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
                         <span>
-                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AccessGroup', 'accessGroupRoleSetting')){ ?>
-                            <el-button type="primary" class="itembtn" size="mini" @click="getRoleAccessGroup(scope.row.id)"
-                                       v-if="scope.row.id != 1">
-                                权限组设置
-                            </el-button>
-                            <?php } ?>
 
                             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'authorize')){ ?>
                             <el-button type="primary" class="itembtn" size="mini" @click="openAuth(scope.row.id)"
@@ -215,12 +209,6 @@
                 openAuth: function (id) {
                     var url = "{:api_url('/admin/Role/authorize')}";
                     url += '?id=' + id;
-                    this.__openWindow(url);
-                },
-                //权限组管理
-                getRoleAccessGroup: function (id) {
-                    var url = "{:api_url('/admin/AccessGroup/accessGroupRoleSetting')}";
-                    url = url + '?role_id=' + id
                     this.__openWindow(url);
                 }
             },

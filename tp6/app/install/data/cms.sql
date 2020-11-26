@@ -794,38 +794,6 @@ CREATE TABLE `cms_user` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台用户表';
 
-DROP TABLE IF EXISTS `cms_access_group`;
-CREATE TABLE `cms_access_group` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL DEFAULT '' COMMENT '名称',
-  `parentid` int(11) NOT NULL COMMENT '父组别ID',
-  `status` tinyint(2) NOT NULL COMMENT '启用状态：0禁用1启用',
-  `description` varchar(32) NOT NULL DEFAULT '' COMMENT '描述',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组';
-
-DROP TABLE IF EXISTS `cms_access_group_role`;
-CREATE TABLE `cms_access_group_role` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
-  `group_name` varchar(32) NOT NULL DEFAULT '',
-  `role_id` int(11) NOT NULL COMMENT '角色ID',
-  `group_parentid` int(11) NOT NULL DEFAULT '0' COMMENT '父组别ID',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色的权限组';
-
-DROP TABLE IF EXISTS `cms_access_group_items`;
-CREATE TABLE `cms_access_group_items` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
-  `name` varchar(32) NOT NULL DEFAULT '' COMMENT '名称',
-  `app` varchar(32) NOT NULL DEFAULT '',
-  `controller` varchar(32) NOT NULL DEFAULT '',
-  `action` varchar(32) NOT NULL DEFAULT '',
-  `access_id` int(11) NOT NULL COMMENT '所属权限表ID',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限组的权限';
-
 -- ----------------------------
 -- Table structure for cms_admin_message
 -- ----------------------------
