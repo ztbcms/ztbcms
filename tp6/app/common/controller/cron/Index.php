@@ -6,6 +6,7 @@ use app\BaseController;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronModel;
 use app\common\model\cron\CronSchedulingLogModel;
+use app\common\model\cron\CronLogModel;
 
 class Index extends BaseController
 {
@@ -15,6 +16,12 @@ class Index extends BaseController
 
     function index($cron_secret_key = '')
     {
+        $_action = input('_action');
+        if($_action == 'getCronStatus') {
+            //获取定时任务状态
+            return $this->getCronStatus();
+        }
+
         $cronConfig = CronConfigModel::column('value', 'key');
 
         //判断计划任务是否关闭
@@ -72,6 +79,16 @@ class Index extends BaseController
         $end_at = time();
         $used_time = $end_at - $start_at;
         return json(['used_time' => $used_time, 'msg' => 'Cron status: finish']);
+    }
+
+    /**
+     * 获取定时任务状态
+     * @return array
+     */
+    function getCronStatus()
+    {
+        $CronConfigModel = new CronConfigModel();
+        return self::createReturn(true, $CronConfigModel->getCronStatus());
     }
 
     /**

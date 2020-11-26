@@ -64,9 +64,12 @@
                             </el-select>
                         </el-form-item>
 
+                        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
                         <el-form-item size="large">
                             <el-button type="primary" @click="submitForm">提交</el-button>
                         </el-form-item>
+                        <?php } ?>
+
                     </el-form>
                 </div>
             </template>
@@ -199,10 +202,12 @@
                 getMenuList: function() {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Menu/getMenuList')}",
+                        url: "{:api_url('/admin/Menu/details')}",
                         type: "get",
                         dataType: "json",
-                        data: that.listQuery,
+                        data: {
+                            '_action' : 'getMenuList'
+                        },
                         success: function (res) {
                             if (res.status) {
                                 that.parentidOptions = res.data;
@@ -210,12 +215,12 @@
                         }
                     })
                 },
-
                 //获取菜单详情
                 getDetails: function (){
                     var that = this;
-                    $.post("{:api_url('/admin/Menu/getDetails')}", {
+                    $.post("{:api_url('/admin/Menu/details')}", {
                         id: that.formData.id,
+                        '_action' : 'getDetails'
                     }, function (res) {
                         that.formData = res.data;
                         if(res.data.parentid !== '0') that.formData.parentid = parseInt(that.formData.parentid)

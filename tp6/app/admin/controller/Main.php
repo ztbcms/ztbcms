@@ -28,22 +28,17 @@ class Main extends AdminController
      */
     public function index()
     {
+        $_action = input('_action');
+        if($_action == 'getMainInfo') {
+            //服务器信息
+            $returnData = [
+                'system_info'           => $this->_getSystemInfo(),
+                'admin_statistics_info' => $this->_getAdminStatisticsInfo(),
+                'alert_message'         => $this->_getAlertMessage(),
+            ];
+            return self::makeJsonReturn(true, $returnData, '');
+        }
         return View::fetch('index');
-    }
-
-    /**
-     * 获取概览页数据
-     * @return \think\response\Json
-     */
-    public function getMainInfo()
-    {
-        //服务器信息
-        $returnData = [
-            'system_info'           => $this->_getSystemInfo(),
-            'admin_statistics_info' => $this->_getAdminStatisticsInfo(),
-            'alert_message'         => $this->_getAlertMessage(),
-        ];
-        return self::makeJsonReturn(true, $returnData, '');
     }
 
     /**

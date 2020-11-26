@@ -69,9 +69,11 @@
             methods: {
                 getStatus: function () {
                     var that = this;
-                    var data = {};
+                    var data = {
+                        '_action' : 'getCronStatus'
+                    };
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/getCronStatus')}",
+                        url: "{:api_url('/common/cron.index/index')}",
                         data: data,
                         dataType: 'json',
                         type: 'get',

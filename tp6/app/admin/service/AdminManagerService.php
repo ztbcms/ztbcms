@@ -95,6 +95,12 @@ class AdminManagerService extends BaseService
                 return self::createReturn(false, null, '请选择角色');
             }
             $data['create_time'] = $data['update_time'] = time();
+
+            //用户表指定不能为空
+            $data['info'] = '';
+            $data['avatar'] = '';
+            $data['phone'] = '';
+
             $res = $adminUserModel->insert($data);
             if ($res) {
                 return self::createReturn(true, null, '添加成功');

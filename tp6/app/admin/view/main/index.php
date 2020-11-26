@@ -70,15 +70,18 @@
                         <div class="card-changyong-data">
                             <el-row>
 
-                                <el-col :span="4">
-                                    <div class="col-data" @click="gotoPage3">
-                                        <div class="item-icon">
-                                            <i class="el-icon-setting"></i>
+                                <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Config', 'index')){ ?>
+                                    <el-col :span="4">
+                                        <div class="col-data" @click="gotoPage3">
+                                            <div class="item-icon">
+                                                <i class="el-icon-setting"></i>
+                                            </div>
+                                            <div class="item-label">站点配置</div>
                                         </div>
-                                        <div class="item-label">站点配置</div>
-                                    </div>
-                                </el-col>
+                                    </el-col>
+                                <?php } ?>
 
+                                <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'index')){ ?>
                                 <el-col :span="4">
                                     <div class="col-data" @click="gotoPage4">
                                         <div class="item-icon">
@@ -87,6 +90,7 @@
                                         <div class="item-label">管理员管理</div>
                                     </div>
                                 </el-col>
+                                <?php } ?>
 
                                 <el-col :span="4">
                                     <div class="col-data" @click="gotoPage5">
@@ -96,7 +100,6 @@
                                         <div class="item-label">开发文档</div>
                                     </div>
                                 </el-col>
-
                             </el-row>
                         </div>
 
@@ -211,8 +214,10 @@
                 getInfo: function () {
                     var that = this;
                     $.ajax({
-                        url: "{:api_url('/admin/Main/getMainInfo')}",
-                        data: {},
+                        url: "{:api_url('/admin/Main/index')}",
+                        data: {
+                            '_action' : 'getMainInfo'
+                        },
                         dataType: 'json',
                         type: 'get',
                         success: function (res) {

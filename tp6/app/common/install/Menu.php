@@ -38,13 +38,6 @@ return array(
                         "remark" => "",
                     ],
                     [
-                        "route" => "common/cron.dashboard/getCronStatus",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "获取任务概况",
-                        "remark" => "",
-                    ],
-                    [
                         "route" => "common/cron.dashboard/setCronEnable",
                         "type" => 1,
                         "status" => 0,
