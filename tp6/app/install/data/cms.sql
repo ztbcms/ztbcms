@@ -460,7 +460,7 @@ CREATE TABLE `cms_menu` (
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `listorder` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序ID',
   `icon` varchar(255) NOT NULL DEFAULT '' COMMENT '图标',
-  `is_tp6` int(11) DEFAULT '0' COMMENT '是否tp6模块',
+  `is_tp6` int(11) DEFAULT '1' COMMENT '是否TP6',
   PRIMARY KEY (`id`),
   KEY `parentid` (`parentid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台菜单表';

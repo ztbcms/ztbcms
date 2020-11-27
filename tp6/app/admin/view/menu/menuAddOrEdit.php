@@ -57,18 +57,9 @@
                             <el-input v-model="formData.icon" placeholder="请输入图标" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="TP6" prop="is_tp6">
-                            <el-select v-model="formData.is_tp6" placeholder="请选择" clearable :style="{width: '100%'}">
-                                <el-option label="否" value="0"></el-option>
-                                <el-option label="是" value="1"></el-option>
-                            </el-select>
-                        </el-form-item>
-
-                        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
                         <el-form-item size="large">
                             <el-button type="primary" @click="submitForm">提交</el-button>
                         </el-form-item>
-                        <?php } ?>
 
                     </el-form>
                 </div>
@@ -87,8 +78,8 @@
             data: function() {
                 return {
                     formData: {
-                        id : "{$id}",
-                        parentid: "{$parentid}",
+                        id : "",
+                        parentid: "",
                         name: '',
                         app: '',
                         controller: '',
@@ -155,7 +146,7 @@
                     }],
                     topOption: {
                         label: '作为一级菜单',
-                        value: '0'
+                        value: 0
                     }
                 }
             },
@@ -163,12 +154,14 @@
             watch: {},
             created: function() {},
             mounted: function() {
+                this.getMenuList();
+                this.formData.id = this.getUrlQuery('id')
+                if(this.formData.id) {
+                    this.getDetail();
+                }
+                this.formData.parentid = this.getUrlQuery('parentid')
                 if(this.formData.parentid){
                     this.formData.parentid = parseInt(this.formData.parentid)
-                }
-                this.getMenuList();
-                if(this.formData.id) {
-                    this.getDetails();
                 }
             },
             methods: {
@@ -177,55 +170,52 @@
 
                     that.$refs['elForm'].validate(function(valid){
                         if (!valid) return;
-                        // TODO 提交表单
-                        $.ajax({
-                            url: "{:api_url('/admin/Menu/addEditDetails')}",
-                            data: that.formData,
-                            type: "post",
-                            dataType: 'json',
-                            success: function (res) {
-                                if (res.status) {
-                                    //添加成功
-                                    layer.msg(res.msg);
-                                    setTimeout(function(){
-                                        parent.window.layer.closeAll();
-                                    }, 1000)
-                                } else {
-                                    layer.msg(res.msg)
-                                }
+                        var url = "{:api_url('/admin/Menu/menuAdd')}"
+                        if (that.formData.id) {
+                            url = "{:api_url('/admin/Menu/menuEdit')}"
+                        }
+                        that.httpPost(url, that.formData, function(res){
+                            layer.msg(res.msg);
+                            if (res.status) {
+                                //添加成功
+                                setTimeout(function(){
+                                    if(window !== parent.window) parent.window.layer.closeAll();
+                                }, 1000)
                             }
                         })
-
                     })
                 },
                 //获取菜单列表
                 getMenuList: function() {
                     var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Menu/details')}",
-                        type: "get",
-                        dataType: "json",
-                        data: {
-                            '_action' : 'getMenuList'
-                        },
-                        success: function (res) {
-                            if (res.status) {
-                                that.parentidOptions = res.data;
-                            }
+                    var url = "{:api_url('/admin/Menu/menuAdd')}"
+                    if (that.formData.id) {
+                        url = "{:api_url('/admin/Menu/menuEdit')}"
+                    }
+                    var data = {
+                        '_action': 'getMenuList'
+                    }
+                    this.httpGet(url, data, function (res) {
+                        if (res.status) {
+                            that.parentidOptions = res.data;
                         }
                     })
                 },
                 //获取菜单详情
-                getDetails: function (){
+                getDetail: function (){
                     var that = this;
-                    $.post("{:api_url('/admin/Menu/details')}", {
+                    var url = "{:api_url('/admin/Menu/menuEdit')}"
+                    if (!that.formData.id) {
+                        return
+                    }
+                    var data = {
                         id: that.formData.id,
-                        '_action' : 'getDetails'
-                    }, function (res) {
+                        '_action': 'getDetail'
+                    }
+                    this.httpGet(url, data, function (res) {
                         that.formData = res.data;
-                        if(res.data.parentid !== '0') that.formData.parentid = parseInt(that.formData.parentid)
-                        that.formData.is_tp6 = that.formData.is_tp6 + ''
-                    }, 'json');
+                        that.formData.parentid = parseInt(that.formData.parentid) || 0
+                    })
                 }
             }
         });

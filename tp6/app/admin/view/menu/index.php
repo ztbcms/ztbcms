@@ -5,7 +5,7 @@
             <h3>后台菜单</h3>
         </div>
 
-        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
+        <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'menuAdd')){ ?>
         <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary" @click="details('')">
             添加菜单
         </el-button>
@@ -38,9 +38,9 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="TP6" width="100px" align="center">
+            <el-table-column label="权限菜单" width="100px" align="center">
                 <template slot-scope="{row}">
-                    <template v-if="row.is_tp6 == 1">
+                    <template v-if="row.type == 1">
                         <span style="color:green">是</span>
                     </template>
                     <template v-else>
@@ -63,15 +63,15 @@
             <el-table-column label="操作" align="center" width="280" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
 
-                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'addEditDetails')){ ?>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'menuAdd')){ ?>
                     <el-button type="text" size="mini" @click="linkMenuAdd(scope.row.id)">添加子菜单</el-button>
                     <?php } ?>
 
-                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'details')){ ?>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'menuEdit')){ ?>
                     <el-button type="text" size="mini" @click="details(scope.row.id)">修改</el-button>
                     <?php } ?>
 
-                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'doDelete')){ ?>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'menu', 'menuDelete')){ ?>
                         <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color: #e74c3c;">删除</el-button>
                     <?php } ?>
                 </template>
@@ -125,26 +125,20 @@
                     var that = this;
                     var data = that.listQuery;
                     data._action = 'getMenuList';
-                    $.ajax({
-                        url: "{:api_url('/admin/Menu/index')}",
-                        type: "get",
-                        dataType: "json",
-                        data: data,
-                        success: function (res) {
-                            if (res.status) {
-                                that.list = res.data;
-                            }
+
+                    that.httpGet("{:api_url('/admin/Menu/index')}", data, function(res){
+                        if (res.status) {
+                            that.list = res.data;
                         }
-                    })
+                    });
                 },
                 doSearch: function () {
                     var that = this;
-                    that.listQuery.page = 1;
                     that.getList();
                 },
                 handleDelete: function (index) {
                     var that = this;
-                    var url = '{:api_url("/admin/Menu/doDelete")}';
+                    var url = '{:api_url("/admin/Menu/menuDelete")}';
                     layer.confirm('您确定需要删除？', {
                         title: '提示',
                         btn: ['确定','取消'] //按钮
@@ -153,11 +147,12 @@
                             "id": index
                         };
                         that.httpPost(url, data, function(res){
+                            layer.closeAll()
                             if(res.status){
-                                layer.msg('操作成功', {icon: 1});
+                                that.$message.success('删除成功');
                                 that.getList();
                             } else {
-                                layer.msg(res.msg);
+                                that.$message.error(res.msg);
                             }
                         });
                     });
@@ -168,31 +163,32 @@
                         confirmButtonText: '保存',
                         cancelButtonText: '取消',
                         inputValue: sort,
-                        roundButton: true,
                         closeOnClickModal: false,
                         beforeClose: function(action, instance, done){
                             if(action == 'confirm'){
-                                var url = '{:api_url("/admin/Menu/updateTable")}';
+                                var url = '{:api_url("/admin/Menu/index")}?_action=updateSort';
                                 var data = {
-                                    field: 'listorder',where_name: 'id',
-                                    value: instance.inputValue, where_value: id
+                                    id: id,
+                                    listorder: instance.inputValue
                                 };
                                 that.httpPost(url, data, function(res){
                                     if(res.status){
                                         that.$message.success('修改成功');
                                         that.getList();
-                                        done();
+                                    } else {
+                                        that.$message.error(res.msg);
                                     }
+                                    done();
                                 });
                             }else{
                                 done();
                             }
                         }
-                    }).then(function(e){}).catch(function(){});
+                    })
                 },
                 details : function (id) {
                     var that = this;
-                    var url = '{:api_url("/admin/Menu/details")}';
+                    var url = '{:api_url("/admin/Menu/menuEdit")}';
                     if(id) url += '?id=' + id;
                     layer.open({
                         type: 2,
@@ -206,7 +202,7 @@
                 },
                 linkMenuAdd: function (parentid) {
                     var that = this;
-                    var url = '{:api_url("/admin/Menu/details")}';
+                    var url = '{:api_url("/admin/Menu/menuAdd")}';
                     if(parentid) {
                         url += '?parentid=' + parentid
                     }

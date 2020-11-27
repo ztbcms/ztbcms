@@ -120,23 +120,23 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Menu/details",
+                        "route" => "admin/Menu/menuAdd",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "菜单详情",
+                        "name" => "添加菜单",
                         "remark" => "",
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Menu/addEditDetails",
+                        "route" => "admin/Menu/menuEdit",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "添加编辑菜单",
+                        "name" => "编辑菜单",
                         "remark" => "",
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Menu/doDelete",
+                        "route" => "admin/Menu/menuDelete",
                         "type" => 1,
                         "status" => 0,
                         "name" => "删除菜单",

@@ -28,8 +28,18 @@ class Menu extends AdminController
     function index()
     {
         $_action = input('_action');
-        if($_action == 'getMenuList'){
+        if (Request::isGet() && $_action == 'getMenuList') {
             return json(MenuService::getMenuList());
+        }
+        if (Request::isPost() && $_action == 'updateSort') {
+            $id = Request::post('id');
+            $listorder = Request::post('listorder', 0);
+            if(empty($id) || $listorder < 0){
+                return json(self::createReturn(false, null, '参数异常'));
+            }
+            $MenuModel = new MenuModel();
+            $MenuModel->where('id', $id)->save(['listorder' => $listorder]);
+            return json(self::createReturn(true, null, '更新成功'));
         }
         return view();
     }
@@ -40,6 +50,58 @@ class Menu extends AdminController
     function getMenuList()
     {
         return json(MenuService::getMenuList());
+    }
+
+    /**
+     * 添加菜单
+     *
+     * @return \think\response\Json|\think\response\View
+     */
+    function menuAdd()
+    {
+        $_action = input('_action');
+        if (Request::isGet() && $_action == 'getMenuList') {
+            return json(MenuService::getMenuList());
+        }
+        if (Request::isPost()) {
+            $data = input('post.');
+            return json(MenuService::addEditDetails($data));
+        }
+        return view('menuAddOrEdit');
+    }
+
+    /**
+     * 编辑菜单
+     *
+     * @return \think\response\Json|\think\response\View
+     */
+    function menuEdit()
+    {
+        $_action = input('_action');
+        if (Request::isGet() && $_action == 'getMenuList') {
+            return json(MenuService::getMenuList());
+        }
+        if (Request::isGet() && $_action == 'getDetail') {
+            $id = Request::param('id', '', 'trim');
+            $res = MenuService::getDetails($id);
+            return json($res);
+        }
+        if (Request::isPost()) {
+            $data = input('post.');
+            return json(MenuService::addEditDetails($data));
+        }
+        return view('menuAddOrEdit');
+    }
+
+    /**
+     * 菜单删除
+     *
+     * @return \think\response\Json
+     */
+    function menuDelete()
+    {
+        $id = Request::param('id', '', 'trim'); //字段
+        return json(MenuService::doDelete($id));
     }
 
     /**
@@ -60,78 +122,4 @@ class Menu extends AdminController
         return json(self::createReturn(true, '', '保存成功'));
     }
 
-    /**
-     * 删除菜单
-     */
-    public function doDelete()
-    {
-        $id = Request::param('id', '', 'trim'); //字段
-        return json(MenuService::doDelete($id));
-    }
-
-    /**
-     * 菜单视图
-     */
-    public function details()
-    {
-        $_action = input('_action');
-        if($_action == 'getMenuList') {
-            return json(MenuService::getMenuList());
-        } else if($_action == 'getDetails') {
-            $id = Request::param('id', '', 'trim');
-            $res = MenuService::getDetails($id);
-            return json($res);
-        }
-        $id = Request::param('id', '', 'trim');
-        $parentid = Request::param('parentid', '', 'trim');
-        return view('details', ['id' => $id, 'parentid' => (string) $parentid]);
-    }
-
-    /**
-     * 菜单数据
-     */
-    public function getDetails()
-    {
-        $id = Request::param('id', '', 'trim');
-        $res = MenuService::getDetails($id);
-        return json($res);
-    }
-
-    /**
-     * 获取模块列表
-     */
-    public function getModuleList()
-    {
-        return json(MenuService::getModuleList());
-    }
-
-    /**
-     * 获取控制器列表
-     */
-    public function getControllerList()
-    {
-        $module = Request::param('module');
-        $is_tp6 = Request::param('is_tp6');
-        return json(MenuService::getControllerList($module, $is_tp6));
-    }
-
-    /**
-     * 获取方法列表
-     */
-    public function getActionList()
-    {
-        $controller = Request::param('controller');
-        $is_tp6 = Request::param('is_tp6');
-        $app = Request::param('app');
-        return json(MenuService::getActionList($controller, $app, $is_tp6));
-    }
-
-    /**
-     * 添加或者编辑详情
-     */
-    public function addEditDetails()
-    {
-        $posts = input('post.');
-        return json(MenuService::addEditDetails($posts));
-    }
 }
