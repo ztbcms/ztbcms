@@ -4,7 +4,7 @@
 
 > High-performance, modular and rapid development framework based on ThinkPHP
  
-[ZTBCMS在线文档](http://ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp/content) 
+[ZTBCMS在线文档](http://ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template)
 
 <a href="http://www.phptherightway.com">
     <img src="http://www.phptherightway.com/images/banners/leaderboard-728x90.png" alt="PHP: The Right Way"/>
@@ -13,14 +13,8 @@
 ## 环境要求
 
 * PHP版本 7.2+
-    * php7-curl 
-    * php7-gd
-    * php7-mysql
-    * openssl 扩展
-    * file_info 扩展
-    * redis 扩展 [可选]
 * Mysql 5.6+
-* Apache 2.4 / 
+* Apache 2.4
 * 可选的配置URL重写，参考[ThinkPHP - URL重写](http://document.thinkphp.cn/manual_3_2.html#url_rewrite)
 
 ## 下载安装
