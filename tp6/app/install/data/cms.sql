@@ -425,10 +425,10 @@ CREATE TABLE `cms_locking` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for cms_loginlog
+-- Table structure for cms_login_log
 -- ----------------------------
-DROP TABLE IF EXISTS `cms_loginlog`;
-CREATE TABLE `cms_loginlog` (
+DROP TABLE IF EXISTS `cms_login_log`;
+CREATE TABLE `cms_login_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
   `username` char(30) NOT NULL DEFAULT '' COMMENT '登录帐号',
   `logintime` int(10) NOT NULL DEFAULT '0' COMMENT '登录时间戳',
@@ -437,11 +437,7 @@ CREATE TABLE `cms_loginlog` (
   `password` varchar(30) NOT NULL DEFAULT '' COMMENT '尝试错误密码',
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志表';
-
--- ----------------------------
--- Records of cms_loginlog
--- ----------------------------
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
 
 -- ----------------------------
 -- Table structure for cms_menu

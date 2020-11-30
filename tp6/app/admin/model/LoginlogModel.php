@@ -17,7 +17,7 @@ use think\Model;
 class LoginlogModel extends Model
 {
 
-    protected $name = 'loginlog';
+    protected $name = 'login_log';
 
     /**
      * 删除登录日志(X天前的数据)
