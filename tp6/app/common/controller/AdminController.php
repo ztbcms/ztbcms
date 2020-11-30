@@ -36,15 +36,17 @@ class AdminController extends BaseController
      */
     protected $noNeedPermission = [];
 
-    /**
-     * @var UserModel|null
-     */
-    protected $user;
-
     //引入中间件
     protected $middleware = [
+        // 启用sessionn
+        \think\middleware\SessionInit::class,
+        // 用户登录验证
+        \app\common\middleware\AdminAuth::class,
+        // 用户权限验证
+        \app\common\middleware\AdminPermission::class,
         //操作日志记录
-        \app\admin\middleware\OperationLog::class
+        \app\admin\middleware\OperationLog::class,
+
     ];
 
     public function __construct(App $app)
@@ -52,37 +54,51 @@ class AdminController extends BaseController
         parent::__construct($app);
 
         // 该方法是否需要登录
-        if($this->_checkActionMatch($app->request->action(), $this->noNeedLogin)){
-            // 不需要
-            return;
-        } else {
-            if (AdminUserService::getInstance()->isLogin()) {
-                $info = AdminUserService::getInstance()->getInfo();
-                $this->user = UserModel::where('id', $info['id'])->findOrEmpty();
-
-                // 账号是否被禁用
-                if($this->user['status'] == AdminUserModel::STATUS_DISABLE){
-                    $this->_handleDisabled();
-                    return;
-                }
-            } else {
-                $this->_handleUnlogin();
-                return;
-            }
-        }
+//        if($this->_checkActionMatch($app->request->action(), $this->noNeedLogin)){
+//            // 不需要
+//            return;
+//        } else {
+//            if (AdminUserService::getInstance()->isLogin()) {
+//                $info = AdminUserService::getInstance()->getInfo();
+//                $this->user = UserModel::where('id', $info['id'])->findOrEmpty();
+//
+//                // 账号是否被禁用
+//                if($this->user['status'] == AdminUserModel::STATUS_DISABLE){
+//                    $this->_handleDisabled();
+//                    return;
+//                }
+//            } else {
+//                $this->_handleUnlogin();
+//                return;
+//            }
+//        }
 
         // 权限检测
         // 该方法是否需要权限检测
-        if($this->_checkActionMatch($app->request->action(), $this->noNeedPermission)){
-            // 不需要
-            return;
-        } else {
-            $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
-            if (!$hasPremission) {
-                $this->_handleNoPermiassion();
-            }
-        }
+//        if($this->_checkActionMatch($app->request->action(), $this->noNeedPermission)){
+//            // 不需要
+//            return;
+//        } else {
+//            $hasPremission = $this->hasAccessPermission($this->user->id, $this->request->baseUrl());
+//            if (!$hasPremission) {
+//                $this->_handleNoPermiassion();
+//            }
+//        }
     }
+
+    // 适配 $this->user
+    public function __get($name)
+    {
+        var_dump('__get:'.$name);
+        if($name == 'user'){
+            if(empty($this->user)){
+                $this->user = AdminUserService::getInstance()->getInfo();
+            }
+            return $this->user;
+        }
+        return null;
+    }
+
 
     // 处理未登录情况
     private function _handleUnlogin()
