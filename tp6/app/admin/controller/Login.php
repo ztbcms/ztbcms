@@ -6,6 +6,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\LoginlogModel;
 use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
 use app\BaseController;
@@ -70,12 +71,13 @@ class Login extends AdminController
             return self::makeJsonReturn(false, null, '请输入验证码');
         }
 
-        //登录失败次数检测
+        //登录失败次数检测（x分钟内失败y次，则禁止登录n分钟）
+        $login_faild_time_interval = Config::get('admin.login_faild_time_interval', 5);
         $login_max_faild = Config::get('admin.login_max_faild', 10);
         $ban_login_time = Config::get('admin.ban_login_time', 30);
-        $start_time = time() - $ban_login_time * 60;
+        $start_time = time() - $login_faild_time_interval * 60;
 
-        $count = Db::name('loginlog')->where([
+        $count = LoginlogModel::where([
             ['status', '=', 0], //登录失败
             ['loginip', '=', $ip], //当前IP
             ['logintime', 'BETWEEN', [$start_time, time()]] //登录时间
