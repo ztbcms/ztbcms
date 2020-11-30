@@ -18,7 +18,7 @@ use think\facade\Request;
  */
 class Checkcode extends AdminController
 {
-    protected $noNeedLogin = ['index'];
+    public $noNeedLogin = ['index'];
 
     function index()
     {

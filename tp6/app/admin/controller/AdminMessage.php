@@ -18,7 +18,7 @@ use think\facade\View;
  */
 class AdminMessage extends AdminController
 {
-    protected $noNeedPermission = ['getAdminMsgList', 'readMsg', 'readMsgAll'];
+    public $noNeedPermission = ['getAdminMsgList', 'readMsg', 'readMsgAll'];
 
     /**
      * 所有通知

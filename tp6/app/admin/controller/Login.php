@@ -23,7 +23,7 @@ use think\facade\View;
  */
 class Login extends AdminController
 {
-    protected $noNeedLogin = ['index', 'doLogin'];
+    public $noNeedLogin = ['index', 'doLogin'];
     /**
      * 登录页
      *

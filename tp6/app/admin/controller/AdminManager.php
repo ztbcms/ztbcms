@@ -20,7 +20,7 @@ use think\facade\Request;
  */
 class AdminManager extends AdminController
 {
-    protected $noNeedPermission = ['editMyBasicsInfo', 'changePassword', 'getManagerList'];
+    public $noNeedPermission = ['editMyBasicsInfo', 'changePassword', 'getManagerList'];
 
     /**
      * 用户基本信息

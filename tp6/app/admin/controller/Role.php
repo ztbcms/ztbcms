@@ -23,7 +23,7 @@ use think\facade\Request;
  */
 class Role extends AdminController
 {
-    protected $noNeedPermission = ['getRoleList', 'getAuthorizeList'];
+    public $noNeedPermission = ['getRoleList', 'getAuthorizeList'];
 
     /**
      * 角色列表
