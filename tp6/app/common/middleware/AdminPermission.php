@@ -31,7 +31,6 @@ class AdminPermission
      */
     public function handle($request, \Closure $next)
     {
-        var_dump('AdminPermission..');
         // 权限检测
         $noNeedPermission = $request->noNeedPermission ?? [];
         // 该方法是否需要权限检测

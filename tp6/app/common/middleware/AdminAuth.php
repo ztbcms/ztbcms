@@ -29,7 +29,6 @@ class AdminAuth
      */
     public function handle($request, \Closure $next)
     {
-        var_dump('AdminAuth..');
         // 该方法是否需要登录
         $noNeedLogin = $request->noNeedLogin ?? [];
         if($this->_checkActionMatch($request->action(), $noNeedLogin)){

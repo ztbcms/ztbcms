@@ -89,7 +89,6 @@ class AdminController extends BaseController
     // 适配 $this->user
     public function __get($name)
     {
-        var_dump('__get:'.$name);
         if($name == 'user'){
             if(empty($this->user)){
                 $this->user = AdminUserService::getInstance()->getInfo();
