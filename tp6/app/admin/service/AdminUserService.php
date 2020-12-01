@@ -10,11 +10,10 @@ namespace app\admin\service;
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
 use app\admin\model\RoleModel;
+use app\common\libs\helper\PasswordHelper;
 use app\common\libs\helper\StringHelper;
 use app\common\service\BaseService;
 use app\common\util\Encrypt;
-use think\facade\Db;
-use think\facade\Session;
 
 /**
  * 后台管理员服务
@@ -111,7 +110,7 @@ class AdminUserService extends BaseService
             return self::createReturn(false, null, '用户未注册');
         }
         //密码验证
-        if (!empty($password) && $adminUserModel->hashPassword($password, $userInfo['verify']) != $userInfo['password']) {
+        if (!empty($password) && PasswordHelper::hashPassword($password, $userInfo['verify']) != $userInfo['password']) {
             return self::createReturn(false, null, '密码不正确');
         }
         $info = $userInfo->toArray();
@@ -197,26 +196,6 @@ class AdminUserService extends BaseService
     }
 
     /**
-     * 获取用户信息
-     *
-     * @param  string $identifier 用户名或者用户ID
-     *
-     * @param null $password
-     * @return boolean|array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    private function getUserInfo($identifier, $password = null)
-    {
-        if (empty($identifier)) {
-            return false;
-        }
-        $adminUserModel = new AdminUserModel();
-        return $adminUserModel->getUserInfo($identifier, $password);
-    }
-
-    /**
      * 获取后台用户信息
      * @param $user_id
      *
@@ -276,7 +255,7 @@ class AdminUserService extends BaseService
         }
         $verify = StringHelper::genRandomString(6);
         $res = $adminUserModel->where('id', $userInfo['id'])->save([
-            'password' => $adminUserModel->hashPassword($newPassword, $verify),
+            'password' => PasswordHelper::hashPassword($newPassword, $verify),
             'verify' => $verify
         ]);
         if($res){

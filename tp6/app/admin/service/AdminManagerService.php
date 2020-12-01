@@ -1,17 +1,15 @@
 <?php
 
 /**
- * author: Jayin <tonjayin@gmail.com>
+ * Author: Jayin
  */
 
 namespace app\admin\service;
 
 use app\admin\model\AdminUserModel;
-use app\admin\model\RoleModel;
-use app\admin\validate\User;
+use app\common\libs\helper\PasswordHelper;
 use app\common\libs\helper\StringHelper;
 use app\common\service\BaseService;
-use think\exception\ValidateException;
 
 class AdminManagerService extends BaseService
 {
@@ -57,7 +55,7 @@ class AdminManagerService extends BaseService
         if (isset($data['password']) && !empty($data['password'])) {
             $verify = StringHelper::genRandomString(6);
             $data['verify'] = $verify;
-            $data['password'] = self::hashPassword($data['password'], $verify);
+            $data['password'] = PasswordHelper::hashPassword($data['password'], $verify);
         } else {
             unset($data['password']);
         }
@@ -132,18 +130,5 @@ class AdminManagerService extends BaseService
         } else {
             return self::createReturn(false, null, '删除失败');
         }
-    }
-
-    /**
-     * 密码hash
-     *
-     * @param $password
-     * @param  string  $verify
-     *
-     * @return string
-     */
-    static function hashPassword($password, $verify = "")
-    {
-        return md5($password.md5($verify));
     }
 }
