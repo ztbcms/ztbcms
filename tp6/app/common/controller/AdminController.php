@@ -34,7 +34,7 @@ class AdminController extends BaseController
 
     //引入中间件
     protected $middleware = [
-        // 启用sessionn
+        // 启用session
         \think\middleware\SessionInit::class,
         // 用户登录、权限验证
         \app\common\middleware\AdminAuth::class,
