@@ -17,7 +17,7 @@ use think\facade\View;
  */
 class Dashboard extends AdminController
 {
-    protected $noNeedPermission = ['index'];
+    public $noNeedPermission = ['index'];
 
     /**
      * 框架页

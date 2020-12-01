@@ -23,7 +23,7 @@ use think\facade\Request;
  */
 class Role extends AdminController
 {
-    protected $noNeedPermission = ['getRoleList', 'getAuthorizeList'];
+    public $noNeedPermission = ['getRoleList', 'getAuthorizeList'];
 
     /**
      * 角色列表
@@ -65,13 +65,15 @@ class Role extends AdminController
 
         $id = Request::param('id', '', 'trim');
         $action = input('_action', '', 'trim');
+
         if (Request::isGet() && $action == 'getDetail') {
 
             $RoleModel = new RoleModel();
             $info = $RoleModel->where(['id' => $id])->find();
             return self::makeJsonReturn(true, $info);
         }
-        $is_superior = $this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        $is_superior = $userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
 
         return view('roleAddOrEdit', [
             'id' => $id,
@@ -98,13 +100,14 @@ class Role extends AdminController
         }
         $RoleModel = new RoleModel();
         $list = $RoleModel->where($where)->select()->toArray();
+        $userInfo = AdminUserService::getInstance()->getInfo();
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
-        if ($this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if ($userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
             $list =TreeHelper::arrayToTreeList($list,  0, [
                 'parentKey' => 'parentid'
             ]);
         } else {
-            $list =TreeHelper::arrayToTreeList($list,  $this->user['role_id'], [
+            $list =TreeHelper::arrayToTreeList($list,  $userInfo['role_id'], [
                 'parentKey' => 'parentid'
             ]);
         }
@@ -114,7 +117,7 @@ class Role extends AdminController
     /**
      * 添加或者编辑角色
      */
-    function roleAddEdit()
+    private function roleAddEdit()
     {
         $id = Request::param('id', '', 'trim');
         $name = Request::param('name', '', 'trim');
@@ -122,7 +125,7 @@ class Role extends AdminController
         $status = Request::param('status', '1', 'trim');
         $parentid = Request::param('parentid', '0', 'trim');
 
-        if (AdminUserService::administratorRoleId == $id) {
+        if (RoleModel::SUPER_ADMIN_ROLE_ID == $id) {
             return json(self::createReturn(false, [], '超级管理员角色不能被修改'));
         }
         if (empty($name)) {
@@ -147,7 +150,8 @@ class Role extends AdminController
     function roleDelete()
     {
         $id = Request::param('id', '', 'trim');
-        if ($id == $this->user->role_id) {
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        if ($id == $userInfo['role_id']) {
             return json(self::createReturn(false, null, '您不能删除自己使用的角色'));
         }
         $roleService = new RoleService();
@@ -192,8 +196,9 @@ class Role extends AdminController
         //获取登录管理员的授权信息
         $select_menu_ids = []; // 选中权限
         $select_menu_paretids = []; // 选中的菜单项
+        $userInfo = AdminUserService::getInstance()->getInfo();
         //获取当前登录用户角色的所有权限菜单
-        $loginUsermenuList = MenuService::getMenuByRole($this->user['role_id'])['data'];
+        $loginUsermenuList = MenuService::getMenuByRole($userInfo['role_id'])['data'];
         // 菜单排序，父类菜单靠前
         $loginUsermenuList = TreeHelper::arrayToTreeList($loginUsermenuList, 0, [
             'parentKey' => 'parentid'
@@ -235,10 +240,11 @@ class Role extends AdminController
             'childrenKey' => 'children',
         ]);
 
+        $userInfo = AdminUserService::getInstance()->getInfo();
         $role_info = $roleModel->where('id', $role_id)->findOrEmpty();
         $res['list'] = $menuList;
         $res['role_id'] = $role_id;
-        $res['my_role_id'] = $this->user['role_id'];
+        $res['my_role_id'] = $userInfo['role_id'];
         $res['name'] = $role_info['name'];
         $res['select_menu_id'] = $select_menu_ids;
         return json(self::createReturn(true, $res));

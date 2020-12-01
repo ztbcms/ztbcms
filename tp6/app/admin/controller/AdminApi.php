@@ -9,12 +9,13 @@ namespace app\admin\controller;
 
 use app\admin\model\MenuModel;
 use app\admin\service\AccessService;
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 
 class AdminApi extends AdminController
 {
-    protected $noNeedPermission = ['getPermissionInfo', 'getAdminUserInfo'];
+    public $noNeedPermission = ['getPermissionInfo', 'getAdminUserInfo'];
 
     /**
      * 获取后台权限信息
@@ -23,7 +24,7 @@ class AdminApi extends AdminController
      */
     function getPermissionInfo()
     {
-        $adminUserInfo = $this->user;
+        $adminUserInfo = AdminUserService::getInstance()->getInfo();
 
         $menuModel = new MenuModel();
         $menuList = $menuModel->getAdminUserMenuTree($adminUserInfo['role_id']);
@@ -41,7 +42,8 @@ class AdminApi extends AdminController
      */
     public function getAdminUserInfo()
     {
-        $adminUser = Db::name('user')->where(['id' => $this->user->id])->withoutField('password,verify')->findOrEmpty();
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        $adminUser = Db::name('user')->where(['id' => $userInfo['id']])->withoutField('password,verify')->findOrEmpty();
         if ($adminUser) {
             $role = Db::name('role')->where(['id' => $adminUser['role_id']])->find();
             $adminUser['role_name'] = $role['name'];

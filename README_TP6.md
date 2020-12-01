@@ -28,7 +28,7 @@ admin/ModuleService      |     模块服务，模块安装、卸载    |
 
 ### Controller
 
-- 管理后台请继承AdminController(需要启动`Session`中间件，请参考`admin/middleware.php`)
+- 管理后台请继承AdminController(只有继承这个AdminController才会自动启用session)
 - 非管理后台请集成BaseController
 
 
