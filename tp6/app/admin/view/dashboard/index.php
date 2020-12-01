@@ -718,8 +718,8 @@
                         var _menuList = res.data.menuList
                         for(var i=0;i<_menuList.length;i++){
                             // 默认icon
-                            var icon = _menuList[i]['icon'] || 'dashboard'
-                            _menuList[i]['icon_html'] = ' <i class="iconfont icon-'+ icon +'"></i>'
+                            var icon = _menuList[i]['icon'] || 'icon-dashboard'
+                            _menuList[i]['icon_html'] = ' <i class="iconfont '+ icon +'"></i>'
                         }
                         that.navData = _menuList
                         if(_menuList && _menuList[0]){

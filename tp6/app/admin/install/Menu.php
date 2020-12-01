@@ -29,6 +29,7 @@ return [
         "type" => 0,
         "status" => 1,
         "remark" => "",
+        "icon" => "icon-icon-test",
         "child" => [
             [
                 "route" => "admin/AdminMessage/index",
@@ -73,6 +74,7 @@ return [
         "type" => 0,
         "status" => 1,
         "remark" => "",
+        "icon" => "icon-yonghu",
         "child" => [
             [
                 "route" => "admin/AdminManager/myBasicsInfo",
@@ -102,6 +104,7 @@ return [
         "type" => 0,
         "status" => 1,
         "remark" => "",
+        "icon" => "icon-icon_setting",
         "child" => [
             [
                 "parentid" => 0,
@@ -372,6 +375,7 @@ return [
         "type" => 0,
         "status" => 1,
         "remark" => "",
+        "icon" => "icon-icon_subordinate",
         "child" => [
             [
                 "route" => "admin/Module/index",

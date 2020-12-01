@@ -14,6 +14,7 @@ return array(
         "name" => "系统管理",
         //备注
         "remark" => "",
+        "icon" => "icon-empty",
         //子菜单列表
         "child" => [
             [
