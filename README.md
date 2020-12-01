@@ -4,7 +4,7 @@
 
 > High-performance, modular and rapid development framework based on ThinkPHP
  
-[ZTBCMS在线文档](http://ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template)
+[ZTBCMS在线文档](https://www.kancloud.cn/ztbcms/ztbcms/content) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template)
 
 <a href="http://www.phptherightway.com">
     <img src="http://www.phptherightway.com/images/banners/leaderboard-728x90.png" alt="PHP: The Right Way"/>
