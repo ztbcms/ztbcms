@@ -9,10 +9,12 @@ namespace app\admin\service;
 
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
+use app\admin\model\RoleModel;
 use app\common\libs\helper\StringHelper;
 use app\common\service\BaseService;
 use app\common\util\Encrypt;
 use think\facade\Db;
+use think\facade\Session;
 
 /**
  * 后台管理员服务
@@ -22,10 +24,10 @@ use think\facade\Db;
  */
 class AdminUserService extends BaseService
 {
-    //存储后台用户uid的Key
-    const userUidKey = 'admin_user_id';
-    //超级管理员角色id
-    const administratorRoleId = 1;
+    //存储后台用户id的Key
+    const KEY_USER_ID = 'admin_user_id';
+    //存储后台用户信息的Key
+    const KEY_USER_INFO = 'admin_user_info';
 
     //当前登录会员详细信息
     private static $userInfo = array();
@@ -46,27 +48,6 @@ class AdminUserService extends BaseService
     }
 
     /**
-     * 魔术方法
-     *
-     * @param  string  $name
-     *
-     * @return null
-     */
-    public function __get($name)
-    {
-        //从缓存中获取
-        if (isset(self::$userInfo[$name])) {
-            return self::$userInfo[$name];
-        } else {
-            $userInfo = $this->getInfo();
-            if (!empty($userInfo)) {
-                return $userInfo[$name];
-            }
-            return null;
-        }
-    }
-
-    /**
      * 获取当前登录用户资料
      *
      * @return array
@@ -74,7 +55,7 @@ class AdminUserService extends BaseService
     public function getInfo()
     {
         if (empty(self::$userInfo)) {
-            self::$userInfo = $this->getUserInfo($this->isLogin());
+            self::$userInfo = session(self::KEY_USER_INFO);
         }
 
         return !empty(self::$userInfo) ? self::$userInfo : null;
@@ -87,7 +68,7 @@ class AdminUserService extends BaseService
      */
     public function isLogin()
     {
-        $userId = Encrypt::authcode(session(self::userUidKey), 'DECODE');
+        $userId = Encrypt::authcode(session(self::KEY_USER_ID), 'DECODE');
         return (int) $userId;
     }
 
@@ -119,7 +100,7 @@ class AdminUserService extends BaseService
      *
      * @return array|false
      */
-    function checkUserPassword($username, $password = '')
+    public function checkUserPassword($username, $password = '')
     {
         if (empty($username)) {
             return false;
@@ -140,8 +121,11 @@ class AdminUserService extends BaseService
             'nickname' => $info['nickname'],
             'email'    => $info['email'],
             'role_id'  => $info['role_id'],
+            'info'     => $info['info'],
             'avatar'   => $info['avatar'],
             'phone'    => $info['phone'],
+            'status'   => $info['status'],
+            'remark'   => $info['remark'],
         ], '登录成功');
     }
 
@@ -153,7 +137,7 @@ class AdminUserService extends BaseService
     public function isAdministrator()
     {
         $userInfo = $this->getInfo();
-        if (!empty($userInfo) && $userInfo['role_id'] == self::administratorRoleId) {
+        if (!empty($userInfo) && $userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
             return true;
         }
         return false;
@@ -201,7 +185,8 @@ class AdminUserService extends BaseService
     {
         //写入session
         $token = Encrypt::authcode((int) $userInfo['id'], '');
-        session(self::userUidKey, $token);
+        session(self::KEY_USER_ID, $token);
+        session(self::KEY_USER_INFO, $userInfo);
 
         //更新状态
         $adminUserModel = new AdminUserModel();

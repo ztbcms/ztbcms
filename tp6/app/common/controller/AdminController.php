@@ -51,18 +51,6 @@ class AdminController extends BaseController
         $app->request->noNeedPermission = $this->noNeedPermission ?? [];
     }
 
-    // 适配 $this->user
-    public function __get($name)
-    {
-        if ($name == 'user') {
-            if (empty($this->user)) {
-                $this->user = AdminUserService::getInstance()->getInfo();
-            }
-            return $this->user;
-        }
-        return null;
-    }
-
     // 错误展示
     function showError($msg)
     {

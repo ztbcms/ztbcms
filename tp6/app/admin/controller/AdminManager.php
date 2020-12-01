@@ -27,20 +27,21 @@ class AdminManager extends AdminController
      */
     function myBasicsInfo()
     {
+        $userInfo = AdminUserService::getInstance()->getInfo();
         if (Request::isPost()) {
             // 编辑我的基本资料
             $user_data = array(
                 'nickname' => Request::param('nickname'),
                 'email'    => Request::param('email'),
                 'remark'   => Request::param('remark'),
-                'id'       => $this->user->id
+                'id'       => $userInfo['id']
             );
             $adminManagerService = new AdminManagerService();
             $res = $adminManagerService->addOrEditAdminManager($user_data);
             return json($res);
         }
         return view(
-            'myBasicsInfo', ['user' => $this->user]
+            'myBasicsInfo', ['user' => $userInfo]
         );
     }
 
@@ -49,6 +50,7 @@ class AdminManager extends AdminController
      */
     function changePassword()
     {
+        $userInfo = AdminUserService::getInstance()->getInfo();
         if (Request::isPost()) {
             $oldPass = Request::param('password', '', 'trim');
             $newPass = Request::param('new_password', '', 'trim');
@@ -63,7 +65,7 @@ class AdminManager extends AdminController
             }
 
             $adminUserService = new AdminUserService();
-            $res = $adminUserService->changePassword($this->user->id, $newPass, $oldPass);
+            $res = $adminUserService->changePassword($userInfo['id'], $newPass, $oldPass);
             if ($res['status']) {
                 //退出登录
                 $adminUserService->logout();
@@ -74,7 +76,7 @@ class AdminManager extends AdminController
                 return json(self::createReturn(false, null, $res['msg']));
             }
         }
-        return view('changePassword', ['user' => $this->user]);
+        return view('changePassword', ['user' => $userInfo]);
     }
 
     /**
@@ -164,10 +166,11 @@ class AdminManager extends AdminController
         $roleService = new RoleService();
         $where = [];
         $role_id = Request::param('role_id', 0);
+        $userInfo = AdminUserService::getInstance()->getInfo();
         // 指定角色时，需要判断权限
-        if (!empty($role_id) && $this->user['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if (!empty($role_id) && $userInfo['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
             // 角色层级权限判断
-            $result = $roleService->compareRoleLevel($this->user['role_id'], $role_id)['data'];
+            $result = $roleService->compareRoleLevel($userInfo['role_id'], $role_id)['data'];
             if ($result <= 0) {
                 return json(self::createReturn(true, null, '当前登录用户无权限操作'));
             }
@@ -175,14 +178,14 @@ class AdminManager extends AdminController
         if (empty($role_id)) {
             // 没有指定角色，则获取当前登录用户角色的旗下角色
             $role_list = $roleService->getRoleList()['data'];
-            $son_role_list = TreeHelper::getSonNodeFromArray($role_list, $this->user['role_id'], ['parentKey' => 'parentid']);
+            $son_role_list = TreeHelper::getSonNodeFromArray($role_list, $userInfo['role_id'], ['parentKey' => 'parentid']);
             $son_role_id_list = array_map(function ($item)
             {
                 return $item['id'];
             }, $son_role_list);
             // 超管可以管理全部管理员，包括其他管理角色
-            if ($this->user['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
-                $son_role_id_list [] = $this->user['role_id'];
+            if ($userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
+                $son_role_id_list [] = $userInfo['role_id'];
             }
             //如果没有找到下级role_ids 则默认为0
             $where[] = ['role_id', 'in', $son_role_id_list];
@@ -223,7 +226,8 @@ class AdminManager extends AdminController
     function managerDelete()
     {
         $id = Request::param('id', '', 'trim');
-        if ($id == $this->user->id) {
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        if ($id == $userInfo['id']) {
             return json(self::createReturn(false, [], '不能删除自己'));
         }
 

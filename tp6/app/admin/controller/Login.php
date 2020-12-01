@@ -9,10 +9,8 @@ namespace app\admin\controller;
 use app\admin\model\LoginlogModel;
 use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
-use app\BaseController;
 use app\common\controller\AdminController;
 use think\facade\Config;
-use think\facade\Db;
 use think\facade\Request;
 use think\facade\View;
 

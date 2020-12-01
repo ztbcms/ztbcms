@@ -7,6 +7,7 @@
 namespace app\admin\controller;
 
 use app\admin\service\AdminMessageService;
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use think\facade\Request;
 use think\facade\View;
@@ -86,7 +87,8 @@ class AdminMessage extends AdminController
         $page = input('page', 1);
         $limit = input('limit', 15);
         // 默认接收者
-        $where[] = ['receiver', '=', $this->user->id];
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        $where[] = ['receiver', '=', $userInfo['id']];
 
         // 阅读状态 0 未读 1 已读
         $read_status = input('read_status', '');
@@ -118,7 +120,8 @@ class AdminMessage extends AdminController
         if (empty($ids)) {
             return self::makeJsonReturn(true, null, '操作完成');
         }
-        $res = AdminMessageService::readAdminMessage($ids, $this->user->id);
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        $res = AdminMessageService::readAdminMessage($ids, $userInfo['id']);
         return json($res);
     }
 
@@ -132,7 +135,8 @@ class AdminMessage extends AdminController
         if ($type) {
             $where['type'] = $type;
         }
-        $res = AdminMessageService::readAllAdminMessage($this->user->id, $type);
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        $res = AdminMessageService::readAllAdminMessage($userInfo['id'], $type);
         return json($res);
     }
 
