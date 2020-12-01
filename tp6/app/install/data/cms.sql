@@ -556,11 +556,9 @@ CREATE TABLE `cms_module` (
 -- Records of cms_module
 -- ----------------------------
 
--- ----------------------------
--- Table structure for cms_operationlog
--- ----------------------------
-DROP TABLE IF EXISTS `cms_operationlog`;
-CREATE TABLE `cms_operationlog` (
+
+DROP TABLE IF EXISTS `cms_operation_log`;
+CREATE TABLE `cms_operation_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
   `uid` smallint(6) NOT NULL DEFAULT '0' COMMENT '操作帐号ID',
   `time` int(10) NOT NULL DEFAULT '0' COMMENT '操作时间',
@@ -573,9 +571,6 @@ CREATE TABLE `cms_operationlog` (
   KEY `username` (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
 
--- ----------------------------
--- Records of cms_operationlog
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cms_page

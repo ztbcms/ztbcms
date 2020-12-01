@@ -1,9 +1,5 @@
 <?php
 
-// +----------------------------------------------------------------------
-// |  后台操作日志
-// +----------------------------------------------------------------------
-
 namespace app\admin\model;
 
 use app\admin\service\AdminConfigService;
@@ -14,7 +10,7 @@ use think\facade\Request;
 class OperationlogModel extends Model
 {
 
-    protected $name = 'operationlog';
+    protected $name = 'operation_log';
 
     /**
      * 删除登录日志(X天前的数据)
