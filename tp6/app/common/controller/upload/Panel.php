@@ -1,17 +1,16 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2020-09-15
- * Time: 14:43.
  */
 
 namespace app\common\controller\upload;
 
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use app\common\model\upload\AttachmentGroupModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\upload\UploadService;
+use think\App;
 use think\facade\View;
 use think\Request;
 
@@ -173,7 +172,8 @@ class Panel extends AdminController
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
-            if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -194,7 +194,8 @@ class Panel extends AdminController
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
-            if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -216,7 +217,8 @@ class Panel extends AdminController
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
-            if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -235,7 +237,8 @@ class Panel extends AdminController
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
-            if ($uploadService->uploadUEImage($groupId == 'all' ? 0 : $groupId, $this->user->id)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadUEImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));

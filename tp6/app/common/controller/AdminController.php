@@ -1,7 +1,6 @@
 <?php
 /**
  * User: zhlhuang
- * Date: 2020-08-26
  */
 
 namespace app\common\controller;
