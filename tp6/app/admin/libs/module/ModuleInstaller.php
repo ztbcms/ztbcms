@@ -174,6 +174,7 @@ class ModuleInstaller extends BaseService
      * 执行安装数据库脚本
      *
      * @param  string  $moduleName
+     * @param  string  $dir
      *
      * @return array
      */
@@ -284,12 +285,7 @@ class ModuleInstaller extends BaseService
         if (file_exists($resource_dir)) {
             $dir = new File($resource_dir, false);
             if ($dir->isDir()) {
-                // tp6
                 $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
-                $this->_copyDir($resource_dir, $des_dir);
-
-                // ztbcms v3
-                $des_dir = dirname(root_path()) . '/statics/extres/'.strtolower($moduleName).'/';
                 $this->_copyDir($resource_dir, $des_dir);
             }
         }
@@ -302,7 +298,7 @@ class ModuleInstaller extends BaseService
      * @param $source
      * @param $destination
      *
-     * @return boolean
+     * @return array
      */
     function _copyDir($source, $destination)
     {

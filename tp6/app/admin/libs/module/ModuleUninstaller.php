@@ -84,8 +84,5 @@ class ModuleUninstaller extends ModuleInstaller
     {
         $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
         $this->_delDir($des_dir);
-
-        $des_dir = dirname(root_path()).'/statics/extres/'.strtolower($moduleName).'/';
-        $this->_delDir($des_dir);
     }
 }
