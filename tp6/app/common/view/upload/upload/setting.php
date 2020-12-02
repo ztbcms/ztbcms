@@ -245,8 +245,6 @@
                     submitForm: function() {
                         this.$refs['elForm'].validate(function(valid) {
                             if (!valid) return;
-                            // TODO 提交表单
-
                             $.ajax({
                                 url: "{:api_url('common/upload.upload/setting')}",
                                 method: 'post',

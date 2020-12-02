@@ -53,12 +53,7 @@ class MenuModel extends Model
             if ($a['parameter']) {
                 $fu = "?" . $a['parameter'];
             }
-            if (!empty($a['is_tp6'])) {
-                //如果是tp6 返回 /home/module/controller/action 格式 TODO: 统一路由
-                $url = build_url("/{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
-            } else {
-                $url = url("{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true)->build();
-            }
+            $url = build_url("/{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
             $array = array(
                 "icon" => $a['icon'],
                 "id" => $id . $name,
