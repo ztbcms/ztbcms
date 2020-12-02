@@ -6,13 +6,8 @@
 
 //引入cms数据库配置
 $cmsDataConfig = [];
-if (file_exists(root_path() . "config/dataconfig.php")) {
-    $cmsDataConfig = include root_path() . "config/dataconfig.php";
-} else {
-    // 兼容 tp3.2
-    if (file_exists(root_path() . "../app/Common/Conf/dataconfig.php")) {
-        $cmsDataConfig = include root_path() . "../app/Common/Conf/dataconfig.php";
-    }
+if (file_exists(config_path() . "dataconfig.php")) {
+    $cmsDataConfig = include config_path() . "dataconfig.php";
 }
 
 return [
