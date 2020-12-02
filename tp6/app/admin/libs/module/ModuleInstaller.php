@@ -11,6 +11,7 @@ use app\admin\model\MenuModel;
 use app\admin\model\ModuleModel;
 use app\admin\service\ModuleService;
 use app\common\service\BaseService;
+use Composer\Semver\Semver;
 use think\facade\Config;
 use think\facade\Db;
 use think\File;
@@ -67,9 +68,23 @@ class ModuleInstaller extends BaseService
         //依赖模块检测
         if (!empty($config['depend']) && is_array($config['depend'])) {
             $installedModuleMap = $moduleService->getInstallModuleMap()['data'];
-            foreach ($config['depend'] as $mod) {
+            foreach ($config['depend'] as $key => $value) {
+                if(is_int($key)){
+                    // 没有指定版本的模块
+                    $mod = $value;
+                    $version = '^1.0.0';
+                } else {
+                    $mod = $key;
+                    $version = $value;
+                }
                 if (!isset($installedModuleMap[$mod])) {
-                    return self::createReturn(false, null, "安装该模块，需要安装依赖模块 {$mod}");
+                    return self::createReturn(false, null, "缺少依赖模块 {$mod}");
+                }
+                if (!empty($version)) {
+                    $modInfo = $installedModuleMap[$mod];
+                    if (!Semver::satisfies($modInfo['version'], $version)) {
+                        return self::createReturn(false, null, "依赖模块 {$mod} 版本不兼容");
+                    }
                 }
             }
         }

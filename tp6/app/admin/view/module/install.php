@@ -1,28 +1,33 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <el-col :sm="24" :md="18">
-            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="160px">
+            <el-form ref="elForm" size="medium" label-width="160px">
                 <el-form-item label="模块名称:" prop="sitename">
-                    <span>{$config['modulename']}</>
+                    <span>{{moduleInfo['modulename']}}</span>
                 </el-form-item>
-                <el-form-item label="版本:" prop="siteurl">
-                    <span>{$config['version']}</>
+                <el-form-item label="当前版本:" prop="siteurl">
+                    <span>{{moduleInfo['version']}}</span>
                 </el-form-item>
                 <el-form-item label="最低后台版本:" prop="sitefileurl">
-                    <span>{$config['adaptation']}</>
+                    <span>{{moduleInfo['adaptation']}}</span>
+                </el-form-item>
+                <el-form-item label="依赖模块:" prop="sitefileurl">
+                    <template v-for="item in moduleInfo['depend_list']">
+                        <p style="margin: 0;">{{item['module']}} @ {{item['version']}}</p>
+                    </template>
                 </el-form-item>
                 <el-form-item label="简介:" prop="siteemail">
-                    <span>{$config['introduce']}</>
+                    <span>{{moduleInfo['introduce']}}</span>
                 </el-form-item>
                 <el-form-item label="作者:" prop="sitekeywords">
-                    <span>{$config['author']}</>
+                    <span>{{moduleInfo['author']}}</span>
                 </el-form-item>
                 <el-form-item label="联系方式:" prop="siteinfo">
-                    <span>{$config['authoremail']}</>
+                    <span>{{moduleInfo['authoremail']}}</span>
                 </el-form-item>
 
                 <el-form-item size="large">
-                    <template v-if="install_time === ''">
+                    <template v-if="moduleInfo.install_time === ''">
                         <el-button type="primary" @click="submitForm('install')" size="mini" :disabled="disabled_install">确认安装</el-button>
                     </template>
                     <template v-else>
@@ -42,10 +47,9 @@
             props: [],
             data:function() {
                 return {
-                    formData: {
-                        'module': "{$config['module']}"
+                    moduleInfo: {
+                        install_time: ''
                     },
-                    install_time: "{$config['install_time']}",
                     disabled_install: false,
                     disabled_uninstall: false,
                 }
@@ -55,7 +59,8 @@
             created:function() {
             },
             mounted:function() {
-
+                var module = this.getUrlQuery('module');
+                this.getDetail(module)
             },
             methods: {
                 submitForm:function(type) {
@@ -66,9 +71,12 @@
                     } else {
                         url = "{:api_url('admin/module/doUninstallModule')}";
                     }
+                    var data = {
+                        module: this.getUrlQuery('module')
+                    }
                     this.disabled_install = true
                     this.disabled_uninstall = true
-                    this.httpPost(url, this.formData, function (res) {
+                    this.httpPost(url, data, function (res) {
                         that.disabled_install = false
                         that.disabled_uninstall = false
                         layer.msg(res.msg)
@@ -78,6 +86,19 @@
                                     window.parent.layer.closeAll()
                                 }, 700)
                             }
+                        }
+                    })
+                },
+                getDetail: function(module){
+                    var that = this
+                    var url = "{:api_url('admin/module/install')}"
+                    var data = {
+                        '_action': 'getDetail',
+                        'module': module
+                    }
+                    this.httpGet(url, data, function (res) {
+                        if (res.status) {
+                            that.moduleInfo = res.data
                         }
                     })
                 }

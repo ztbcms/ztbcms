@@ -36,11 +36,12 @@ cd tp6 && composer install
 
 ## 版本描述
 
-版本含有4部分, 如`1.2.3`, 采用`MAJOR.FEATURE.PATCH`来描述版本
+版本号采用[语义化版本semver](https://semver.org/lang/zh-CN/), 采用`MAJOR.MINOR.PATCH`来描述版本
 
-- MAJOR 大版本号,代码被大量重写,有大部分不兼容的更新
-- FEATURE  有新特性/扩展加入或更新
-- PATCH bug修复
+- 主版本号 MAJOR 当你做了不兼容的 API 修改
+- 次版本号 MINOR  当你做了向下兼容的功能性新增
+- 修订号 PATCH 当你做了向下兼容的问题修正
+
 
 ## 状态码说明
 

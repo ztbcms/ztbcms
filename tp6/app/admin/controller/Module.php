@@ -12,6 +12,7 @@ use app\admin\libs\module\ModuleUninstaller;
 use app\admin\service\ModuleService;
 use app\common\controller\AdminController;
 use think\facade\Db;
+use think\facade\Request;
 
 /**
  * 模块
@@ -34,19 +35,17 @@ class Module extends AdminController
     function install()
     {
         $module = input('module', '');
-        if (empty($module)) {
-            $this->showError('请指定模块');
-            return;
+        $action = input('_action', '');
+        if (Request::isGet() && $action == 'getDetail') {
+            if (empty($module)) {
+                return self::makeJsonReturn(false, null, '请指定模块');
+            }
+            $moduleService = new ModuleService();
+            $res = $moduleService->getModuleInfo($module);
+            return json($res);
         }
-        $moduleService = new ModuleService();
-        $res = $moduleService->getModuleInfo($module);
-        if (!$res) {
-            return $res;
-        }
-        $moduleConfig = $res['data'];
-        return view('install', [
-            'config' => $moduleConfig
-        ]);
+
+        return view('install');
     }
 
     /**

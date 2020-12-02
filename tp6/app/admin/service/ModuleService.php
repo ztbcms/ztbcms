@@ -124,6 +124,17 @@ class ModuleService extends BaseService
             return self::createReturn(false, null, '找不到模块配置文件');
         }
         $moduleConfig = include $config_file;
+        $depend = [];
+        // 适配部分依赖没有写明版本，默认 ^1.0.0
+        foreach ($moduleConfig['depend'] as $key => $value){
+            if(is_int($key)){
+                // 没有指定版本
+                $depend []= ['module' => $key, 'version' => '^1.0.0'];
+            } else {
+                $depend []= ['module' => $key, 'version' => $value];
+            }
+        }
+        $moduleConfig['depend_list'] =  $depend;
         $moduleConfig['module'] = strtolower($module);
         $moduleConfig['install_time'] = '';
         $moduleInfo = Db::name('module')->where('module', '=', ucwords($module))->findOrEmpty();
