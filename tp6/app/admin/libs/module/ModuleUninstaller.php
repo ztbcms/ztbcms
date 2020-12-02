@@ -71,7 +71,6 @@ class ModuleUninstaller extends ModuleInstaller
         //移除菜单项和权限项
         Db::name('menu')->where([
             ['app', '=', $moduleName],
-            ['is_tp6', '=', 1]
         ])->delete();
     }
 

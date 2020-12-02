@@ -89,7 +89,6 @@
                         status: '1',
                         type: '1',
                         icon: '',
-                        is_tp6: '1',
                     },
                     rules: {
                         parentid: [{

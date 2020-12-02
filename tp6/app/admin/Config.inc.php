@@ -23,5 +23,4 @@ return [
     'sign'        => 'd04078c5b86475cd5a0c690b9905953d',
     //依赖模块
     'depend'      => [],
-    'is_tp6'      => true
 ];

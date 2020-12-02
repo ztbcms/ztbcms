@@ -346,7 +346,6 @@ class RoleModel extends Model
         $menu = $MenuModel
             ->where([
                 ['parentid','=', $parentid],
-                ['is_tp6','=', 1],
             ])
             ->order('listorder desc')
             ->select();
@@ -375,7 +374,7 @@ class RoleModel extends Model
     function getSelectMenuId($roleid, $isadmin, $userInfo, $excludeSelectedParent = false)
     {
         $MenuModel = new MenuModel();
-        $menu = $MenuModel->where('is_tp6','=', 1)->select();
+        $menu = $MenuModel->select();
         $list = $this->getMenuAccessList($menu, $roleid, $isadmin, $userInfo);
         $checkedMenuId = [];
         $parmentMenuMap = [];
