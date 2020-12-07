@@ -4,7 +4,4 @@
 
 User-agent: *
 
-Disallow: /app/
-Disallow: /api/
-Disallow: /api.php
-Disallow: /admin.php
+Disallow: *
