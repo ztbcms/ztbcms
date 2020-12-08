@@ -28,7 +28,9 @@ class MenuService extends BaseService
     {
         $MenuModel = new MenuModel();
         $menu = $MenuModel->order(array("listorder" => "ASC"))->select()->toArray();
-        $menu = TreeHelper::getTreeShapeArray($menu);
+        $menu = TreeHelper::arrayToTreeList($menu, 0, [
+            'parentKey' => 'parentid',
+        ]);
         return self::createReturn(true, $menu, '获取成功');
     }
 

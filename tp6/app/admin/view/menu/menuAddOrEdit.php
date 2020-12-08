@@ -9,7 +9,7 @@
                                 <el-option :label="topOption.label" :value="topOption.value"></el-option>
                                 <el-option v-for="(item, index) in parentidOptions" :key="index"
                                            :value="item.id" :label="item.name">
-                                    <template v-for="i in item.level * 2"><span>&nbsp;</span></template>
+                                    <template v-for="i in item.level * 3"><span>&nbsp;</span></template>
                                     <template v-if="item.level > 0"><span> ∟</span></template>
                                     <span>{{ item.name }}</span>
                                 </el-option>

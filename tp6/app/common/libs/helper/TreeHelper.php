@@ -172,38 +172,4 @@ class TreeHelper
         }
         return $result_list;
     }
-
-    /**
-     * 递归实现无限极分类 根据给定的散列数组结构，整理成树状结构
-     *
-     * @param $array
-     * @param  int  $pid  父ID
-     * @param  int  $level  分类级别
-     * @return array 分好类的数组 直接遍历即可 $level可以用来遍历缩进
-     */
-    static function getTreeShapeArray(array $array = [], $pid = 0, $level = 0,$config = [])
-    {
-        $curConfig = [
-            'idKey'       => isset($config['idKey']) ? $config['idKey'] : 'id',// 节点的ID字段名
-            'parentKey'   => isset($config['parentKey']) ? $config['parentKey'] : 'parentid', // 父节点的ID字段名
-            'levelKey'    => isset($config['levelKey']) ? $config['levelKey'] : 'level',// 层级的key名，按从1开始
-        ];
-
-        //声明静态数组,避免递归调用时,多次声明导致数组覆盖
-        static $list = [];
-        foreach ($array as $key => $value) {
-            //第一次遍历,找到父节点为根节点的节点 也就是pid=0的节点
-            if ($value[$curConfig['parentKey']] == $pid) {
-                //父节点为根节点的节点,级别为0，也就是第一级
-                $value[$curConfig['levelKey']] = $level;
-                //把数组放到list中
-                $list[] = $value;
-                //把这个节点从数组中移除,减少后续递归消耗
-                unset($array[$key]);
-                //开始递归,查找父ID为该节点ID的节点,级别则为原级别+1
-                self::getTreeShapeArray($array, $value[$curConfig['idKey']], $level + 1,$config);
-            }
-        }
-        return $list;
-    }
 }
