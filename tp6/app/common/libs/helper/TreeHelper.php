@@ -57,7 +57,7 @@ class TreeHelper
 
     /**
      * 根据给定的散列数组结构，以列表层级的形式来呈现树状结构(常用于列表页展示树状层级)
-     * 格式如：（子节点均在父节点之后）
+     * 格式如：（子节点均在父节点之后,根据level层级来决定UI如何展示）
      * [
      *  {id:1, level: 0, pid: 0},
      *  {id:2, level: 1, pid: 1},
@@ -130,7 +130,7 @@ class TreeHelper
     }
 
     /**
-     * 从散列表中获取子节点
+     * 从散列数组中获取给定父ID的子节点数组
      *
      * @param  array  $array
      * @param  int  $pid
