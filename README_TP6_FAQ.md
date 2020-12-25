@@ -20,3 +20,8 @@ $u = build_url('/a/b/c');
 TP6为了提高性能，默认是关闭session的初始化。请在中间件配置上增加`\think\middleware\SessionInit::class`从而开始。
 
 注意：为了提高性能，不必要时请勿开启，或者按需启用session(在应用，控制器层面指定开启。不建议全局开启)
+
+
+### composer json
+
+依赖composer/semver可能会导致无法安装
