@@ -143,7 +143,7 @@ class TreeHelper
         $curConfig = [
             'idKey'     => isset($config['idKey']) ? $config['idKey'] : 'id',// 节点的ID字段名
             'parentKey' => isset($config['parentKey']) ? $config['parentKey'] : 'pid', // 父节点的ID字段名
-            'levelKey'    => isset($config['levelKey']) ? $config['levelKey'] : 'level',// 层级的key名，按从0开始
+            'levelKey'    => isset($config['levelKey']) ? $config['levelKey'] : 'level',// 层级的key名，层级按从0开始
         ];
         $result_list = [];
         // 下一层待处理列表
