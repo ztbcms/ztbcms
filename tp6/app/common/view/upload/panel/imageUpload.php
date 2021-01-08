@@ -380,6 +380,7 @@
                         window.parent.dispatchEvent(event);
                         this.closePanel();
                     },
+                    // 关闭页面
                     closePanel: function () {
                         if (parent.window.layer) {
                             parent.window.layer.closeAll();
@@ -403,6 +404,7 @@
                             that.doDeleteSelected()
                         })
                     },
+                    // 删除选中
                     doDeleteSelected: function () {
                         var that = this;
                         var files = [];

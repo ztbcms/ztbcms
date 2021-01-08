@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-15
- * Time: 11:59.
- */
 
 namespace app\common\controller\upload;
 
