@@ -81,8 +81,9 @@
                 <template v-for="(file, index) in uploadedImageList">
                     <div class="imgListItem">
                         <img :src="file.fileurl" :alt="file.filename" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteImageItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        <div class="deleteMask" >
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete" @click="deleteImageItem(index)"></span>
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-zoom-in" @click="previewImageItem(index)"></span>
                         </div>
                     </div>
                 </template>
@@ -94,8 +95,9 @@
                 <template v-for="(file, index) in uploadedVideoList">
                     <div class="imgListItem">
                         <img :src="file.filethumb" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteVideoItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        <div class="deleteMask" >
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete" @click="deleteVideoItem(index)"></span>
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-zoom-in" @click="previewVideoItem(index)"></span>
                         </div>
                     </div>
                 </template>
@@ -106,8 +108,9 @@
                 <template v-for="(file, index) in uploadeFileList">
                     <div class="imgListItem">
                         <img :src="file.filethumb" style="width: 128px;height: 128px;">
-                        <div class="deleteMask" @click="deleteFileItem(index)">
-                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"></span>
+                        <div class="deleteMask" >
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-delete" @click="deleteFileItem(index)"></span>
+                            <span style="line-height: 128px;font-size: 22px" class="el-icon-zoom-in" @click="previewFileItem(index)"></span>
                         </div>
                     </div>
                 </template>
@@ -253,7 +256,19 @@
                     },
                     deleteImageItem: function (index) {
                         this.uploadedImageList.splice(index, 1)
-                    }
+                    },
+                    // 预览图片
+                    previewImageItem: function (index) {
+                        window.open(this.uploadedImageList[index]['fileurl'])
+                    },
+                    // 预览视频
+                    previewVideoItem: function (index) {
+                        window.open(this.uploadedVideoList[index]['fileurl'])
+                    },
+                    // 预览文件
+                    previewFileItem: function (index) {
+                        window.open(this.uploadeFileList[index]['fileurl'])
+                    },
                 },
                 mounted: function () {
                     window.addEventListener('ZTBCMS_UPLOAD_IMAGE', this.onUploadedImage.bind(this));
