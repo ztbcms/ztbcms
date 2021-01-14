@@ -1,9 +1,5 @@
 <?php
-/**
- * User: cycle_3
- * Date: 2020/11/5
- * Time: 17:23
- */
+
 
 namespace app\common\libs\helper;
 
