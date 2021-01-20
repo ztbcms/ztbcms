@@ -12,16 +12,6 @@
     }
 </script>
 
-<!--  秀米编辑器,请务必在ueditor.js 引入,不需要时，可以直接注释  -->
-<!--<link rel="stylesheet" href="/statics/admin/ueditor/xiumi/xiumi-ue-v5.css">-->
-<!--<script src="/statics/admin/ueditor/xiumi/xiumi-ue-dialog-v5.js"></script>-->
-<!--  秀米编辑器END  -->
-
-<!--  135编辑器,请务必在ueditor.js 引入,不需要时，可以直接注释  -->
-<!--<link rel="stylesheet" href="/statics/admin/ueditor/135/135-ue-v5.css">-->
-<!--<script src="/statics/admin/ueditor/135/135-ue-dialog-v5.js"></script>-->
-<!--  135编辑器END  -->
-
 <!--  CMS上传图片组件,不需要时，可以直接注释  -->
 <link rel="stylesheet" href="/statics/admin/ueditor/cms_uploadImage/index.css">
 
