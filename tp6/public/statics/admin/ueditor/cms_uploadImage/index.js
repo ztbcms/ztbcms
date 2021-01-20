@@ -3,16 +3,15 @@
  */
 UE.registerUI('cms_uploadImage', function (editor, uiName) {
     function onUploadedFile(event) {
-        var that = this;
-        var files = event.detail.files
-        console.log('onUploadedFile')
-        console.log(files)
+        var files = event.detail.files;
+        console.log('onUploadedFile');
+        console.log(files);
         if (files) {
             for (var i = 0; i < files.length; i++) {
                 editor.focus();
                 editor.execCommand(
                     "inserthtml",
-                    '<img src="' + files[i]['url'] + '">'
+                    '<img src="' + files[i]['fileurl'] + '" style="width: 100%;">'
                 );
             }
         }
@@ -22,15 +21,17 @@ UE.registerUI('cms_uploadImage', function (editor, uiName) {
         name: 'cms-uploadImage',
         title: '内置图片上传',
         onclick: function () {
-            window.addEventListener('ZTBCMS_UPLOAD_FILE', onUploadedFile);
+            window.addEventListener('ZTBCMS_UPLOAD_UE_IMAGE', onUploadedFile);
             layer.open({
                 type: 2,
-                title: '上传图片',
-                content: "/Upload/UploadCenter/imageUploadPanel",//max_upload
-                area: ['80%', '70%'],
+                title: '',
+                closeBtn: false,
+                content: '/common/upload.panel/imageUEUpload',
+                area: ['670px', '550px'],
                 end: function () {
+                    console.log(0)
                     // 销毁监听
-                    window.removeEventListener('ZTBCMS_UPLOAD_FILE', onUploadedFile);
+                    window.removeEventListener('ZTBCMS_UPLOAD_UE_FILE', onUploadedFile);
                 }
             })
         }
