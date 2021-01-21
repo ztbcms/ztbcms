@@ -48,12 +48,15 @@ class MenuModel extends Model
             $name = $a['app'];
             $controller = $a['controller'];
             $action = $a['action'];
+            $url = build_url("/{$name}/{$controller}/{$action}", ["menuid" => $id], '', true);
             //附带参数
-            $fu = "";
-            if ($a['parameter']) {
-                $fu = "?" . $a['parameter'];
+            if (!empty($a['parameter'])) {
+                if (strpos($url, '?') !== false) {
+                    $url .= '&'.$a['parameter'];
+                } else {
+                    $url .= '?'.$a['parameter'];
+                }
             }
-            $url = build_url("/{$name}/{$controller}/{$action}{$fu}", ["menuid" => $id], '', true);
             $array = array(
                 "icon" => $a['icon'],
                 "id" => $id . $name,
