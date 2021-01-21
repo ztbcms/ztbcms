@@ -179,20 +179,22 @@ class MenuModel extends Model {
                 $name = $a['app'];
                 $controller = $a['controller'];
                 $action = $a['action'];
-                //附带参数
-                $fu = "";
-                if ($a['parameter']) {
-                    $fu = "?" . $a['parameter'];
-                }
                 $array = array(
                     "icon" => $a['icon'],
                     "id" => $id . $name,
                     "name" => $a['name'],
-                    "url" => U("{$name}/{$controller}/{$action}{$fu}", array("menuid" => $id)),
+                    "url" => U("{$name}/{$controller}/{$action}", array("menuid" => $id)),
                     "path" => "/{$id}{$name}/{$controller}/{$action}",
                     "items" => []
                 );
-
+                //附带参数
+                if (!empty($a['parameter'])) {
+                    if (strpos($array['url'], '?') !== false) {
+                        $$array['url'] .= '&'.$a['parameter'];
+                    } else {
+                        $$array['url'] .= '?'.$a['parameter'];
+                    }
+                }
                 $child = $this->getAdminUserMenuTree($role_id, $a['id'], $Level);
                 //由于后台管理界面只支持三层，超出的不层级的不显示
                 if ($child && $Level <= 3) {
