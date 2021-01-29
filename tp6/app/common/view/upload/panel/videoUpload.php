@@ -64,22 +64,27 @@
                             </div>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
-                            <div>
+                            <div class="list">
                                 <template v-for="(item,index) in galleryList">
-                                    <div :key="index"
-                                         class="imgListItem">
-                                        <el-tooltip class="item" effect="dark" :content="item.filename"
-                                                    placement="bottom">
+                                    <div class="item">
+                                        <div :key="index"
+                                             class="imgListItem">
                                             <img :src="item.filethumb"
                                                  style="width:80px;height: 80px;"
                                                  @click="selectImgEvent(index)">
-                                        </el-tooltip>
-                                        <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
-                                            <span style="line-height: 80px;" class="el-icon-check"></span>
+                                            <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
+                                                <span style="line-height: 80px;" class="el-icon-check"></span>
+                                            </div>
+                                        </div>
+                                        <div class="item-filename">
+                                            <el-tooltip :content="item.filename" placement="top">
+                                                <span>{{ item.filename }}</span>
+                                            </el-tooltip>
+
                                         </div>
                                     </div>
                                 </template>
-                                <div>
+                                <div style="margin-top: 8px">
                                     <el-button v-show="selectdFileList.length > 0" type="danger" size="small"
                                                @click="clickDeleteSelected">删除选中
                                     </el-button>
@@ -400,13 +405,13 @@
                     },
                     // 删除选中
                     clickDeleteSelected: function () {
+                        var that = this
                         this.$confirm('确认删除？', {
                             type: 'warning'
-                        }).then(res => {
+                        }).then(function(res) {
                             //确认回掉
-                            this.doDeleteSelected()
-                        }).catch(err => {
-                        });
+                            that.doDeleteSelected()
+                        })
                     },
                     doDeleteSelected: function () {
                         var that = this;
@@ -471,6 +476,23 @@
         }
 
         /*图库*/
+        .list .item {
+            width: 100px;
+            display: inline-block;
+        }
+        .list .item-filename {
+            font-size: 12px;
+            width: 80px;
+            overflow: hidden;
+            word-break: keep-all;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .list .item-filename:hover{
+            /*border: 1px solid #3bb0ff;*/
+        }
+
         .imgListItem {
             width: 82px;
             height: 82px;
