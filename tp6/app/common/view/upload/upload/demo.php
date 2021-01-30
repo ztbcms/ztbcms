@@ -217,7 +217,7 @@
                             title: '',
                             closeBtn: false,
                             content: "{:api_url('common/upload.panel/videoUpload')}",
-                            area: ['670px', '550px'],
+                            area: ['720px', '550px'],
                         })
                     },
                     onUploadedVideo: function (event) {

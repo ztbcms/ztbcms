@@ -54,7 +54,7 @@
                                 id="upload_input"
                                 ref="upload"
                                 :show-file-list="false">
-                            <div style="display: flex; justify-content: center;align-items: center;line-height: 36px;">
+                            <div class="uploader-area">
                                 <div>
                                     <i class="el-icon-upload"></i>
                                 </div>
@@ -64,22 +64,23 @@
                             </div>
                         </el-upload>
                         <div class="grid-content bg-purple-light" style="margin-top: 10px;">
-                            <div>
+                            <div class="list">
                                 <template v-for="(item,index) in galleryList">
-                                    <div :key="index"
-                                         class="imgListItem">
-                                        <el-tooltip class="item" effect="dark" :content="item.filename"
-                                                    placement="bottom">
-                                            <img :src="item.filethumb"
-                                                 style="width:80px;height: 80px;"
-                                                 @click="selectImgEvent(index)">
-                                        </el-tooltip>
-                                        <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
-                                            <span style="line-height: 80px;" class="el-icon-check"></span>
+                                    <div class="item">
+                                        <div :key="index" class="imgListItem">
+                                            <img :src="item.filethumb" @click="selectImgEvent(index)">
+                                            <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
+                                                <span style="line-height: 80px;" class="el-icon-check"></span>
+                                            </div>
                                         </div>
+                                        <el-tooltip :content="item.filename" placement="bottom">
+                                            <div class="item-filename">
+                                                <span>{{ item.filename }}</span>
+                                            </div>
+                                        </el-tooltip>
                                     </div>
                                 </template>
-                                <div>
+                                <div style="margin-top: 8px">
                                     <el-button v-show="selectdFileList.length > 0" type="danger" size="small"
                                                @click="clickDeleteSelected">删除选中
                                     </el-button>
@@ -456,16 +457,11 @@
         }
 
         /* 上传图片    */
-        .thumb-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .thumb-uploader .el-upload:hover {
-            border-color: #409EFF;
+        .uploader-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 36px;
         }
 
         .el-upload__input {
@@ -473,6 +469,18 @@
         }
 
         /*图库*/
+        .list .item {
+            width: 100px;
+            display: inline-block;
+        }
+        .list .item-filename {
+            font-size: 12px;
+            width: 80px;
+            overflow: hidden;
+            word-break: keep-all;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
         .imgListItem {
             width: 82px;
             height: 82px;
@@ -484,6 +492,11 @@
             position: relative;
             cursor: pointer;
             vertical-align: top;
+        }
+
+        .imgListItem img{
+            width:80px;
+            height: 80px;
         }
 
         .is_check {

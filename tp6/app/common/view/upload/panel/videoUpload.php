@@ -54,7 +54,7 @@
                                 id="upload_input"
                                 ref="upload"
                                 :show-file-list="false">
-                            <div style="display: flex; justify-content: center;align-items: center;line-height: 36px;">
+                            <div class="uploader-area">
                                 <div>
                                     <i class="el-icon-upload"></i>
                                 </div>
@@ -67,21 +67,17 @@
                             <div class="list">
                                 <template v-for="(item,index) in galleryList">
                                     <div class="item">
-                                        <div :key="index"
-                                             class="imgListItem">
-                                            <img :src="item.filethumb"
-                                                 style="width:80px;height: 80px;"
-                                                 @click="selectImgEvent(index)">
+                                        <div :key="index" class="imgListItem">
+                                            <img :src="item.filethumb" @click="selectImgEvent(index)">
                                             <div v-if="item.is_select" class="is_check" @click="selectImgEvent(index)">
                                                 <span style="line-height: 80px;" class="el-icon-check"></span>
                                             </div>
                                         </div>
-                                        <div class="item-filename">
-                                            <el-tooltip :content="item.filename" placement="top">
+                                        <el-tooltip :content="item.filename" placement="bottom">
+                                            <div class="item-filename">
                                                 <span>{{ item.filename }}</span>
-                                            </el-tooltip>
-
-                                        </div>
+                                            </div>
+                                        </el-tooltip>
                                     </div>
                                 </template>
                                 <div style="margin-top: 8px">
@@ -95,7 +91,7 @@
                                                placeholder="移动至" style="width:130px;margin-left: 10px;" size="small"
                                                @change="moveGroup">
                                         <el-option label="0" value="0">未分组</el-option>
-                                        <el-option :label="item.group_name" :value="item.group_id"
+                                        <el-option :label="item.group_name" :value="item.group_id" :key="item.group_id"
                                                    v-for="item in galleryGroupList">{{item.group_name}}
                                         </el-option>
                                     </el-select>
@@ -459,16 +455,11 @@
         }
 
         /* 上传图片    */
-        .thumb-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .thumb-uploader .el-upload:hover {
-            border-color: #409EFF;
+        .uploader-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 36px;
         }
 
         .el-upload__input {
@@ -488,11 +479,6 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-
-        .list .item-filename:hover{
-            /*border: 1px solid #3bb0ff;*/
-        }
-
         .imgListItem {
             width: 82px;
             height: 82px;
@@ -504,6 +490,11 @@
             position: relative;
             cursor: pointer;
             vertical-align: top;
+        }
+
+        .imgListItem img{
+            width:80px;
+            height: 80px;
         }
 
         .is_check {
