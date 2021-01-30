@@ -1,9 +1,6 @@
-<script type="text/javascript" charset="utf-8"
-        src="/statics/admin/ueditor/ueditor.config.simplicity.js"></script>
-<script type="text/javascript" charset="utf-8"
-        src="/statics/admin/ueditor/ueditor.all.js"></script>
-<script type="text/javascript" charset="utf-8"
-        src="/statics/admin/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="/statics/admin/ueditor/ueditor.config.simplicity.js"></script>
+<script type="text/javascript" src="/statics/admin/ueditor/ueditor.all.js"></script>
+<script type="text/javascript" src="/statics/admin/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script>
     var _UEDITOR_CONFIG = {
         rowspacingtop: ['0', '5', '10', '15', '20', '25'],

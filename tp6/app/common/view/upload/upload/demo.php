@@ -194,7 +194,7 @@
                             title: '',
                             closeBtn: false,
                             content: "{:api_url('common/upload.panel/fileUpload')}",
-                            area: ['670px', '550px'],
+                            area: ['720px', '550px'],
                         })
                     },
                     onUploadedFile: function (event) {
@@ -240,7 +240,7 @@
                             title: '',
                             closeBtn: false,
                             content: "{:api_url('common/upload.panel/imageUpload')}?is_private=" + isPrivate,
-                            area: ['670px', '550px'],
+                            area: ['720px', '550px'],
                         })
                     },
                     onUploadedImage: function (event) {

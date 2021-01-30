@@ -27,7 +27,7 @@ UE.registerUI('cms_uploadImage', function (editor, uiName) {
                 title: '',
                 closeBtn: false,
                 content: '/common/upload.panel/imageUEUpload',
-                area: ['670px', '550px'],
+                area: ['720px', '550px'],
                 end: function () {
                     console.log(0)
                     // 销毁监听

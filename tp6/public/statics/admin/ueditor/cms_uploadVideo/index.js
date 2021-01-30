@@ -24,15 +24,16 @@ UE.registerUI('cms_uploadVideo', function (editor, uiName) {
         name: 'cms-uploadVideo',
         title: '内置视频上传',
         onclick: function () {
-            window.addEventListener('ZTBCMS_UPLOAD_FILE', onUploadedFile);
+            window.addEventListener('ZTBCMS_UPLOAD_VIDEO', onUploadedFile);
             layer.open({
                 type: 2,
-                title: '上传视频',
-                content: "/Upload/UploadCenter/fileUploadPanel?max_upload=1&accept=video/mp4",//max_upload
-                area: ['80%', '70%'],
+                title: '',
+                content: "/common/upload.panel/videoUpload",
+                closeBtn: false,
+                area: ['720px', '550px'],
                 end: function () {
                     // 销毁监听
-                    window.removeEventListener('ZTBCMS_UPLOAD_FILE', onUploadedFile);
+                    window.removeEventListener('ZTBCMS_UPLOAD_VIDEO', onUploadedFile);
                 }
             })
         }
