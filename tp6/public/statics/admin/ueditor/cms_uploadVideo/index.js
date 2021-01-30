@@ -12,8 +12,8 @@ UE.registerUI('cms_uploadVideo', function (editor, uiName) {
                 editor.focus();
                 editor.execCommand(
                     "inserthtml",
-                    '<video class="edui-upload-video vjs-default-skin video-js" controls="" preload="none" width="420" height="280" src="' + files[i]['url'] + '" data-setup="{}">\
-                    <source src="' + files[i]['url'] + '" type="video/mp4"/>\
+                    '<video class="edui-upload-video vjs-default-skin video-js" controls="" preload="none" width="420" height="280" src="' + files[i]['fileurl'] + '" data-setup="{}">\
+                    <source src="' + files[i]['fileurl'] + '" type="video/mp4"/>\
                     </video>'
                 );
             }
