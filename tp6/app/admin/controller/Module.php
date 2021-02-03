@@ -26,26 +26,11 @@ class Module extends AdminController
      */
     function index()
     {
-        return view('index');
-    }
-
-    /**
-     * 模块安装页面
-     */
-    function install()
-    {
-        $module = input('module', '');
-        $action = input('_action', '');
-        if (Request::isGet() && $action == 'getDetail') {
-            if (empty($module)) {
-                return self::makeJsonReturn(false, null, '请指定模块');
-            }
-            $moduleService = new ModuleService();
-            $res = $moduleService->getModuleInfo($module);
-            return json($res);
+        $action = input('_action');
+        if ($this->request->isGet() && $action == 'getModuleList') {
+            return $this->_getModuleList();
         }
-
-        return view('install');
+        return view('index');
     }
 
     /**
@@ -53,7 +38,7 @@ class Module extends AdminController
      *
      * @return \think\response\Json
      */
-    function getModuleList()
+    private function _getModuleList()
     {
         $page = input('page', 1, 'intval');
         $limit = input('limit', 15, 'intval');
@@ -80,6 +65,25 @@ class Module extends AdminController
             'total_pages' => ceil($total_items / $limit),
             'items'       => $list,
         ]);
+    }
+
+    /**
+     * 模块安装页面
+     */
+    function install()
+    {
+        $module = input('module', '');
+        $action = input('_action', '');
+        if (Request::isGet() && $action == 'getDetail') {
+            if (empty($module)) {
+                return self::makeJsonReturn(false, null, '请指定模块');
+            }
+            $moduleService = new ModuleService();
+            $res = $moduleService->getModuleInfo($module);
+            return json($res);
+        }
+
+        return view('install');
     }
 
     // 安装

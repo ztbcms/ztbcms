@@ -102,21 +102,20 @@
             },
             watch: {},
             filters: {},
+            mounted: function () {
+                this.getList();
+            },
             methods: {
                 getList: function () {
                     var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Module/getModuleList')}",
-                        type: "get",
-                        dataType: "json",
-                        data: that.listQuery,
-                        success: function (res) {
-                            if (res.status) {
-                                that.list = res.data.items;
-                                that.listQuery.total = res.data.total_items;
-                                that.listQuery.page = res.data.page;
-                                that.listQuery.limit = res.data.limit;
-                            }
+                    var data = that.listQuery
+                    data['_action'] = 'getModuleList'
+                    this.httpGet("{:api_url('/admin/Module/index')}", data, function (res) {
+                        if (res.status) {
+                            that.list = res.data.items;
+                            that.listQuery.total = res.data.total_items;
+                            that.listQuery.page = res.data.page;
+                            that.listQuery.limit = res.data.limit;
                         }
                     })
                 },
@@ -134,10 +133,7 @@
                         }
                     })
                 },
-            },
-            mounted: function () {
-                this.getList();
-            },
+            }
         })
     })
 </script>
