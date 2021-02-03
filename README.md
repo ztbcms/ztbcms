@@ -27,7 +27,7 @@ $ git clone https://github.com/ztbcms/ztbcms.git
 
 安装依赖
 ```shell
-cd tp6 && composer install
+cd tp6 && composer install -vvv
 ```
 
 ## 版本描述
