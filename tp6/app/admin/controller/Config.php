@@ -35,7 +35,6 @@ class Config extends AdminController
             $data = [
                 'sitename'       => $request->post("sitename"),
                 'siteurl'        => $request->post("siteurl"),
-                'sitefileurl'    => $request->post("sitefileurl"),
                 'siteemail'      => $request->post("siteemail"),
                 'sitekeywords'   => $request->post("sitekeywords"),
                 'siteinfo'       => $request->post("siteinfo"),
@@ -49,7 +48,7 @@ class Config extends AdminController
             // 获取详情
             $_config = $adminConfigService->getConfig(null, false)['data'];
             $fields = [
-                'sitename', 'siteurl', 'sitefileurl', 'siteemail', 'sitekeywords', 'siteinfo', 'checkcode_type'
+                'sitename', 'siteurl', 'siteemail', 'sitekeywords', 'siteinfo', 'checkcode_type'
             ];
             $config = [];
             foreach ($fields as $i => $key) {

@@ -10,6 +10,10 @@ use think\Request;
 
 class Upload extends AdminController
 {
+    /**
+     * 上传示例
+     * @return string
+     */
     function demo()
     {
         return View::fetch('demo');
@@ -22,14 +26,14 @@ class Upload extends AdminController
      */
     function setting(Request $request)
     {
-        if ($request->post()) {
+        if ($request->isPost()) {
             ConfigModel::editConfigs($request->post());
-            return self::createReturn(true, '', '保存成功');
+            return self::createReturn(true, '', '保存成功，更新缓存后生效');
         }
         $config = ConfigModel::column('value', 'varname');
         $dirverList = [
-            'Local' => '本地存储驱动',
-            'Aliyun' => '阿里云OSS上传驱动【暂不支持水印】',
+            'Local' => '本地',
+            'Aliyun' => '阿里云OSS【暂不支持水印】',
         ];
         return View::fetch('setting', [
             'config' => $config,

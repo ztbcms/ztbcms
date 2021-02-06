@@ -293,7 +293,7 @@ CREATE TABLE `cms_config` (
 -- ----------------------------
 INSERT INTO `cms_config` VALUES ('1', 'sitename', '网站名称', '1', 'cms内容管理系统');
 INSERT INTO `cms_config` VALUES ('2', 'siteurl', '网站网址', '1', '/');
-INSERT INTO `cms_config` VALUES ('3', 'sitefileurl', '附件地址', '1', '/d/file/');
+INSERT INTO `cms_config` VALUES ('3', 'sitefileurl', '附件地址【废弃】', '1', '/d/file/');
 INSERT INTO `cms_config` VALUES ('4', 'siteemail', '站点邮箱', '1', 'ad@qq.com');
 INSERT INTO `cms_config` VALUES ('6', 'siteinfo', '网站介绍', '1', 'cms网站管理系统,是一款完全开源免费的PHP+MYSQL系统.核心采用了Thinkphp框架等众多开源软件,同时核心功能也作为开源软件发布');
 INSERT INTO `cms_config` VALUES ('7', 'sitekeywords', '网站关键字', '1', 'cms内容管理系统');
@@ -340,9 +340,8 @@ INSERT INTO `cms_config` VALUES ('47', 'attachment_aliyun_bucket', 'OSS-bucket',
 INSERT INTO `cms_config` VALUES ('48', 'attachment_aliyun_domain', 'OSS-外网域名', '1', '');
 INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '');
 INSERT INTO `cms_config` VALUES ('50', 'attachment_aliyun_expire_time', 'OSS-临时访问链接过期时间', '1', '86400');
-INSERT INTO `cms_config` VALUES ('51', 'site_domain', '网站域名', 1, '');
-INSERT INTO `cms_config` VALUES ('52', 'site_file_domain', '网站附件域名', 1, '');
-INSERT INTO `cms_config` VALUES ('53', 'admin_operation_switch', '是否启用后台操作日志', 1, 1);
+INSERT INTO `cms_config` VALUES ('51', 'attachment_local_domain', '本地存储驱动-附件域名', 1, '');
+INSERT INTO `cms_config` VALUES ('52', 'admin_operation_switch', '是否启用后台操作日志', 1, 1);
 
 
 -- ----------------------------

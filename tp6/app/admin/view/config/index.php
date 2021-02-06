@@ -14,11 +14,7 @@
                             </el-input>
                             <small style="color: #858689;">请以"/"结尾</small>
                         </el-form-item>
-                        <el-form-item label="附件访问地址" prop="sitefileurl">
-                            <el-input v-model="formData.sitefileurl" placeholder="请输入附件访问地址" clearable :style="{width: '100%'}">
-                            </el-input>
-                            <small style="color: #858689;">请以"/"结尾</small>
-                        </el-form-item>
+
                         <el-form-item label="联系邮箱" prop="siteemail">
                             <el-input v-model="formData.siteemail" placeholder="请输入联系邮箱" clearable :style="{width: '100%'}">
                             </el-input>
@@ -60,7 +56,6 @@
                     formData: {
                         sitename: "",
                         siteurl: "",
-                        sitefileurl: "",
                         siteemail: "",
                         sitekeywords: "",
                         siteinfo: "",
@@ -75,11 +70,6 @@
                         siteurl: [{
                             required: true,
                             message: '请输入网站访问地址',
-                            trigger: 'blur'
-                        }],
-                        sitefileurl: [{
-                            required: true,
-                            message: '请输入附件访问地址',
                             trigger: 'blur'
                         }],
                         siteemail: [{

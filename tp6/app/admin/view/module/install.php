@@ -2,27 +2,27 @@
     <el-card>
         <el-col :sm="24" :md="18">
             <el-form ref="elForm" size="medium" label-width="160px">
-                <el-form-item label="模块名称:" prop="sitename">
+                <el-form-item label="模块名称:" >
                     <span>{{moduleInfo['modulename']}}</span>
                 </el-form-item>
-                <el-form-item label="当前版本:" prop="siteurl">
+                <el-form-item label="当前版本:" >
                     <span>{{moduleInfo['version']}}</span>
                 </el-form-item>
-                <el-form-item label="最低后台版本:" prop="sitefileurl">
+                <el-form-item label="最低后台版本:" >
                     <span>{{moduleInfo['adaptation']}}</span>
                 </el-form-item>
-                <el-form-item label="依赖模块:" prop="sitefileurl">
+                <el-form-item label="依赖模块:" >
                     <template v-for="item in moduleInfo['depend_list']">
                         <p style="margin: 0;">{{item['module']}} @ {{item['version']}}</p>
                     </template>
                 </el-form-item>
-                <el-form-item label="简介:" prop="siteemail">
+                <el-form-item label="简介:">
                     <span>{{moduleInfo['introduce']}}</span>
                 </el-form-item>
-                <el-form-item label="作者:" prop="sitekeywords">
+                <el-form-item label="作者:" >
                     <span>{{moduleInfo['author']}}</span>
                 </el-form-item>
-                <el-form-item label="联系方式:" prop="siteinfo">
+                <el-form-item label="联系方式:" >
                     <span>{{moduleInfo['authoremail']}}</span>
                 </el-form-item>
 

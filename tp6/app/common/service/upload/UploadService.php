@@ -146,7 +146,7 @@ class UploadService extends BaseService
             if (!$this->upload($attachmentModel)) {
                 return false;
             }
-            //getData('fileurl') 获取原始数据，防止获取器造成的影响
+            // 获取原始数据，防止获取器造成的影响
             $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
             $attachmentModel->isimage = AttachmentModel::IS_IMAGES_YES;
             $attachmentModel->save();

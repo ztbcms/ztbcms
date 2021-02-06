@@ -197,9 +197,6 @@ class Index extends BaseController
         $site_name = input('sitename');
         //网站域名
         $site_url = input('siteurl');
-        $_site_url = parse_url($site_url);
-        //附件地址
-        $sitefileurl = $_site_url['path']."d/file/";
         //描述
         $seo_description = input('siteinfo', '', 'trim');
         //关键词
@@ -257,7 +254,6 @@ class Index extends BaseController
         //更新配置信息
         Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_name' WHERE varname='sitename'");
         Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$site_url' WHERE varname='siteurl' ");
-        Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$sitefileurl' WHERE varname='sitefileurl' ");
         Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_description' WHERE varname='siteinfo'");
         Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$seo_keywords' WHERE varname='sitekeywords'");
         Db::execute("UPDATE `{$dbPrefix}config` SET  `value` = '$manager_email' WHERE varname='siteemail'");

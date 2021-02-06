@@ -5,7 +5,7 @@
                 <template>
                     <div>
                         <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
-                            <el-form-item label="网站存储方案" prop="attachment_driver">
+                            <el-form-item label="存储方式" prop="attachment_driver">
                                 <el-select v-model="formData.attachment_driver" placeholder="请选择网站存储方案" clearable
                                            :style="{width: '100%'}">
                                     <?php foreach ($dirverList as $key => $value): ?>
@@ -13,6 +13,7 @@
                                     <?php endforeach; ?>
                                 </el-select>
                             </el-form-item>
+                            <!--阿里云-->
                             <template v-if="formData.attachment_driver == 'Aliyun'">
                                 <el-form-item label="oss-keyId"
                                               prop="attachment_aliyun_key_id">
@@ -50,6 +51,14 @@
                                               placeholder="请输入临时链接过期时间">
                                         <template slot="append">秒</template>
                                     </el-input>
+                                </el-form-item>
+                            </template>
+                            <!--本地-->
+                            <template v-if="formData.attachment_driver == 'Local'">
+                                <el-form-item label="附件域名"
+                                              prop="attachment_local_domain">
+                                    <el-input v-model="formData.attachment_local_domain"
+                                              placeholder="请输入附件域名，示例：http://ztbcms.com"></el-input>
                                 </el-form-item>
                             </template>
                             <el-form-item label="允许上传附件大小" prop="uploadmaxsize">
@@ -243,13 +252,14 @@
                 },
                 methods: {
                     submitForm: function() {
+                        var that = this
                         this.$refs['elForm'].validate(function(valid) {
                             if (!valid) return;
                             $.ajax({
                                 url: "{:api_url('common/upload.upload/setting')}",
                                 method: 'post',
                                 dataType: 'json',
-                                data: this.formData,
+                                data: that.formData,
                                 success: function (res) {
                                     if (!res.status) {
                                         layer.msg(res.msg)
