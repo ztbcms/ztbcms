@@ -1,39 +1,42 @@
 
-<div class="main">
-    <form class="mainmenu" onsubmit='return false;' onkeydown="submitByEnter">
-        <div class="logo-box flex-between">
-            <div class="title">{$Config.sitename}</div>
-        </div>
-        <div class="label">账号</div>
-        <div class="input">
-            <input type="text" placeholder="请输入账号" id="username">
-        </div>
-        <div class="label">登录密码</div>
-        <div class="input">
-            <input type="password" placeholder="请输入密码" id="password">
-        </div>
-        <div class="label">验证码</div>
-        <div class="input flex-between" style="margin-bottom: 0px">
-            <input type="text" placeholder="请输入验证码" style="flex: 1;" id="code">
-            <img id="code_img" class="code"
-                 src="{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"
-                 onclick="refreshs()"></a>
-        </div>
-        <p style="font-size: 12px;color: #7884a0;margin-top: 4px;">* 数据传输采用128位加密技术，保障您的信息安全</p>
-        <div class="btn-box">
-            <button class="default" onclick="doLogin()" disabled>登录</button>
-        </div>
-    </form>
+<div class="page-container visibility-hidden">
+    <div class="main">
+        <form class="mainmenu" onsubmit='return false;' onkeydown="submitByEnter">
+            <div class="logo-box flex-between">
+                <div class="title">{$Config.sitename}</div>
+            </div>
+            <div class="label">账号</div>
+            <div class="input">
+                <input type="text" placeholder="请输入账号" id="username">
+            </div>
+            <div class="label">登录密码</div>
+            <div class="input">
+                <input type="password" placeholder="请输入密码" id="password">
+            </div>
+            <div class="label">验证码</div>
+            <div class="input flex-between" style="margin-bottom: 0px">
+                <input type="text" placeholder="请输入验证码" style="flex: 1;" id="code">
+                <img id="code_img" class="code"
+                     src="{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"
+                     onclick="refreshs()"></a>
+            </div>
+            <p style="font-size: 12px;color: #7884a0;margin-top: 4px;">* 数据传输采用128位加密技术，保障您的信息安全</p>
+            <div class="btn-box">
+                <button class="default" onclick="doLogin()" disabled>登录</button>
+            </div>
+        </form>
+    </div>
+    <div class="footer">
+        <p>当前版本 v1.0.0</p>
+        <p> 建议分辨率1366*768以上，推荐使用 </p>
+        <p>
+            Chrome浏览器 <img src="/statics/admin/pages/public/login/chrome.png" alt="">
+            Firefox浏览器 <img src="/statics/admin/pages/public/login/firefox.png" alt="">
+            360极速浏览器 <img src="/statics/admin/pages/public/login/360.png" alt="">
+            IE11及以上浏览器 <img src="/statics/admin/pages/public/login/ie.png" alt=""></p>
+    </div>
 </div>
-<div class="footer">
-    <p>当前版本 v1.0.0</p>
-    <p> 建议分辨率1366*768以上，推荐使用 </p>
-    <p>
-        Chrome浏览器 <img src="/statics/admin/pages/public/login/chrome.png" alt="">
-        Firefox浏览器 <img src="/statics/admin/pages/public/login/firefox.png" alt="">
-        360极速浏览器 <img src="/statics/admin/pages/public/login/360.png" alt="">
-        IE11及以上浏览器 <img src="/statics/admin/pages/public/login/ie.png" alt=""></p>
-</div>
+
 
 <style>
     html,body{
@@ -52,6 +55,14 @@
     .flex-between {
         display: flex;
         justify-content: space-between;
+    }
+
+    .visibility-visible {
+        visibility: visible;
+    }
+
+    .visibility-hidden{
+        visibility: hidden;
     }
 
     .main {
@@ -169,6 +180,10 @@
     //若当前页面是再后台的内容页，则通知外层页面跳转
     if(parent !== window){
         parent.window.location = "{:api_url('/admin/Login/index')}"
+    } else {
+       // 非内嵌页面时呈现
+       var page_container =  document.querySelector('.page-container')
+        page_container.classList.remove('visibility-hidden')
     }
 
     var inputs = document.querySelectorAll('input');
