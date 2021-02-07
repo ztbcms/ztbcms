@@ -24,6 +24,15 @@ class ConfigModel extends Model
     protected $pk = "varname";
 
 
+    /**
+     * @deprecated 请使用AdminConfigService
+     * @param $configs
+     *
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     static function editConfigs($configs)
     {
         $updataData = [];

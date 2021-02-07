@@ -286,14 +286,6 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Config/attach",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "附件配置",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
                         "route" => "admin/Config/extend",
                         "type" => 1,
                         "status" => 1,
