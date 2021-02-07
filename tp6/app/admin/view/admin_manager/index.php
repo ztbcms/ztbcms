@@ -1,7 +1,7 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <div class="filter-container">
-            <h3>管理员列表</h3>
+            <h3>管理员管理</h3>
 
             <el-alert
                     title="当前登录管理员只能管理层级比自己低的管理员，超级管理员除外"
@@ -70,11 +70,11 @@
             <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
                     <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'getDetail')){ ?>
-                        <el-button type="primary" size="mini" @click="editItem(scope.row.id)" >修改</el-button>
+                        <el-button type="text" size="mini" @click="editItem(scope.row.id)" >修改</el-button>
                     <?php } ?>
 
                     <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerDelete')){ ?>
-                        <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+                        <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color:#F56C6C">删除</el-button>
                     <?php } ?>
                 </template>
             </el-table-column>

@@ -2,7 +2,7 @@
     <el-card>
 
         <div class="filter-container">
-            <h3>角色列表</h3>
+            <h3>角色管理</h3>
         </div>
 
         <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Role', 'roleAdd')){ ?>
@@ -51,27 +51,27 @@
                         <span>
 
                             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'authorize')){ ?>
-                            <el-button type="primary" class="itembtn" size="mini" @click="openAuth(scope.row.id)"
+                            <el-button type="text" size="mini" @click="openAuth(scope.row.id)"
                                        :disabled="scope.row.id == 1">
                                 权限设置
                             </el-button>
                             <?php } ?>
 
                             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'roleEdit')){ ?>
-                            <el-button type="primary" class="itembtn" size="mini" @click="roleEdit(scope.row.id)"
+                            <el-button type="text" size="mini" @click="roleEdit(scope.row.id)"
                                        :disabled="scope.row.id == 1">
                                 修改
                             </el-button>
                             <?php } ?>
 
                             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Management', 'index')){ ?>
-                            <el-button type="primary" class="itembtn" size="mini" @click="gotomanagerPage(scope.row.id)">
+                            <el-button type="text" size="mini" @click="gotomanagerPage(scope.row.id)">
                                 成员管理
                             </el-button>
                             <?php } ?>
 
                             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'roleDelete')){ ?>
-                            <el-button type="danger" class="itembtn" size="mini" @click="handleDelete(scope.row.id)"
+                            <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color:#F56C6C"
                                        :disabled="scope.row.id == 1">
                                 删除
                             </el-button>

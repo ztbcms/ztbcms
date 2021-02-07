@@ -58,7 +58,9 @@
                                 <el-form-item label="附件域名"
                                               prop="attachment_local_domain">
                                     <el-input v-model="formData.attachment_local_domain"
-                                              placeholder="请输入附件域名，示例：http://ztbcms.com"></el-input>
+                                              placeholder="请输入附件域名，示例：http://ztbcms.com">
+                                        <template slot="append">默认为当前站点域名</template>
+                                    </el-input>
                                 </el-form-item>
                             </template>
                             <el-form-item label="允许上传附件大小" prop="uploadmaxsize">
@@ -121,13 +123,13 @@
                                 <el-form-item label="水印透明度" prop="watermarkpct">
                                     <el-input v-model="formData.watermarkpct" placeholder="请输入水印透明度" clearable
                                               :style="{width: '100%'}">
-                                        <template slot="append">请设置为0-100之间的数字，0代表完全透明，100代表不透明</template>
+                                        <template slot="append">0-100之间的数字，0代表完全透明，100代表不透明</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="JPEG 水印质量" prop="watermarkquality">
                                     <el-input v-model="formData.watermarkquality" placeholder="请输入JPEG 水印质量" clearable
                                               :style="{width: '100%'}">
-                                        <template slot="append">水印质量请设置为0-100之间的数字,决定 jpg 格式图片的质量</template>
+                                        <template slot="append">0-100之间的数字,决定 jpg 格式图片的质量，100为原图</template>
                                     </el-input>
                                 </el-form-item>
 
