@@ -3,32 +3,32 @@
         <div style="margin-bottom: 20px;">
 
             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'createCron')){ ?>
-                <el-button @click="createCron" type="primary">
+                <el-button @click="createCron" type="primary" size="mini">
                     新增任务
                 </el-button>
             <?php } ?>
 
             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'schedulingLog')){ ?>
-            <el-button @click="openSchedulingLog" type="primary">
+            <el-button @click="openSchedulingLog" type="primary" size="mini">
                 调度日志
             </el-button>
             <?php } ?>
 
             <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'cronLog')){ ?>
-            <el-button @click="openTaskLog"  type="primary">
+            <el-button @click="openTaskLog"  type="primary" size="mini">
                 任务日志
             </el-button>
             <?php } ?>
         </div>
         <el-table
                 :data="lists"
-                border
+                highlight-current-row
                 style="width: 100%">
             <el-table-column
                     align="center"
                     prop="subject"
                     label="计划标题"
-                    width="180">
+                    width="100">
             </el-table-column>
             <el-table-column
                     min-width="300"
@@ -71,15 +71,15 @@
                     label="操作">
                 <template slot-scope="props">
                     <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'createCron')){ ?>
-                    <el-button @click="editCron(props.row.cron_id)" type="primary" size="mini">
+                    <el-button @click="editCron(props.row.cron_id)" type="text" size="mini">
                         编辑
                     </el-button>
                     <?php } ?>
 
-                    <el-button @click="runCronAction(props.row.cron_id)" type="primary" size="mini">立即执行
+                    <el-button @click="runCronAction(props.row.cron_id)" type="text" size="mini">立即执行
                     </el-button>
 
-                    <el-button @click="deleteCron(props.row.cron_id)" type="danger" size="mini"> 删除
+                    <el-button @click="deleteCron(props.row.cron_id)" type="text" size="mini" style="color: #F56C6C"> 删除
                     </el-button>
                 </template>
             </el-table-column>
