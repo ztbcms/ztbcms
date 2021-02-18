@@ -3,7 +3,7 @@
         <div class="filter_container">
             <el-row :gutter="10">
                 <el-col :span="3">
-                    <el-input v-model="form.username" placeholder="用户名称" size="medium"/>
+                    <el-input v-model="form.username" placeholder="用户名" size="medium"/>
                 </el-col>
                 <el-col :span="3">
                     <el-input v-model="form.loginip" placeholder="IP" size="medium"/>
@@ -28,8 +28,8 @@
                         筛选
                     </el-button>
                     <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'logs', 'deleteLoginLog')){ ?>
-                    <el-button @click="deletelog" type="primary" plain size="medium">
-                        删除一个月前的操作日志
+                    <el-button @click="deleteLog" type="danger" plain size="medium">
+                        删除30日前日志
                     </el-button>
                     <?php } ?>
                 </el-col>
@@ -37,8 +37,7 @@
         </div>
 
 
-        <el-tabs type="border-card" style="margin-top: 20px;"
-                 @tab-click="handleClickTabs">
+        <el-tabs @tab-click="handleClickTabs">
             <el-tab-pane label="全部"></el-tab-pane>
             <el-tab-pane label="成功"></el-tab-pane>
             <el-tab-pane label="失败"></el-tab-pane>
@@ -46,7 +45,6 @@
             <el-table
                     size="medium"
                     :data="tableData"
-                    border
                     style="width: 100%;"
                     @sort-change="handleSortChange">
                 <el-table-column
@@ -109,11 +107,7 @@
                 </el-pagination>
             </div>
         </el-tabs>
-
-
     </el-card>
-
-
 </div>
 
 <style>
@@ -122,9 +116,6 @@
         padding: 25px 36px 12px;
     }
 
-    .pager_container {
-
-    }
 </style>
 
 <script>
@@ -164,12 +155,12 @@
                 formatTime:function(timestamp) {
                     var date = new Date();
                     date.setTime(parseInt(timestamp) * 1000);
-                    return moment(date).format('YYYY-MM-DD HH:mm:ss')
+                    return moment(date).format('YYYY-MM-DD HH:mm')
                 }
             },
             methods: {
                 getList: function () {
-                    var that = this;
+                    var that = this
                     var where = {
                         page: this.pagination.page,
                         limit: this.pagination.limit,
@@ -180,39 +171,25 @@
                         end_time: this.form.end_time,
                         sort_time: this.form.sort_time,
                         _action : 'getList'
-                    };
-                    $.ajax({
-                        url: "{:api_url('/admin/Logs/loginLogList')}",
-                        data: where,
-                        dataType: 'json',
-                        type: 'get',
-                        success: function (res) {
-                            var data = res.data;
-                            that.pagination.page = data.page;
-                            that.pagination.limit = data.limit;
-                            that.pagination.total_pages = data.total_pages;
-                            that.pagination.total_items = data.total_items;
-                            that.tableData = data.items
-                        }
+                    }
+                    this.httpGet("{:api_url('/admin/Logs/loginLogList')}", where, function (res) {
+                        var data = res.data;
+                        that.pagination.page = data.page;
+                        that.pagination.limit = data.limit;
+                        that.pagination.total_pages = data.total_pages;
+                        that.pagination.total_items = data.total_items;
+                        that.tableData = data.items
                     })
                 },
-                deletelog: function () {
+                deleteLog: function () {
                     var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Logs/deleteLoginLog')}",
-                        data: {
-                            day: 30
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            if (res.status) {
-                                ELEMENT.Message.success(res.msg)
-                            } else {
-                                ELEMENT.Message.error(res.msg)
-                            }
-                            that.getList()
+                    this.httpPost("{:api_url('/admin/Logs/deleteLoginLog')}", {day: 30}, function(res){
+                        if (res.status) {
+                            ELEMENT.Message.success(res.msg)
+                        } else {
+                            ELEMENT.Message.error(res.msg)
                         }
+                        that.getList()
                     })
                 },
                 handleClickTabs:function(tab) {
@@ -243,7 +220,7 @@
                     this.getList();
                 }
             },
-            mounted: function () {
+            created: function () {
                 this.getList();
             }
         })

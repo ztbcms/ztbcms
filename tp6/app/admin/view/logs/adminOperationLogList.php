@@ -29,8 +29,8 @@
                     </el-button>
 
                     <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'logs', 'deleteAdminOperationLog')){ ?>
-                        <el-button @click="deletelog" type="primary" plain size="medium">
-                            删除一个月前的操作日志
+                        <el-button @click="deleteLog" type="primary" plain size="medium">
+                            删除30日前日志
                         </el-button>
                     <?php } ?>
 
@@ -42,9 +42,7 @@
             </el-row>
         </div>
 
-
-        <el-tabs type="border-card" style="margin-top: 20px;"
-                 @tab-click="handleClickTabs">
+        <el-tabs @tab-click="handleClickTabs">
             <el-tab-pane label="全部"></el-tab-pane>
             <el-tab-pane label="成功"></el-tab-pane>
             <el-tab-pane label="失败"></el-tab-pane>
@@ -52,18 +50,22 @@
             <el-table
                     size="medium"
                     :data="tableData"
-                    border
                     style="width: 100%;"
                     @sort-change="handleSortChange">
                 <el-table-column
                         prop="id"
                         label="ID"
-                        width="80">
+                        width="60">
                 </el-table-column>
                 <el-table-column
                         prop="uid"
                         label="用户ID"
                         width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="get"
+                        label="URL"
+                        width="250">
                 </el-table-column>
                 <el-table-column
                         prop="status"
@@ -76,22 +78,15 @@
                 </el-table-column>
                 <el-table-column
                         prop="info"
-                        label="说明">
+                        label="响应">
                     <template slot-scope="scope">
                         <p v-html="scope.row.info"></p>
                     </template>
                 </el-table-column>
-
-                <el-table-column
-                        prop="get"
-                        label="GET">
-                </el-table-column>
                 <el-table-column
                         prop="time"
                         label="时间"
-                        width="200"
-                        sortable="custom"
-                >
+                        width="200">
                     <template slot-scope="scope">
                         <span>{{ scope.row.time | formatTime }}</span>
                     </template>
@@ -169,7 +164,7 @@
                 formatTime:function(timestamp) {
                     var date = new Date();
                     date.setTime(parseInt(timestamp) * 1000);
-                    return moment(date).format('YYYY-MM-DD HH:mm:ss')
+                    return moment(date).format('YYYY-MM-DD HH:mm')
                 }
             },
             methods: {
@@ -184,7 +179,7 @@
                         start_time: this.form.start_time,
                         end_time: this.form.end_time,
                         sort_time: this.form.sort_time,
-                        _action : 'getList'
+                        _action: 'getList'
                     };
                     $.ajax({
                         url: "{:api_url('/admin/Logs/adminOperationLogList')}",
@@ -201,7 +196,7 @@
                         }
                     });
                 },
-                deletelog: function () {
+                deleteLog: function () {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/admin/Logs/deleteAdminOperationLog')}",
@@ -220,7 +215,7 @@
                         }
                     })
                 },
-                handleClickTabs:function(tab) {
+                handleClickTabs: function (tab) {
                     if (tab.index == 0) {
                         this.form.status = '';
                     }
@@ -232,7 +227,7 @@
                     }
                     this.getList()
                 },
-                handleSortChange:function(event) {
+                handleSortChange: function (event) {
                     if (event.prop == 'time' && event.order != null) {
                         if (event.order.toLowerCase().indexOf('asc') >= 0) {
                             this.form.sort_time = 'asc'
@@ -247,7 +242,7 @@
                     this.form.sort_time = '';
                     this.getList();
                 },
-                getAdminOperationSwitch :function () {
+                getAdminOperationSwitch: function () {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/admin/Logs/adminOperationLogList')}",
@@ -259,13 +254,13 @@
                         }
                     })
                 },
-                switchingAdminOperation : function (admin_operation_switch) {
+                switchingAdminOperation: function (admin_operation_switch) {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/admin/Logs/adminOperationLogList')}",
                         data: {
                             _action: 'switchingAdminOperation',
-                            admin_operation_switch : admin_operation_switch
+                            admin_operation_switch: admin_operation_switch
                         },
                         dataType: 'json',
                         type: 'post',
