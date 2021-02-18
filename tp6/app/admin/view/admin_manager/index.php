@@ -7,7 +7,8 @@
                     title="当前登录管理员只能管理层级比自己低的管理员，超级管理员除外"
                     type="info"
                     :closable="false"
-                    description="">
+                    description=""
+                    show-icon>
             </el-alert>
         </div>
 

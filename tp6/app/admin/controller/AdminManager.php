@@ -194,7 +194,8 @@ class AdminManager extends AdminController
             $where[] = ['role_id', '=', $role_id];
         }
 
-        $list = $AdminUserModel->where($where)->order('id desc')->select();
+        $field = 'id,avatar,create_time,email,last_login_ip,last_login_time,nickname,phone,role_id,status,update_time,username';
+        $list = $AdminUserModel->where($where)->order('id desc')->field($field)->select();
         foreach ($list as $k => $User_value) {
             if ($User_value['last_login_time']) {
                 $list[$k]['last_login_time'] = date("Y-m-d H:i:s", $User_value['last_login_time']);
@@ -212,13 +213,12 @@ class AdminManager extends AdminController
         $AdminUserModel = new AdminUserModel();
         $id = Request::param('id');
         $where['id'] = $id;
-        $res = $AdminUserModel->where($where)->withoutField('create_time,update_time')->find();
-        $res['password'] = '';
+        $res = $AdminUserModel->where($where)->withoutField('create_time,update_time,verify,password')->find();
         $res['status'] = (string)$res['status'];
         if ($res) {
             return json(self::createReturn(true, $res));
         } else {
-            return json(self::createReturn(false, [], '该管理员不存在'));
+            return json(self::createReturn(false, null, '该管理员不存在'));
         }
     }
 
