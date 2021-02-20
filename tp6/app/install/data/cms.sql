@@ -803,3 +803,16 @@ CREATE TABLE `cms_admin_message` (
   `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台消息';
+
+
+CREATE TABLE `cms_email_send_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `to_email` varchar(64) NOT NULL DEFAULT '' COMMENT '接收邮箱',
+  `from_email` varchar(64) NOT NULL DEFAULT '' COMMENT '发送邮箱',
+  `subject` varchar(256) NOT NULL DEFAULT '' COMMENT '发送标题',
+  `content` text NOT NULL COMMENT '发送内容',
+  `status` tinyint(11) NOT NULL DEFAULT '1' COMMENT '发送状态 0失败 1成功',
+  `error_msg` varchar(512) NOT NULL DEFAULT '' COMMENT '错误信息',
+  `send_time` int(11) NOT NULL COMMENT '发送时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邮件发送记录';
