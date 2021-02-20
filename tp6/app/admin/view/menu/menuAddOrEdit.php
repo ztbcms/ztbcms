@@ -54,7 +54,14 @@
                         </el-form-item>
 
                         <el-form-item label="图标" prop="icon">
-                            <el-input v-model="formData.icon" placeholder="请输入图标名称，如 icon-dashboard" clearable :style="{width: '100%'}"></el-input>
+                            <el-input v-model="formData.icon" placeholder="请输入图标名称，如 icon-dashboard" clearable :style="{width: '80%'}">
+                                <template slot="prepend">
+                                    <i class="iconfont" :class="[formData.icon]"></i>
+                                </template>
+                                <template slot="append">
+                                    <el-button type="primary" @click="toSelectIcon">点击选择</el-button>
+                                </template>
+                            </el-input>
                         </el-form-item>
 
                         <el-form-item size="large">
@@ -162,6 +169,8 @@
                 if(this.formData.parentid){
                     this.formData.parentid = parseInt(this.formData.parentid)
                 }
+                // 注册回调
+                window.addEventListener('ZTBCMS_SELECT_ICON', this.handleSelectIconCallback.bind(this))
             },
             methods: {
                 submitForm: function() {
@@ -215,6 +224,19 @@
                         that.formData = res.data;
                         that.formData.parentid = parseInt(that.formData.parentid) || 0
                     })
+                },
+                // 去选择icon
+                toSelectIcon: function(){
+                    layer.open({
+                        type: 2,
+                        title: '选择',
+                        content: "{:api_url('/admin/Iconfont/index')}",
+                        area: ['80%', '90%'],
+                    })
+                },
+                // 选择icon回调
+                handleSelectIconCallback: function(res){
+                    this.formData.icon = res.detail.icon
                 }
             }
         });

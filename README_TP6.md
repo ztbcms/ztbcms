@@ -111,6 +111,8 @@ window.parent.dispatchEvent(event)
 
 拓展：ztbcms默认后台icon已经内置，请打开`/statics/css/iconfont/demo_index.html`查看
 
+注意：替换icon时，请务必更新`/admin/Iconfont/index`页的内容
+
 
 
 ### URL 重写配置
