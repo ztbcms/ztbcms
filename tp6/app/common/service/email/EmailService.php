@@ -35,30 +35,33 @@ class EmailService extends BaseService
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body = $message;
-
+        
+        $logModel = new EmailSendLogModel();
+        $log = [
+            'to_email'   => $email,
+            'from_email' => $config['mail_from'],
+            'subject'    => $subject,
+            'content'    => $message,
+            'status'     => 1,
+            'error_msg'  => '',
+            'send_time'  => time()
+        ];
         try {
             $result = $mail->send();
-            $log = [
-                'to_email'   => $email,
-                'from_email' => $config['mail_from'],
-                'subject'    => $subject,
-                'content'    => $message,
-                'status'     => 1,
-                'error_msg'  => '',
-                'send_time'  => time()
-            ];
-            $logModel = new EmailSendLogModel();
+
             if ($result) {
                 $logModel->insert($log);
                 return self::createReturn(true, null, '发送成功');
             } else {
                 $log['status'] = 0;
                 $log['error_msg'] = $mail->ErrorInfo;
+                $logModel->insert($log);
                 return self::createReturn(false, null, '发送失败: '.$mail->ErrorInfo);
             }
         } catch (\Exception $e) {
             $log['status'] = 0;
             $log['error_msg'] = $e->getMessage();
+            $logModel->insert($log);
             return self::createReturn(false, null, '发送失败: '.$e->getMessage());
         }
     }
