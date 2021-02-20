@@ -27,7 +27,8 @@
         "topthink/think-view": "^1.0",
         "aliyuncs/oss-sdk-php": "^2.4",
         "alibabacloud/client": "^1.5",
-        "overtrue/wechat": "^4.2"
+        "overtrue/wechat": "^4.2",
+        "phpmailer/phpmailer": "^6.3"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
