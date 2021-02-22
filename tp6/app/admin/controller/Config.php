@@ -63,6 +63,7 @@ class Config extends AdminController
     /**
      * 邮箱设置
      *
+     * @deprecated 迁移到 /common/email.Email/config
      * @param  Request  $request
      *
      * @return \think\response\Json|\think\response\View
