@@ -30,9 +30,12 @@
                         筛选
                     </el-button>
 
-                    <el-button type="primary" @click="toSendEmail" size="medium">
-                        发送邮件
-                    </el-button>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'email.Email', 'sendEmail')){ ?>
+                        <el-button type="primary" @click="toSendEmail" size="medium">
+                            发送邮件
+                        </el-button>
+                    <?php } ?>
+
                 </el-col>
             </el-row>
         </div>

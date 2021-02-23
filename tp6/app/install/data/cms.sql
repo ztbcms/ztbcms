@@ -804,7 +804,7 @@ CREATE TABLE `cms_admin_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台消息';
 
-
+DROP TABLE IF EXISTS `cms_email_send_log`;
 CREATE TABLE `cms_email_send_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `to_email` varchar(64) NOT NULL DEFAULT '' COMMENT '接收邮箱',

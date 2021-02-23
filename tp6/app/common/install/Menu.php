@@ -134,6 +134,13 @@ return array(
                         "status" => 1,
                         "name" => "发送日志",
                         "remark" => "",
+                    ],
+                    [
+                        "route" => "common/email.Email/sendEmail",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "发送日志",
+                        "remark" => "",
                     ]
                 ]
             ],
