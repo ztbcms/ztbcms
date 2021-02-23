@@ -192,7 +192,7 @@
                     if(id) url += '?id=' + id;
                     layer.open({
                         type: 2,
-                        title: '管理',
+                        title: '菜单设置',
                         content: url,
                         area: ['95%', '95%'],
                         end: function(){
@@ -208,7 +208,7 @@
                     }
                     layer.open({
                         type: 2,
-                        title: '管理',
+                        title: '添加子菜单',
                         content: url,
                         area: ['95%', '95%'],
                         end: function(){
