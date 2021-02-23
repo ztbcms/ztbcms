@@ -1,10 +1,12 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <el-col :sm="24" :md="18">
-
-            <template>
-                <div>
-                    <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
+            <el-alert type="success" :closable="false">
+                <template slot="title">
+                    <span>推荐使用阿里云邮件推送服务，每日免费额度200封，<a style="color: #67C23A;" target="_blank" href="https://www.aliyun.com/product/directmail?source=5176.11533457&userCode=cb42l4yn" >点击了解</a></span>
+                </template>
+            </el-alert>
+            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px" style="margin-top: 6px">
                         <el-form-item label="邮件服务器" prop="mail_server">
                             <el-input v-model="formData.mail_server" placeholder="请输入邮件服务器" clearable :style="{width: '100%'}">
                             </el-input>
@@ -40,8 +42,7 @@
                             <el-button type="primary" @click="submitForm">保存</el-button>
                         </el-form-item>
                     </el-form>
-                </div>
-            </template>
+
         </el-col>
     </el-card>
 </div>
