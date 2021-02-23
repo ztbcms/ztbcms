@@ -278,14 +278,6 @@ return [
                         "child" => []
                     ],
                     [
-                        "route" => "admin/Config/email",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "邮箱配置",
-                        "remark" => "",
-                        "child" => []
-                    ],
-                    [
                         "route" => "admin/Config/extend",
                         "type" => 1,
                         "status" => 1,

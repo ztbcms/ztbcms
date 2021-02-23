@@ -116,6 +116,12 @@ class Email extends AdminController
         return view('sendLog');
     }
 
+    /**
+     * 发送邮件
+     * @param  Request  $request
+     *
+     * @return \think\response\Json|\think\response\View
+     */
     function sendEmail(Request $request)
     {
         if ($request->isPost() && $request->post('_action') === 'doSendEmail') {
