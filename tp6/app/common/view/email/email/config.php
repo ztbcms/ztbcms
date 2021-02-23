@@ -5,11 +5,6 @@
             <template>
                 <div>
                     <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
-                        <el-form-item label="SMTP 函数发送" prop="mail_type">
-                            <el-radio-group v-model="formData.mail_type" size="medium">
-                                <el-radio v-for="(item, index) in mail_typeOptions" :key="index" :label="item.value" :disabled="item.disabled">{{item.label}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
                         <el-form-item label="邮件服务器" prop="mail_server">
                             <el-input v-model="formData.mail_server" placeholder="请输入邮件服务器" clearable :style="{width: '100%'}">
                             </el-input>
@@ -59,8 +54,8 @@
             props: [],
             data: function() {
                 return {
+                    request_url: "{:api_url('/common/email.Email/config')}",
                     formData: {
-                        mail_type: "",
                         mail_server: "",
                         mail_port: "",
                         mail_from: "",
@@ -70,11 +65,6 @@
                         mail_password: "",
                     },
                     rules: {
-                        mail_type: [{
-                            required: true,
-                            message: 'SMTP 函数发送不能为空',
-                            trigger: 'change'
-                        }],
                         mail_server: [{
                             required: true,
                             message: '请输入邮件服务器',
@@ -101,17 +91,13 @@
                             trigger: 'change'
                         }],
                     },
-                    mail_typeOptions: [{
-                        "label": "SMTP 函数发送",
-                        "value": '1'
-                    }],
                     mail_authOptions: [{
                         "label": "开启",
                         "value": '1'
                     }, {
                         "label": "关闭",
                         "value": '0'
-                    }],
+                    }]
                 }
             },
             computed: {},
@@ -126,7 +112,7 @@
                     var that = this
                     this.$refs['elForm'].validate(function(valid){
                         if (!valid) return
-                        that.httpPost("{:api_url('/admin/Config/email')}", that.formData, function(res){
+                        that.httpPost(that.request_url, that.formData, function(res){
                             layer.msg(res.msg)
                         })
                     })
@@ -136,7 +122,7 @@
                     var that = this
                     var formData = {}
                     formData['_action'] = 'getDetail'
-                    that.httpGet("{:api_url('/admin/Config/email')}", formData, function(res){
+                    that.httpGet(that.request_url, formData, function(res){
                         that.formData = res.data
                     })
                 }

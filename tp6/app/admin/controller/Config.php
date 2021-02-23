@@ -61,50 +61,6 @@ class Config extends AdminController
     }
 
     /**
-     * 邮箱设置
-     *
-     * @param  Request  $request
-     *
-     * @return \think\response\Json|\think\response\View
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    function email(Request $request)
-    {
-        $adminConfigService = new AdminConfigService();
-        if ($request->isPost()) {
-            $data = [
-                'mail_type'     => $request->post("mail_type"),
-                'mail_server'   => $request->post("mail_server"),
-                'mail_port'     => $request->post("mail_port"),
-                'mail_from'     => $request->post("mail_from"),
-                'mail_fname'    => $request->post("mail_fname"),
-                'mail_auth'     => $request->post("mail_auth"),
-                'mail_user'     => $request->post("mail_user"),
-                'mail_password' => $request->post("mail_password"),
-            ];
-            $res = $adminConfigService->updateConfig($data);
-            return json($res);
-        }
-
-        if ($request->get('_action') === 'getDetail') {
-            // 获取详情
-            $_config = $adminConfigService->getConfig(null, false)['data'];
-            $fields = [
-                'mail_type', 'mail_server', 'mail_port', 'mail_from', 'mail_fname', 'mail_auth', 'mail_user', 'mail_password'
-            ];
-            $config = [];
-            foreach ($fields as $i => $key) {
-                $config[$key] = $_config[$key];
-            }
-            return self::makeJsonReturn(true, $config);
-        }
-
-        return view('email');
-    }
-
-    /**
      * 拓展配置
      *
      * @param  Request  $request
