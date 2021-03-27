@@ -101,11 +101,11 @@ class AdminManagerService extends BaseService
 
             $res = $adminUserModel->insert($data);
             if ($res) {
-                return self::createReturn(true, null, '添加成功');
+                return self::createReturn(true, null, '操作成功');
             }
         }
 
-        return self::createReturn(true, null, '操作失败成功');
+        return self::createReturn(true, null, '操作失败');
     }
 
     /**

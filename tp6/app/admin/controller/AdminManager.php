@@ -108,7 +108,7 @@ class AdminManager extends AdminController
                 return json(self::createReturn(false, null, '角色不能为空'));
             }
             if(!isset($data['email']) || empty($data['email'])){
-                return json(self::createReturn(false, null, '角色不能为空'));
+                return json(self::createReturn(false, null, '邮箱不能为空'));
             }
             if (empty($data['password']) || $data['password'] !== $data['pwdconfirm']) {
                 return json(self::createReturn(false, null, '密码不一致'));

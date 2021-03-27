@@ -101,8 +101,8 @@ class RoleService extends BaseService
         }
 
         $adminUserModel = new AdminUserModel();
-        $manager_amount = $adminUserModel->where('role_id', $role_id)->count();
-        if ($manager_amount > 0) {
+        $admin = $adminUserModel->where('role_id', $role_id)->find();
+        if ($admin) {
             return self::createReturn(false, null, '该角色下有成员，无法删除');
         }
 
