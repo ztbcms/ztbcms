@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>系统后台</title>
+    <title>{$_Config['sitename']}-系统后台</title>
     <!-- ztbcms 默认 iconfont -->
     <link rel="stylesheet" href="/statics/admin/ztbcms/iconfont/iconfont.css">
     <!-- jQuery 2.x -->
@@ -90,6 +90,7 @@
 <body style="height: 100%;background-color: #F8F8F8">
 <!--内容-->
 {__CONTENT__}
+<!--内容 END-->
 
 </body>
 

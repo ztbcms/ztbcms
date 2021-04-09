@@ -6,10 +6,12 @@
 namespace app\common\controller;
 
 
+use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
 use app\BaseController;
 use think\App;
 use think\facade\Config;
+use think\facade\View;
 
 /**
  * 管理后台基础控制器
@@ -48,5 +50,10 @@ class AdminController extends BaseController
         // 往请求注入
         $app->request->noNeedLogin = $this->noNeedLogin ?? [];
         $app->request->noNeedPermission = $this->noNeedPermission ?? [];
+
+        // 视图注入配置信息
+        $config = AdminConfigService::getInstance()->getConfig()['data'];
+        View::assign('_Config', $config);
+
     }
 }

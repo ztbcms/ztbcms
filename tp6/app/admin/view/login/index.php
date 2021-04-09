@@ -3,7 +3,7 @@
     <div class="main">
         <form class="mainmenu" onsubmit='return false;' onkeydown="submitByEnter">
             <div class="logo-box flex-between">
-                <div class="title">{$Config.sitename}</div>
+                <div class="title">{$_Config['sitename']}</div>
             </div>
             <div class="label">账号</div>
             <div class="input">
