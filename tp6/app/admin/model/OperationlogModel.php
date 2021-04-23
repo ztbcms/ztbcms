@@ -40,8 +40,9 @@ class OperationlogModel extends Model
             }
             $content = json_decode($request->getContent(), true);
             $url = request()->url();
-            $logData['uid'] = AdminUserService::getInstance()->getInfo()['id'] ?: 0;
-            $logData['status'] = isset($content['status']) && $content['status'] ? 1 : 0;
+            $status = $content['status'] ?? 0;
+            $logData['uid'] = AdminUserService::getInstance()->getInfo()['id'] ?? 0;
+            $logData['status'] = $status ? 1 : 0;
             $logData['info'] = $request->getContent();
             $logData['get'] = 'POST '.$url;
             $logData['time'] = time();
