@@ -11,7 +11,6 @@ use app\admin\model\MenuModel;
 use app\admin\model\ModuleModel;
 use app\admin\service\ModuleService;
 use app\common\service\BaseService;
-use Composer\Semver\Semver;
 use think\facade\Config;
 use think\facade\Db;
 use think\File;
@@ -82,7 +81,7 @@ class ModuleInstaller extends BaseService
                 }
                 if (!empty($version)) {
                     $modInfo = $installedModuleMap[$mod];
-                    if (!Semver::satisfies($modInfo['version'], $version)) {
+                    if (version_compare($modInfo['version'], $version) == -1) {
                         return self::createReturn(false, null, "依赖模块 {$mod} 版本不兼容");
                     }
                 }
