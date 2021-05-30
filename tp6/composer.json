@@ -28,7 +28,8 @@
         "aliyuncs/oss-sdk-php": "^2.4",
         "alibabacloud/client": "^1.5",
         "overtrue/wechat": "^4.2",
-        "phpmailer/phpmailer": "^6.3"
+        "phpmailer/phpmailer": "^6.3",
+        "guzzlehttp/guzzle": "^7.3"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
@@ -54,7 +55,7 @@
     "repositories": {
         "packagist": {
             "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
+            "url": "https://mirrors.cloud.tencent.com/composer/"
         }
     }
 }
