@@ -10,8 +10,9 @@
 
 * PHP版本 7.2+
 * Mysql 5.6+
-* Apache 2.4
+* Apache 2.4 、Nginx 1.18
 * 可选的配置URL重写，参考[ThinkPHP - URL重写](http://document.thinkphp.cn/manual_3_2.html#url_rewrite)
+* 建议使用[宝塔](https://www.bt.cn/?invite_code=MV9xcml5enc=)来部署
 
 ## 下载安装
 
@@ -22,13 +23,9 @@ $ git clone --branch master https://github.com/ztbcms/ztbcms.git
 
 下载最新**开发版**(慎用)
 ```shell
-$ git clone https://github.com/ztbcms/ztbcms.git
+$ git clone --branch develop https://github.com/ztbcms/ztbcms.git
 ```
 
-安装依赖
-```shell
-cd tp6 && composer install -vvv
-```
 
 ## 版本描述
 
