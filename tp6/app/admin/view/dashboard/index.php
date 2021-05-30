@@ -113,7 +113,7 @@
                         class="tag-item"
                         :class="{show : item.url === iframeUrl}"
                         v-for="(item, index) in tags"
-                        :key="item.name"
+                        :key="index"
                         :ref="'tag-' + index"
                         @click="clickTag(index)"
                         @contextmenu.prevent="openContextMenu($event, item, index)"
@@ -577,7 +577,7 @@
                     if (tag) {
                         tag = tag[0]
                         var container = this.$refs.tagScroll
-                        container.scrollTo(tag.$el.offsetLeft - 10, 0)
+                        container.scrollTo(tag.offsetLeft - 10, 0)
                     }
                 }
             },
