@@ -3,11 +3,11 @@
         <el-col :sm="24" :md="18">
             <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="80px">
                 <el-form-item label="键名" prop="fieldname">
-                    <el-input v-model="formData.fieldname" placeholder="请输入键名" clearable :style="{width: '100%'}">
+                    <el-input v-model="formData.fieldname" placeholder="建议英文小写和下划线组合，如：user_name" clearable :style="{width: '100%'}">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="名称" prop="setting.title">
-                    <el-input v-model="formData['setting']['title']" placeholder="请输入名称" clearable :style="{width: '100%'}">
+                    <el-input v-model="formData['setting']['title']" placeholder="请输入说明" clearable :style="{width: '100%'}">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="类型" prop="type">

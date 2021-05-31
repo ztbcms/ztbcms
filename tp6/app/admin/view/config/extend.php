@@ -1,8 +1,12 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-        <h3>配置项列表</h3>
+        <el-alert type="success" :closable="false">
+            <p>1、请保证键名唯一、小写+下划线 </p>
+            <p>2、可通过 AdminConfigService::getInstance()->getConfig('键名')['data'] 来获取配置值 </p>
+        </el-alert>
+
         <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Config', 'editExtend')){ ?>
-            <div>
+            <div style="margin-top: 4px">
                 <el-button @click="extendAdd" type="primary" size="small">添加配置项</el-button>
             </div>
         <?php } ?>
