@@ -1,10 +1,21 @@
 ## ZTBCMS
 
-> 基于 ThinkPHP 6 的高性能、模块化、快速开发框架 
+> 基于ThinkPHP 6 + ElementUI的快速开发框架 
 
 > High-performance, modular and rapid development framework based on ThinkPHP
  
 [ZTBCMS在线文档](https://www.kancloud.cn/ztbcms/ztbcms/content) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template) | [PHP之道](http://www.phptherightway.com)
+
+## 主要特性
+
+- 完善的后台管理系统
+    - 基于角色的权限管理
+    - 计划任务、消息组件、上传组件
+- 完善的前端功能
+    - 后台的默认框架 [ElementUI](https://element.eleme.cn/)
+    - 强大的弹出层组件 [Layer](https://layer.layui.com/)
+- 扩展性强，支持安装卸载模块
+
 
 ## 环境要求
 
