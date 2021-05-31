@@ -54,7 +54,7 @@
                         </el-form-item>
 
                         <el-form-item label="图标" prop="icon">
-                            <el-input v-model="formData.icon" placeholder="请输入图标名称，如 icon-dashboard" clearable :style="{width: '80%'}">
+                            <el-input v-model="formData.icon" placeholder="请输入图标名称，如icon-check" clearable :style="{width: '100%'}">
                                 <template slot="prepend">
                                     <i class="iconfont" :class="[formData.icon]"></i>
                                 </template>
