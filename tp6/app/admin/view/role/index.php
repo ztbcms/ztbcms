@@ -1,13 +1,9 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
 
-        <div class="filter-container">
-            <h3>角色管理</h3>
-        </div>
-
         <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Role', 'roleAdd')){ ?>
         <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary"
-                   @click="roleAdd('')">
+                   @click="roleAdd()">
             添加角色
         </el-button>
         <?php } ?>
@@ -158,18 +154,18 @@
                 },
                 roleAdd: function () {
                     var url = '{:api_url("/admin/Role/roleAdd")}';
-                    this.__openWindow(url);
+                    this.__openWindow(url, '添加角色');
                 },
                 roleEdit: function (id) {
                     var url = '{:api_url("/admin/Role/roleEdit")}';
                     url += '?id=' + id;
-                    this.__openWindow(url);
+                    this.__openWindow(url, '编辑角色');
                 },
-                __openWindow:function(url) {
+                __openWindow:function(url, title) {
                     var that = this;
                     layer.open({
                         type: 2,
-                        title: '管理',
+                        title: title,
                         content: url,
                         area: ['95%', '95%'],
                         end: function () {
@@ -203,13 +199,13 @@
                 gotomanagerPage: function (id) {
                     var url = "{:api_url('/admin/AdminManager/index')}";
                     url = url + '?role_id=' + id;
-                    this.__openWindow(url);
+                    this.__openWindow(url, '成员管理');
                 },
                 //权限设置
                 openAuth: function (id) {
                     var url = "{:api_url('/admin/Role/authorize')}";
                     url += '?id=' + id;
-                    this.__openWindow(url);
+                    this.__openWindow(url, '权限管理');
                 }
             },
             mounted: function () {

@@ -1,6 +1,5 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card  v-loading="loading">
-        <h3>编辑管理员</h3>
         <el-row>
             <el-col :xs="24" :md="8">
                 <div class="grid-content ">

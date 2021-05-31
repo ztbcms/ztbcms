@@ -1,6 +1,5 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
-        <h3>角色管理</h3>
         <el-row>
             <el-col :span="8">
                 <div class="grid-content ">

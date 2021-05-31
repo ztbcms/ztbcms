@@ -1,8 +1,6 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <div class="filter-container">
-            <h3>管理员管理</h3>
-
             <el-alert
                     title="当前登录管理员只能管理层级比自己低的管理员，超级管理员除外"
                     type="info"
@@ -130,12 +128,14 @@
                 editItem: function (id) {
                     var that = this;
                     var url = "{:api_url('/admin/AdminManager/managerAdd')}"
+                    var title = '添加管理员'
                     if (id) {
                         url = "{:api_url('/admin/AdminManager/managerEdit')}?id=" + id
+                        title = '编辑管理员'
                     }
                     layer.open({
                         type: 2,
-                        title: '编辑',
+                        title: title,
                         content: url,
                         area: ['85%', '85%'],
                         end: function(){
