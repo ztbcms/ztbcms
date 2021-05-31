@@ -36,7 +36,17 @@ class Index extends BaseController
         //错误
         $err = 0;
         //mysql检测
-        $mysql = '——';
+        $mysql = '请自行检查';
+
+        // php版本
+        $_php_version = phpversion();
+        $mini_php_version = '7.2';
+        if($_php_version > $mini_php_version){
+            $php_version_info = '<span class="correct_span">&radic;</span> '.$_php_version;
+        } else {
+            $php_version_info = '<span class="correct_span error_span">&radic;</span> '.$_php_version;
+            $err++;
+        }
 
         //上传检测
         if (ini_get('file_uploads')) {
@@ -102,7 +112,8 @@ class Index extends BaseController
             'os'         => PHP_OS,
             'function'   => $function,
             'err'        => $err,
-            'phpv'       => phpversion(),
+            'phpv'       => $php_version_info,
+            'mini_php_version' => $mini_php_version,
             'mysql'      => $mysql,
             'uploadSize' => $uploadSize,
             'session'    => $session,

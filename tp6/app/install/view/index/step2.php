@@ -28,18 +28,18 @@
         <tr>
           <td>操作系统</td>
           <td>类UNIX</td>
-          <td><span class="correct_span">&radic;</span> {$os}</td>
+          <td>{$os}</td>
           <td>不限制</td>
         </tr>
         <tr>
           <td>PHP版本</td>
-          <td>>5.5.x</td>
-          <td><span class="correct_span">&radic;</span> {$phpv}</td>
-          <td>5.5.0</td>
+          <td>>7.4</td>
+          <td>{$phpv|raw}</td>
+          <td>{$mini_php_version}</td>
         </tr>
         <tr>
           <td>MySQL版本</td>
-          <td>>5.5.x</td>
+          <td>>5.6</td>
           <td>{$mysql|raw}</td>
           <td>5.5</td>
         </tr>
