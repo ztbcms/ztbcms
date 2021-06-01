@@ -7,6 +7,11 @@ use app\admin\service\AdminUserService;
 use think\Model;
 use think\facade\Request;
 
+/**
+ * 操作日志
+ *
+ * @package app\admin\model
+ */
 class OperationlogModel extends Model
 {
 
@@ -19,7 +24,7 @@ class OperationlogModel extends Model
      *
      * @return bool
      */
-    public function deleteOperationLog($day = 30)
+    function deleteOperationLog($day = 30)
     {
         $limit_time = time() - $day * 24 * 60 * 60;
         $this->where('time', '<=', $limit_time)->delete();
@@ -27,30 +32,37 @@ class OperationlogModel extends Model
     }
 
     /**
-     * 记录日志
-     * @param  \think\Response  $request
+     * 记录操作日志
+     *
+     * @param  \think\Response  $response
+     *
      * @return bool
      */
-    public function record(\think\Response $request) {
+    function record(\think\Response $response)
+    {
         if (Request::instance()->isPost()) {
             //未开启的状态下不进行记录
             $admin_operation_switch = AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
             if (!is_numeric($admin_operation_switch) || $admin_operation_switch != 1) {
                 return false;
             }
-            $content = json_decode($request->getContent(), true);
-            $url = request()->url();
+            $request = request();
+            $content = json_decode($response->getContent(), true);
             $status = $content['status'] ?? 0;
-            $logData['uid'] = AdminUserService::getInstance()->getInfo()['id'] ?? 0;
-            $logData['status'] = $status ? 1 : 0;
-            $logData['info'] = $request->getContent();
-            $logData['get'] = 'POST '.$url;
-            $logData['time'] = time();
-            $logData['ip'] = request()->ip();
+            $logData= [
+                'uid' => AdminUserService::getInstance()->getInfo()['id'] ?? 0,
+                'status' => $status ? 1 : 0,
+                'method' => $request->method(),
+                'url' => $request->url(),
+                'params' => json_encode($request->post()),
+                'response' => $response->getContent(),
+                'time' => time(),
+                'ip' => $request->ip(),
+            ];
             $this->insert($logData);
             return true;
         } else {
-            return  false;
+            return false;
         }
     }
 

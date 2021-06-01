@@ -1,5 +1,10 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
+        <el-alert type="success" :closable="false">
+            <p><strong>用户操作管理后台发起 POST 请求时会记录操作</strong></p>
+            <p><strong>默认开启，性能上有损耗，请根据实际情况进行调整</strong></p>
+        </el-alert>
+
         <div class="filter_container">
             <el-row :gutter="10">
                 <el-col :span="3">
@@ -19,6 +24,7 @@
                             end-placeholder="结束日期" size="medium">
                     </el-date-picker>
                 </el-col>
+                
             </el-row>
 
             <el-row :gutter="10" style="margin-top: 10px;">
@@ -54,8 +60,8 @@
                     @sort-change="handleSortChange">
                 <el-table-column
                         prop="id"
-                        label="ID"
-                        width="60">
+                        label="记录ID"
+                        width="80">
                 </el-table-column>
                 <el-table-column
                         prop="uid"
@@ -63,9 +69,30 @@
                         width="80">
                 </el-table-column>
                 <el-table-column
-                        prop="get"
+                        prop="method"
+                        label="请求方法"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="url"
                         label="URL"
                         width="250">
+                </el-table-column>
+                <el-table-column
+                        prop="params"
+                        label="请求参数"
+                        width="80">
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="previewContent(scope.row.params)">查看</el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="info"
+                        label="响应"
+                        width="80">
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="previewContent(scope.row.response)">查看</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         prop="status"
@@ -77,15 +104,8 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="info"
-                        label="响应">
-                    <template slot-scope="scope">
-                        <p v-html="scope.row.info"></p>
-                    </template>
-                </el-table-column>
-                <el-table-column
                         prop="time"
-                        label="时间"
+                        label="请求时间"
                         width="200">
                     <template slot-scope="scope">
                         <span>{{ scope.row.time | formatTime }}</span>
@@ -108,22 +128,15 @@
                 </el-pagination>
             </div>
         </el-tabs>
-
-
     </el-card>
-
-
 </div>
 
 <style>
     .filter_container {
-        background: #f8f8f8;
-        padding: 25px 36px 12px;
+        margin-top: 6px;
     }
 
-    .pager_container {
-
-    }
+    .pager_container {}
 </style>
 
 <script>
@@ -268,6 +281,18 @@
                             that.getAdminOperationSwitch();
                         }
                     })
+                },
+                // 预览内容
+                previewContent: function (content){
+                    try{
+                        content = JSON.stringify(JSON.parse(content), null, 2);
+                    }catch (e) {}
+                    layer.open({
+                        type: 1,
+                        area: ['500px', '300px'],
+                        title: '查看',
+                        content: '<pre style="padding: 4px 8px">' + content + '</pre>'
+                    });
                 }
             },
             mounted: function () {

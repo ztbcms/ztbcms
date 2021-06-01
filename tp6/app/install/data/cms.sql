@@ -557,16 +557,17 @@ CREATE TABLE `cms_module` (
 
 DROP TABLE IF EXISTS `cms_operation_log`;
 CREATE TABLE `cms_operation_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
-  `uid` smallint(6) NOT NULL DEFAULT '0' COMMENT '操作帐号ID',
-  `time` int(10) NOT NULL DEFAULT '0' COMMENT '操作时间',
-  `ip` char(20) NOT NULL DEFAULT '' COMMENT 'IP',
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,0错误提示，1为正确提示',
-  `info` text COMMENT '其他说明',
-  `get` varchar(255) NOT NULL DEFAULT '' COMMENT 'get数据',
-  PRIMARY KEY (`id`),
-  KEY `status` (`status`),
-  KEY `username` (`uid`)
+    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
+    `uid` smallint(6) NOT NULL DEFAULT '0' COMMENT '操作帐号ID',
+    `time` int(11) NOT NULL DEFAULT '0' COMMENT '操作时间',
+    `ip` char(20) NOT NULL DEFAULT '' COMMENT 'IP',
+    `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,0错误提示，1为正确提示',
+    `method` varchar(32) NOT NULL DEFAULT '' COMMENT '请求方法',
+    `url` varchar(512) NOT NULL DEFAULT '' COMMENT '请求路由',
+    `params` text NOT NULL COMMENT '请求参数',
+    `response` text NOT NULL COMMENT '响应结果',
+    PRIMARY KEY (`id`),
+    KEY `status` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
 
 

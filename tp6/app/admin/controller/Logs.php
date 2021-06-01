@@ -126,8 +126,8 @@ class Logs extends AdminController
             $res = AdminOperationLogService::getAdminOperationLogList($where, $order, $page, $limit, $time);
             return json($res);
         } else if ($action == 'getAdminOperationSwitch') {
-            $getConfig = AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
-            return json($getConfig);
+            $admin_operation_switch = (int)AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
+            return json(self::createReturn(true, $admin_operation_switch));
         } else if ($action == 'switchingAdminOperation') {
             $admin_operation_switch = input('admin_operation_switch', '', 'trim');
             $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
