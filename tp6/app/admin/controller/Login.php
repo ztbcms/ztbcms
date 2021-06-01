@@ -21,7 +21,7 @@ use think\facade\View;
  */
 class Login extends AdminController
 {
-    public $noNeedLogin = ['index', 'doLogin'];
+    public $noNeedLogin = ['index', 'doLogin', 'doLogout'];
     /**
      * 登录页
      *
@@ -125,7 +125,7 @@ class Login extends AdminController
     /**
      * 注销登录
      */
-    public function doLogout()
+    function doLogout()
     {
         AdminUserService::getInstance()->logout();
         return self::makeJsonReturn(true, [
