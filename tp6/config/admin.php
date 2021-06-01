@@ -4,6 +4,6 @@
 return [
     "cms_name"            => "ZTBCMS内容管理系统", //CMS名称
     "cms_build"           => '202105302249', //CMS流水号
-    "cms_version"         => "4.1.1", //CMS版本号
+    "cms_version"         => "4.2.0", //CMS版本号
     "application_version" => "0.0.0", //产品版本号
 ];
