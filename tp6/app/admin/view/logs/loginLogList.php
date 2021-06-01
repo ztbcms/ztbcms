@@ -111,10 +111,7 @@
 </div>
 
 <style>
-    .filter_container {
-        background: #f8f8f8;
-        padding: 25px 36px 12px;
-    }
+    .filter_container {}
 
 </style>
 

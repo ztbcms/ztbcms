@@ -1,12 +1,8 @@
 <div id="app" style="padding: 8px;" v-cloak>
     <el-card>
         <div class="filter-container">
-            <el-alert
-                    title="当前登录管理员只能管理层级比自己低的管理员，超级管理员除外"
-                    type="info"
-                    :closable="false"
-                    description=""
-                    show-icon>
+            <el-alert type="success" :closable="false">
+                <p><strong>当前登录管理员只能管理层级比自己低的管理员，超级管理员除外</strong></p>
             </el-alert>
         </div>
 
@@ -22,7 +18,7 @@
                 highlight-current-row
                 style="width: 100%;"
         >
-            <el-table-column label="ID" align="center">
+            <el-table-column label="用户ID" align="center">
                 <template slot-scope="scope">
                     <span>{{ scope.row.id }}</span>
                 </template>
