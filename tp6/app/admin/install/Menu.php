@@ -110,18 +110,10 @@ return [
                 "parentid" => 0,
                 "name" => "菜单管理",
                 "route" => "admin/Menu/index",
-                "type" => 0,
+                "type" => 1,
                 "status" => 1,
                 "remark" => "",
                 "child" => [
-                    [
-                        "route" => "admin/Menu/index",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "菜单列表",
-                        "remark" => "",
-                        "child" => []
-                    ],
                     [
                         "route" => "admin/Menu/menuAdd",
                         "type" => 1,
