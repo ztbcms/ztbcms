@@ -126,6 +126,12 @@ class AdminManager extends AdminController
      */
     function managerEdit()
     {
+        if (Request::isGet()) {
+            // 获取详情
+            if (Request::get('_action') === 'getDetail') {
+                return $this->getDetail();
+            }
+        }
         if (Request::isPost()) {
             $data = Request::post();
             if(!isset($data['username']) || empty($data['username'])){
@@ -208,7 +214,7 @@ class AdminManager extends AdminController
     /**
      * 获取管理员详情
      */
-    function getDetail()
+    private function getDetail()
     {
         $AdminUserModel = new AdminUserModel();
         $id = Request::param('id');

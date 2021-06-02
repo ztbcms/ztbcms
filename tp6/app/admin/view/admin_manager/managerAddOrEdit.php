@@ -1,27 +1,27 @@
 <div id="app" style="padding: 8px;" v-cloak>
-    <el-card  v-loading="loading">
+    <el-card v-loading="loading">
         <el-row>
             <el-col :xs="24" :md="8">
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
-                        <el-form-item label="用户名">
+                        <el-form-item label="用户名" required>
                             <el-input v-model="form.username"></el-input>
                         </el-form-item>
-                        <el-form-item label="昵称">
+                        <el-form-item label="昵称" required>
                             <el-input v-model="form.nickname"></el-input>
                         </el-form-item>
                         <el-form-item label="密码">
                             <el-input type="password" v-model="form.password"></el-input>
-                            <span v-show="is_edit">* 不填写则不修改</span>
+                            <span v-show="isEditing">* 不填写则不修改</span>
                         </el-form-item>
-                        <el-form-item label="确认密码">
+                        <el-form-item label="重复密码">
                             <el-input type="password" v-model="form.pwdconfirm"></el-input>
                         </el-form-item>
-                        <el-form-item label="E-mail">
+                        <el-form-item label="E-mail" required>
                             <el-input v-model="form.email"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="所属角色">
+                        <el-form-item label="所属角色" required>
                             <template>
                                 <el-select v-model="form.role_id" clearable placeholder="请选择">
                                     <el-option
@@ -80,13 +80,18 @@
                     status: '1',
                 },
                 loading: false,
-                is_edit: false,
                 role_list:[]
             },
             watch: {},
             filters: {},
+            computed: {
+                // 是否处于编辑中
+                isEditing: function () {
+                    return !!this.form.id
+                }
+            },
             methods: {
-                onSubmit: function(){
+                onSubmit: function() {
                     var that = this;
                     var url = "{:api_url('/admin/AdminManager/managerAdd')}"
                     if(this.form.id){
@@ -112,12 +117,11 @@
                         that.role_list = res.data
                     })
                 },
-
-                //获取信息
-                getManagerByid:function (id) {
+                //获取管理员信息
+                getManagerById:function (id) {
                     var that = this
                     this.loading = true
-                    this.httpGet("{:api_url('/admin/AdminManager/getDetail')}", {id: id}, function(res){
+                    this.httpGet("{:api_url('/admin/AdminManager/managerEdit')}", {'_action': 'getDetail', id: id}, function(res){
                         if(res.status){
                             that.form = res.data
                         }
@@ -128,7 +132,7 @@
             mounted: function () {
                 this.getRoleList()
                 if(this.form.id){
-                    this.getManagerByid(this.form.id)
+                    this.getManagerById(this.form.id)
                 }
             }
         })
