@@ -79,7 +79,7 @@ class AdminAuth
         }
 
         $arr = array_map('strtolower', $arr);
-        // 是否存在
+        // 是否存在, * 为忽略全部
         if (in_array(strtolower($action), $arr) || in_array('*', $arr)) {
             return true;
         }
