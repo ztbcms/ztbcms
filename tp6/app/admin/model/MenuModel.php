@@ -41,6 +41,7 @@ class MenuModel extends Model
         $list = [];
         // 数据格式化
         foreach ($menuList as $a) {
+            // 筛选不展示的权限菜单
             if($a['status'] == MenuModel::STATUS_UNSHOW){
                 continue;
             }

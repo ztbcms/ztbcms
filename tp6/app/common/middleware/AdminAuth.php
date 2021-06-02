@@ -1,6 +1,4 @@
 <?php
-declare (strict_types = 1);
-
 namespace app\common\middleware;
 
 use app\admin\model\AdminUserModel;
@@ -22,34 +20,36 @@ class AdminAuth
 {
     /**
      * 处理请求
+     * 校验流程： 登录验证 => 用户禁用状态检测 => 菜单权限验证
      *
-     * @param \think\Request $request
-     * @param \Closure       $next
+     * @param  \think\Request  $request
+     * @param  \Closure  $next
+     *
      * @return Response
      */
     public function handle($request, \Closure $next)
     {
-        // 该方法是否需要登录
-        $noNeedLogin = $request->noNeedLogin ?? [];
-        if($this->_checkActionMatch($request->action(), $noNeedLogin)){
+        // 是否需要登录判定
+        $noNeedLogin = $request->noNeedLogin ?? []; // controller 设置忽略需登录验证
+        if ($this->_checkActionMatch($request->action(), $noNeedLogin)) {
             // 不需要验证登录
             return $next($request);
         } else {
+            // 登录验证
             if (AdminUserService::getInstance()->isLogin()) {
                 $userInfo = AdminUserService::getInstance()->getInfo();
-
                 // 账号是否被禁用
-                if($userInfo['status'] == AdminUserModel::STATUS_DISABLE){
+                if ($userInfo['status'] == AdminUserModel::STATUS_DISABLE) {
                     return $this->_handleDisabled($request);
                 }
-
                 // 权限检测
-                $noNeedPermission = $request->noNeedPermission ?? [];
+                $noNeedPermission = $request->noNeedPermission ?? [];// controller 设置忽略需菜单权限验证
                 // 该方法是否需要权限检测
                 if ($this->_checkActionMatch($request->action(), $noNeedPermission)) {
                     // 不需要检测
                     return $next($request);
                 } else {
+                    // 菜单验证
                     $info = AdminUserService::getInstance()->getInfo();
                     $hasPremission = $this->hasAccessPermission($info['id'], $request->baseUrl());
                     if (!$hasPremission) {
@@ -72,7 +72,8 @@ class AdminAuth
      *
      * @return bool
      */
-    function _checkActionMatch($action,array $arr){
+    function _checkActionMatch($action, array $arr)
+    {
         if (empty($arr)) {
             return false;
         }
@@ -88,7 +89,8 @@ class AdminAuth
     }
 
     // 账号已被禁用
-    private function _handleDisabled(Request $request){
+    private function _handleDisabled(Request $request)
+    {
         // 退出账户
         AdminUserService::getInstance()->logout();
         if (request()->isAjax()) {
@@ -105,7 +107,7 @@ class AdminAuth
     }
 
     // 处理未登录情况
-    private function _handleUnlogin(Request  $request)
+    private function _handleUnlogin(Request $request)
     {
         if ($request->isAjax()) {
             return json(createReturn(false, null, '请登录账号', 401));

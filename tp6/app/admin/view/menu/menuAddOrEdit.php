@@ -36,19 +36,21 @@
                             <el-input v-model="formData.remark" placeholder="请输入备注" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="类型" prop="type">
-                            <el-select v-model="formData.type" placeholder="请选择类型" clearable :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in  typeOptions" :key="index" :label="item.label"
-                                           :value="item.value" :disabled="item.disabled"></el-option>
-                            </el-select>
-                            <el-alert title="菜单组：菜单的集合；权限菜单：需要进行权限校验的菜单"
-                                    type="info"
-                                    :closable="false">
-                            </el-alert>
-                        </el-form-item>
-                        <el-form-item label="状态" prop="status">
+
+                        <el-form-item label="菜单展示" prop="status">
                             <el-select v-model="formData.status" placeholder="请选择状态" clearable :style="{width: '100%'}">
                                 <el-option v-for="(item, index) in statusOptions" :key="index" :label="item.label"
+                                           :value="item.value" :disabled="item.disabled"></el-option>
+                            </el-select>
+                            <el-alert style="margin-top: 4px;" type="success" :closable="false">
+                                菜单显示时，会在左侧栏进行展示。如果是在页面内的操作（如删除操作），不需要展示在侧栏
+                            </el-alert>
+                        </el-form-item>
+
+
+                        <el-form-item label="验证权限" prop="type">
+                            <el-select v-model="formData.type" placeholder="请选择" clearable :style="{width: '100%'}">
+                                <el-option v-for="(item, index) in  typeOptions" :key="index" :label="item.label"
                                            :value="item.value" :disabled="item.disabled"></el-option>
                             </el-select>
                         </el-form-item>
@@ -137,17 +139,17 @@
                     controllerOptions: [],
                     actionOptions: [],
                     statusOptions: [{
-                        "label": "显示",
+                        "label": "展示",
                         "value": '1'
                     }, {
                         "label": "不显示",
                         "value": '0'
                     }],
                     typeOptions: [{
-                        "label": "权限菜单",
+                        "label": "验证",
                         "value": '1'
                     }, {
-                        "label": "菜单组",
+                        "label": "不验证",
                         "value": '0'
                     }],
                     topOption: {
