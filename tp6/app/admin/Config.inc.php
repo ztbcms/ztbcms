@@ -19,8 +19,6 @@ return [
     'version'     => '1.0.0',
     //适配最低CMS版本，
     'adaptation'  => '4.0.0',
-    //签名
-    'sign'        => 'd04078c5b86475cd5a0c690b9905953d',
     //依赖模块
     'depend'      => [],
 ];
