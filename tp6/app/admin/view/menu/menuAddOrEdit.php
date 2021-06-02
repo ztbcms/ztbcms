@@ -18,12 +18,11 @@
                         <el-form-item label="名称" prop="name">
                             <el-input v-model="formData.name" placeholder="请输入名称" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
-                        <el-form-item label="模块" prop="app">
-                            <el-input v-model="formData.app" placeholder="请输入模块,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
+                        <el-form-item label="应用" prop="app">
+                            <el-input v-model="formData.app" placeholder="请输入应用,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
                         <el-form-item label="控制器" prop="controller">
                             <el-input v-model="formData.controller" placeholder="请输入控制器,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
-
                         </el-form-item>
                         <el-form-item label="方法" prop="action">
                             <el-input v-model="formData.action" placeholder="请输入方法,不限制请填写%" clearable :style="{width: '100%'}"></el-input>
@@ -36,23 +35,23 @@
                             <el-input v-model="formData.remark" placeholder="请输入备注" clearable :style="{width: '100%'}"></el-input>
                         </el-form-item>
 
-
-                        <el-form-item label="菜单展示" prop="status">
+                        <el-form-item label="菜单显示" prop="status">
                             <el-select v-model="formData.status" placeholder="请选择状态" clearable :style="{width: '100%'}">
-                                <el-option v-for="(item, index) in statusOptions" :key="index" :label="item.label"
-                                           :value="item.value" :disabled="item.disabled"></el-option>
+                                <el-option v-for="(item, index) in statusOptions" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
                             </el-select>
                             <el-alert style="margin-top: 4px;" type="success" :closable="false">
-                                菜单显示时，会在左侧栏进行展示。如果是在页面内的操作（如删除操作），不需要展示在侧栏
+                                设置是否在后台左侧菜单栏展示。如果是在页面内的操作（如删除、审核等操作），可设置为不展示
                             </el-alert>
                         </el-form-item>
-
 
                         <el-form-item label="验证权限" prop="type">
                             <el-select v-model="formData.type" placeholder="请选择" clearable :style="{width: '100%'}">
                                 <el-option v-for="(item, index) in  typeOptions" :key="index" :label="item.label"
                                            :value="item.value" :disabled="item.disabled"></el-option>
                             </el-select>
+                            <el-alert style="margin-top: 4px;" type="success" :closable="false">
+                                所有的菜单我们都建议需验证权限,99.9%情况下,你使用默认值『需验证』即可
+                            </el-alert>
                         </el-form-item>
 
                         <el-form-item label="图标" prop="icon">
@@ -139,17 +138,17 @@
                     controllerOptions: [],
                     actionOptions: [],
                     statusOptions: [{
-                        "label": "展示",
+                        "label": "显示",
                         "value": '1'
                     }, {
                         "label": "不显示",
                         "value": '0'
                     }],
                     typeOptions: [{
-                        "label": "验证",
+                        "label": "需验证",
                         "value": '1'
                     }, {
-                        "label": "不验证",
+                        "label": "不需验证",
                         "value": '0'
                     }],
                     topOption: {
