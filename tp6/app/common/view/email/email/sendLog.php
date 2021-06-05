@@ -29,9 +29,8 @@
                     <el-button type="primary" @click="getList" size="medium">
                         筛选
                     </el-button>
-
                     <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'email.Email', 'sendEmail')){ ?>
-                        <el-button type="primary" @click="toSendEmail" size="medium">
+                        <el-button type="success" @click="toSendEmail" size="medium">
                             发送邮件
                         </el-button>
                     <?php } ?>
