@@ -96,7 +96,7 @@ class ModuleInstaller extends BaseService
         $data = [
             'module'      => ucwords($config['module']),
             'modulename'  => $config['modulename'],
-            'sign'        => $config['sign'],
+            'sign'        => $config['sign'] ?? '',
             'iscore'      => isset($config['iscore']) ? $config['iscore'] : 0,
             'disabled'    => 0,
             'version'     => $config['version'],

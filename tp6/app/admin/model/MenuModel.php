@@ -107,7 +107,7 @@ class MenuModel extends Model
                 'parentid' => $pid,
                 'type' => isset($rs['type']) ? $rs['type'] : 1,
                 'status' => isset($rs['status']) ? $rs['status'] : 0,
-                'remark' => $rs['remark'] ?: '',
+                'remark' => $rs['remark'] ?? '',
                 'listorder' => isset($rs['listorder']) ? $rs['listorder'] : 0,
                 'parameter' => isset($rs['parameter']) ? $rs['parameter'] : '',
                 'icon' => isset($rs['icon']) ? $rs['icon'] : '',
