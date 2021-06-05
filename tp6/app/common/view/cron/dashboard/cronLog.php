@@ -29,7 +29,6 @@
         </div>
         <el-table
                 :data="lists"
-                border
                 style="width: 100%">
             <el-table-column
                     align="center"
@@ -38,7 +37,7 @@
                     min-width="60">
             </el-table-column>
             <el-table-column
-                    min-width="300"
+                    min-width="240"
                     align="center"
                     prop="cron_file"
                     label="计划任务"
@@ -76,9 +75,9 @@
                     min-width="100"
                     align="center"
                     prop="result_msg"
-                    label="查看信息">
+                    label="返回结果">
                 <template slot-scope="props">
-                    <el-button @click="openDetail(props.row.result_msg)" type="primary">查看</el-button>
+                    <el-button @click="openDetail(props.row.result_msg)" type="text">查看</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -88,9 +87,7 @@
                     @current-change="currentPageChange"
                     layout="prev, pager, next"
                     :current-page="currentPage"
-                    :page-count="totalCount"
-                    :page-size="pageSize"
-                    :total="totalCount">
+                    :page-count="total_pages">
             </el-pagination>
         </div>
     </el-card>
@@ -112,9 +109,7 @@
                     user_time: ""
                 },
                 lists: [],
-                totalCount: 0,
-                pageSize: 10,
-                pageCount: 0,
+                total_pages: 0,
                 currentPage: 1
             },
             mounted: function () {
@@ -130,13 +125,13 @@
                     this.getList();
                 },
                 openDetail: function (detail) {
-                    var info = "<pre>"+ detail + "</pre>";
+                    var info = '<pre style="padding: 12px">'+ detail + '</pre>'
                     layer.open({
                         type: 1,
                         skin:"",
                         title: false,
                         shadeClose: true,
-                        area: ['30%','25%'],
+                        area: ['80%','90%'],
                         content: info,
                         cancel: function () {
                         }
@@ -144,20 +139,19 @@
                 },
                 getList: function () {
                     var _this = this;
+                    var data = this.searchForm
+                    data['_action'] = 'getList'
+                    data['page'] = this.currentPage
                     $.ajax({
                         url: "{:api_url('/common/cron.dashboard/cronLog')}",
-                        data: Object.assign({
-                            page: this.currentPage
-                        }, this.searchForm),
+                        data: data,
                         dataType: 'json',
                         type: 'get',
                         success: function (res) {
                             var data = res.data;
-                            _this.lists = data.data;
-                            _this.totalCount = data.total;
-                            _this.pageSize = data.per_page;
-                            _this.pageCount = data.last_page;
-                            _this.currentPage = data.current_page;
+                            _this.lists = data.items;
+                            _this.total_pages = data.total_pages;
+                            _this.currentPage = data.page;
                         }
                     })
                 }

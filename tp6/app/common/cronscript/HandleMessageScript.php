@@ -5,6 +5,11 @@ namespace app\common\cronscript;
 
 use app\common\model\message\MessageModel;
 
+/**
+ * 消息处理
+ *
+ * @package app\common\cronscript
+ */
 class HandleMessageScript extends CronScript
 {
     public function run($cronId)
@@ -17,9 +22,8 @@ class HandleMessageScript extends CronScript
             $message->handMessage();
         }
 
-        return self::createReturn(true,[
-            'process_status' => MessageModel::PROCESS_STATUS_UNPROCESS,
-            'process_num' => MessageModel::MAX_PROCESS_NUMBER
-        ],'处理消息信息成功');
+        return self::createReturn(true, [
+            'amount'    => count($messages)
+        ], '操作完成');
     }
 }

@@ -22,7 +22,6 @@
         </div>
         <el-table
                 :data="lists"
-                border
                 style="width: 100%">
             <el-table-column
                     align="center"
@@ -62,15 +61,12 @@
                     label="执行任务数">
             </el-table-column>
         </el-table>
-        <div style="text-align: center;margin-top: 20px">
+        <div style="margin-top: 20px">
             <el-pagination
                     background
                     @current-change="currentPageChange"
                     layout="prev, pager, next"
-                    :current-page="currentPage"
-                    :page-count="totalCount"
-                    :page-size="pageSize"
-                    :total="totalCount">
+                    :page-count="total_pages">
             </el-pagination>
         </div>
     </el-card>
@@ -81,44 +77,40 @@
             el: "#app",
             data: {
                 lists: [],
-                totalCount: 0,
-                pageSize: 10,
-                pageCount: 0,
-                currentPage: 1,
+                total_pages: 0,
+                pageCount: 1,
                 searchForm: {}
             },
             mounted: function () {
-                this.getList();
+                this.getList()
             },
             methods: {
                 search: function () {
-                    this.currentPage = 1;
-                    this.getList();
+                    this.currentPage = 1
+                    this.getList()
                 },
                 currentPageChange: function(e) {
-                    this.currentPage = e;
-                    this.getList();
+                    this.currentPage = e
+                    this.getList()
                 },
                 getList: function () {
-                    var _this = this;
+                    var _this = this
+                    var data = this.searchForm
+                    data['page'] = this.currentPage
+                    data['_action'] = 'getList'
                     $.ajax({
                         url: "{:api_url('/common/cron.dashboard/schedulingLog')}",
-                        data: Object.assign({
-                            page: this.currentPage
-                        }, this.searchForm),
+                        data: data,
                         dataType: 'json',
                         type: 'get',
                         success: function (res) {
-                            var data = res.data;
-                            _this.lists = data.data;
-                            _this.totalCount = data.total;
-                            _this.pageSize = data.per_page;
-                            _this.pageCount = data.last_page;
-                            _this.currentPage = data.current_page;
+                            var data = res.data
+                            _this.lists = data.items
+                            _this.total_pages = data.total_pages
                         }
                     })
-                },
+                }
             }
-        });
+        })
     })
 </script>

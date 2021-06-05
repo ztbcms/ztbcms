@@ -17,7 +17,9 @@ class Dashboard extends AdminController
 
     function cronLog(Request $request)
     {
-        if ($request->isAjax()) {
+        if ($request->isGet() && $request->get('_action') == 'getList') {
+            $page = $request->get('page', 1);
+            $limit = $request->get('limit', 15);
             $cronId = $request->get('cron_id', '');
             $datetime = $request->get('datetime', '');
             $userTime = $request->get('user_time', '');
@@ -34,16 +36,28 @@ class Dashboard extends AdminController
             if ($userTime) {
                 $where[] = ['use_time', '>', $userTime];
             }
-            $lists = CronLogModel::where($where)->order('id', 'DESC')->with('cronFile')->paginate(20);
-            return self::createReturn(true, $lists, 'ok');
+            $lists = CronLogModel::where($where)->order('id', 'DESC')->with('cronFile')->page($page)->limit($limit)->select()->toArray();
+            $total = CronLogModel::where($where)->count();
+            $ret = [
+                'items'       => $lists,
+                'page'        => intval($page),
+                'limit'       => intval($limit),
+                'total_items' => intval($total),
+                'total_pages' => intval(ceil($total / $limit)),
+            ];
+            return json(self::createReturn(true, $ret));
         }
         $corns = CronModel::column('cron_file', 'cron_id');
         return View::fetch('cronLog', ['corns' => $corns]);
     }
 
+    // 调度日志
     function schedulingLog(Request $request)
     {
-        if ($request->isAjax()) {
+        if ($request->isGet() && $request->get('_action') == 'getList') {
+            $page = $request->get('page', 1);
+            $limit = $request->get('limit', 15);
+            $datetime = $request->get('datetime', '');
             $datetime = $request->get('datetime', '');
             $userTime = $request->get('user_time', '');
             $where = [];
@@ -56,8 +70,16 @@ class Dashboard extends AdminController
             if ($userTime) {
                 $where[] = ['use_time', '>', $userTime];
             }
-            $lists = CronSchedulingLogModel::where($where)->order('id', 'DESC')->paginate(20);
-            return self::createReturn(true, $lists, 'ok');
+            $lists = CronSchedulingLogModel::where($where)->order('id', 'DESC')->page($page)->limit($limit)->select()->toArray();
+            $total = CronSchedulingLogModel::where($where)->count();
+            $ret = [
+                'items'       => $lists,
+                'page'        => intval($page),
+                'limit'       => intval($limit),
+                'total_items' => intval($total),
+                'total_pages' => intval(ceil($total / $limit)),
+            ];
+            return json(self::createReturn(true, $ret));
         }
         return View::fetch('schedulingLog');
     }
@@ -77,6 +99,7 @@ class Dashboard extends AdminController
 
     /**
      * 删除计划任务
+     *
      * @param  Request  $request
      *
      * @return array
@@ -92,7 +115,7 @@ class Dashboard extends AdminController
         }
     }
 
-    function getCronDetail(Request $request)
+    private function getCronDetail(Request $request)
     {
         $cronId = $request->get('cron_id');
         $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
@@ -102,14 +125,14 @@ class Dashboard extends AdminController
             list($day, $hour, $minute) = explode('-', $loopDaytime);
             if ($cron->loop_type == 'now') {
                 $loopData = [
-                    'now_time' => (int)$day + (int)$hour + (int)$minute,
+                    'now_time' => (int) $day + (int) $hour + (int) $minute,
                     'now_type' => $day ? 'day' : ($hour ? 'hour' : 'minute'),
                 ];
             } else {
                 $loopData = [
-                    $cron->loop_type . '_day' => (int)$day,
-                    $cron->loop_type . '_hour' => (int)$hour,
-                    $cron->loop_type . '_minute' => (int)$minute,
+                    $cron->loop_type.'_day'    => (int) $day,
+                    $cron->loop_type.'_hour'   => (int) $hour,
+                    $cron->loop_type.'_minute' => (int) $minute,
                 ];
             }
 
@@ -119,36 +142,44 @@ class Dashboard extends AdminController
         }
     }
 
-    function createCron(Request $request)
+    /**
+     * 新增、编辑计划任务
+     *
+     * @param  Request  $request
+     *
+     * @return array|string
+     */
+    function addOrEditCron(Request $request)
     {
         $_action = input('_action');
-        if($_action == 'getCronDetail') {
+        if ($request->isGet() && $_action == 'getCronDetail') {
             return $this->getCronDetail($request);
-        } else if($_action == 'submitCron'){
-            $cronId = $request->post('cron_id', '');
-            $loopType = $request->post('form.loop_type');
-            $loopData = $request->post('loop_data');
-            //通过循环的类型和参数，获取下次执行时间和统一循环格式。
-            list($nextTime, $loopDaytime) = CronModel::getLoopData($loopType, $loopData);
-
-            $cronModel = CronModel::where('cron_id', $cronId)->findOrEmpty();
-            $cronModel->type = $request->post('form.type');
-            $cronModel->subject = $request->post('form.subject');
-            $cronModel->loop_type = $request->post('form.loop_type');
-            $cronModel->cron_file = $request->post('form.cron_file');
-            $cronModel->isopen = $request->post('form.isopen');
-            $cronModel->loop_daytime = $loopDaytime;
-            $cronModel->next_time = $nextTime;
-            $cronModel->created_time = time();
-            $cronModel->modified_time = 0;
-            if ($cronModel->save()) {
-                return self::createReturn(true, [], 'ok');
-            } else {
-                return self::createReturn(false, [], '创建有误');
+        } else {
+            if ($_action == 'submitCron') {
+                $cronId = $request->post('cron_id', '');
+                $loopType = $request->post('form.loop_type');
+                $loopData = $request->post('loop_data');
+                //通过循环的类型和参数，获取下次执行时间和统一循环格式。
+                list($nextTime, $loopDaytime) = CronModel::getLoopData($loopType, $loopData);
+                $cronModel = CronModel::where('cron_id', $cronId)->findOrEmpty();
+                $cronModel->type = $request->post('form.type');
+                $cronModel->subject = $request->post('form.subject');
+                $cronModel->loop_type = $request->post('form.loop_type');
+                $cronModel->cron_file = $request->post('form.cron_file');
+                $cronModel->isopen = $request->post('form.isopen');
+                $cronModel->loop_daytime = $loopDaytime;
+                $cronModel->next_time = $nextTime;
+                $cronModel->created_time = time();
+                $cronModel->modified_time = 0;
+                if ($cronModel->save()) {
+                    return self::createReturn(true, [], '操作成功');
+                } else {
+                    return self::createReturn(false, [], '操作失败');
+                }
             }
         }
 
-        return View::fetch('createCron', [
+        return View::fetch('addOrEditCron', [
             'cronFileList' => $this->_getCronFileList()
         ]);
     }
@@ -157,17 +188,18 @@ class Dashboard extends AdminController
     {
         $moduleService = new ModuleService();
         $localModuleList = $moduleService->getLocalModuleList()['data'];
-        $moduleList = array_map(function($item){
+        $moduleList = array_map(function ($item)
+        {
             return $item['module'];
         }, $localModuleList);
         $extraModuleList = ['admin', 'common'];
-        foreach ($extraModuleList as $item){
-            $moduleList []= $item;
+        foreach ($extraModuleList as $item) {
+            $moduleList [] = $item;
         }
         $cronFileList = [];
         //遍历模块
         foreach ($moduleList as $k => $module) {
-            $cronscript_dir = base_path() . strtolower($module) . DIRECTORY_SEPARATOR . 'cronscript';
+            $cronscript_dir = base_path().strtolower($module).DIRECTORY_SEPARATOR.'cronscript';
             if (is_dir($cronscript_dir)) {
                 $CronDirs = new Dir($cronscript_dir);
                 $cronFiles = $CronDirs->toArray();
@@ -175,7 +207,7 @@ class Dashboard extends AdminController
                 foreach ($cronFiles as $index => $cronFile) {
                     $cron_classname = str_replace('.php', '', $cronFile['filename']);
                     if ($cron_classname != 'CronScript') {
-                        $cronFileList[] = 'app\\' . $module . '\\' . 'cronscript' . '\\' . $cron_classname;
+                        $cronFileList[] = 'app\\'.$module.'\\'.'cronscript'.'\\'.$cron_classname;
                     }
                 }
             }
@@ -183,7 +215,7 @@ class Dashboard extends AdminController
         return $cronFileList;
     }
 
-    function getCronList()
+    private function getCronList()
     {
         $lists = CronModel::order('cron_id', 'DESC')->paginate(20);
         foreach ($lists as $key => $value) {
@@ -192,40 +224,49 @@ class Dashboard extends AdminController
         return self::createReturn(true, $lists, 'ok');
     }
 
+    // 任务列表
     function cron(Request $request)
     {
         $_action = input('_action');
-        if($_action == 'getCronList') {
+        if ($_action == 'getCronList') {
             //获取计划任务列表
             return $this->getCronList();
-        } else if($_action == 'runAction') {
-            //运行计划任务
-            return $this->runAction($request);
-        } else if($_action == 'deleteCron') {
-            return $this->deleteCron($request);
+        } else {
+            if ($_action == 'runAction') {
+                //运行计划任务
+                return $this->runAction($request);
+            } else {
+                if ($_action == 'deleteCron') {
+                    return $this->deleteCron($request);
+                }
+            }
         }
         return View::fetch('cron');
     }
 
-
+    // 状态
     function index(Request $request)
     {
         $_action = input('_action');
-        if($_action == 'getCronStatus') {
+        if ($_action == 'getCronStatus') {
             //获取定时任务状态
             return $this->getCronStatus();
-        } else if($_action == 'setCronEnable') {
-            //开启或者关闭计划任务
-            return $this->setCronEnable($request);
-        } else if($_action == 'setCronSecretKey') {
-            //设置计划任务秘钥
-            return $this->setCronSecretKey($request);
+        } else {
+            if ($_action == 'setCronEnable') {
+                //开启或者关闭计划任务
+                return $this->setCronEnable($request);
+            } else {
+                if ($_action == 'setCronSecretKey') {
+                    //设置计划任务秘钥
+                    return $this->setCronSecretKey($request);
+                }
+            }
         }
 
         return View::fetch('index');
     }
 
-    function setCronEnable(Request $request)
+    private function setCronEnable(Request $request)
     {
         $enable = $request->param('enable');
         $res = CronConfigModel::where('key', CronConfigModel::KEY_ENABLE_CRON)->update([
@@ -234,7 +275,7 @@ class Dashboard extends AdminController
         return self::createReturn(true, $res, '更新成功');
     }
 
-    function setCronSecretKey(Request $request)
+    private function setCronSecretKey(Request $request)
     {
         $secretKey = $request->param('secret_key');
         $res = CronConfigModel::where('key', CronConfigModel::KEY_ENABLE_SECRET_KEY)->update([
@@ -243,7 +284,7 @@ class Dashboard extends AdminController
         return self::createReturn(true, $res, '更新成功');
     }
 
-    function getCronStatus()
+    private function getCronStatus()
     {
         $CronConfigModel = new CronConfigModel();
         return self::createReturn(true, $CronConfigModel->getCronStatus());

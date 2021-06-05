@@ -22,42 +22,36 @@ return array(
                 "type" => 0,
                 "status" => 1,
                 "name" => "计划任务",
-                "remark" => "",
                 "child" => [
                     [
                         "route" => "common/cron.dashboard/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "概况",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/cron.dashboard/cron",
                         "type" => 1,
                         "status" => 1,
                         "name" => "任务列表",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/cron.dashboard/createCron",
                         "type" => 1,
                         "status" => 0,
                         "name" => "新增编辑任务",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/cron.dashboard/schedulingLog",
                         "type" => 1,
                         "status" => 0,
                         "name" => "调度日志",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/cron.dashboard/cronLog",
                         "type" => 1,
                         "status" => 0,
                         "name" => "任务日志",
-                        "remark" => "",
                     ],
                 ]
             ],

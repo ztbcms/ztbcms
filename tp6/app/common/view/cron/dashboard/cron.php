@@ -46,7 +46,7 @@
             <el-table-column
                     align="center"
                     width="80"
-                    label="任务状态">
+                    label="开启状态">
                 <template slot-scope="props">
                     <el-tag v-if="props.row.isopen == 1" type="success">开启</el-tag>
                     <el-tag v-else type="danger">关闭</el-tag>
@@ -153,7 +153,7 @@
                     var url = "{:api_url('/common/cron.dashboard/createCron')}?cron_id=" + cronId;
                     layer.open({
                         type: 2,
-                        title: '操作',
+                        title: '编辑计划任务',
                         shadeClose: true,
                         area: ['70%', '70%'],
                         content: url,
@@ -167,7 +167,7 @@
                     var url = "{:api_url('/common/cron.dashboard/createCron')}";
                     layer.open({
                         type: 2,
-                        title: '操作',
+                        title: '新增计划任务',
                         shadeClose: true,
                         area: ['70%', '70%'],
                         content: url,

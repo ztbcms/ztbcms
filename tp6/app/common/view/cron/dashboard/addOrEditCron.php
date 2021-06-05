@@ -107,15 +107,7 @@
                     <el-radio v-model="form.isopen" :label="0">关闭</el-radio>
                 </template>
             </el-form-item>
-            <el-form-item label="任务类型">
-                <el-select v-model="form.type" placeholder="请选择">
-                    <el-option
-                            :key="0"
-                            label="普通计划任务"
-                            :value="0">
-                    </el-option>
-                </el-select>
-            </el-form-item>
+
             <el-form-item label="执行文件">
                 <el-select v-model="form.cron_file" placeholder="请选择" style="width: 400px">
                     <?php foreach ($cronFileList as $value): ?>
@@ -196,7 +188,7 @@
                     loop_type: "month",
                     isopen: 1,
                     type: 0
-                },
+                }
             },
             mounted: function () {
                 var cronId = this.getUrlQuery('cron_id');
@@ -210,7 +202,7 @@
                 getCronDetail: function () {
                     var _this = this;
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/createCron')}",
+                        url: "{:api_url('/common/cron.dashboard/addOrEditCron')}",
                         data: {
                             cron_id: this.cronId,
                             _action : 'getCronDetail'
@@ -243,7 +235,7 @@
                     }
                     var _this = this;
                     $.ajax({
-                        url: "{:api_url('/common/cron.dashboard/createCron')}",
+                        url: "{:api_url('/common/cron.dashboard/addOrEditCron')}",
                         data: {
                             cron_id: this.cronId,
                             form: this.form,
