@@ -97,7 +97,7 @@ CREATE TABLE `cms_tp6_message_send_log` (
 
 
 -- ----------------------------
--- 上传处理
+-- 上传
 -- ----------------------------
 
 DROP TABLE IF EXISTS `cms_tp6_attachment_group`;
@@ -133,4 +133,4 @@ CREATE TABLE `cms_tp6_attachment` (
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
   `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';

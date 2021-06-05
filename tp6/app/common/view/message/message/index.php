@@ -43,7 +43,6 @@
         </div>
         <el-table
                 :data="lists"
-                border
                 style="width: 100%">
             <el-table-column
                     align="center"
@@ -179,8 +178,7 @@
                         })
                     };
                     if (message.process_status === 1) {
-                        this.$confirm('该消息已经处理完成，是否再次执行？').then(res => hander()).catch(err => {
-                        })
+                        this.$confirm('该消息已经处理完成，是否再次执行？').then(res => hander())
                     } else {
                         hander();
                     }
