@@ -118,29 +118,25 @@ return array(
                 "route" => "common/email.Email/index",
                 "type" => 0,
                 "status" => 1,
-                "name" => "邮箱",
-                "remark" => "",
+                "name" => "邮件服务",
                 "child" => [
                     [
                         "route" => "common/email.Email/config",
                         "type" => 1,
                         "status" => 1,
                         "name" => "配置",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/email.Email/sendLog",
                         "type" => 1,
                         "status" => 1,
                         "name" => "发送日志",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/email.Email/sendEmail",
                         "type" => 1,
                         "status" => 0,
-                        "name" => "发送日志",
-                        "remark" => "",
+                        "name" => "发送邮件",
                     ]
                 ]
             ],

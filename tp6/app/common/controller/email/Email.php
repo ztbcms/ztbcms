@@ -118,6 +118,7 @@ class Email extends AdminController
 
     /**
      * 发送邮件
+     *
      * @param  Request  $request
      *
      * @return \think\response\Json|\think\response\View

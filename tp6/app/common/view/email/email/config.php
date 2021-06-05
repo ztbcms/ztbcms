@@ -3,10 +3,12 @@
         <el-col :sm="24" :md="18">
             <el-alert type="success" :closable="false">
                 <template slot="title">
-                    <span>推荐使用阿里云邮件推送服务，每日免费额度200封，<a style="color: #67C23A;" target="_blank" href="https://www.aliyun.com/product/directmail?source=5176.11533457&userCode=cb42l4yn" >点击了解</a></span>
+                    <span>推荐使用阿里云邮件推送服务，每日免费额度200封，<a style="color: #67C23A;" target="_blank" href="https://www.aliyun.com/product/directmail?source=5176.11533457&userCode=cb42l4yn" >阿里云邮件推送介绍</a>、
+                        <a style="color: #67C23A;" target="_blank" href="https://help.aliyun.com/document_detail/29430.html">开发文档</a></span>
                 </template>
             </el-alert>
-            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px" style="margin-top: 6px">
+            <h3>SMTP配置</h3>
+            <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="150px" style="margin-top: 6px">
                         <el-form-item label="邮件服务器" prop="mail_server">
                             <el-input v-model="formData.mail_server" placeholder="请输入邮件服务器" clearable :style="{width: '100%'}">
                             </el-input>
