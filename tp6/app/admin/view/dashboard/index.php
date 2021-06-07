@@ -14,6 +14,7 @@
                     :collapse="isnavHid"
                     :default-active="tagData.defaultActive"
                     :class="{hid : minHid}"
+                    :unique-opened="true"
                 >
                     <div v-for="(item, index) in navData" :key="item.id">
                         <el-menu-item v-if="item.items.length === 0" :index="item.id" @click="goUrl([item.name], item)">
