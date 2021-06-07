@@ -80,7 +80,6 @@
     $(document).ready(function () {
         new Vue({
             el: '#app',
-            // 插入export default里面的内容
             components: {},
             props: [],
             data: function() {
