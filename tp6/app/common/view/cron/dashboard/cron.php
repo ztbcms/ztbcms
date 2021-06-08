@@ -2,7 +2,7 @@
     <el-card>
         <div style="margin-bottom: 20px;">
 
-            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'createCron')){ ?>
+            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'addOrEditCron')){ ?>
                 <el-button @click="createCron" type="primary" size="mini">
                     新增任务
                 </el-button>
@@ -70,7 +70,7 @@
                     align="center"
                     label="操作">
                 <template slot-scope="props">
-                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'createCron')){ ?>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.dashboard', 'addOrEditCron')){ ?>
                     <el-button @click="editCron(props.row.cron_id)" type="text" size="mini">
                         编辑
                     </el-button>
@@ -150,7 +150,7 @@
                 },
                 editCron: function (cronId) {
                     var _this = this
-                    var url = "{:api_url('/common/cron.dashboard/createCron')}?cron_id=" + cronId;
+                    var url = "{:api_url('/common/cron.dashboard/addOrEditCron')}?cron_id=" + cronId;
                     layer.open({
                         type: 2,
                         title: '编辑计划任务',
@@ -164,7 +164,7 @@
                 },
                 createCron: function () {
                     var _this = this
-                    var url = "{:api_url('/common/cron.dashboard/createCron')}";
+                    var url = "{:api_url('/common/cron.dashboard/addOrEditCron')}";
                     layer.open({
                         type: 2,
                         title: '新增计划任务',
