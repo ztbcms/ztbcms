@@ -170,8 +170,8 @@ class Message extends AdminController
             if(empty($data['type'])){
                 return json(self::createReturn(false, null, '请输入消息类型'));
             }
-            if(empty($data['class'])){
-                return json(self::createReturn(false, null, '请输入实例化的类名'));
+            if(function_exists($data['class'])){
+                return json(self::createReturn(false, null, '请输入正确的实例化的类名'));
             }
 
             $MessageModel = new MessageModel();
