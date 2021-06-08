@@ -16,8 +16,15 @@
                             :default-checked-keys="defaultKeys"
                             highlight-current
                             :props="defaultProps">
+                        <span slot-scope="scope">
+                            <span>{{ scope.node.data.label }}</span>
+                            <span v-if="scope.node.data.status == 1">
+                                <el-tooltip class="item" effect="dark" content="该菜单在左侧栏展示" placement="top-start">
+                                  <i class="el-icon-view" style="color: #409EFF"></i>
+                                </el-tooltip>
+                            </span>
+                          </span>
                     </el-tree>
-
                 </div>
 
                 <el-button class="filter-item" style="margin-left: 10px;margin-bottom: 15px;" size="small" type="primary"

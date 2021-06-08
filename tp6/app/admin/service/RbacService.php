@@ -99,10 +99,11 @@ class RbacService extends BaseService
      * @param $app
      * @param $controller
      * @param $action
+     * @param  bool  $ignore_unlimit_check 忽略不限制 % 的检测，默认false
      *
      * @return array
      */
-    function enableRoleAccess($role_id, $app, $controller, $action)
+    function enableRoleAccess($role_id, $app, $controller, $action, $ignore_unlimit_check = false)
     {
         // 超级管理员
         if ($role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
@@ -112,6 +113,13 @@ class RbacService extends BaseService
         $app = strtolower($app);
         $controller = strtolower($controller);
         $action = strtolower($action);
+        // 忽略不限制检验
+        if ($ignore_unlimit_check) {
+            if (isset($accessList[$app]) && isset($accessList[$app][$controller]) && isset($accessList[$app][$controller][$action])) {
+                return self::createReturn(true, null, '权限检验通过');
+            }
+            return self::createReturn(false, null, '无权限');
+        }
         // app
         if (isset($accessList['%'])) {
             return self::createReturn(true, null, '权限检验通过');

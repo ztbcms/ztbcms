@@ -224,7 +224,7 @@ class Role extends AdminController
                 $controller = $a['controller'];
                 $action = $a['action'];
             }
-            if ($rbacService->enableRoleAccess($role_id, $a['app'], $controller, $action)['status']) {
+            if ($rbacService->enableRoleAccess($role_id, $a['app'], $controller, $action, true)['status']) {
                 if($a['type'] == MenuModel::TYPE_MENU){
                     $select_menu_paretids [] = $a['id'];
                 } else {

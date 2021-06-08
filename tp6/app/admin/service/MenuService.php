@@ -150,7 +150,7 @@ class MenuService extends BaseService
                 $action = $v['action'].$v['id'];
             }
             //是否有权限
-            $res = $rbacService->enableRoleAccess($role_id, $app, $controller, $action);
+            $res = $rbacService->enableRoleAccess($role_id, $app, $controller, $action, true);
             if ($res['status']) {
                 $array[] = $v;
             }
