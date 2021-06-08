@@ -38,7 +38,9 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
-                    <el-button type="success" @click="addMessage">新增消息</el-button>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.Message', 'addMessage')){ ?>
+                        <el-button type="success" @click="addMessage">新增消息</el-button>
+                    <?php } ?>
                 </el-form-item>
             </el-form>
         </div>
@@ -120,8 +122,8 @@
                     fixed="right"
                     label="操作">
                 <template slot-scope="props">
-                    <el-button @click="handMessage(props.row)" type="primary">执行</el-button>
-                    <el-button @click="openDetail(props.row)" type="success">查看</el-button>
+                    <el-button @click="handMessage(props.row)" type="text">执行</el-button>
+                    <el-button @click="openDetail(props.row)" type="text">查看</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -183,7 +185,7 @@
                            _this.doHandleMessage(message)
                         })
                     } else {
-                        _this.doHandleMessage()
+                        _this.doHandleMessage(message)
                     }
                 },
                 openDetail: function (detail) {
