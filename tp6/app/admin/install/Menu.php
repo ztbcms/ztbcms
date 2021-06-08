@@ -6,8 +6,8 @@ return [
         "parentid" => 0,
         "name" => "清除缓存",
         "route" => "admin/Cache/cache",
-        "type" => 1,
-        "status" => 0,
+        "type" => 1, // 是否需要权限验证 0否 1是
+        "status" => 0,// 是否在左侧栏中展示 0否 1是
         "remark" => "",
         "child" => []
     ],
