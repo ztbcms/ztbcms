@@ -1,16 +1,11 @@
 <?php
-/**
- * User: zhlhuang
- */
 
 namespace app\common\controller;
 
 
 use app\admin\service\AdminConfigService;
-use app\admin\service\AdminUserService;
 use app\BaseController;
 use think\App;
-use think\facade\Config;
 use think\facade\View;
 
 /**
@@ -39,9 +34,8 @@ class AdminController extends BaseController
         \think\middleware\SessionInit::class,
         // 用户登录、权限验证
         \app\common\middleware\AdminAuth::class,
-        //操作日志记录
+        // 操作日志记录
         \app\admin\middleware\OperationLog::class,
-
     ];
 
     public function __construct(App $app)
@@ -51,9 +45,8 @@ class AdminController extends BaseController
         $app->request->noNeedLogin = $this->noNeedLogin ?? [];
         $app->request->noNeedPermission = $this->noNeedPermission ?? [];
 
-        // 视图注入配置信息
+        // 视图注入配置信息 $_Config
         $config = AdminConfigService::getInstance()->getConfig()['data'];
         View::assign('_Config', $config);
-
     }
 }

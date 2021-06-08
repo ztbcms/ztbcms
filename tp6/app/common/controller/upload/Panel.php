@@ -14,10 +14,19 @@ use think\App;
 use think\facade\View;
 use think\Request;
 
+/**
+ * 上传面板
+ *
+ * @package app\common\controller\upload
+ */
 class Panel extends AdminController
 {
+    public $noNeedPermission = ['*'];
     /**
+     * 删除文件
+     *
      * @param  Request  $request
+     *
      * @return array
      * @throws \Exception
      */
@@ -41,6 +50,7 @@ class Panel extends AdminController
 
     /**
      * @param  Request  $request
+     *
      * @return array
      * @throws \Exception
      */
@@ -65,6 +75,7 @@ class Panel extends AdminController
 
     /**
      * @param  Request  $request
+     *
      * @return array
      * @throws \think\db\exception\DbException
      */
@@ -87,6 +98,7 @@ class Panel extends AdminController
 
     /**
      * @param  Request  $request
+     *
      * @return array
      */
     function delGalleryGroup(Request $request)
@@ -106,6 +118,7 @@ class Panel extends AdminController
 
     /**
      * @param  Request  $request
+     *
      * @return array
      */
     function editGalleryGroup(Request $request)
@@ -126,6 +139,7 @@ class Panel extends AdminController
 
     /**
      * @param  Request  $request
+     *
      * @return array
      */
     function addGalleryGroup(Request $request)
@@ -142,7 +156,9 @@ class Panel extends AdminController
 
     /**
      * 获取文件分组
+     *
      * @param  Request  $request
+     *
      * @return array
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -163,6 +179,7 @@ class Panel extends AdminController
      * 图片上传面板
      *
      * @param  Request  $request
+     *
      * @return array|string
      */
     function imageUpload(Request $request)
@@ -184,7 +201,9 @@ class Panel extends AdminController
 
     /**
      * 视频上传面板
+     *
      * @param  Request  $request
+     *
      * @return array|string
      */
     function videoUpload(Request $request)
@@ -208,6 +227,7 @@ class Panel extends AdminController
      * 文件（文档）上传面板
      *
      * @param  Request  $request
+     *
      * @return string|\think\response\Json
      */
     function fileUpload(Request $request)
@@ -228,8 +248,10 @@ class Panel extends AdminController
     }
 
     /**
-     * 上传UEditor文件图片（公开读）
+     * 上传UEditor文件图片
+     *
      * @param  Request  $request
+     *
      * @return string|\think\response\Json
      */
     function imageUEUpload(Request $request)

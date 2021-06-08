@@ -9,12 +9,18 @@
 namespace app\common\controller\upload;
 
 
-use app\BaseController;
+use app\common\controller\AdminController;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\upload\UploadService;
 
-class Api extends BaseController
+/**
+ * 上传接口
+ *
+ * @package app\common\controller\upload
+ */
+class Api extends AdminController
 {
+    public $noNeedPermission = ['*'];
     /**
      * 上传图片（可以根据实际需要写自己的api接口）
      * @return \think\response\Json

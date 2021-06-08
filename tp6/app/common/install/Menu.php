@@ -83,29 +83,19 @@ return array(
                 "type" => 0,
                 "status" => 1,
                 "name" => "上传管理",
-                "remark" => "",
                 "child" => [
                     [
                         "route" => "common/upload.upload/setting",
                         "type" => 1,
                         "status" => 1,
                         "name" => "上传配置",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/upload.upload/demo",
                         "type" => 1,
                         "status" => 1,
                         "name" => "上传示例",
-                        "remark" => "",
-                    ],
-                    [
-                        "route" => "common/upload.%/%",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "上传基本权限（必选）",
-                        "remark" => "",
-                    ],
+                    ]
                 ]
             ],
             [
