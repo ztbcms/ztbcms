@@ -38,7 +38,7 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
-                    <el-button type="primary" @click="addMessage">新增</el-button>
+                    <el-button type="primary" @click="addMessage">新增消息</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -223,7 +223,7 @@
                     var url = "{:api_url('common/message.message/addMessage')}"
                     layer.open({
                         type: 2,
-                        title: '新增',
+                        title: '新增消息',
                         shadeClose: true,
                         area: ['70%', '80%'],
                         content: url,

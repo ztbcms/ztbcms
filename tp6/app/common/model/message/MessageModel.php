@@ -75,15 +75,13 @@ class MessageModel extends Model
         $sendClass = get_class($sender);
         if (!$force) {
             $isProcess = MessageSendLogModel::where('message_id', $messageId)
-                ->where('sender', $sendClass)  //消息处理器  控制器名称
-                ->where('status', MessageSendLogModel::STATUS_SUCCESSS)->count();  //处理状态为1，不成功
+                ->where('sender', $sendClass)
+                ->where('status', MessageSendLogModel::STATUS_SUCCESSS)->count();
             if ($isProcess > 0) {
-                //已经处理
                 return true;
             }
         }
-        //$sendLog 是调用这个方法的方法名
-        //判断$sendLog 是否有值，null则 new MessageSendLogModel()
+
         $sendLog = $sendLog ? $sendLog : new MessageSendLogModel();
         $sendLog->message_id = $messageId;
         $sendLog->sender = $sendClass;
@@ -138,23 +136,24 @@ class MessageModel extends Model
      * @param $messageData
      * @return array
      */
-    public function createMessage($messageData){
+    public function createMessage($messageData)
+    {
         $data = [
-            'title' => $messageData['title'],
-            'content' => $messageData['content'],
-            'target' => $messageData['target'],
-            'target_type' => $messageData['target_type'],
-            'sender' => $messageData['sender'],
-            'sender_type' => $messageData['sender_type'],
-            'receiver' => $messageData['receiver'],
+            'title'         => $messageData['title'],
+            'content'       => $messageData['content'],
+            'target'        => $messageData['target'],
+            'target_type'   => $messageData['target_type'],
+            'sender'        => $messageData['sender'],
+            'sender_type'   => $messageData['sender_type'],
+            'receiver'      => $messageData['receiver'],
             'receiver_type' => $messageData['receiver_type'],
-            'type' => $messageData['type'],
-            'class' => $messageData['class'],
-            'create_time' => time()
+            'type'          => $messageData['type'],
+            'class'         => $messageData['class'],
+            'create_time'   => time()
         ];
         $res = self::insert($data);
         $BaseService = new BaseService();
-        if(!$res){
+        if (!$res) {
             return $BaseService::createReturn(false, null, '操作失败');
         }
         return $BaseService::createReturn(true, null, '操作成功');
