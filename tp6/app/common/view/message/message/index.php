@@ -38,6 +38,7 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
+                    <el-button type="success" @click="addMessage">新增消息</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -156,7 +157,7 @@
                 this.getList();
             },
             methods: {
-                doHandleMessage: function () {
+                doHandleMessage: function (message) {
                     $.ajax({
                         url: "{:api_url('/common/message.message/index')}",
                         data: {
@@ -179,7 +180,7 @@
                     var _this = this;
                     if (message.process_status === 1) {
                         this.$confirm('该消息已经处理完成，是否再次执行？').then(function () {
-                           _this.doHandleMessage()
+                           _this.doHandleMessage(message)
                         })
                     } else {
                         _this.doHandleMessage()
@@ -216,6 +217,20 @@
                             _this.currentPage = data.current_page;
                         }
                     })
+                },
+                addMessage: function(){
+                    var that = this
+                    var url = "{:api_url('common/message.message/addMessage')}"
+                    layer.open({
+                        type: 2,
+                        title: '新增消息',
+                        shadeClose: true,
+                        area: ['70%', '80%'],
+                        content: url,
+                        end: function(){
+                            that.getList()
+                        }
+                    });
                 }
             }
         });

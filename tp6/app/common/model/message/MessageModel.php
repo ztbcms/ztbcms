@@ -9,6 +9,7 @@
 namespace app\common\model\message;
 
 use app\common\libs\message\SenderUnit;
+use app\common\service\BaseService;
 use think\Model;
 
 class MessageModel extends Model
@@ -77,7 +78,6 @@ class MessageModel extends Model
                 ->where('sender', $sendClass)
                 ->where('status', MessageSendLogModel::STATUS_SUCCESSS)->count();
             if ($isProcess > 0) {
-                //已经处理
                 return true;
             }
         }
@@ -129,5 +129,33 @@ class MessageModel extends Model
             'process_status' => $processStatus,
             'send_time' => $sendTime
         ]);
+    }
+
+    /**
+     * 新建消息记录
+     * @param $messageData
+     * @return array
+     */
+    public function createMessage($messageData)
+    {
+        $data = [
+            'title'         => $messageData['title'],
+            'content'       => $messageData['content'],
+            'target'        => $messageData['target'],
+            'target_type'   => $messageData['target_type'],
+            'sender'        => $messageData['sender'],
+            'sender_type'   => $messageData['sender_type'],
+            'receiver'      => $messageData['receiver'],
+            'receiver_type' => $messageData['receiver_type'],
+            'type'          => $messageData['type'],
+            'class'         => $messageData['class'],
+            'create_time'   => time()
+        ];
+        $res = self::insert($data);
+        $BaseService = new BaseService();
+        if (!$res) {
+            return $BaseService::createReturn(false, null, '操作失败');
+        }
+        return $BaseService::createReturn(true, null, '操作成功');
     }
 }

@@ -126,4 +126,55 @@ class Message extends AdminController
         }
     }
 
+    /**
+     * 新建消息记录
+     * @param  Request  $request
+     * @return string|\think\response\Json
+     */
+    public function addMessage(Request $request)
+    {
+        $_action = input('_action');
+        if ($_action == 'addMessage') {
+            $data['title'] = $request->post('title', '');
+            $data['content'] = $request->post('content', '');
+            $data['target'] = $request->post('target', '');
+            $data['target_type'] = $request->post('target_type', '');
+            $data['sender'] = $request->post('sender', '');
+            $data['sender_type'] = $request->post('sender_type', '');
+            $data['receiver'] = $request->post('receiver', '');
+            $data['receiver_type'] = $request->post('receiver_type', '');
+            $data['type'] = $request->post('type', '');
+            $data['class'] = $request->post('newClass', '');
+
+            if (empty($data['title'])) {
+                return json(self::createReturn(false, null, '请输入消息标题'));
+            }
+            if (empty($data['content'])) {
+                return json(self::createReturn(false, null, '请输入消息内容'));
+            }
+            if (empty($data['target'])) {
+                return json(self::createReturn(false, null, '请输入消息源'));
+            }
+            if (empty($data['target_type'])) {
+                return json(self::createReturn(false, null, '请输入消息源类型'));
+            }
+            if (empty($data['receiver'])) {
+                return json(self::createReturn(false, null, '请输入接收者'));
+            }
+            if (empty($data['receiver_type'])) {
+                return json(self::createReturn(false, null, '请输入接收者类型'));
+            }
+            if (empty($data['type'])) {
+                return json(self::createReturn(false, null, '请输入消息类型'));
+            }
+            if (!class_exists($data['class'])) {
+                return json(self::createReturn(false, null, '请输入正确的实例化的类名'));
+            }
+            $MessageModel = new MessageModel();
+            $res = $MessageModel->createMessage($data);
+            return json($res);
+        }
+        return view::fetch('addMessage');
+    }
+
 }
