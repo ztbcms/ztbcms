@@ -104,7 +104,7 @@
                             url: "{:api_url('/common/message.message/sendLog')}",
                             data: {
                                 log_id: record.id,
-                                _action : 'handleAgainLog'
+                                _action: 'handleAgainLog'
                             },
                             dataType: 'json',
                             type: 'post',
@@ -126,7 +126,7 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange:function(e) {
+                currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
                 },
@@ -136,7 +136,7 @@
                         url: "{:api_url('/common/message.message/sendLog')}",
                         data: Object.assign({
                             page: this.currentPage,
-                            _action : 'getSendLogList'
+                            _action: 'getSendLogList'
                         }, this.searchForm),
                         dataType: 'json',
                         type: 'get',

@@ -156,31 +156,33 @@
                 this.getList();
             },
             methods: {
+                doHandleMessage: function () {
+                    $.ajax({
+                        url: "{:api_url('/common/message.message/index')}",
+                        data: {
+                            message_id: message.id,
+                            _action: 'handMessage'
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                layer.msg(res.msg);
+                                _this.getList();
+                            } else {
+                                layer.msg(res.msg);
+                            }
+                        }
+                    })
+                },
                 handMessage: function (message) {
                     var _this = this;
-                    var hander = function () {
-                        $.ajax({
-                            url: "{:api_url('/common/message.message/index')}",
-                            data: {
-                                message_id: message.id,
-                                _action : 'handMessage'
-                            },
-                            dataType: 'json',
-                            type: 'post',
-                            success: function (res) {
-                                if (res.status) {
-                                    layer.msg(res.msg);
-                                    _this.getList();
-                                } else {
-                                    layer.msg(res.msg);
-                                }
-                            }
-                        })
-                    };
                     if (message.process_status === 1) {
-                        this.$confirm('该消息已经处理完成，是否再次执行？').then(res => hander())
+                        this.$confirm('该消息已经处理完成，是否再次执行？').then(function () {
+                           _this.doHandleMessage()
+                        })
                     } else {
-                        hander();
+                        _this.doHandleMessage()
                     }
                 },
                 openDetail: function (detail) {
@@ -190,7 +192,7 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange:function(e) {
+                currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
                 },
@@ -201,7 +203,7 @@
                         data: Object.assign({
                             search_message: this.searchMessage,
                             page: this.currentPage,
-                            _action : 'getMessageList'
+                            _action: 'getMessageList'
                         }, this.searchForm),
                         dataType: 'json',
                         type: 'get',
@@ -214,7 +216,7 @@
                             _this.currentPage = data.current_page;
                         }
                     })
-                },
+                }
             }
         });
     })
