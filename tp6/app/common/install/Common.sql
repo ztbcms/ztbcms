@@ -81,7 +81,7 @@ CREATE TABLE `cms_tp6_message_msg` (
   `read_time` int(11) NOT NULL DEFAULT '0' COMMENT '阅读时间',
   `process_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '处理次数',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8  COMMENT='消息记录';
 
 DROP TABLE IF EXISTS `cms_tp6_message_send_log`;
 CREATE TABLE `cms_tp6_message_send_log` (
@@ -93,7 +93,7 @@ CREATE TABLE `cms_tp6_message_send_log` (
   `create_time` int(11) DEFAULT '0' COMMENT '日志创建时间',
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='消息发送处理日志';
 
 
 -- ----------------------------
