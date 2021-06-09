@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-04
- * Time: 20:35.
- */
 
 namespace app\common\libs\message;
 
@@ -31,5 +25,12 @@ abstract class SenderUnit
         $this->error = $error;
     }
 
+    /**
+     * 发送功能实现
+     *
+     * @param  MessageModel  $message
+     *
+     * @return bool 发送结果，true，正常，false异常，会截断下一个发送器
+     */
     abstract function doSend(MessageModel $message): bool;
 }

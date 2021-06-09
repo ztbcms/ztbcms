@@ -24,7 +24,7 @@ class Message extends AdminController
         $logId = $request->post('log_id');
         $messageLog = MessageSendLogModel::where('id', $logId)->findOrEmpty();
         if (!$messageLog->isEmpty()) {
-            return self::createReturn(true, $messageLog->sendMessage(), '操作成功');
+            return $messageLog->redoMessageSender();
         }
         return self::createReturn(false, [], '找不到该记录');
     }
@@ -117,12 +117,12 @@ class Message extends AdminController
      */
     private function handMessage(Request $request)
     {
-        $messageId = $request->post('message_id', '');
+        $messageId = $request->post('message_id');
         $message = MessageModel::where('id', $messageId)->findOrEmpty();
         if (!$message->isEmpty()) {
-            return self::createReturn(true, $message->handMessage(true), 'ok');
+            return $message->handMessage(true);
         } else {
-            return self::createReturn(false, [], '找不到该消息记录');
+            return self::createReturn(false, null, '找不到该消息记录');
         }
     }
 

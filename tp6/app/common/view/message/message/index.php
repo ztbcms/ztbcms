@@ -160,6 +160,7 @@
             },
             methods: {
                 doHandleMessage: function (message) {
+                    var _this = this
                     $.ajax({
                         url: "{:api_url('/common/message.message/index')}",
                         data: {
@@ -179,7 +180,7 @@
                     })
                 },
                 handMessage: function (message) {
-                    var _this = this;
+                    var _this = this
                     if (message.process_status === 1) {
                         this.$confirm('该消息已经处理完成，是否再次执行？').then(function () {
                            _this.doHandleMessage(message)

@@ -34,6 +34,7 @@
                         </el-form-item>
                         <el-form-item label="实例化的类名">
                             <el-input v-model="formData.newClass" placeholder="请输入实例化的类名" clearable :style="{width: '50%'}"></el-input>
+                            <p><small>示例： app\common\message\units\SimpleMessage</small></p>
                         </el-form-item>
 
                         <el-form-item>

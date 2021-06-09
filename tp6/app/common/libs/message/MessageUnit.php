@@ -1,16 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-04
- * Time: 20:12.
- */
-
 namespace app\common\libs\message;
 
 
 use app\common\model\message\MessageModel;
 
+/**
+ * 消息体基类
+ *
+ * @package app\common\libs\message
+ */
 abstract class MessageUnit
 {
     //标题
@@ -27,10 +25,13 @@ abstract class MessageUnit
     protected $type = 'notice';
 
     /**
-     * @return bool
+     * 消息发送器
+     *
+     * @return array
      */
-    abstract static function getSenders();
+    abstract function getSenders(): array;
 
+    // 创建消息
     function createMessage()
     {
         $message = new MessageModel();
