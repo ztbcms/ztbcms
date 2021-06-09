@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-05
- * Time: 09:41.
- */
 
 namespace app\common\model\message;
 
@@ -18,22 +12,26 @@ class MessageSendLogModel extends Model
     const STATUS_FAIL = 0;
 
     /**
-     * 基于发送日志调用消息处理
-     * @return bool
+     * 重新调用该发送器
      */
-    function sendMessage(): bool
+    function redoMessageSender(): array
     {
         $messageId = $this->message_id;
         $message = MessageModel::where('id', $messageId)->findOrEmpty();
         if (!$message->isEmpty()) {
             try {
                 $sender = new $this->sender();
-                return $message->sendMessage($sender, true, $this);
+                $res = $sender->doSend($message);
+                if ($res) {
+                    return createReturn(true, null, '执行完成');
+                } else {
+                    return createReturn(true, null, '执行异常');
+                }
             } catch (\Exception $exception) {
-                return false;
+                return createReturn(false, null, '执行异常：'.$exception->getMessage());
             }
-        } else {
-            return false;
         }
+
+        return createReturn(true, null, '找不到消息');
     }
 }

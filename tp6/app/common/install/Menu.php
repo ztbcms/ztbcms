@@ -60,21 +60,24 @@ return array(
                 "type" => 0,
                 "status" => 1,
                 "name" => "消息管理",
-                "remark" => "",
                 "child" => [
                     [
                         "route" => "common/message.message/index",
                         "type" => 1,
                         "status" => 1,
                         "name" => "消息列表",
-                        "remark" => "",
                     ],
                     [
                         "route" => "common/message.message/sendLog",
                         "type" => 1,
                         "status" => 1,
                         "name" => "发送日志",
-                        "remark" => "",
+                    ],
+                    [
+                        "route" => "common/message.message/addMessage",
+                        "type" => 0,
+                        "status" => 1,
+                        "name" => "新建消息",
                     ],
                 ]
             ],

@@ -38,6 +38,9 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="search">查询</el-button>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('common', 'cron.Message', 'addMessage')){ ?>
+                        <el-button type="success" @click="addMessage">新增消息</el-button>
+                    <?php } ?>
                 </el-form-item>
             </el-form>
         </div>
@@ -119,8 +122,8 @@
                     fixed="right"
                     label="操作">
                 <template slot-scope="props">
-                    <el-button @click="handMessage(props.row)" type="primary">执行</el-button>
-                    <el-button @click="openDetail(props.row)" type="success">查看</el-button>
+                    <el-button @click="handMessage(props.row)" type="text">执行</el-button>
+                    <el-button @click="openDetail(props.row)" type="text">查看</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -156,31 +159,34 @@
                 this.getList();
             },
             methods: {
-                handMessage: function (message) {
-                    var _this = this;
-                    var hander = function () {
-                        $.ajax({
-                            url: "{:api_url('/common/message.message/index')}",
-                            data: {
-                                message_id: message.id,
-                                _action : 'handMessage'
-                            },
-                            dataType: 'json',
-                            type: 'post',
-                            success: function (res) {
-                                if (res.status) {
-                                    layer.msg(res.msg);
-                                    _this.getList();
-                                } else {
-                                    layer.msg(res.msg);
-                                }
+                doHandleMessage: function (message) {
+                    var _this = this
+                    $.ajax({
+                        url: "{:api_url('/common/message.message/index')}",
+                        data: {
+                            message_id: message.id,
+                            _action: 'handMessage'
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                layer.msg(res.msg);
+                                _this.getList();
+                            } else {
+                                layer.msg(res.msg);
                             }
-                        })
-                    };
+                        }
+                    })
+                },
+                handMessage: function (message) {
+                    var _this = this
                     if (message.process_status === 1) {
-                        this.$confirm('该消息已经处理完成，是否再次执行？').then(res => hander())
+                        this.$confirm('该消息已经处理完成，是否再次执行？').then(function () {
+                           _this.doHandleMessage(message)
+                        })
                     } else {
-                        hander();
+                        _this.doHandleMessage(message)
                     }
                 },
                 openDetail: function (detail) {
@@ -190,7 +196,7 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange:function(e) {
+                currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
                 },
@@ -201,7 +207,7 @@
                         data: Object.assign({
                             search_message: this.searchMessage,
                             page: this.currentPage,
-                            _action : 'getMessageList'
+                            _action: 'getMessageList'
                         }, this.searchForm),
                         dataType: 'json',
                         type: 'get',
@@ -215,6 +221,20 @@
                         }
                     })
                 },
+                addMessage: function(){
+                    var that = this
+                    var url = "{:api_url('common/message.message/addMessage')}"
+                    layer.open({
+                        type: 2,
+                        title: '新增消息',
+                        shadeClose: true,
+                        area: ['70%', '80%'],
+                        content: url,
+                        end: function(){
+                            that.getList()
+                        }
+                    });
+                }
             }
         });
     })

@@ -12,7 +12,6 @@
         </div>
         <el-table
                 :data="lists"
-                border
                 style="width: 100%">
             <el-table-column
                     align="center"
@@ -61,7 +60,7 @@
                     fixed="right"
                     label="操作">
                 <template slot-scope="props">
-                    <el-button @click='handleAgain(props.row)' type="primary">再次执行</el-button>
+                    <el-button @click='handleAgain(props.row)' type="text">再次执行此发送器</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -97,27 +96,31 @@
                 this.getList();
             },
             methods: {
-                handleAgain: function (record) {
-                    var _this = this;
-                    var hand = function () {
-                        $.ajax({
-                            url: "{:api_url('/common/message.message/sendLog')}",
-                            data: {
-                                log_id: record.id,
-                                _action : 'handleAgainLog'
-                            },
-                            dataType: 'json',
-                            type: 'post',
-                            success: function (res) {
-                                if (res.status) {
-                                    layer.msg(res.msg);
-                                    _this.getList();
-                                } else {
-                                    layer.msg(res.msg);
-                                }
+                doResend: function(record){
+                    var _this = this
+                    $.ajax({
+                        url: "{:api_url('/common/message.message/sendLog')}",
+                        data: {
+                            log_id: record.id,
+                            _action: 'handleAgainLog'
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                layer.msg(res.msg);
+                                _this.getList();
+                            } else {
+                                layer.msg(res.msg);
                             }
-                        })
-                    };
+                        }
+                    })
+                },
+                handleAgain: function (record) {
+                    var _this = this
+                    this.$confirm('是否再次执行？').then(function () {
+                        _this.doResend(record)
+                    })
                 },
                 openDetail: function (detail) {
                     this.$alert(JSON.stringify(detail));
@@ -126,7 +129,7 @@
                     this.currentPage = 1;
                     this.getList();
                 },
-                currentPageChange:function(e) {
+                currentPageChange: function (e) {
                     this.currentPage = e;
                     this.getList();
                 },
@@ -136,7 +139,7 @@
                         url: "{:api_url('/common/message.message/sendLog')}",
                         data: Object.assign({
                             page: this.currentPage,
-                            _action : 'getSendLogList'
+                            _action: 'getSendLogList'
                         }, this.searchForm),
                         dataType: 'json',
                         type: 'get',
