@@ -34,7 +34,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="权限菜单" width="100px" align="center">
+            <el-table-column label="验证权限" width="100px" align="center">
                 <template slot-scope="{row}">
                     <template v-if="row.type == 1">
                         <span style="color:green">是</span>
@@ -45,7 +45,7 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="状态" width="100px" align="center">
+            <el-table-column label="显示状态" width="100px" align="center">
                 <template slot-scope="{row}">
                     <template v-if="row.status == 1">
                         <span style="color:green">显示</span>
