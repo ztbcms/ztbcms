@@ -242,7 +242,7 @@ return [
                         "route" => "admin/Logs/loginLogList",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "登录日志",
+                        "name" => "后台日志",
                     ],
                     [
                         "route" => "admin/Logs/deleteLoginLog",
@@ -254,7 +254,7 @@ return [
                         "route" => "admin/Logs/adminOperationLogList",
                         "type" => 1,
                         "status" => 1,
-                        "name" => "操作日志",
+                        "name" => "后台操作日志",
                     ],
                     [
                         "route" => "admin/Logs/deleteAdminOperationLog",
@@ -262,10 +262,14 @@ return [
                         "status" => 0,
                         "name" => "删除操作日志",
                     ],
+                    [
+                        "route"  => "admin/UserOperateLog/index",
+                        "type"   => 1,
+                        "status" => 1,
+                        "name"   => "用户操作日志",
+                    ],
                 ]
             ],
-
-
         ]
     ],
     // 模块

@@ -10,6 +10,7 @@ namespace app\admin\controller;
 use app\admin\libs\module\ModuleInstaller;
 use app\admin\libs\module\ModuleUninstaller;
 use app\admin\service\ModuleService;
+use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
 use think\facade\Db;
 use think\facade\Request;
@@ -93,6 +94,11 @@ class Module extends AdminController
         if (empty($moduleName)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
+        UserOperateLogService::addUserOperateLog([
+            'source_type' => 'admin_module',
+            'source'      => $moduleName,
+            'content'     => '安装模块 '.$moduleName
+        ]);
         $installer = new ModuleInstaller($moduleName);
         $res = $installer->run();
         return json($res);
@@ -105,6 +111,11 @@ class Module extends AdminController
         if (empty($moduleName)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
+        UserOperateLogService::addUserOperateLog([
+            'source_type' => 'admin_module',
+            'source'      => $moduleName,
+            'content'     => '卸载模块 '.$moduleName
+        ]);
         $uninstaller = new ModuleUninstaller($moduleName);
         $res = $uninstaller->run();
         return json($res);

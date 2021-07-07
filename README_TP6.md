@@ -141,3 +141,16 @@ location / { // …..省略部分代码
  }
 ```
 
+### 用户操作日志
+
+新增操作日志示例：
+
+```php
+$log_data = [
+    'source_type' => 'install_module', //分类名
+    'source' => 'demo', //来源
+    'content' => '安装模块：demo', //操作内容
+];
+(new UserOperateLogService)::addUserOperateLog($log_data);
+```
+
