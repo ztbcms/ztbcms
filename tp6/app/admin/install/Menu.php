@@ -263,7 +263,7 @@ return [
                         "name" => "删除操作日志",
                     ],
                     [
-                        "route"  => "admin/UserOperateLog/index",
+                        "route"  => "admin/Logs/userOperateLog",
                         "type"   => 1,
                         "status" => 1,
                         "name"   => "用户操作日志",

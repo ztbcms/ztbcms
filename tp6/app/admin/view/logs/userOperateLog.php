@@ -83,8 +83,6 @@
         margin-top: 6px;
     }
 
-    .pager_container {
-    }
 </style>
 <script>
     $(document).ready(function () {
@@ -137,7 +135,7 @@
                     var where = this.form
                     where['_action'] = 'getList';
                     $.ajax({
-                        url: "{:api_url('/admin/UserOperateLog/index')}",
+                        url: "{:api_url('/admin/Logs/userOperateLog')}",
                         type: "POST",
                         dataType: "json",
                         data: where,
