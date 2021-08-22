@@ -1,8 +1,4 @@
 <?php
-/**
- * User: Cycle3
- * Date: 2020/10/21
- */
 
 namespace app\admin\controller;
 
@@ -126,11 +122,8 @@ class Logs extends AdminController
             }
             $res = AdminOperationLogService::getAdminOperationLogList($where, $order, $page, $limit, $time);
             return json($res);
-        } else if ($action == 'getAdminOperationSwitch') {
-            $admin_operation_switch = (int)AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
-            return json(self::createReturn(true, $admin_operation_switch));
-        } else if ($action == 'switchingAdminOperation') {
-            $admin_operation_switch = input('admin_operation_switch', '', 'trim');
+        } else if ($action == 'updateAdminOperationConfig') {
+            $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
             $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
             AdminConfigService::getInstance()->clearConfigCache();
             return json($getConfig);
@@ -200,4 +193,15 @@ class Logs extends AdminController
         }
         return view('userOperateLog');
     }
+
+    /**
+     * 用户操作日志列表
+     * @return \think\response\View
+     */
+    function setOperationLog()
+    {
+        $switch = (int)AdminConfigService::getInstance()->getConfig('admin_operation_switch', false)['data'];
+        return view('setOperationRecord')->assign('switch', $switch);
+    }
+
 }
