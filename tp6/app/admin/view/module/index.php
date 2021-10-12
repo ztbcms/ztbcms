@@ -136,7 +136,7 @@
                 // 操作日志
                 toOperateLog: function(moduleInfo){
                     var that = this
-                    var url = "{:api_url('/admin/UserOperateLog/index')}"+'?source_type=admin_module&source='+moduleInfo.module
+                    var url = "{:api_url('/admin/Logs/userOperateLog')}"+'?source_type=admin_module&source='+moduleInfo.module
                     layer.open({
                         type: 2,
                         title: '操作日志',
