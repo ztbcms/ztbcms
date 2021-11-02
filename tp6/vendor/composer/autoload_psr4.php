@@ -8,8 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'think\\view\\driver\\' => array($vendorDir . '/topthink/think-view/src'),
     'think\\trace\\' => array($vendorDir . '/topthink/think-trace/src'),
+    'think\\migration\\' => array($vendorDir . '/topthink/think-migration/src'),
     'think\\app\\' => array($vendorDir . '/topthink/think-multi-app/src'),
-    'think\\' => array($vendorDir . '/topthink/framework/src/think', $vendorDir . '/topthink/think-helper/src', $vendorDir . '/topthink/think-orm/src', $vendorDir . '/topthink/think-template/src', $vendorDir . '/topthink/think-queue/src'),
+    'think\\' => array($vendorDir . '/topthink/framework/src/think', $vendorDir . '/topthink/think-helper/src', $vendorDir . '/topthink/think-orm/src', $vendorDir . '/topthink/think-queue/src', $vendorDir . '/topthink/think-template/src'),
     'clagiordano\\weblibs\\configmanager\\' => array($vendorDir . '/clagiordano/weblibs-configmanager/src'),
     'app\\' => array($baseDir . '/app'),
     'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
@@ -36,6 +37,7 @@ return array(
     'Psr\\EventDispatcher\\' => array($vendorDir . '/psr/event-dispatcher/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
+    'Phinx\\' => array($vendorDir . '/topthink/think-migration/phinx/src/Phinx'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Overtrue\\Socialite\\' => array($vendorDir . '/overtrue/socialite/src'),
     'OSS\\' => array($vendorDir . '/aliyuncs/oss-sdk-php/src/OSS'),

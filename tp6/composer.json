@@ -30,7 +30,8 @@
         "alibabacloud/client": "^1.5",
         "overtrue/wechat": "^4.2",
         "phpmailer/phpmailer": "^6.3",
-        "guzzlehttp/guzzle": "^7.3"
+        "guzzlehttp/guzzle": "^7.3",
+        "topthink/think-migration": "^3.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

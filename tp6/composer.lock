@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b08e1a6eb22f22f106221c7a2bc9b10",
+    "content-hash": "d08a52f96d8b3c7fb9f57bdf0523fb6d",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -3430,6 +3430,66 @@
                 "source": "https://github.com/top-think/think-helper/tree/v3.1.5"
             },
             "time": "2021-06-21T06:17:31+00:00"
+        },
+        {
+            "name": "topthink/think-migration",
+            "version": "v3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-migration.git",
+                "reference": "5717d9e5f3ea745f6dbfd1e30b4402aaadff9a79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-migration/zipball/5717d9e5f3ea745f6dbfd1e30b4402aaadff9a79",
+                "reference": "5717d9e5f3ea745f6dbfd1e30b4402aaadff9a79",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "topthink/framework": "^6.0.0",
+                "topthink/think-helper": "^3.0.3"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.8"
+            },
+            "suggest": {
+                "fzaninotto/faker": "Required to use the factory builder (^1.8)."
+            },
+            "type": "library",
+            "extra": {
+                "think": {
+                    "services": [
+                        "think\\migration\\Service"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Phinx\\": "phinx/src/Phinx",
+                    "think\\migration\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/top-think/think-migration/issues",
+                "source": "https://github.com/top-think/think-migration/tree/v3.0.3"
+            },
+            "time": "2020-12-07T05:54:22+00:00"
         },
         {
             "name": "topthink/think-multi-app",

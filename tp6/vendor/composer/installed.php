@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '7396ad52cedc35154cfa625b4aa7537a3470237f',
+        'reference' => 'bff213dce254016b7075cee4475f2dc698442f7a',
         'name' => 'topthink/think',
         'dev' => true,
     ),
@@ -490,7 +490,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '7396ad52cedc35154cfa625b4aa7537a3470237f',
+            'reference' => 'bff213dce254016b7075cee4475f2dc698442f7a',
             'dev_requirement' => false,
         ),
         'topthink/think-helper' => array(
@@ -500,6 +500,15 @@
             'install_path' => __DIR__ . '/../topthink/think-helper',
             'aliases' => array(),
             'reference' => 'f98e3ad44acd27ae85a4d923b1bdfd16c6d8d905',
+            'dev_requirement' => false,
+        ),
+        'topthink/think-migration' => array(
+            'pretty_version' => 'v3.0.3',
+            'version' => '3.0.3.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../topthink/think-migration',
+            'aliases' => array(),
+            'reference' => '5717d9e5f3ea745f6dbfd1e30b4402aaadff9a79',
             'dev_requirement' => false,
         ),
         'topthink/think-multi-app' => array(
