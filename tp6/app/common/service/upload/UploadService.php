@@ -184,7 +184,7 @@ class UploadService extends BaseService
         try {
             validate(['file' => "filesize:{$maxFileSize}|fileExt:{$uploadAllowExt}"])
                 ->message([
-                    'file.filesize' => '文件大小不能超过'.($maxFileSize / 1024).'文件大小不能超过',
+                    'file.filesize' => '文件大小不能超过'.round($maxFileSize / 1024 / 1024, 1).'MB',
                     'file.fileExt'  => '文件格式不对',
                 ])
                 ->check(request()->file());

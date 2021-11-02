@@ -20,22 +20,13 @@ class JsonConfigManager extends AbstractConfigManager
      */
     public function loadConfig($configFilePath = null)
     {
-        if (!is_null($configFilePath)) {
-            $this->configFilePath = $configFilePath;
-
-            if (file_exists($configFilePath)) {
-                try {
-                    if (!is_callable('json_decode')) {
-                        throw new RuntimeException('Missing php-json extension');
-                    }
-
-                    $this->configData = json_decode(file_get_contents($configFilePath), true);
-                } catch (Exception $exception) {
-                    throw new RuntimeException(
-                        "Failed to read config file from path '{$configFilePath}'\n{$exception->getMessage()}"
-                    );
-                }
+        $this->configFilePath = $configFilePath;
+        if ($this->checkLoadable()) {
+            if (!is_callable('json_decode')) {
+                throw new RuntimeException('Missing php-json extension');
             }
+
+            $this->configData = json_decode(file_get_contents($configFilePath), true);
         }
 
         return $this;

@@ -49,12 +49,12 @@
             <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
                     <template v-if="scope.row.install_time === ''">
-                        <el-button type="primary" size="mini" @click="toInstall(scope.row)">安装</el-button>
+                        <el-button type="text" size="mini" @click="toInstall(scope.row)">安装</el-button>
                     </template>
                     <template v-else>
-<!--                        <el-button type="danger" size="mini">禁用</el-button>-->
-                        <el-button type="danger" size="mini"  @click="toInstall(scope.row)">卸载</el-button>
+                        <el-button type="text" size="mini" style="color: #F56C6C"  @click="toInstall(scope.row)">卸载</el-button>
                     </template>
+                    <el-button type="text" size="mini" @click="toOperateLog(scope.row)">操作日志</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -133,6 +133,20 @@
                         }
                     })
                 },
+                // 操作日志
+                toOperateLog: function(moduleInfo){
+                    var that = this
+                    var url = "{:api_url('/admin/Logs/userOperateLog')}"+'?source_type=admin_module&source='+moduleInfo.module
+                    layer.open({
+                        type: 2,
+                        title: '操作日志',
+                        content: url,
+                        area: ['80%', '90%'],
+                        end: function(){
+                            that.getList()
+                        }
+                    })
+                }
             }
         })
     })

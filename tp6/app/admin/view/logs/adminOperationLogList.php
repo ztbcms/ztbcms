@@ -24,7 +24,7 @@
                             end-placeholder="结束日期" size="medium">
                     </el-date-picker>
                 </el-col>
-                
+
             </el-row>
 
             <el-row :gutter="10" style="margin-top: 10px;">
@@ -40,9 +40,9 @@
                         </el-button>
                     <?php } ?>
 
-                    <el-button v-if="admin_operation_switch == 0" @click="switchingAdminOperation(1)" type="success" plain size="medium">开启操作记录</el-button>
-
-                    <el-button v-if="admin_operation_switch == 1" @click="switchingAdminOperation(0)" type="danger" plain size="medium">关闭操作记录</el-button>
+                    <el-button @click="setOperationRecord" type="danger" plain size="medium">
+                        设置操作开关
+                    </el-button>
 
                 </el-col>
             </el-row>
@@ -255,33 +255,7 @@
                     this.form.sort_time = '';
                     this.getList();
                 },
-                getAdminOperationSwitch: function () {
-                    var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Logs/adminOperationLogList')}",
-                        data: {_action: 'getAdminOperationSwitch'},
-                        dataType: 'json',
-                        type: 'get',
-                        success: function (res) {
-                            that.admin_operation_switch = res.data;
-                        }
-                    })
-                },
-                switchingAdminOperation: function (admin_operation_switch) {
-                    var that = this;
-                    $.ajax({
-                        url: "{:api_url('/admin/Logs/adminOperationLogList')}",
-                        data: {
-                            _action: 'switchingAdminOperation',
-                            admin_operation_switch: admin_operation_switch
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            that.getAdminOperationSwitch();
-                        }
-                    })
-                },
+
                 // 预览内容
                 previewContent: function (content){
                     try{
@@ -293,11 +267,23 @@
                         title: '查看',
                         content: '<pre style="padding: 4px 8px">' + content + '</pre>'
                     });
+                },
+                //设置操作记录开关
+                setOperationRecord: function () {
+                    var that = this;
+                    var url = "{:api_url('/admin/Logs/setOperationLog')}?switch=" + that.admin_operation_switch;
+                    layer.open({
+                        type: 2,
+                        title: '设置',
+                        shadeClose: true,
+                        area: ['50%', '60%'],
+                        content: url,
+                        end: function (res) {}
+                    });
                 }
             },
             mounted: function () {
                 this.getList();
-                this.getAdminOperationSwitch();
             }
         })
     })

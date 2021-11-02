@@ -817,3 +817,17 @@ CREATE TABLE `cms_email_send_log` (
   `send_time` int(11) NOT NULL COMMENT '发送时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邮件发送记录';
+
+DROP TABLE IF EXISTS `cms_user_operate_log`;
+CREATE TABLE `cms_user_operate_log`
+(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(6) NOT NULL COMMENT '操作帐号ID',
+  `user_name` varchar(255) NOT NULL DEFAULT '' COMMENT '操作人名称',
+  `ip` char(20) NOT NULL DEFAULT '' COMMENT 'IP',
+  `source_type` varchar(255) NOT NULL DEFAULT '' COMMENT '来源类型',
+  `source` varchar(255) NOT NULL DEFAULT '' COMMENT '来源项',
+  `content` varchar(255) NOT NULL DEFAULT '' COMMENT '操作内容',
+  `create_time` int(11) NOT NULL COMMENT '操作时间',
+    PRIMARY KEY (`id`)
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COMMENT='用户操作日志';

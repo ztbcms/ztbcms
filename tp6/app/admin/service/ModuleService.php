@@ -126,12 +126,14 @@ class ModuleService extends BaseService
         $moduleConfig = include $config_file;
         $depend = [];
         // 适配部分依赖没有写明版本，默认 ^1.0.0
-        foreach ($moduleConfig['depend'] as $key => $value){
-            if(is_int($key)){
-                // 没有指定版本
-                $depend []= ['module' => $key, 'version' => '^1.0.0'];
-            } else {
-                $depend []= ['module' => $key, 'version' => $value];
+        if (isset($moduleConfig['depend'])) {
+            foreach ($moduleConfig['depend'] as $key => $value) {
+                if (is_int($key)) {
+                    // 没有指定版本
+                    $depend [] = ['module' => $key, 'version' => '^1.0.0'];
+                } else {
+                    $depend [] = ['module' => $key, 'version' => $value];
+                }
             }
         }
         $moduleConfig['depend_list'] =  $depend;

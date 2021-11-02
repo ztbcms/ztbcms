@@ -1,8 +1,4 @@
 <?php
-/**
- * User: Cycle3
- * Date: 2020/10/21
- */
 
 namespace app\admin\controller;
 
@@ -11,6 +7,7 @@ use app\admin\model\OperationlogModel;
 use app\admin\service\AdminConfigService;
 use app\admin\service\AdminOperationLogService;
 use app\admin\service\LoginlogService;
+use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
 use think\Request;
 
@@ -125,11 +122,8 @@ class Logs extends AdminController
             }
             $res = AdminOperationLogService::getAdminOperationLogList($where, $order, $page, $limit, $time);
             return json($res);
-        } else if ($action == 'getAdminOperationSwitch') {
-            $admin_operation_switch = (int)AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
-            return json(self::createReturn(true, $admin_operation_switch));
-        } else if ($action == 'switchingAdminOperation') {
-            $admin_operation_switch = input('admin_operation_switch', '', 'trim');
+        } else if ($action == 'updateAdminOperationConfig') {
+            $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
             $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
             AdminConfigService::getInstance()->clearConfigCache();
             return json($getConfig);
@@ -150,4 +144,64 @@ class Logs extends AdminController
         $OperationlogModel->deleteOperationLog($day);
         return json(self::createReturn(true, '', '删除成功'));
     }
+
+    /**
+     * 用户操作日志列表
+     *
+     * @return \think\response\Json|\think\response\View
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    function userOperateLog(){
+        $_action = input('_action');
+        if ($_action == 'getList') {
+            $where = [];
+            $user_id = input('user_id', '', 'trim');
+            if (!empty($user_id)) {
+                $where[] = ['user_id', '=', $user_id];
+            }
+            $start_time = input('start_time', '', 'trim');
+            $end_time = input('end_time', '', 'trim');
+            $time = [];
+            if (!empty($start_time) && !empty($end_time)) {
+                $start_time = strtotime($start_time);
+                $end_time = strtotime($end_time) + 24 * 60 * 60 - 1;
+                $time = [$start_time, $end_time];
+            }
+            $ip = input('ip', '', 'trim');
+            if (!empty($ip)) {
+                $where[] = ['ip', 'like', '%'.$ip.'%'];
+            }
+            $source_type = input('source_type', '', 'trim');
+            if ($source_type != '') {
+                $where[] = ['source_type', 'like', '%'.$source_type.'%'];
+            }
+            $source = input('source', '', 'trim');
+            if ($source != '') {
+                $where[] = ['source', '=', "$source"];
+            }
+            $page = input('page', 1, 'trim');
+            $limit = input('limit', 20, 'trim');
+            $sort_time = input('sort_time', '', 'trim');
+            $order = ["id" => "desc"];
+            if (!empty($sort_time)) {
+                $order = ['create_time' => $sort_time == 'desc' ? 'desc' : 'asc'];
+            }
+            $res = UserOperateLogService::getUserOperateLogList($where, $order, $page, $limit, $time);
+            return json($res);
+        }
+        return view('userOperateLog');
+    }
+
+    /**
+     * 用户操作日志列表
+     * @return \think\response\View
+     */
+    function setOperationLog()
+    {
+        $switch = (int)AdminConfigService::getInstance()->getConfig('admin_operation_switch', false)['data'];
+        return view('setOperationRecord')->assign('switch', $switch);
+    }
+
 }

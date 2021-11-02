@@ -37,7 +37,7 @@ class Api extends AdminController
 
         $attachmentModel = $uploadService->uploadImage(0, 0, 0);
         if (!$attachmentModel) {
-            return json(self::createReturn(false, $uploadService->getError()));
+            return json(self::createReturn(false, null, $uploadService->getError()));
         } else {
             $attachmentModelResult = AttachmentModel::where('aid', $attachmentModel->aid)
                 ->visible(['aid', 'filename', 'module', 'fileurl', 'filethumb'])

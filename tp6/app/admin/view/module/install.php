@@ -12,8 +12,13 @@
                     <span>{{moduleInfo['adaptation']}}</span>
                 </el-form-item>
                 <el-form-item label="依赖模块:" >
-                    <template v-for="item in moduleInfo['depend_list']">
-                        <p style="margin: 0;">{{item['module']}} @ {{item['version']}}</p>
+                    <template v-if="moduleInfo['depend_list']">
+                        暂无
+                    </template>
+                    <template v-else>
+                        <template v-for="item in moduleInfo['depend_list']">
+                            <p style="margin: 0;">{{item['module']}} @ {{item['version']}}</p>
+                        </template>
                     </template>
                 </el-form-item>
                 <el-form-item label="简介:">
