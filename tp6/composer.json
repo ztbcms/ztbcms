@@ -25,6 +25,7 @@
         "topthink/think-orm": "^2.0",
         "topthink/think-multi-app": "^1.0",
         "topthink/think-view": "^1.0",
+        "topthink/think-queue": "^3.0",
         "aliyuncs/oss-sdk-php": "^2.4",
         "alibabacloud/client": "^1.5",
         "overtrue/wechat": "^4.2",
