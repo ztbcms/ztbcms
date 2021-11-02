@@ -2,6 +2,9 @@
 
 namespace clagiordano\weblibs\configmanager;
 
+use Exception;
+use RuntimeException;
+
 /**
  * Class AbstractConfigManager
  * @package clagiordano\weblibs\configmanager
@@ -21,7 +24,13 @@ abstract class AbstractConfigManager implements IConfigurable
      */
     public function __construct($configFilePath = null)
     {
-        $this->loadConfig($configFilePath);
+        try {
+            $this->loadConfig($configFilePath);
+        } catch (Exception $exception) {
+            /**
+             * Allow not existent file name at construct
+             */
+        }
     }
 
     /**
@@ -91,5 +100,60 @@ abstract class AbstractConfigManager implements IConfigurable
         $configData = $newValue;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConfig()
+    {
+        return $this->configData;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setConfig($config)
+    {
+        $this->configData = (array)$config;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convert(IConfigurable $target)
+    {
+        $target->setConfig($this->getConfig());
+
+        return $target;
+    }
+
+    /**
+     * Check if configFilePath exists and is readable
+     * @return bool
+     * @throws RuntimeException
+     */
+    protected function checkLoadable()
+    {
+        if ($this->configFilePath !== null) {
+            if (file_exists($this->configFilePath) && is_readable($this->configFilePath)) {
+                /**
+                 * Readable
+                 */
+                return true;
+            }
+
+            /**
+             * $configFilePath is not null, but not existent or not readable
+             */
+            throw new RuntimeException("Failed to read config file from path '{$this->configFilePath}'");
+        }
+
+        /**
+         * $configFilePath is null
+         */
+        return false;
     }
 }

@@ -20,12 +20,9 @@ class ArrayConfigManager extends AbstractConfigManager
      */
     public function loadConfig($configFilePath = null)
     {
-        if (!is_null($configFilePath)) {
-            $this->configFilePath = $configFilePath;
-
-            if (file_exists($configFilePath)) {
-                $this->configData = require $configFilePath;
-            }
+        $this->configFilePath = $configFilePath;
+        if ($this->checkLoadable()) {
+            $this->configData = require $this->configFilePath;
         }
 
         return $this;

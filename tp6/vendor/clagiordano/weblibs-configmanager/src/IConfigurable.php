@@ -58,4 +58,27 @@ interface IConfigurable
      * @return IConfigurable
      */
     public function setValue($configPath, $newValue);
+
+    /**
+     * Returns the whole internal configuration as array
+     * @return array
+     */
+    public function getConfig();
+
+    /**
+     * Sets the whole internal configuration from array
+     *
+     * @param array $config
+     * @return IConfigurable
+     */
+    public function setConfig($config);
+
+    /**
+     * Converts the current instance into another one provided as argument,
+     * migrating its internal configuration and returning the new one.
+     *
+     * @param IConfigurable $target
+     * @return IConfigurable
+     */
+    public function convert(IConfigurable $target);
 }
