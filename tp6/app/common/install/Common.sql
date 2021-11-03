@@ -134,3 +134,32 @@ CREATE TABLE `cms_tp6_attachment` (
   `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`aid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
+
+-- ----------------------------
+-- 队列
+-- ----------------------------
+CREATE TABLE `cms_queue_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserve_time` int(11) unsigned DEFAULT NULL,
+  `available_time` int(11) unsigned NOT NULL,
+  `create_time` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `queue` (`queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-任务表';
+
+CREATE TABLE `cms_queue_failed_jobs` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `connection` text NOT NULL,
+ `queue` text NOT NULL,
+ `payload` longtext NOT NULL,
+ `exception` longtext NOT NULL,
+ `fail_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-失败任务表';
+
+-- ----------------------------
+-- 队列 END
+-- ----------------------------
