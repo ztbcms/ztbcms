@@ -5,7 +5,10 @@
 
 namespace app\common\subscribe\queue;
 
+use think\console\Input;
 use think\Event;
+use think\facade\App;
+use think\facade\Console;
 use think\facade\Log;
 use think\queue\event\JobExceptionOccurred;
 use think\queue\event\JobFailed;
@@ -65,10 +68,12 @@ class QueueSubscribe
      */
     public function subscribe(Event $event)
     {
-        $event->listen(JobProcessing::class, [$this, 'onJobProcessing']);
-        $event->listen(JobProcessed::class, [$this, 'onJobProcessed']);
-        $event->listen(JobFailed::class, [$this, 'onJobFailed']);
-        $event->listen(JobExceptionOccurred::class, [$this, 'onJobExceptionOccurred']);
-        $event->listen(WorkerStopping::class, [$this, 'onWorkerStopping']);
+        if (app()->runningInConsole()) {
+            $event->listen(JobProcessing::class, [$this, 'onJobProcessing']);
+            $event->listen(JobProcessed::class, [$this, 'onJobProcessed']);
+            $event->listen(JobFailed::class, [$this, 'onJobFailed']);
+            $event->listen(JobExceptionOccurred::class, [$this, 'onJobExceptionOccurred']);
+            $event->listen(WorkerStopping::class, [$this, 'onWorkerStopping']);
+        }
     }
 }
