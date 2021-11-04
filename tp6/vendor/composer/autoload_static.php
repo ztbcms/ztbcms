@@ -74,6 +74,7 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+            'Predis\\' => 7,
             'Phinx\\' => 6,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
@@ -247,6 +248,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'Predis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
         'Phinx\\' => 
         array (

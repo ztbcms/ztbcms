@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'bff213dce254016b7075cee4475f2dc698442f7a',
+        'reference' => '3441548d9858da80196b49592762586203d7a814',
         'name' => 'topthink/think',
         'dev' => true,
     ),
@@ -179,6 +179,15 @@
             'install_path' => __DIR__ . '/../pimple/pimple',
             'aliases' => array(),
             'reference' => 'a94b3a4db7fb774b3d78dad2315ddc07629e1bed',
+            'dev_requirement' => false,
+        ),
+        'predis/predis' => array(
+            'pretty_version' => 'v1.1.9',
+            'version' => '1.1.9.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../predis/predis',
+            'aliases' => array(),
+            'reference' => 'c50c3393bb9f47fa012d0cdfb727a266b0818259',
             'dev_requirement' => false,
         ),
         'psr/cache' => array(
@@ -490,7 +499,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'bff213dce254016b7075cee4475f2dc698442f7a',
+            'reference' => '3441548d9858da80196b49592762586203d7a814',
             'dev_requirement' => false,
         ),
         'topthink/think-helper' => array(
