@@ -12,6 +12,7 @@ use app\admin\model\RoleModel;
 use app\common\service\BaseService;
 use think\exception\InvalidArgumentException;
 use think\exception\ValidateException;
+use think\facade\Cache;
 use think\facade\Db;
 
 /**
@@ -21,6 +22,11 @@ use think\facade\Db;
  */
 class RbacService extends BaseService
 {
+    /**
+     * 缓存Tag名称
+     */
+    const CacheTagName = 'Rbac';
+
     /**
      * 获取用户的访问列表
      *
@@ -54,10 +60,10 @@ class RbacService extends BaseService
         if (empty($role_id)) {
             throw new InvalidArgumentException('请指定角色');
         }
-        //检查角色
-        $roleinfo = Db::name('role')->where('id', $role_id)->findOrEmpty();
-        if (empty($roleinfo)) {
-            throw new InvalidArgumentException('找不到角色');
+        $cache_key = 'RbacService_getRoleAccessList_rold_id_'.$role_id;
+        $cache_data = Cache::get($cache_key);
+        if (!empty($cache_data)) {
+            return self::createReturn(true, $cache_data);
         }
         //查询出该角色拥有的全部权限列表
         $accessService = new AccessService();
@@ -69,6 +75,7 @@ class RbacService extends BaseService
             $action = strtolower($acc['action']);
             $accessList[$app][$controller][$action] = $action;
         }
+        Cache::tag(self::CacheTagName)->set($cache_key, $accessList);
         return self::createReturn(true, $accessList);
     }
 
@@ -202,6 +209,7 @@ class RbacService extends BaseService
         }
 
         $accessModel->commit();
+        Cache::tag(self::CacheTagName)->clear();
         return self::createReturn(true, null, '授权成功');
     }
 
