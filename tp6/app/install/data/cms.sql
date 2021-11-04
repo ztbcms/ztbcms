@@ -435,7 +435,8 @@ CREATE TABLE `cms_login_log` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,1为登录成功，0为登录失败',
   `password` varchar(30) NOT NULL DEFAULT '' COMMENT '尝试错误密码',
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `logintime` (`logintime`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
 
 -- ----------------------------
