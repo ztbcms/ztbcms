@@ -135,7 +135,6 @@ class MenuService extends BaseService
      * @return array
      */
     static function getMenuByRole($role_id){
-        // 只获取tp6菜单
         $menuList = MenuModel::order('listorder ASC,id ASC')->select()->toArray();
         $array = [];
         $rbacService = new RbacService();

@@ -45,11 +45,7 @@ class AccessService extends BaseService
         } else {
             //该角色全部权限
             $accessModel = new AccessModel();
-            //子角色列表
-            $roleModel = new RoleModel();
-            $role_ids = $roleModel->getChildrenRoleIdList($role_id, true);
-            //查询出该角色拥有的全部权限列表
-            $accessList = $accessModel->where('role_id', 'IN', $role_ids)->field('app,controller,action')->select()->toArray() ?: [];
+            $accessList = $accessModel->where('role_id', 'IN', [$role_id])->field('app,controller,action')->select()->toArray() ?: [];
         }
 
 
