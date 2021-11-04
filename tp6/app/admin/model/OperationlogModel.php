@@ -20,14 +20,14 @@ class OperationlogModel extends Model
     /**
      * 删除登录日志(X天前的数据)
      *
-     * @param  int  $day  N
+     * @param  int  $day  天数
      *
      * @return bool
      */
-    function deleteOperationLog($day = 30)
+    static function deleteOperationLog($day = 30)
     {
         $limit_time = time() - $day * 24 * 60 * 60;
-        $this->where('time', '<=', $limit_time)->delete();
+        OperationlogModel::where('time', '<=', $limit_time)->delete();
         return true;
     }
 
@@ -38,28 +38,23 @@ class OperationlogModel extends Model
      *
      * @return bool
      */
-    function record(\think\Response $response)
+    static function record(\think\Response $response)
     {
         if (Request::instance()->isPost()) {
-            //未开启的状态下不进行记录
-            $admin_operation_switch = AdminConfigService::getInstance()->getConfig('admin_operation_switch')['data'];
-            if (!is_numeric($admin_operation_switch) || $admin_operation_switch != 1) {
-                return false;
-            }
             $request = request();
             $content = json_decode($response->getContent(), true);
             $status = $content['status'] ?? 0;
-            $logData= [
-                'uid' => AdminUserService::getInstance()->getInfo()['id'] ?? 0,
-                'status' => $status ? 1 : 0,
-                'method' => $request->method(),
-                'url' => $request->url(),
-                'params' => json_encode($request->post()),
+            $logData = [
+                'uid'      => AdminUserService::getInstance()->getInfo()['id'] ?? 0,
+                'status'   => $status ? 1 : 0,
+                'method'   => $request->method(),
+                'url'      => $request->url(),
+                'params'   => json_encode($request->post()),
                 'response' => $response->getContent(),
-                'time' => time(),
-                'ip' => $request->ip(),
+                'time'     => time(),
+                'ip'       => $request->ip(),
             ];
-            $this->insert($logData);
+            OperationlogModel::insert($logData);
             return true;
         } else {
             return false;

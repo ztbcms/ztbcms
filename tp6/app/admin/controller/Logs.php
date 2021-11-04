@@ -5,8 +5,6 @@ namespace app\admin\controller;
 use app\admin\model\LoginlogModel;
 use app\admin\model\OperationlogModel;
 use app\admin\service\AdminConfigService;
-use app\admin\service\AdminOperationLogService;
-use app\admin\service\LoginlogService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
 use app\common\service\BaseService;
