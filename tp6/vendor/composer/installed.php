@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '3441548d9858da80196b49592762586203d7a814',
+        'reference' => '3d3c8c92bc77cc7c20de7c86d70f3828b118f3a0',
         'name' => 'topthink/think',
         'dev' => true,
     ),
@@ -137,12 +137,12 @@
             'dev_requirement' => false,
         ),
         'nesbot/carbon' => array(
-            'pretty_version' => '2.53.1',
-            'version' => '2.53.1.0',
+            'pretty_version' => '2.54.0',
+            'version' => '2.54.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../nesbot/carbon',
             'aliases' => array(),
-            'reference' => 'f4655858a784988f880c1b8c7feabbf02dfdf045',
+            'reference' => 'eed83939f1aed3eee517d03a33f5ec587ac529b5',
             'dev_requirement' => false,
         ),
         'overtrue/socialite' => array(
@@ -499,7 +499,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '3441548d9858da80196b49592762586203d7a814',
+            'reference' => '3d3c8c92bc77cc7c20de7c86d70f3828b118f3a0',
             'dev_requirement' => false,
         ),
         'topthink/think-helper' => array(
