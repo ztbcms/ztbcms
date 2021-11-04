@@ -42,9 +42,9 @@ class Logs extends AdminController
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
-            $logintime = [];
             if (!empty($start_time) && !empty($end_time)) {
                 $logintime = [strtotime($start_time), strtotime($end_time.' 23:59:59')];
+                $where[] = ['logintime', 'between', $logintime];
             }
             $loginip = input('loginip', '', 'trim');
             if (!empty($loginip)) {
@@ -61,9 +61,6 @@ class Logs extends AdminController
             }
             $page = input('page', 1, 'trim');
             $limit = input('limit', 20, 'trim');
-            if (!empty($logintime)) {
-                $where[] = ['logintime', 'between', $logintime];
-            }
             $LoginlogModel = new LoginlogModel();
             $items = $LoginlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
             $total_items = $LoginlogModel->where($where)->count();
@@ -108,9 +105,8 @@ class Logs extends AdminController
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
-            $time = [];
             if (!empty($start_time) && !empty($end_time)) {
-                $time = [$start_time, $end_time];
+                $where[] = ['time', 'between', [strtotime($start_time), strtotime($end_time.' 23:59:59')]];
             }
             $ip = input('ip', '', 'trim');
             if (!empty($ip)) {
@@ -127,8 +123,11 @@ class Logs extends AdminController
             if (!empty($sort_time)) {
                 $order = ['time' => $sort_time == 'desc' ? 'desc' : 'asc'];
             }
-            $res = AdminOperationLogService::getAdminOperationLogList($where, $order, $page, $limit, $time);
-            return json($res);
+            $OperationlogModel = new OperationlogModel();
+            $items = $OperationlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            $total_items = $OperationlogModel->where($where)->count();
+            $total_page = ceil($total_items / $limit);
+            return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
         } else {
             if ($action == 'updateAdminOperationConfig') {
                 $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
