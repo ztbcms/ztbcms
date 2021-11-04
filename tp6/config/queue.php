@@ -9,8 +9,10 @@
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
 
+// 队列配置
 return [
-    'default'     => 'database',
+    // 默认驱动
+    'default'     => env('queue.driver', 'database'),
     'connections' => [
         'sync'     => [
             'type' => 'sync',
