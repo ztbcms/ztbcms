@@ -25,26 +25,22 @@
                 highlight-current-row
                 style="width: 100%">
             <el-table-column
-                    align="center"
                     prop="subject"
                     label="计划标题"
-                    width="100">
+                    min-width="200">
             </el-table-column>
             <el-table-column
                     min-width="300"
-                    align="center"
                     prop="cron_file"
                     label="执行文件"
             >
             </el-table-column>
             <el-table-column
                     width="180"
-                    align="center"
                     prop="loop_time_text"
                     label="任务周期">
             </el-table-column>
             <el-table-column
-                    align="center"
                     width="80"
                     label="开启状态">
                 <template slot-scope="props">
@@ -53,14 +49,12 @@
                 </template>
             </el-table-column>
             <el-table-column
-                    align="center"
                     prop="modified_time"
                     width="180"
                     label="上次执行时间">
             </el-table-column>
             <el-table-column
                     width="180"
-                    align="center"
                     prop="next_time"
                     label="下次执行时间">
             </el-table-column>

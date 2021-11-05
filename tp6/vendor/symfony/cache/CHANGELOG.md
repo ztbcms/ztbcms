@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+5.3
+---
+
+ * added support for connecting to Redis Sentinel clusters when using the Redis PHP extension
+ * add support for a custom serializer to the `ApcuAdapter` class
+
 5.2.0
 -----
 

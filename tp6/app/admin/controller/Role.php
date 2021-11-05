@@ -131,7 +131,13 @@ class Role extends AdminController
         if (empty($name)) {
             return json(self::createReturn(false, null, '请填写角色名称'));
         }
-
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        if (empty($parentid)) {
+            // 非超管时，上级角色默认是当前登录角色
+            if (RoleModel::SUPER_ADMIN_ROLE_ID !== $userInfo['role_id']) {
+                $parentid = $userInfo['role_id'];
+            }
+        }
         $data['id'] = $id;
         $data['name'] = $name;
         $data['remark'] = $remark;

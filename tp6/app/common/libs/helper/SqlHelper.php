@@ -30,16 +30,19 @@ class SqlHelper
         $queriesarray = explode(";\n", trim($sql));
         unset($sql);
         foreach ($queriesarray as $query) {
-            $ret[$num] = '';
+            $line = '';
             $queries = explode("\n", trim($query));
             $queries = array_filter($queries);
             foreach ($queries as $query) {
                 $str1 = substr($query, 0, 1);
                 if ($str1 != '#' && $str1 != '-') {
-                    $ret[$num] .= $query;
+                    $line .= $query;
                 }
             }
-            $num++;
+            if(!empty($line)){
+                $ret[$num] = $line;
+                $num++;
+            }
         }
         return $ret;
     }

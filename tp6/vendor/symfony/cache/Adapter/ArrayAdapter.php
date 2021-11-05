@@ -33,10 +33,11 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
     private $storeSerialized;
     private $values = [];
     private $expiries = [];
-    private $createCacheItem;
     private $defaultLifetime;
     private $maxLifetime;
     private $maxItems;
+
+    private static $createCacheItem;
 
     /**
      * @param bool $storeSerialized Disabling serialization can lead to cache corruptions when storing mutable values but increases performance otherwise
@@ -55,7 +56,7 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
         $this->storeSerialized = $storeSerialized;
         $this->maxLifetime = $maxLifetime;
         $this->maxItems = $maxItems;
-        $this->createCacheItem = \Closure::bind(
+        self::$createCacheItem ?? self::$createCacheItem = \Closure::bind(
             static function ($key, $value, $isHit) {
                 $item = new CacheItem();
                 $item->key = $key;
@@ -111,7 +112,7 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
 
             return true;
         }
-        CacheItem::validateKey($key);
+        \assert('' !== CacheItem::validateKey($key));
 
         return isset($this->expiries[$key]) && !$this->deleteItem($key);
     }
@@ -131,9 +132,8 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
         } else {
             $value = $this->storeSerialized ? $this->unfreeze($key, $isHit) : $this->values[$key];
         }
-        $f = $this->createCacheItem;
 
-        return $f($key, $value, $isHit);
+        return (self::$createCacheItem)($key, $value, $isHit);
     }
 
     /**
@@ -141,13 +141,9 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
      */
     public function getItems(array $keys = [])
     {
-        foreach ($keys as $key) {
-            if (!\is_string($key) || !isset($this->expiries[$key])) {
-                CacheItem::validateKey($key);
-            }
-        }
+        \assert(self::validateKeys($keys));
 
-        return $this->generateItems($keys, microtime(true), $this->createCacheItem);
+        return $this->generateItems($keys, microtime(true), self::$createCacheItem);
     }
 
     /**
@@ -157,9 +153,7 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
      */
     public function deleteItem($key)
     {
-        if (!\is_string($key) || !isset($this->expiries[$key])) {
-            CacheItem::validateKey($key);
-        }
+        \assert('' !== CacheItem::validateKey($key));
         unset($this->values[$key], $this->expiries[$key]);
 
         return true;
@@ -229,7 +223,7 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
         }
 
         $this->values[$key] = $value;
-        $this->expiries[$key] = null !== $expiry ? $expiry : \PHP_INT_MAX;
+        $this->expiries[$key] = $expiry ?? \PHP_INT_MAX;
 
         return true;
     }
@@ -312,7 +306,7 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
         $this->clear();
     }
 
-    private function generateItems(array $keys, $now, $f)
+    private function generateItems(array $keys, float $now, \Closure $f): \Generator
     {
         foreach ($keys as $i => $key) {
             if (!$isHit = isset($this->expiries[$key]) && ($this->expiries[$key] > $now || !$this->deleteItem($key))) {
@@ -342,7 +336,7 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
         }
     }
 
-    private function freeze($value, $key)
+    private function freeze($value, string $key)
     {
         if (null === $value) {
             return 'N;';
@@ -395,5 +389,16 @@ class ArrayAdapter implements AdapterInterface, CacheInterface, LoggerAwareInter
         }
 
         return $value;
+    }
+
+    private function validateKeys(array $keys): bool
+    {
+        foreach ($keys as $key) {
+            if (!\is_string($key) || !isset($this->expiries[$key])) {
+                CacheItem::validateKey($key);
+            }
+        }
+
+        return true;
     }
 }

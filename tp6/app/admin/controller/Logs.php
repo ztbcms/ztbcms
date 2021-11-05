@@ -5,10 +5,9 @@ namespace app\admin\controller;
 use app\admin\model\LoginlogModel;
 use app\admin\model\OperationlogModel;
 use app\admin\service\AdminConfigService;
-use app\admin\service\AdminOperationLogService;
-use app\admin\service\LoginlogService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
+use app\common\service\BaseService;
 use think\Request;
 
 /**
@@ -21,9 +20,9 @@ class Logs extends AdminController
 {
 
     /**
-     * 登录记录列表
+     * 登录日志
      *
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
@@ -37,17 +36,17 @@ class Logs extends AdminController
             $where = [];
             $username = input('username', '', 'trim');
             if (!empty($username)) {
-                $where[] = ['username', 'like', '%' . $username . '%'];
+                $where[] = ['username', 'like', '%'.$username.'%'];
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
-            $logintime = [];
             if (!empty($start_time) && !empty($end_time)) {
-                $logintime = [$start_time, $end_time];
+                $logintime = [strtotime($start_time), strtotime($end_time.' 23:59:59')];
+                $where[] = ['logintime', 'between', $logintime];
             }
             $loginip = input('loginip', '', 'trim');
             if (!empty($loginip)) {
-                $where[] = ['loginip', 'like', "%" . $loginip . "%"];
+                $where[] = ['loginip', 'like', "%".$loginip."%"];
             }
             $status = input('status', '', 'trim');
             if ($status != '') {
@@ -60,8 +59,11 @@ class Logs extends AdminController
             }
             $page = input('page', 1, 'trim');
             $limit = input('limit', 20, 'trim');
-            $res = LoginlogService::getLoginLogList($where, $order, $page, $limit, $logintime);
-            return json($res);
+            $LoginlogModel = new LoginlogModel();
+            $items = $LoginlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            $total_items = $LoginlogModel->where($where)->count();
+            $total_page = ceil($total_items / $limit);
+            return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
         } else {
             return view('loginLogList');
         }
@@ -83,7 +85,7 @@ class Logs extends AdminController
     /**
      * 获取后台操作日志列表
      *
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
@@ -101,17 +103,16 @@ class Logs extends AdminController
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
-            $time = [];
             if (!empty($start_time) && !empty($end_time)) {
-                $time = [$start_time, $end_time];
+                $where[] = ['time', 'between', [strtotime($start_time), strtotime($end_time.' 23:59:59')]];
             }
             $ip = input('ip', '', 'trim');
             if (!empty($ip)) {
-                $where[] = ['ip', 'like', '%' . $ip . '%'];
+                $where[] = ['ip', 'like', '%'.$ip.'%'];
             }
             $status = input('status', '', 'trim');
             if ($status != '') {
-                $where[] = ['status', '=', (int)$status];
+                $where[] = ['status', '=', (int) $status];
             }
             $page = input('page', 1, 'trim');
             $limit = input('limit', 20, 'trim');
@@ -120,15 +121,20 @@ class Logs extends AdminController
             if (!empty($sort_time)) {
                 $order = ['time' => $sort_time == 'desc' ? 'desc' : 'asc'];
             }
-            $res = AdminOperationLogService::getAdminOperationLogList($where, $order, $page, $limit, $time);
-            return json($res);
-        } else if ($action == 'updateAdminOperationConfig') {
-            $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
-            $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
-            AdminConfigService::getInstance()->clearConfigCache();
-            return json($getConfig);
+            $OperationlogModel = new OperationlogModel();
+            $items = $OperationlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            $total_items = $OperationlogModel->where($where)->count();
+            $total_page = ceil($total_items / $limit);
+            return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
         } else {
-            return view('adminOperationLogList');
+            if ($action == 'updateAdminOperationConfig') {
+                $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
+                $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
+                AdminConfigService::getInstance()->clearConfigCache();
+                return json($getConfig);
+            } else {
+                return view('adminOperationLogList');
+            }
         }
     }
 
@@ -153,7 +159,8 @@ class Logs extends AdminController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    function userOperateLog(){
+    function userOperateLog()
+    {
         $_action = input('_action');
         if ($_action == 'getList') {
             $where = [];
@@ -196,11 +203,12 @@ class Logs extends AdminController
 
     /**
      * 用户操作日志列表
+     *
      * @return \think\response\View
      */
     function setOperationLog()
     {
-        $switch = (int)AdminConfigService::getInstance()->getConfig('admin_operation_switch', false)['data'];
+        $switch = (int) AdminConfigService::getInstance()->getConfig('admin_operation_switch', false)['data'];
         return view('setOperationRecord')->assign('switch', $switch);
     }
 

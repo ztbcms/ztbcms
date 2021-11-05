@@ -13,5 +13,7 @@ return [
     ],
 
     'subscribe' => [
+        // 队列事件订阅
+        'app\common\subscribe\queue\QueueSubscribe'
     ],
 ];
