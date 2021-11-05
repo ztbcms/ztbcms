@@ -37,7 +37,7 @@ class Panel extends AdminController
         foreach ($files as $file) {
             $uploadData[] = [
                 'aid'           => $file['aid'],
-                'delete_status' => 1
+                'delete_time' => time()
             ];
         }
         $attachmentModel = new AttachmentModel();

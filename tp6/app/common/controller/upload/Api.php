@@ -6,29 +6,31 @@
  * Time: 15:55.
  */
 
+declare(strict_types=1);
+
 namespace app\common\controller\upload;
 
 
-use app\common\controller\AdminController;
+use app\BaseController;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\upload\UploadService;
+use think\response\Json;
 
 /**
- * 上传接口
+ * 上传接口，前端接口继承 BaseController
  *
  * @package app\common\controller\upload
  */
-class Api extends AdminController
+class Api extends BaseController
 {
-    public $noNeedPermission = ['*'];
     /**
      * 上传图片（可以根据实际需要写自己的api接口）
-     * @return \think\response\Json
+     * @return Json
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\db\exception\DataNotFoundException
      */
-    function imageUpload()
+    function imageUpload(): Json
     {
         $uploadService = new UploadService();
         //设置私有读
@@ -48,12 +50,12 @@ class Api extends AdminController
 
     /**
      * 上传视频（可以根据实际需要写自己的api接口）
-     * @return \think\response\Json
+     * @return Json
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\db\exception\DataNotFoundException
      */
-    function videoUpload()
+    function videoUpload(): Json
     {
         $uploadService = new UploadService();
         //设置私有读
@@ -73,12 +75,12 @@ class Api extends AdminController
 
     /**
      * 上传文件（可以根据实际需要写自己的api接口）
-     * @return \think\response\Json
+     * @return Json
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\db\exception\DataNotFoundException
      */
-    function fileUpload()
+    function fileUpload(): Json
     {
         $uploadService = new UploadService();
         //设置私有读

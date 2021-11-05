@@ -1,5 +1,30 @@
 window.__vueCommon = {
+    data() {
+        return {
+            dataList: [],
+            per_page: 20,
+            last_page: 0,
+            current_page: 1,
+            isInitLoading: false
+        }
+    },
+    mounted() {
+        if (this.isInitLoading) {
+            this.GetList()
+        }
+    },
     methods: {
+        currentChangeEvent(e) {
+            console.log('currentChangeEvent', e)
+            this.current_page = e
+            this.GetList()
+        },
+        handRes({data, current_page, last_page, per_page}) {
+            this.dataList = data
+            this.per_page = per_page;
+            this.last_page = last_page
+            this.current_page = current_page
+        },
         /**
          * post 请求
          * @param url
@@ -37,17 +62,17 @@ window.__vueCommon = {
          */
         getUrlQuery: function (variable) {
             var urlObj = this.__parserUrl(window.location.href);
-            return urlObj && urlObj.search && urlObj.search[variable] ? urlObj.search[variable] : '' ;
+            return urlObj && urlObj.search && urlObj.search[variable] ? urlObj.search[variable] : '';
         },
         //解析URL
-        __parserUrl: function(url){
+        __parserUrl: function (url) {
             return window.Ztbcms.parserUrl(url)
         },
-        openNewIframeByUrl: function(title, url){
+        openNewIframeByUrl: function (title, url) {
             window.Ztbcms.openNewIframeByUrl(title, url)
         },
-        openNewIframeByRouter: function(title, router, url){
-           window.Ztbcms.openNewIframeByRouter(title, router, url)
+        openNewIframeByRouter: function (title, router, url) {
+            window.Ztbcms.openNewIframeByRouter(title, router, url)
 
         }
     },
