@@ -138,6 +138,7 @@ CREATE TABLE `cms_tp6_attachment` (
 -- ----------------------------
 -- 队列
 -- ----------------------------
+DROP TABLE IF EXISTS `cms_queue_jobs`;
 CREATE TABLE `cms_queue_jobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `queue` varchar(255) NOT NULL,
@@ -150,6 +151,7 @@ CREATE TABLE `cms_queue_jobs` (
   KEY `queue` (`queue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-任务表';
 
+DROP TABLE IF EXISTS `cms_queue_failed_jobs`;
 CREATE TABLE `cms_queue_failed_jobs` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `connection` text NOT NULL,

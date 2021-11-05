@@ -322,7 +322,7 @@ class Index extends BaseController
         foreach ($install_modules as $module) {
             $res = $moduleService->install($module);
             if (!$res['status']) {
-                $message = '<li><span class="correct_span">&radic;</span>安装模块'.$module.'，失败</li> ';
+                $message = '<li><span class="correct_span">&radic;</span>安装模块'.$module.'，失败:'.$res['msg'].'</li> ';
                 return self::makeJsonReturn(true, ['msg' => $message]);
             }
         }
