@@ -1,15 +1,15 @@
 window.__vueCommon = {
     data() {
         return {
-            dataList: [],
+            data_list: [],
             per_page: 20,
             last_page: 0,
             current_page: 1,
-            isInitLoading: false
+            is_init_list: false
         }
     },
     mounted() {
-        if (this.isInitLoading) {
+        if (this.is_init_list) {
             this.GetList()
         }
     },
