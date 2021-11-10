@@ -1,6 +1,6 @@
 <script type="text/x-template" id="select-image">
     <div class="select-image">
-        <div v-loading="loading">
+        <div>
             <el-dialog title="选择图片" @close="$emit('close')" width="668px" :visible.sync="dialogVisible">
                 <div>
                     <el-row>

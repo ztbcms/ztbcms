@@ -24,4 +24,6 @@ return [
     'layout_on' => true,
     // 默认布局
     'layout_name' => "../../admin/view/element_layout",
+    //加载自定义标签
+    'taglib_pre_load' => 'app\common\taglib\Ztbcms'
 ];

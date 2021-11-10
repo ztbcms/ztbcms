@@ -1,6 +1,6 @@
 <script type="text/x-template" id="select-file">
     <div class="select-file">
-        <div v-loading="loading">
+        <div>
             <el-dialog title="选择文件" @close="$emit('close')" width="668px" :visible.sync="dialogVisible">
                 <div>
                     <el-row>

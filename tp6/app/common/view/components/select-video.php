@@ -1,6 +1,6 @@
 <script type="text/x-template" id="select-video">
     <div class="select-video">
-        <div v-loading="loading">
+        <div>
             <el-dialog title="选择视频" @close="$emit('close')" width="668px" :visible.sync="dialogVisible">
                 <div>
                     <el-row>
