@@ -12,8 +12,8 @@
                 <el-col :span="4">
                     <el-date-picker
                             v-model="form.search_date"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            type="datetimerange"
+                            value-format="yyyy-MM-dd"
+                            type="daterange"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期" size="medium">
@@ -128,7 +128,7 @@
                     total_items: 0
                 },
                 form: {
-                    search_date: [],
+                    search_date: ["{:date('Y-m-d', time()-7*24*60*60)}", "{:date('Y-m-d')}"],
                     uid: '',
                     ip: '',
                     start_time: '',

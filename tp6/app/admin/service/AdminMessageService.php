@@ -46,12 +46,11 @@ class AdminMessageService extends BaseService
      */
     static function getAdminMessageList($where = [], $order = '', $page = 1, $limit = 20)
     {
-        $db = Db::name('admin_message')->where($where)->order($order)->page($page)->limit($limit);
         if (!empty($order)) {
-            $db->order($order);
+            $order = 'id desc';
         }
-        $items = $db->select();
-        $total_items = Db::name('admin_message')->where($where)->count();
+        $items = AdminMessageModel::where($where)->order($order)->page($page)->limit($limit)->select();
+        $total_items = AdminMessageModel::where($where)->count();
         $total_page = ceil($total_items / $limit);
 
         return self::createReturnList(true, $items, $page, $limit, $total_items, $total_page);

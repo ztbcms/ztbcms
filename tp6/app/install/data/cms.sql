@@ -435,7 +435,8 @@ CREATE TABLE `cms_login_log` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,1为登录成功，0为登录失败',
   `password` varchar(30) NOT NULL DEFAULT '' COMMENT '尝试错误密码',
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `logintime` (`logintime`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
 
 -- ----------------------------
@@ -567,7 +568,7 @@ CREATE TABLE `cms_operation_log` (
     `params` text NOT NULL COMMENT '请求参数',
     `response` text NOT NULL COMMENT '响应结果',
     PRIMARY KEY (`id`),
-    KEY `status` (`status`)
+    KEY `time` (`time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
 
 
@@ -802,8 +803,9 @@ CREATE TABLE `cms_admin_message` (
   `read_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读时间',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台消息';
+  PRIMARY KEY (`id`),
+  KEY `receiver` (`receiver`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='后台消息';
 
 DROP TABLE IF EXISTS `cms_email_send_log`;
 CREATE TABLE `cms_email_send_log` (
