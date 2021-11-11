@@ -28,15 +28,15 @@
             </el-button>
         </div>
         <el-table
-            :key="tableKey"
-            :data="list"
-            border
-            fit
-            highlight-current-row
-            style="width: 100%;"
-            @sort-change="sortChange"
+                :key="tableKey"
+                :data="data_list"
+                border
+                fit
+                highlight-current-row
+                style="width: 100%;"
+                @sort-change="sortChange"
         >
-            <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80"
+            <el-table-column fixed="left" label="ID" prop="id" sortable="custom" align="center" width="80"
                              :class-name="getSortClass('id')">
                 <template slot-scope="scope">
                     <span>{{ scope.row.id }}</span>
@@ -50,8 +50,8 @@
             <el-table-column label="标题" min-width="150px">
                 <template slot-scope="{row}">
                     <span>{{ row.title }}</span>
-<!--                    <span style="color: #337ab7;cursor: pointer;"-->
-<!--                          @click="openArticleLink(row.link)">{{ row.title }}</span>-->
+                    <!--                    <span style="color: #337ab7;cursor: pointer;"-->
+                    <!--                          @click="openArticleLink(row.link)">{{ row.title }}</span>-->
                     <!--<el-tag>{{ row.type }}</el-tag>-->
                 </template>
             </el-table-column>
@@ -86,7 +86,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+            <el-table-column fixed="right" label="Actions" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="{row}">
                     <el-button type="primary" size="mini" @click="openArticleLink(row.link)">
                         编辑
@@ -109,13 +109,12 @@
 
         <div class="pagination-container">
             <el-pagination
-                background
-                layout="prev, pager, next, jumper"
-                :total="total"
-                v-show="total>0"
-                :current-page.sync="listQuery.page"
-                :page-size.sync="listQuery.limit"
-                @current-change="getList"
+                    background
+                    layout="prev, pager, next, jumper"
+                    :total="total_num"
+                    :current-page="current_page"
+                    :page-size="per_page"
+                    @current-change="currentChangeEvent"
             >
             </el-pagination>
         </div>
@@ -138,13 +137,10 @@
         new Vue({
             el: '#app',
             data: {
+                is_init_list: true,
                 form: {},
                 tableKey: 0,
-                list: [],
-                total: 0,
                 listQuery: {
-                    page: 1,
-                    limit: 20,
                     importance: '',
                     title: '',
                     type: '',
@@ -175,10 +171,9 @@
                 },
             },
             methods: {
-                getList: function () {
+                GetList: function () {
                     //模拟
                     var new_list = [];
-
                     for (var i = 0; i < 20; i++) {
                         var item = {
                             id: i,
@@ -200,10 +195,14 @@
                             link: 'https://baidu.com?v=' + i,
                         }
                         new_list.push(item);
-                        this.list = new_list
-                        this.total = 400
                     }
-
+                    this.handRes({
+                        data: new_list,
+                        current_page: 1,
+                        last_page: 20,
+                        per_page: 20,
+                        total: 400
+                    })
                 },
                 handleFilter: function () {
                     this.listQuery.page = 1
@@ -255,7 +254,6 @@
                 }
             },
             mounted: function () {
-                this.getList();
             },
 
         })

@@ -1,6 +1,7 @@
 window.__vueCommon = {
     data() {
         return {
+            total_num: 0,
             data_list: [],
             per_page: 20,
             last_page: 0,
@@ -15,15 +16,15 @@ window.__vueCommon = {
     },
     methods: {
         currentChangeEvent(e) {
-            console.log('currentChangeEvent', e)
             this.current_page = e
             this.GetList()
         },
-        handRes({data, current_page, last_page, per_page}) {
-            this.dataList = data
+        handRes({data, current_page = 1, last_page = 0, per_page = 20, total = 0}) {
+            this.data_list = data
             this.per_page = per_page;
             this.last_page = last_page
             this.current_page = current_page
+            this.total_num = total
         },
         /**
          * post 请求
