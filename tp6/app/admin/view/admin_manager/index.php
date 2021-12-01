@@ -64,7 +64,7 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'getDetail')){ ?>
+                    <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'managerEdit')){ ?>
                         <el-button type="text" size="mini" @click="editItem(scope.row.id)" >修改</el-button>
                     <?php } ?>
 
