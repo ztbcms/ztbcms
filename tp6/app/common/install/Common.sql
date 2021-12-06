@@ -100,8 +100,8 @@ CREATE TABLE `cms_tp6_message_send_log` (
 -- 上传
 -- ----------------------------
 
-DROP TABLE IF EXISTS `cms_tp6_attachment_group`;
-CREATE TABLE `cms_tp6_attachment_group` (
+DROP TABLE IF EXISTS `cms_attachment_group`;
+CREATE TABLE `cms_attachment_group` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT '0' COMMENT '父ID',
   `group_type` varchar(255) NOT NULL DEFAULT '' COMMENT '分类类型',
@@ -111,10 +111,10 @@ CREATE TABLE `cms_tp6_attachment_group` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
 
-DROP TABLE IF EXISTS `cms_tp6_attachment`;
-CREATE TABLE `cms_tp6_attachment` (
+DROP TABLE IF EXISTS `cms_attachment`;
+CREATE TABLE `cms_attachment` (
   `aid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件ID',
   `driver` varchar(32) DEFAULT 'Local' COMMENT '上传驱动',
   `group_id` int(11) DEFAULT '0' COMMENT '分组',
@@ -133,7 +133,16 @@ CREATE TABLE `cms_tp6_attachment` (
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
   `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`aid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
+
+
+DROP TABLE IF EXISTS `cms_attachment_index`;
+CREATE TABLE `cms_attachment_index` (
+    `keyid` varchar(128) NOT NULL DEFAULT '' COMMENT '关联id',
+    `aid`   int(10) NOT NULL DEFAULT '' COMMENT '附件ID',
+    KEY     `keyid` (`keyid`),
+    KEY     `aid` (`aid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件关系表';
 
 -- ----------------------------
 -- 队列

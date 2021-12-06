@@ -19,6 +19,6 @@ class AttachmentGroupModel extends Model
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
 
-    protected $name = 'tp6_attachment_group';
+    protected $name = 'attachment_group';
     const TYPE_IMAGE = "image";
 }

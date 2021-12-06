@@ -21,7 +21,7 @@ class AttachmentModel extends Model
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
 
-    protected $name = 'tp6_attachment';
+    protected $name = 'attachment';
     protected $pk = 'aid';
 
     const MODULE_IMAGE = "image";
