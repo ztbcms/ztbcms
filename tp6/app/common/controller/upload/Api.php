@@ -37,7 +37,7 @@ class Api extends BaseController
         $isPrivate = request()->param('is_private', 0);
         $uploadService->isPrivate = $isPrivate == 1;
 
-        $attachmentModel = $uploadService->uploadImage(0, 0, 0);
+        $attachmentModel = $uploadService->uploadImage(0, 0, 'user');
         if (!$attachmentModel) {
             return json(self::createReturn(false, null, $uploadService->getError()));
         } else {
@@ -62,7 +62,7 @@ class Api extends BaseController
         $isPrivate = request()->param('is_private', 0);
         $uploadService->isPrivate = $isPrivate == 1;
 
-        $attachmentModel = $uploadService->uploadVideo(0, 0, 0);
+        $attachmentModel = $uploadService->uploadVideo(0, 0, 'user');
         if (!$attachmentModel) {
             return json(self::createReturn(false, $uploadService->getError()));
         } else {
@@ -86,7 +86,7 @@ class Api extends BaseController
         //设置私有读
         $isPrivate = request()->param('is_private', 0);
         $uploadService->isPrivate = $isPrivate == 1;
-        $attachmentModel = $uploadService->uploadFile(0, 0, 0);
+        $attachmentModel = $uploadService->uploadFile(0, 0, 'user');
         if (!$attachmentModel) {
             return json(self::createReturn(false, $uploadService->getError()));
         } else {

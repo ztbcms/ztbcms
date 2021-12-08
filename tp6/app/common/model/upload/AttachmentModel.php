@@ -18,8 +18,7 @@ use think\model\concern\SoftDelete;
 class AttachmentModel extends Model
 {
     use SoftDelete;
-    protected $deleteTime = 'delete_time';
-    protected $defaultSoftDelete = 0;
+    protected $autoWriteTimestamp = true;
 
     protected $name = 'attachment';
     protected $pk = 'aid';
@@ -38,17 +37,18 @@ class AttachmentModel extends Model
     const IS_IMAGES_YES = 1;
     const IS_IMAGES_NO = 0;
 
-    const IS_ADMIN_YES = 1;
-    const IS_ADMIN_NO = 0;
-
     const IS_PRIVATE_YES = 1;
     const IS_PRIVATE_NO = 0;
+
+    // 上传用户类型
+    const USER_TYPE_ADMIN = 'admin';
 
     /**
      * 获取缩略图处理器
      *
      * @param $value
      * @param $data
+     *
      * @return bool
      */
     public function getFilethumbAttr($value, $data)
@@ -70,6 +70,7 @@ class AttachmentModel extends Model
      *
      * @param $value
      * @param $data
+     *
      * @return bool
      */
     public function getFileurlAttr($value, $data)

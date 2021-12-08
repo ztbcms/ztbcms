@@ -74,6 +74,7 @@ class Panel extends AdminController
     }
 
     /**
+     * 资源列表
      * @param  Request  $request
      *
      * @return array
@@ -83,7 +84,7 @@ class Panel extends AdminController
     {
         $module = $request->get('module', AttachmentModel::MODULE_IMAGE);
         $where[] = ['module', '=', $module];
-        $where[] = ['is_admin', '=', AttachmentModel::IS_ADMIN_YES];
+        $where[] = ['user_type', '=', AttachmentModel::USER_TYPE_ADMIN];
 
         $groupId = $request->get('group_id', 'all');
         if ($groupId !== 'all') {
@@ -177,10 +178,9 @@ class Panel extends AdminController
 
     /**
      * 图片上传面板
-     *
      * @param  Request  $request
      *
-     * @return array|string
+     * @return string|\think\response\Json
      */
     function imageUpload(Request $request)
     {
@@ -190,7 +190,7 @@ class Panel extends AdminController
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
             $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
+            if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -204,7 +204,7 @@ class Panel extends AdminController
      *
      * @param  Request  $request
      *
-     * @return array|string
+     * @return string|\think\response\Json
      */
     function videoUpload(Request $request)
     {
@@ -214,7 +214,7 @@ class Panel extends AdminController
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
             $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
+            if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -238,7 +238,7 @@ class Panel extends AdminController
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
             $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
+            if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -260,7 +260,7 @@ class Panel extends AdminController
             $groupId = $request->post('group_id', '');
             $uploadService = new UploadService();
             $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadUEImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'])) {
+            if ($uploadService->uploadUEImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));

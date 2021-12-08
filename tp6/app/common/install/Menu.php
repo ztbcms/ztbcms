@@ -98,6 +98,12 @@ return array(
                         "type" => 1,
                         "status" => 1,
                         "name" => "上传示例",
+                    ],
+                    [
+                        "route" => "common/upload.upload/attachments",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "附件管理",
                     ]
                 ]
             ],

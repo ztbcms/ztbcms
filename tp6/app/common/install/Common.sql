@@ -119,19 +119,20 @@ CREATE TABLE `cms_attachment` (
   `driver` varchar(32) DEFAULT 'Local' COMMENT '上传驱动',
   `group_id` int(11) DEFAULT '0' COMMENT '分组',
   `module` varchar(64) NOT NULL DEFAULT '' COMMENT '模块名称',
-  `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
+  `filename` varchar(256) NOT NULL DEFAULT '' COMMENT '上传附件名称',
   `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
   `fileurl` varchar(256) DEFAULT '' COMMENT '文件全局路径',
   `filethumb` varchar(256) DEFAULT '' COMMENT '文件缩略图',
   `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
   `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
-  `userid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上传用户ID',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否后台用户上传',
   `is_private` tinyint(1) DEFAULT '0' COMMENT '是否私有链接',
   `upload_ip` varchar(16) NOT NULL DEFAULT '' COMMENT '上传ip',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
-  `delete_time` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
+  `delete_time` int(11) DEFAULT NULL COMMENT '删除时间',
+  `user_type` varchar(32) DEFAULT NULL COMMENT '上传用户类型 admin后台',
+  `user_id` varchar(16) DEFAULT NULL COMMENT '上传用户ID',
+  `hash` varchar(64) DEFAULT NULL COMMENT '附件hash值（md5）',
   PRIMARY KEY (`aid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
 
@@ -139,9 +140,9 @@ CREATE TABLE `cms_attachment` (
 DROP TABLE IF EXISTS `cms_attachment_index`;
 CREATE TABLE `cms_attachment_index` (
     `keyid` varchar(128) NOT NULL DEFAULT '' COMMENT '关联id',
-    `aid`   int(10) NOT NULL DEFAULT '' COMMENT '附件ID',
-    KEY     `keyid` (`keyid`),
-    KEY     `aid` (`aid`)
+    `aid` int(11) NOT NULL COMMENT '附件ID',
+    KEY `keyid` (`keyid`),
+    KEY `aid` (`aid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件关系表';
 
 -- ----------------------------

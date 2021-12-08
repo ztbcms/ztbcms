@@ -58,7 +58,6 @@ class UploadService extends BaseService
             }
             //getData('fileurl') 获取原始数据，防止获取器造成的影响
             $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
-            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_YES;
             $attachmentModel->save();
             return $attachmentModel;
         } catch (\Exception $exception) {
@@ -70,16 +69,17 @@ class UploadService extends BaseService
     /**
      * 上传文件
      * @param  int  $groupId
-     * @param  int  $userid
-     * @param  int  $isadmin
-     * @return AttachmentModel|bool
+     * @param  int  $user_id
+     * @param  string  $user_type
+     *
+     * @return AttachmentModel|false
      */
-    function uploadFile($groupId = 0, $userid = 0, $isadmin = 1)
+    function uploadFile($groupId = 0, $user_id = 0, $user_type = '')
     {
         try {
             $attachmentModel = new AttachmentModel();
-            $attachmentModel->userid = $userid;
-            $attachmentModel->is_admin = $isadmin;
+            $attachmentModel->user_type = $user_type;
+            $attachmentModel->user_id = $user_id;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_FILE;
             if (!$this->upload($attachmentModel)) {
@@ -88,7 +88,6 @@ class UploadService extends BaseService
             if (!$attachmentModel->filethumb) {
                 $attachmentModel->filethumb = isset(self::FILE_THUMB_ARRAY[$attachmentModel->fileext]) ? self::FILE_THUMB_ARRAY[$attachmentModel->fileext] : self::FILE_THUMB_ARRAY['doc'];
             }
-            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_NO;
             $attachmentModel->save();
             return $attachmentModel;
         } catch (\Exception $exception) {
@@ -104,12 +103,12 @@ class UploadService extends BaseService
      * @param  int  $isadmin
      * @return AttachmentModel|bool
      */
-    function uploadVideo($groupId = 0, $userid = 0, $isadmin = 1)
+    function uploadVideo($groupId = 0, $user_id = 0, $user_type = '')
     {
         try {
             $attachmentModel = new AttachmentModel();
-            $attachmentModel->userid = $userid;
-            $attachmentModel->is_admin = $isadmin;
+            $attachmentModel->user_type = $user_type;
+            $attachmentModel->user_id = $user_id;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_VIDEO;
             if (!$this->upload($attachmentModel)) {
@@ -118,29 +117,28 @@ class UploadService extends BaseService
             if (!$attachmentModel->filethumb) {
                 $attachmentModel->filethumb = self::FILE_THUMB_ARRAY['video'];
             }
-            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_NO;
             $attachmentModel->save();
             return $attachmentModel;
         } catch (\Exception $exception) {
             $this->setError($exception->getMessage());
             return false;
         }
-
     }
 
     /**
      * 上传图片
      * @param  int  $groupId
-     * @param  int  $userid
-     * @param  int  $isadmin
-     * @return AttachmentModel|bool
+     * @param  int  $user_id
+     * @param  string  $user_type
+     *
+     * @return AttachmentModel|false
      */
-    function uploadImage($groupId = 0, $userid = 0, $isadmin = 1)
+    function uploadImage($groupId = 0, $user_id = 0, $user_type = '')
     {
         try {
             $attachmentModel = new AttachmentModel();
-            $attachmentModel->userid = $userid;
-            $attachmentModel->is_admin = $isadmin;
+            $attachmentModel->user_type = $user_type;
+            $attachmentModel->user_id = $user_id;
             $attachmentModel->group_id = $groupId;
             $attachmentModel->module = AttachmentModel::MODULE_IMAGE;
             if (!$this->upload($attachmentModel)) {
@@ -148,7 +146,6 @@ class UploadService extends BaseService
             }
             // 获取原始数据，防止获取器造成的影响
             $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
-            $attachmentModel->isimage = AttachmentModel::IS_IMAGES_YES;
             $attachmentModel->save();
             return $attachmentModel;
         } catch (\Exception $exception) {
@@ -171,6 +168,7 @@ class UploadService extends BaseService
         $attachmentModel->uploadtime = time();
         $attachmentModel->uploadip = get_client_ip();
         $attachmentModel->is_private = $this->isPrivate;
+        $attachmentModel->hash = $file->hash('md5');
 
         $config = ConfigModel::getConfigs();
         $attachmentDriver = isset($config['attachment_driver']) ? $config['attachment_driver'] : 'Local';
