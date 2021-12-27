@@ -126,7 +126,7 @@ class Upload extends AdminController
             $limit = input('limit', 15);
             $items = AttachmentModel::where($where)->page($page)->limit($limit)->order('aid desc')->select();
             foreach ($items as &$item) {
-                $item['filesize'] = round($item['filesize'] / 1024);
+                $item['filesize'] = round($item['filesize'] / 1000);
             }
             $total = AttachmentModel::where($where)->count();
             $res = BaseService::createReturnList(true, $items, $page, $limit, $total, ceil($total / $limit));
