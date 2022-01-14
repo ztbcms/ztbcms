@@ -129,10 +129,10 @@ CREATE TABLE `cms_attachment` (
   `upload_ip` varchar(16) NOT NULL DEFAULT '' COMMENT '上传ip',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
-  `delete_time` int(11) DEFAULT NULL COMMENT '删除时间',
+  `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
   `user_type` varchar(32) DEFAULT NULL COMMENT '上传用户类型 admin后台',
   `user_id` varchar(16) DEFAULT NULL COMMENT '上传用户ID',
-  `hash` varchar(64) DEFAULT NULL COMMENT '附件hash值（md5）',
+  `hash` varchar(64) DEFAULT '' COMMENT '附件hash值（md5）',
   PRIMARY KEY (`aid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
 

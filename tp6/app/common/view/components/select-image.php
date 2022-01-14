@@ -42,6 +42,7 @@
                                     :limit="max_upload"
                                     multiple
                                     drag
+                                    :before-upload="beforeUploadEvent"
                                     :action="uploadConfig.uploadUrl"
                                     :accept="uploadConfig.accept"
                                     :on-success="handleUploadSuccess"
@@ -114,8 +115,12 @@
     </div>
 </script>
 
+<!-- 引入在线资源 -->
+<script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.8.0.min.js"></script>
 <script>
     $(function () {
+
+
         Vue.component('select-image', {
             template: '#select-image',
             props: {
@@ -138,7 +143,6 @@
                     },
                     galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
-
                     now_group: 'all',     // 当前分类ID
                     move_group_id: '',    // 移动至分类ID
                     group_id: 'all',
@@ -173,6 +177,41 @@
                 }
             },
             methods: {
+                beforeUploadEvent(file) {
+                    console.log('beforeUploadEvent-file', file)
+                    let name = file.name
+                    let name_split = name.split('.')
+                    let ext = name_split[name_split.length - 1]
+                    if (this.uploadConfig.aliyun_is_direct && parseInt(this.uploadConfig.aliyun_is_direct) === 1) {
+                        const client = new OSS(this.uploadConfig.aliyun_sts);
+                        let {file_dir = ''} = this.uploadConfig.aliyun_sts
+                        let file_name = file_dir + new Date().getTime() + "-" + Math.ceil(Math.random() * 1000000) + "." + ext
+                        client.put(
+                            file_name,
+                            file
+                        ).then((result) => {
+                            let post_data = {
+                                is_private: this.is_private,
+                                group_id: this.group_id,
+                                filename: file.name,
+                                filesize: file.size,
+                                fileext: ext,
+                                fileurl: result.url
+                            }
+                            this.httpPost(`{:api_url('common/upload.panel/directUpload')}`, post_data, res => {
+                                if (res.status) {
+                                    this.getGalleryByGroupIdList()
+                                } else {
+                                    this.$message.error(res.msg)
+                                }
+                            })
+                            console.log('beforeUploadEvent-result', result)
+                        });
+                        return false;
+                    } else {
+                        return true
+                    }
+                },
                 handleUploadProgress: function (event, file, fileList) {
                     console.log('handleUploadProgress', event, file, fileList);
                     this.uploadLoading = this.$loading({
@@ -217,13 +256,18 @@
                         success: function (res) {
                             that.loading = false;
                             if (res.status) {
-                                var data = res.data;
-                                that.pagination.page = data.current_page;
-                                that.pagination.limit = data.per_page;
-                                that.pagination.total_pages = data.last_page;
-                                that.pagination.total_items = data.total;
+                                let {file_list = {}, setting = {}} = res.data
+                                that.pagination.page = file_list.current_page;
+                                that.pagination.limit = file_list.per_page;
+                                that.pagination.total_pages = file_list.last_page;
+                                that.pagination.total_items = file_list.total;
+                                that.uploadConfig = {
+                                    ...that.uploadConfig,
+                                    ...setting
+                                }
+                                console.log('that.uploadConfig', that.uploadConfig)
                                 var list = [];
-                                data.data.map(function (item) {
+                                file_list.data.map(function (item) {
                                     item.is_select = false;
                                     list.push(item);
                                 });
@@ -306,7 +350,7 @@
                         roundButton: true,
                         closeOnClickModal: false,
                         beforeClose: function (action, instance, done) {
-                            if (action == 'confirm') {
+                            if (action === 'confirm') {
                                 $.ajax({
                                     url: "{:api_url('common/upload.panel/editGalleryGroup')}",
                                     dataType: "json",

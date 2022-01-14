@@ -8,9 +8,10 @@
                             <el-form-item label="存储方式" prop="attachment_driver">
                                 <el-select v-model="formData.attachment_driver" placeholder="请选择网站存储方案" clearable
                                            :style="{width: '100%'}">
-                                    <?php foreach ($dirverList as $key => $value): ?>
-                                        <el-option label="{$value}" value="{$key}"></el-option>
-                                    <?php endforeach; ?>
+                                    <el-option label="本地"
+                                               value="Local"></el-option>
+                                    <el-option label="阿里云OSS"
+                                               value="Aliyun"></el-option>
                                 </el-select>
                             </el-form-item>
                             <!--阿里云-->
@@ -35,10 +36,26 @@
                                     <el-input v-model="formData.attachment_aliyun_bucket"
                                               placeholder="请输入OSS-bucket"></el-input>
                                 </el-form-item>
-                                <el-form-item label="oss-外网域名"
-                                              prop="attachment_aliyun_domain">
-                                    <el-input v-model="formData.attachment_aliyun_domain"
-                                              placeholder="请输入OSS-外网域名"></el-input>
+                                <el-form-item label="oss-开启直传"
+                                              prop="attachment_aliyun_privilege">
+                                    <el-radio v-model="formData.attachment_aliyun_is_direct" label="0">禁止</el-radio>
+                                    <el-radio v-model="formData.attachment_aliyun_is_direct" label="1">开启</el-radio>
+                                    <div>
+                                        <small>开启直传，图片不再传到服务器，直接传到阿里云，只保留阿里云的访问链接，这样可以避免大文件上传过慢的问题。</small>
+                                    </div>
+                                </el-form-item>
+                                <el-form-item label="oss-STS RoleArn"
+                                              prop="attachment_aliyun_privilege">
+                                    <el-input v-model="formData.attachment_aliyun_sts_role_arn"
+                                              placeholder="请输入STS RoleArn"></el-input>
+                                    <div>
+                                        <small style="font-size: 12px;">因为开启直传需要有指定指定角色授予权限，具体看
+                                            <el-link style="font-size: 12px;" :underline="false" type="primary"
+                                                     target="_blank"
+                                                     href="https://help.aliyun.com/document_detail/100624.html">官方文档
+                                            </el-link>
+                                        </small>
+                                    </div>
                                 </el-form-item>
                                 <el-form-item label="oss-读写权限"
                                               prop="attachment_aliyun_privilege">
@@ -165,7 +182,7 @@
                                             </li>
                                         </ul>
                                         <input v-model="formData.watermarkpos" id="J_locate_input" name="watermarkpos"
-                                               type="hidden" value="{$config.watermarkpos}">
+                                               type="hidden">
                                     </div>
                                 </el-form-item>
                             </template>
@@ -186,30 +203,10 @@
                 // 插入export default里面的内容
                 components: {},
                 props: [],
-                data: function() {
+                data: function () {
                     return {
-                        formData: {
-                            attachment_driver: "{$config.attachment_driver}",
-                            attachment_aliyun_key_id: "{$config.attachment_aliyun_key_id}",
-                            attachment_aliyun_key_secret: "{$config.attachment_aliyun_key_secret}",
-                            attachment_aliyun_endpoint: "{$config.attachment_aliyun_endpoint}",
-                            attachment_aliyun_bucket: "{$config.attachment_aliyun_bucket}",
-                            attachment_aliyun_domain: "{$config.attachment_aliyun_domain}",
-                            attachment_aliyun_privilege: "{$config.attachment_aliyun_privilege}",
-                            attachment_aliyun_expire_time: "{$config.attachment_aliyun_expire_time}",
-                            uploadmaxsize: "{$config.uploadmaxsize}",
-                            uploadallowext: "{$config.uploadallowext}",
-                            qtuploadmaxsize: "{$config.qtuploadmaxsize}",
-                            qtuploadallowext: "{$config.qtuploadallowext}",
-                            fileexclude: "{$config.fileexclude|default=''}",
-                            watermarkenable: "{$config.watermarkenable|default=''}",
-                            watermarkminwidth: "{$config.watermarkminwidth|default=''}",
-                            watermarkminheight: "{$config.watermarkminheight|default=''}",
-                            watermarkimg: "{$config.watermarkimg|default=''}",
-                            watermarkpct: "{$config.watermarkpct|default=''}",
-                            watermarkquality: "{$config.watermarkquality|default=''}",
-                            watermarkpos: "{$config.watermarkpos|default=''}",
-                        },
+                        driver_list: [],
+                        formData: {},
                         rules: {
                             attachment_driver: [{
                                 required: true,
@@ -248,14 +245,22 @@
                 },
                 computed: {},
                 watch: {},
-                created: function() {
+                created: function () {
                 },
-                mounted: function() {
+                mounted: function () {
+                    this.getInfo()
                 },
                 methods: {
-                    submitForm: function() {
+                    getInfo() {
+                        this.httpGet(`{:api_url('common/upload.upload/setting')}`, {}, res => {
+                            if (res.status) {
+                                this.formData = res.data.config
+                            }
+                        })
+                    },
+                    submitForm: function () {
                         var that = this
-                        this.$refs['elForm'].validate(function(valid) {
+                        this.$refs['elForm'].validate(function (valid) {
                             if (!valid) return;
                             $.ajax({
                                 url: "{:api_url('common/upload.upload/setting')}",
@@ -264,7 +269,7 @@
                                 data: that.formData,
                                 success: function (res) {
                                     if (!res.status) {
-                                        layer.msg(res.msg)
+                                        layer.msg('操作成功')
                                     } else {
                                         layer.msg(res.msg)
                                     }

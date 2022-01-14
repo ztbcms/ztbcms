@@ -18,6 +18,8 @@ use think\model\concern\SoftDelete;
 class AttachmentModel extends Model
 {
     use SoftDelete;
+
+    protected $defaultSoftDelete = 0;
     protected $autoWriteTimestamp = true;
 
     protected $name = 'attachment';
@@ -62,6 +64,7 @@ class AttachmentModel extends Model
                 return $value;
             }
         }
+
         return $value;
     }
 
@@ -84,6 +87,7 @@ class AttachmentModel extends Model
                 return $value;
             }
         }
+
         return $value;
     }
 }
