@@ -124,8 +124,11 @@
             <el-button type="primary" @click="gotoUploadFile">上传文件</el-button>
 
             <div style="margin-top: 20px;line-height: 0;">
-                <textarea id="editor_content" style="height: 500px;width: 390px;"></textarea>
+                <ueditor-simplicity></ueditor-simplicity>
             </div>
+<!--            <div style="margin-top: 20px;line-height: 0;">-->
+<!--                <textarea id="editor_content" style="height: 500px;width: 390px;"></textarea>-->
+<!--            </div>-->
         </el-card>
         <select-image :show="show_image" :is_private="is_private" @confirm="confirmImage"
                       @close="show_image=false"></select-image>
@@ -136,10 +139,10 @@
     </div>
 
     <!-- 引入UEditor   -->
-    {include file="/ueditor_simplicity"}
-    {include file="components/select-image"}
-    {include file="components/select-video"}
-    {include file="components/select-file"}
+    {ztbcms:include file="common/@/components/ueditor-simplicity"}
+    {ztbcms:include file="common/@/components/select-image"}
+    {ztbcms:include file="common/@/components/select-video"}
+    {ztbcms:include file="common/@/components/select-file"}
     <style>
         .imgListItem {
             height: 128px;

@@ -51,4 +51,9 @@ class LocalDriver extends UploadDriver
     {
         return $url;
     }
+
+    function getVideoThumbUrl(AttachmentModel $attachmentModel): string
+    {
+        return "";
+    }
 }

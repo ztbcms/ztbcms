@@ -268,7 +268,7 @@
                                 dataType: 'json',
                                 data: that.formData,
                                 success: function (res) {
-                                    if (!res.status) {
+                                    if (res.status) {
                                         layer.msg('操作成功')
                                     } else {
                                         layer.msg(res.msg)

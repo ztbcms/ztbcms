@@ -15,7 +15,6 @@ use app\common\service\upload\UploadService;
 use think\App;
 use think\facade\View;
 use think\Request;
-use function EasyWeChat\Kernel\Support\get_client_ip;
 
 /**
  * 上传面板
@@ -111,7 +110,7 @@ class Panel extends AdminController
                 $aliyun_is_direct = 0;
             }
         }
-        $setting = compact('aliyun_is_direct', 'aliyun_sts');
+        $setting = compact('aliyun_is_direct', 'aliyun_sts', 'module');
 
         return self::createReturn(true, compact('file_list', 'setting'), 'ok');
     }
@@ -225,30 +224,38 @@ class Panel extends AdminController
         return View::fetch('imageUpload', ['isPrivate' => $isPrivate]);
     }
 
+    /**
+     * 直传文件保存信息
+     *
+     * @param Request $request
+     * @return \think\response\Json|void
+     */
     function directUpload(Request $request)
     {
         if ($request->isPost()) {
             $isPrivate = $request->param('is_private', 0);
             $groupId = intval($request->post('group_id', ''));
+            $module = $request->post('module', AttachmentModel::MODULE_IMAGE);
 
-            $uploadService = new UploadService();
-            $uploadService->isPrivate = $isPrivate == 1;
             $userInfo = AdminUserService::getInstance()
                 ->getInfo();
             $attachmentModel = new AttachmentModel();
             $attachmentModel->user_type = AttachmentModel::USER_TYPE_ADMIN;
             $attachmentModel->user_id = $userInfo['id'];
             $attachmentModel->group_id = $groupId;
-            $attachmentModel->module = AttachmentModel::MODULE_IMAGE;
+            $attachmentModel->module = $module;
             $attachmentModel->filename = $request->post('filename', '');
             $attachmentModel->filesize = $request->post('filesize', '');
             $attachmentModel->fileext = $request->post('fileext', '');
             $attachmentModel->fileurl = $request->post('fileurl', '');
-            $attachmentModel->filethumb = $request->post('fileurl', '');
-            $attachmentModel->filepath = '';
-            $attachmentModel->uploadtime = time();
-            $attachmentModel->uploadip = $request->ip();
+            $attachmentModel->filepath = $request->post('filepath', '');
             $attachmentModel->is_private = $isPrivate;
+
+            $uploadService = new UploadService();
+            $uploadService->isPrivate = (intval($isPrivate) == 1);
+            $attachmentModel->filethumb = $uploadService->getFileThumbUrl($attachmentModel); //获取缩略图
+            $attachmentModel->uploadtime = time();
+            $attachmentModel->upload_ip = $request->ip();
             $attachmentModel->hash = '';
             $attachmentModel->driver = ConfigService::getInstance()
                 ->getConfig('attachment_driver') ?: 'Local';

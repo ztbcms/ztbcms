@@ -1,5 +1,5 @@
-<script type="text/x-template" id="select-image">
-    <div class="select-image">
+<script type="text/x-template" id="select-ue-image">
+    <div class="select-ue-image">
         <div>
             <el-dialog title="选择图片" @close="$emit('close')" width="668px" :visible.sync="dialogVisible">
                 <div>
@@ -119,10 +119,8 @@
 <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.8.0.min.js"></script>
 <script>
     $(function () {
-
-
-        Vue.component('select-image', {
-            template: '#select-image',
+        Vue.component('select-ue-image', {
+            template: '#select-ue-image',
             props: {
                 is_private: false,
                 show: false,
@@ -143,6 +141,7 @@
                     },
                     galleryList: [],      //图库
                     galleryGroupList: [], //图库分组
+                    group_type: "ue_image",
                     now_group: 'all',     // 当前分类ID
                     move_group_id: '',    // 移动至分类ID
                     group_id: 'all',
@@ -194,6 +193,7 @@
                             let post_data = {
                                 is_private: this.is_private,
                                 group_id: this.group_id,
+                                module: this.group_type,
                                 filepath,
                                 filename: file.name,
                                 filesize: file.size,
@@ -249,6 +249,7 @@
                         page: this.pagination.page,
                         limit: this.pagination.limit,
                         group_id: this.now_group,
+                        module: this.group_type //UEditor图片
                     };
                     $.ajax({
                         url: "{:api_url('common/upload.panel/getFilesByGroupIdList')}",
@@ -294,6 +295,9 @@
                         url: "{:api_url('common/upload.panel/getGalleryGroup')}",
                         dataType: 'json',
                         type: 'get',
+                        data: {
+                            group_type: that.group_type
+                        },
                         success: function (res) {
                             that.galleryGroupList = res.data;
                             that.getGalleryByGroupIdList();
@@ -310,13 +314,14 @@
                         roundButton: true,
                         closeOnClickModal: false,
                         beforeClose: function (action, instance, done) {
-                            if (action == 'confirm') {
+                            if (action === 'confirm') {
                                 $.ajax({
                                     url: "{:api_url('common/upload.panel/addGalleryGroup')}",
                                     dataType: "json",
                                     type: "post",
                                     data: {
-                                        group_name: instance.inputValue
+                                        group_name: instance.inputValue,
+                                        group_type: that.group_type,
                                     },
                                     success: function (res) {
                                         if (res.status) {
@@ -359,7 +364,8 @@
                                     type: "post",
                                     data: {
                                         group_id: group_id,
-                                        group_name: instance.inputValue
+                                        group_name: instance.inputValue,
+                                        group_type: that.group_type,
                                     },
                                     success: function (res) {
                                         if (res.status) {
@@ -422,7 +428,8 @@
                         url: "{:api_url('common/upload.panel/moveGralleryGroup')}",
                         data: {
                             files: files,
-                            group_id: this.move_group_id
+                            group_id: this.move_group_id,
+                            group_type: that.group_type,
                         },
                         dataType: 'json',
                         type: 'post',
@@ -493,7 +500,7 @@
 <style>
 
     /* 上传图片    */
-    .select-image .thumb-uploader .el-upload {
+    .select-ue-image .thumb-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
         cursor: pointer;
@@ -501,7 +508,7 @@
         overflow: hidden;
     }
 
-    .select-image .thumb-uploader .el-upload:hover {
+    .select-ue-image .thumb-uploader .el-upload:hover {
         border-color: #409EFF;
     }
 
@@ -510,7 +517,7 @@
     }
 
     /*图库*/
-    .select-image .imgListItem {
+    .select-ue-image .imgListItem {
         width: 82px;
         height: 82px;
         border: 1px dashed #d9d9d9;
@@ -523,7 +530,7 @@
         vertical-align: top;
     }
 
-    .select-image .is_check {
+    .select-ue-image .is_check {
         position: absolute;
         top: 0;
         left: 0;
@@ -535,43 +542,43 @@
         font-size: 40px;
     }
 
-    .select-image .group_list {
+    .select-ue-image .group_list {
         height: 330px;
         overflow: scroll;
         border-bottom: 1px solid gainsboro;
     }
 
-    .select-image .el-menu {
+    .select-ue-image .el-menu {
         border: none;
         padding-right: 20px;
     }
 
-    .select-image .el-menu-item {
+    .select-ue-image .el-menu-item {
         height: 30px;
         line-height: 30px;
     }
 
-    .select-image .el-menu-item:focus {
+    .select-ue-image .el-menu-item:focus {
         outline: none;
         background-color: #ecf5ff;
     }
 
-    .select-image .group_close {
+    .select-ue-image .group_close {
         font-size: 15px;
         line-height: 30px;
     }
 
-    .select-image .group_edit_icon {
+    .select-ue-image .group_edit_icon {
         font-size: 15px;
         line-height: 30px;
     }
 
-    .select-image .group_active {
+    .select-ue-image .group_active {
         /*background-color: #409eff;*/
         color: #409eff;
     }
 
-    .select-image .group_item {
+    .select-ue-image .group_item {
         width: 85%;
         margin: 3px 10px;
         padding: 4px 10px;
@@ -582,23 +589,23 @@
         height: 36px;
     }
 
-    .select-image .el-menu-item i {
+    .select-ue-image .el-menu-item i {
         color: #303133;
         opacity: 0;
     }
 
-    .select-image .el-menu-item:hover i {
+    .select-ue-image .el-menu-item:hover i {
         opacity: 0.9;
     }
 
-    .select-image .el-upload-dragger {
+    .select-ue-image .el-upload-dragger {
         height: 36px;
         line-height: 30px;
         text-align: right;
         padding: 0 2px;
     }
 
-    .select-image .el-upload-dragger .el-icon-upload {
+    .select-ue-image .el-upload-dragger .el-icon-upload {
         font-size: 18px !important;
         color: #C0C4CC;
         line-height: 22px;

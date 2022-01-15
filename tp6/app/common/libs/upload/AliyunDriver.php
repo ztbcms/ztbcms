@@ -10,7 +10,6 @@ namespace app\common\libs\upload;
 
 
 use AlibabaCloud\Client\AlibabaCloud;
-use AlibabaCloud\Client\Result\Result;
 use app\common\model\upload\AttachmentModel;
 use OSS\Core\OssException;
 use OSS\Model\CorsConfig;
@@ -21,16 +20,11 @@ use think\facade\Cache;
 class AliyunDriver extends UploadDriver
 {
 
-    const PRIVILEGE_PUBLIC = "1";
-    const PRIVILEGE_PRIVATE = "2";
-
-
     protected $accessKeyId;
     protected $accessKeySecret;
     protected $endpoint;
     protected $bucket;
     protected $domain;
-    protected $privilege;
     protected $expireTime;
     protected $regionId;
     protected $roleArn;
@@ -44,7 +38,7 @@ class AliyunDriver extends UploadDriver
         $this->endpoint = $config['attachment_aliyun_endpoint'] ?? "";
         // 设置存储空间名称。
         $this->bucket = $config['attachment_aliyun_bucket'] ?? "";
-        $this->privilege = $config['attachment_aliyun_privilege'] ?? "";
+        $this->isPrivate = intval($config['attachment_aliyun_privilege'] ?? "") == 2; //设置私有
         $this->expireTime = $config['attachment_aliyun_expire_time'] ?? "";
         $this->roleArn = $config['attachment_aliyun_sts_role_arn'] ?? "";
         $this->regionId = str_replace(['.aliyuncs.com'], '', $this->endpoint);
@@ -69,7 +63,7 @@ class AliyunDriver extends UploadDriver
                 $attachmentModel->fileurl = $res['oss-request-url'];
                 if ($attachmentModel->module == AttachmentModel::MODULE_VIDEO) {
                     //如果是视频文件、获取视频缩略图
-                    $attachmentModel->filethumb = $attachmentModel->getData('fileurl') . "?x-oss-process=video/snapshot,t_500,f_png";
+                    $attachmentModel->filethumb = $this->getFileThumbUrl($attachmentModel);
                 }
                 if (!$this->getIsPrivate()) {
                     //设置公共读
@@ -85,6 +79,11 @@ class AliyunDriver extends UploadDriver
         }
     }
 
+    function getVideoThumbUrl($attachmentModel): string
+    {
+        return $attachmentModel->getData('fileurl') . "?x-oss-process=video/snapshot,t_500,f_png";
+    }
+
     /**
      * 获取私有访问链接
      *
@@ -94,7 +93,7 @@ class AliyunDriver extends UploadDriver
     public function getPrivateUrl($object)
     {
         //如果读写权限是公开，不做私有处理
-        if ($this->privilege == self::PRIVILEGE_PUBLIC) {
+        if (!$this->isPrivate) {
             return false;
         }
         $privateUrl = Cache::get('private_url_' . $object);
@@ -123,7 +122,7 @@ class AliyunDriver extends UploadDriver
     public function getPrivateThumbUrl($object)
     {
         //如果读写权限是公开，不做私有处理
-        if ($this->privilege == self::PRIVILEGE_PUBLIC) {
+        if (!$this->isPrivate) {
             return false;
         }
         $privateThumbUrl = Cache::get('private_thumb_url_' . $object);
