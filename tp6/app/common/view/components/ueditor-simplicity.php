@@ -38,8 +38,14 @@
         Vue.component('ueditor-simplicity', {
             template: '#ueditor-simplicity',
             props: {
-                height: 500,
-                width: 390,
+                height: {
+                    type: [String, Number],
+                    default: 500
+                },
+                width: {
+                    type: [String, Number],
+                    default: 390
+                },
             },
             data() {
                 return {
