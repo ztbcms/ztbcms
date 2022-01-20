@@ -18,6 +18,8 @@ use think\model\concern\SoftDelete;
 class AttachmentModel extends Model
 {
     use SoftDelete;
+
+    protected $defaultSoftDelete = 0;
     protected $autoWriteTimestamp = true;
 
     protected $name = 'attachment';
@@ -53,15 +55,18 @@ class AttachmentModel extends Model
      */
     public function getFilethumbAttr($value, $data)
     {
-        if (isset($data['is_private']) && $data['is_private'] == self::IS_PRIVATE_YES) {
-            $uploadService = new UploadService();
-            $res = $uploadService->getPrivateThumbUrl($data['filepath'], $data['driver']);
+        $is_private = $data['is_private'] ?? self::IS_PRIVATE_NO;
+        if ($is_private) {
+            $uploadService = new UploadService($data['driver']);
+            $uploadService->setIsPrivate($is_private);
+            $res = $uploadService->getPrivateThumbUrl($data['filepath']);
             if ($res) {
                 return $res;
             } else {
                 return $value;
             }
         }
+
         return $value;
     }
 
@@ -70,20 +75,22 @@ class AttachmentModel extends Model
      *
      * @param $value
      * @param $data
-     *
-     * @return bool
+     * @return mixed
      */
     public function getFileurlAttr($value, $data)
     {
-        if (isset($data['is_private']) && $data['is_private'] == self::IS_PRIVATE_YES) {
-            $uploadService = new UploadService();
-            $res = $uploadService->getPrivateUrl($data['filepath'], $data['driver']);
+        $is_private = $data['is_private'] ?? self::IS_PRIVATE_NO;
+        if ($is_private == self::IS_PRIVATE_YES) {
+            $uploadService = new UploadService($data['driver']);
+            $uploadService->setIsPrivate($is_private);
+            $res = $uploadService->getPrivateUrl($data['filepath']);
             if ($res) {
                 return $res;
             } else {
                 return $value;
             }
         }
+
         return $value;
     }
 }

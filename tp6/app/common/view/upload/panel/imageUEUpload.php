@@ -199,13 +199,18 @@
                             success: function (res) {
                                 that.loading = false;
                                 if (res.status) {
-                                    var data = res.data;
-                                    that.pagination.page = data.current_page;
-                                    that.pagination.limit = data.per_page;
-                                    that.pagination.total_pages = data.last_page;
-                                    that.pagination.total_items = data.total;
+                                    let {file_list = {}, setting = {}} = res.data
+                                    that.pagination.page = file_list.current_page;
+                                    that.pagination.limit = file_list.per_page;
+                                    that.pagination.total_pages = file_list.last_page;
+                                    that.pagination.total_items = file_list.total;
+                                    that.uploadConfig = {
+                                        ...that.uploadConfig,
+                                        ...setting
+                                    }
+                                    console.log('that.uploadConfig', that.uploadConfig)
                                     var list = [];
-                                    data.data.map(function (item) {
+                                    file_list.data.map(function (item) {
                                         item.is_select = false;
                                         list.push(item);
                                     });

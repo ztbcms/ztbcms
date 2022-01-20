@@ -22,7 +22,7 @@ abstract class UploadDriver
     }
 
     /**
-     * @param  mixed  $isPrivate
+     * @param mixed $isPrivate
      */
     public function setIsPrivate($isPrivate)
     {
@@ -30,6 +30,8 @@ abstract class UploadDriver
     }
 
     abstract function upload(AttachmentModel $attachmentModel);
+
+    abstract function getVideoThumbUrl(AttachmentModel $attachmentModel);
 
     abstract function getPrivateUrl($filePath);
 

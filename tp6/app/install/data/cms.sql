@@ -287,10 +287,11 @@ INSERT INTO `cms_config` VALUES ('45', 'attachment_aliyun_key_secret', 'OSS-acce
 INSERT INTO `cms_config` VALUES ('46', 'attachment_aliyun_endpoint', 'OSS-Endpoint', '1', '');
 INSERT INTO `cms_config` VALUES ('47', 'attachment_aliyun_bucket', 'OSS-bucket', '1', '');
 INSERT INTO `cms_config` VALUES ('48', 'attachment_aliyun_domain', 'OSS-外网域名', '1', '');
-INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '');
+INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '1');
 INSERT INTO `cms_config` VALUES ('50', 'attachment_aliyun_expire_time', 'OSS-临时访问链接过期时间', '1', '86400');
 INSERT INTO `cms_config` VALUES ('51', 'attachment_local_domain', '本地存储驱动-附件域名', 1, '');
 INSERT INTO `cms_config` VALUES ('52', 'admin_operation_switch', '是否启用后台操作日志', 1, 1);
+INSERT INTO `cms_config` VALUES ('53', 'attachment_aliyun_is_direct', 'oss-开启直传', '1', '0');
 
 
 -- ----------------------------
