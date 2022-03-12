@@ -185,6 +185,7 @@ CREATE TABLE `cms_downloader`  (
    `downloader_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '下载链接',
    `downloader_state` int(3) UNSIGNED NULL DEFAULT 0 COMMENT '下载状态 （10待下载 20下载中  30下载成功 40下载失败）',
    `downloader_result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '下载结果',
+   `downloader_duration` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '下载时长',
    `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名称',
    `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件路径',
    `file_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件访问地址',

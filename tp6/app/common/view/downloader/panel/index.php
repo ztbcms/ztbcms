@@ -13,10 +13,11 @@
                     :closable="false">
                 <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为 站点设置 - 网站访问地址中设置的域名</p>
                 <p>2) 队列启动的命令为  php think queue:work --queue downloader （前提 composer require topthink/think-queue ）</p>
-                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) </p>
-                <p>4) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
-                <p>5) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
-                <p>6) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
+                <p>3) 队列未开启的情况定时任务也会每隔一分钟进行执行 （开启）</p>
+                <p>4) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) </p>
+                <p>5) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
+                <p>6) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
+                <p>7) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
             </el-alert>
 
 
@@ -46,28 +47,19 @@
                     min-width="120">
                 <template slot-scope="props">
                     {{ props.row.downloader_state_name }}
-                    <span v-if="props.row.downloader_result">( {{ props.row.downloader_result }} )</span>
+                    <div v-if="props.row.downloader_result" >
+                        <span > （{{ props.row.downloader_result }}）</span>
+                    </div>
                 </template>
             </el-table-column>
 
             <el-table-column
-                    prop="file_url"
-                    label="访问地址"
-                    min-width="80">
-            </el-table-column>
-
-            <el-table-column
-                    width="180"
-                    prop="create_time"
-                    label="创建时间">
-            </el-table-column>
-
-            <el-table-column
                     fixed="right"
-                    width="300"
+                    width="150"
                     align="center"
                     label="操作">
                 <template slot-scope="props">
+
                     <el-button
                             v-if="props.row.downloader_state != 30"
                             @click="implementDownloaderTask(props.row.downloader_id)"
@@ -102,6 +94,7 @@
             el: "#app",
             data: {
                 url: '',
+                downloader_ids : [],
                 lists: [],
                 totalCount: 0,
                 pageSize: 10,
@@ -130,6 +123,9 @@
                         type: 'post',
                         success: function (res) {
                             if (res.status) {
+
+                                _this.downloader_ids.push(res.data.downloader_id);
+
                                 _this.getList();
                                 _this.url = '';
                             } else {
@@ -144,6 +140,7 @@
                     $.ajax({
                         url: "{:api_url('/common/downloader.Panel/index')}",
                         data: {
+                            downloader_ids :  this.downloader_ids,
                             page: this.currentPage,
                             _action: 'list'
                         },
@@ -172,6 +169,7 @@
                         success: function (res) {
                             if (res.status) {
                                 _this.getList();
+                                layer.msg(res.msg, {time: 1000});
                             } else {
                                 layer.msg(res.msg, {time: 1000});
                             }
@@ -197,6 +195,7 @@
                         success: function (res) {
                             if (res.status) {
                                 _this.getList();
+                                layer.msg(res.msg, {time: 1000});
                             } else {
                                 layer.msg(res.msg, {time: 1000});
                             }

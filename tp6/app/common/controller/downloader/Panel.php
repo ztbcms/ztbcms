@@ -18,6 +18,14 @@ class Panel extends AdminController
         if ($request->isGet() && $request->get('_action') == 'list') {
             $DownloaderModel = new DownloaderModel();
             $where = [];
+
+            $downloader_ids = input('downloader_ids');
+            if($downloader_ids) {
+                $where[] = ['downloader_id','in',$downloader_ids];
+            } else {
+                $where[] = ['downloader_id','=',-1];
+            }
+
             $list = $DownloaderModel
                 ->where($where)
                 ->append(['downloader_state_name'])
@@ -48,6 +56,12 @@ class Panel extends AdminController
                 ->findOrEmpty()->delete();
             return json(self::createReturn(true,'','操作成功'));
         }
+
+        return view();
+    }
+
+
+    public function log(){
 
         return view();
     }

@@ -145,6 +145,12 @@ return array(
                         "status" => 1,
                         "name" => "下载中心",
                     ],
+                    [
+                        "route" => "common/downloader.Log/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "下载记录",
+                    ],
                 ]
             ],
         ],

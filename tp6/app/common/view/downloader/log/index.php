@@ -1,0 +1,218 @@
+<div id="app" v-cloak>
+    <el-card>
+        <div slot="header" class="clearfix">
+            <span>下载记录</span>
+        </div>
+
+        <div class="filter-container" style="margin-bottom: 15px;">
+
+            <el-input v-model="listQuery.keywords"
+                      placeholder="请输入关键词"
+                      style="width: 200px;" class="filter-item">
+            </el-input>
+
+            <el-button @click="doSearch" type="primary">筛选</el-button>
+        </div>
+
+        <el-table size="small"
+                  :key="tableKey"
+                  :data="lists"
+                  fit
+                  highlight-current-row
+                  style="width: 100%;"
+        >
+            <el-table-column label="下载链接" min-width="150" align="center">
+                <template slot-scope="{row}">
+                    <span>{{ row.downloader_url }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="下载结果" align="left" min-width="140">
+                <template slot-scope="{row}">
+                    <span>{{ row.downloader_state_name }}</span>
+                    <div v-if="row.downloader_result" >
+                        <span > （{{ row.downloader_result }}）</span>
+                    </div>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="文件名称" align="left" min-width="100">
+                <template slot-scope="{row}">
+                    <span v-if="row.file_name" >{{ row.file_name }}</span>
+                    <span v-else > - </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="文件路径" align="left" min-width="180">
+                <template slot-scope="{row}">
+                    <span v-if="row.file_path" >{{ row.file_path }}</span>
+                    <span v-else > - </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="文件访问地址" align="left" min-width="180">
+                <template slot-scope="{row}">
+                    <span v-if="row.file_url" >{{ row.file_url }}</span>
+                    <span v-else > - </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="下载时长" align="left" min-width="80">
+                <template slot-scope="{row}">
+                    <span v-if="row.downloader_state == 30" >{{ row.downloader_duration }} s</span>
+                    <span v-else > - </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="时间" min-width="150" align="center">
+                <template slot-scope="{row}">
+                    <span>{{ row.create_time }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    fixed="right"
+                    width="160"
+                    align="center"
+                    label="操作">
+                <template slot-scope="props">
+                    <el-button
+                            v-if="props.row.downloader_state != 30"
+                            @click="implementDownloaderTask(props.row.downloader_id)"
+                            type="text" size="mini">
+                        立即执行
+                    </el-button>
+
+                    <el-button @click="deleteDownloaderTask(props.row.downloader_id)"
+                               type="text" size="mini"
+                               style="color: #F56C6C">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <div class="pagination-container" style="margin-top: 15px;">
+            <el-pagination
+                background
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+                v-show="total>0"
+                :current-page.sync="listQuery.page"
+                :page-size.sync="listQuery.limit"
+                @current-change="getList"
+                :page-size="10"
+            >
+            </el-pagination>
+        </div>
+    </el-card>
+</div>
+<script>
+    $(document).ready(function () {
+        new Vue({
+            el: '#app',
+            data: {
+                tableKey: 0,
+                total: 0,
+                page: 1,
+                limit: 20,
+                lists: [],
+                page_count: 0,
+                listQuery: {
+                    page: 1,
+                    limit: 20,
+                    keywords: ''
+                },
+            },
+            computed: {
+
+            },
+            watch: {},
+            filters: {
+                parseTime: function (time, format) {
+                    return Ztbcms.formatTime(time, format)
+                },
+                statusFilter: function (status) {
+                    let statusMap = {
+                        published: 'success',
+                        draft: 'info',
+                        deleted: 'danger'
+                    };
+                    return statusMap[status]
+                }
+            },
+            methods: {
+                doSearch: function () {
+                    var that = this;
+                    that.page = 1;
+                    that.getList();
+                },
+                getList: function () {
+                    let that = this;
+                    let url = '{:api_url("/common/downloader.Log/index")}';
+                    let data = that.listQuery;
+                    data._action = 'list';
+                    that.httpGet(url, data, function (res) {
+                        if (res.status) {
+                            that.lists = res.data.data;
+                            that.total = res.data.total;
+                            that.page = res.data.page;
+                            that.page_count = res.data.per_page;
+                        } else {
+                            layer.msg(res.msg, {time: 1000});
+                        }
+                    });
+                },
+                implementDownloaderTask: function (downloader_id) {
+                    var _this = this
+                    $.ajax({
+                        url: "{:api_url('/common/downloader.Panel/index')}",
+                        data: {
+                            downloader_id: downloader_id,
+                            _action: 'implement'
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                _this.getList();
+                                layer.msg(res.msg, {time: 1000});
+                            } else {
+                                layer.msg(res.msg, {time: 1000});
+                            }
+                        }
+                    })
+                },
+                deleteDownloaderTask: function (downloader_id) {
+                    var _this = this
+                    layer.confirm('是否确认删除?', {title: '提示'}, function () {
+                        _this.doDeleteDownloaderTask(downloader_id)
+                    })
+                },
+                doDeleteDownloaderTask: function (downloader_id) {
+                    var _this = this
+                    $.ajax({
+                        url: "{:api_url('/common/downloader.Panel/index')}",
+                        data: {
+                            downloader_id: downloader_id,
+                            _action: 'delete'
+                        },
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (res) {
+                            if (res.status) {
+                                _this.getList();
+                                layer.msg(res.msg, {time: 1000});
+                            } else {
+                                layer.msg(res.msg, {time: 1000});
+                            }
+                        }
+                    })
+                },
+            },
+            mounted: function () {
+                this.getList();
+            }
+        })
+    })
+</script>

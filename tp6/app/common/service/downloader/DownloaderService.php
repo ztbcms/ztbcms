@@ -69,6 +69,7 @@ class DownloaderService extends BaseService
      */
     static function implementDownloaderTask(int $downloader_id = 0): array
     {
+        $start_duration = microtime(true);
         $DownloaderModel = new DownloaderModel();
         $downloader = $DownloaderModel
             ->where('downloader_id','=',$downloader_id)
@@ -109,14 +110,14 @@ class DownloaderService extends BaseService
             } else {
                 $updateData['downloader_state'] = DownloaderModel::FAIL_DOWNLOADER;
             }
-            $updateData['update_time'] = time();
             $updateData['downloader_result'] = $downloaderRes['msg'];
         } catch (\Exception|\Error $exception) {
             $updateData['downloader_state'] = DownloaderModel::FAIL_DOWNLOADER;
-            $updateData['update_time'] = time();
             $updateData['downloader_result'] = $exception->getMessage();
         }
 
+        $updateData['downloader_duration'] = (microtime(true) - $start_duration);
+        $updateData['update_time'] = time();
         $DownloaderModel
             ->where('downloader_id','=',$downloader_id)
             ->update($updateData);
