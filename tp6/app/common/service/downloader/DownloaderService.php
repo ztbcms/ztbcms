@@ -9,6 +9,7 @@ use app\common\libs\downloader\ImgTool;
 use app\common\libs\downloader\VideoTool;
 use app\common\model\downloader\DownloaderModel;
 use app\common\service\BaseService;
+use think\facade\Queue;
 
 /**
  * 下载服务
@@ -52,6 +53,10 @@ class DownloaderService extends BaseService
             'update_time' => time()
         ]);
 
+        Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
+            'downloader_id' => $downloader_id
+        ], 'downloader');
+
         return self::createReturn(true, [
             'downloader_id' => $downloader_id
         ], '创建成功');
@@ -83,30 +88,34 @@ class DownloaderService extends BaseService
         $downloaderRes['status'] = false;
         $downloaderRes['msg'] = '抱歉,上传的类型暂不支持';
 
-        $is_img = ImgTool::isImg($downloader_url);
-        if($is_img['status']) {
-            //判断是否为图片
-            $downloaderRes = ImgTool::getOnLineImg($downloader_url,time().'.'.$is_img['data']['file_type']);
-        }
+        try {
+            $is_img = ImgTool::isImg($downloader_url);
+            if($is_img['status']) {
+                //判断是否为图片
+                $downloaderRes = ImgTool::getOnLineImg($downloader_url,time().'.'.$is_img['data']['file_type']);
+            }
 
+            $is_video = VideoTool::isVideo($downloader_url);
+            if($is_video['status']) {
+                //判断是否为图片
+                $downloaderRes = VideoTool::getOnLineVideo($downloader_url,time().'.'.$is_video['data']['file_type']);
+            }
 
-        $is_video = VideoTool::isVideo($downloader_url);
-        if($is_video['status']) {
-            //判断是否为图片
-            $downloaderRes = VideoTool::getOnLineVideo($downloader_url,time().'.'.$is_video['data']['file_type']);
-        }
-
-
-        if($downloaderRes['status']) {
-            $updateData['downloader_state'] = DownloaderModel::SUCCESS_DOWNLOADER;
-            $updateData['file_name'] = $downloaderRes['data']['file_name'];
-            $updateData['file_path'] = $downloaderRes['data']['file_path'];
-            $updateData['file_url'] = $downloaderRes['data']['file_url'];
-        } else {
+            if($downloaderRes['status']) {
+                $updateData['downloader_state'] = DownloaderModel::SUCCESS_DOWNLOADER;
+                $updateData['file_name'] = $downloaderRes['data']['file_name'];
+                $updateData['file_path'] = $downloaderRes['data']['file_path'];
+                $updateData['file_url'] = $downloaderRes['data']['file_url'];
+            } else {
+                $updateData['downloader_state'] = DownloaderModel::FAIL_DOWNLOADER;
+            }
+            $updateData['update_time'] = time();
+            $updateData['downloader_result'] = $downloaderRes['msg'];
+        } catch (\Exception|\Error $exception) {
             $updateData['downloader_state'] = DownloaderModel::FAIL_DOWNLOADER;
+            $updateData['update_time'] = time();
+            $updateData['downloader_result'] = $exception->getMessage();
         }
-        $updateData['update_time'] = time();
-        $updateData['downloader_result'] = $downloaderRes['msg'];
 
         $DownloaderModel
             ->where('downloader_id','=',$downloader_id)

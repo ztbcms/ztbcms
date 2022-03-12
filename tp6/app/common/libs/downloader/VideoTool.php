@@ -5,6 +5,8 @@
 
 namespace app\common\libs\downloader;
 
+use app\common\model\ConfigModel;
+
 /**
  * 视频下载工具
  */
@@ -64,15 +66,11 @@ class VideoTool
         fwrite($file, $resource); //将内容$resource写入打开的文件$file中
         fclose($file);
 
-        $https = 'http://';
-        if(isset($_SERVER['SERVER_HTTPS']) && $_SERVER['SERVER_HTTPS'] == 'on'){
-            $https = 'https://';
-        }
-
+        $host = ConfigModel::getConfigs()['siteurl'];
         return createReturn(true,[
             'file_name' => $filename,
             'file_path' => $save_path . $filename,
-            'file_url'  => $https.$_SERVER['HTTP_HOST'].'/downloader/video/'.$date.'/'.$filename
+            'file_url'  => $host.'/downloader/video/'.$date.'/'.$filename
         ]);
     }
 

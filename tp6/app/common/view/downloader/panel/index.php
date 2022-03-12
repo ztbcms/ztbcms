@@ -1,6 +1,25 @@
 <div id="app" v-cloak>
     <el-card>
+        <div slot="header" class="clearfix">
+            <span>下载中心</span>
+        </div>
+
         <div style="margin-bottom: 20px;">
+
+            <el-alert
+                    style="margin-bottom: 15px;"
+                    title="说明"
+                    type="info"
+                    :closable="false">
+                <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为 站点设置 - 网站访问地址中设置的域名</p>
+                <p>2) 队列启动的命令为  php think queue:work --queue downloader （前提 composer require topthink/think-queue ）</p>
+                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) </p>
+                <p>4) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
+                <p>5) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
+                <p>6) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
+            </el-alert>
+
+
             <el-input placeholder="请填写需要下载的URL" style="width: 300px;" v-model="url" size="mini">
 
             </el-input>
@@ -23,9 +42,12 @@
             </el-table-column>
 
             <el-table-column
-                    prop="downloader_state_name"
                     label="下载状态"
-                    min-width="80">
+                    min-width="120">
+                <template slot-scope="props">
+                    {{ props.row.downloader_state_name }}
+                    <span v-if="props.row.downloader_result">( {{ props.row.downloader_result }} )</span>
+                </template>
             </el-table-column>
 
             <el-table-column
@@ -87,7 +109,12 @@
                 currentPage: 1
             },
             mounted: function () {
-                this.getList();
+                var that = this
+                that.getList();
+
+                setInterval(function () {
+                    that.getList()
+                }, 2 * 1000)
             },
             methods: {
                 //创建下载任务
@@ -102,12 +129,17 @@
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
-                            layer.msg(res.msg)
-                            _this.getList();
+                            if (res.status) {
+                                _this.getList();
+                                _this.url = '';
+                            } else {
+                                layer.msg(res.msg, {time: 1000});
+                            }
                         }
                     })
                 },
                 getList: function () {
+                    window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                     var _this = this
                     $.ajax({
                         url: "{:api_url('/common/downloader.Panel/index')}",
@@ -138,8 +170,11 @@
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
-                            layer.msg(res.msg)
-                            _this.getList();
+                            if (res.status) {
+                                _this.getList();
+                            } else {
+                                layer.msg(res.msg, {time: 1000});
+                            }
                         }
                     })
                 },
@@ -160,8 +195,11 @@
                         dataType: 'json',
                         type: 'post',
                         success: function (res) {
-                            layer.msg(res.msg)
-                            _this.getList();
+                            if (res.status) {
+                                _this.getList();
+                            } else {
+                                layer.msg(res.msg, {time: 1000});
+                            }
                         }
                     })
                 },
