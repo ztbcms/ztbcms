@@ -133,6 +133,20 @@ return array(
                     ]
                 ]
             ],
+            [
+                "route" => "common/downloader.Panel/index",
+                "type" => 0,
+                "status" => 1,
+                "name" => "下载中心",
+                "child" => [
+                    [
+                        "route" => "common/downloader.Panel/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "下载中心",
+                    ],
+                ]
+            ],
         ],
     ),
 );

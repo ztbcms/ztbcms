@@ -175,3 +175,26 @@ CREATE TABLE `cms_queue_failed_jobs` (
 -- ----------------------------
 -- 队列 END
 -- ----------------------------
+
+-- ----------------------------
+-- 下载中心
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_downloader`;
+CREATE TABLE `cms_downloader`  (
+   `downloader_id` int(15) UNSIGNED NOT NULL AUTO_INCREMENT,
+   `downloader_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '下载链接',
+   `downloader_state` int(3) UNSIGNED NULL DEFAULT 0 COMMENT '下载状态 （10待下载 20下载中  30下载成功 40下载失败）',
+   `downloader_result` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '下载结果',
+   `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名称',
+   `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件路径',
+   `file_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件访问地址',
+   `create_time` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '上传时间',
+   `update_time` int(11) NULL DEFAULT 0 COMMENT '更新时间',
+   `delete_time` int(11) NULL DEFAULT 0 COMMENT '删除时间',
+   PRIMARY KEY (`downloader_id`) USING BTREE,
+   INDEX `downloader_state`(`downloader_state`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic COMMENT='下载中心';
+-- ----------------------------
+-- 下载中心 END
+-- ----------------------------
+

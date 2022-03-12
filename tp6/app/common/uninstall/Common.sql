@@ -18,3 +18,8 @@ DROP TABLE IF EXISTS `cms_tp6_message_send_log`;
 DROP TABLE IF EXISTS `cms_attachment_group`;
 DROP TABLE IF EXISTS `cms_attachment`;
 DROP TABLE IF EXISTS `cms_attachment_index`;
+
+-- ----------------------------
+-- 下载中心
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_downloader`;
