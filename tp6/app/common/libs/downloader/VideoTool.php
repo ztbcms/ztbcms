@@ -11,7 +11,7 @@ use app\common\model\upload\AttachmentModel;
 /**
  * 视频下载工具
  */
-class VideoTool
+class VideoTool extends DownloaderTool
 {
 
     /**

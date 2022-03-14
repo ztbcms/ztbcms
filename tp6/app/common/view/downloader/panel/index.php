@@ -13,7 +13,7 @@
                     :closable="false">
                 <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为 站点设置 - 网站访问地址中设置的域名</p>
                 <p>2) 队列启动的命令为  php think queue:work --queue downloader （前提 composer require topthink/think-queue ）</p>
-                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) </p>
+                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) 文件(pdf,docx,txt)</p>
                 <p>4) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
             </el-alert>
 
@@ -33,6 +33,8 @@
                     :closable="false">
                 <p>1) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
                 <p>2) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
+                <p>3) 测试文件 ：https://wasterecycling.oss-cn-shenzhen.aliyuncs.com/image/20200925/%E8%81%8A%E5%A4%A9%E5%AE%A4%E8%AF%B4%E6%98%8E.docx  </p>
+                <p>3) 测试文件 ：https://wasterecycling.oss-cn-shenzhen.aliyuncs.com/image/20200925/%E8%81%8A%E5%A4%A9%E5%AE%A4%E8%AF%B4%E6%98%8E.pdf  </p>
             </el-alert>
 
 
@@ -60,15 +62,36 @@
             <el-table-column
                     label="下载状态"
                     min-width="120">
-                <template slot-scope="props">
-                    {{ props.row.downloader_state_name }}
-
-                    <i v-if="props.row.downloader_state == 10 || props.row.downloader_state == 20" class="el-icon-loading">
+                <template slot-scope="{row}">
+                    <span>{{ row.downloader_state_name }}</span>
+                    <i v-if="row.downloader_state == 10 || row.downloader_state == 20" class="el-icon-loading">
                     </i>
 
-                    <div v-if="props.row.downloader_result" >
-                        <span > （{{ props.row.downloader_result }}）</span>
+                    <el-tooltip
+                            style="margin-left: 5px;"
+                            v-if="row.downloader_result"
+                            class="item"
+                            effect="dark"
+                            :content="row.downloader_result"
+                            placement="top-start">
+                        <el-link type="danger"> 原因</el-link>
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="文件" align="left" min-width="80">
+                <template slot-scope="{row}">
+
+                    <div v-if="row.file_url">
+                        <a :href="row.file_url" target="_blank">
+                            <el-image
+                                    style="width: 50px; height: 50px"
+                                    :src="row.file_thumb"
+                                    :fit="fit">
+                            </el-image>
+                        </a>
                     </div>
+                    <span v-else> - </span>
                 </template>
             </el-table-column>
 

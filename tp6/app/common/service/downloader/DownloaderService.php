@@ -5,6 +5,8 @@
 
 namespace app\common\service\downloader;
 
+use app\common\libs\downloader\DownloaderTool;
+use app\common\libs\downloader\FileTool;
 use app\common\libs\downloader\ImgTool;
 use app\common\libs\downloader\VideoTool;
 use app\common\model\downloader\DownloaderModel;
@@ -93,26 +95,8 @@ class DownloaderService extends BaseService
             ]);
 
         $downloader_url = $downloader['downloader_url'];
-        $downloaderRes['status'] = false;
-        $downloaderRes['msg'] = '抱歉,上传的类型暂不支持';
-
         try {
-
-            //todo 上传逻辑可抽象出来，暂时未处理
-            $is_img = ImgTool::isImg($downloader_url);
-            if ($is_img['status']) {
-                //判断是否为图片
-                $file_type = $is_img['data']['file_type'];
-                $downloaderRes = ImgTool::getOnLineImg($downloader_url, time() . '.' . $file_type);
-            }
-
-            $is_video = VideoTool::isVideo($downloader_url);
-            if ($is_video['status']) {
-                //判断是否为视频
-                $file_type = $is_video['data']['file_type'];
-                $downloaderRes = VideoTool::getOnLineVideo($downloader_url, time().'.'.$file_type);
-            }
-
+            $downloaderRes =  DownloaderTool::downloaderOnLine($downloader_url,time());
             $downloaderData = $downloaderRes['data'];
             if ($downloaderRes['status']) {
                 $updateData['downloader_state'] = DownloaderModel::SUCCESS_DOWNLOADER;
@@ -131,6 +115,7 @@ class DownloaderService extends BaseService
 
         $updateData['downloader_duration'] = (microtime(true) - $start_duration);
         $updateData['update_time'] = time();
+
         $DownloaderModel
             ->where('downloader_id', '=', $downloader_id)
             ->update($updateData);

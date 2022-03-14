@@ -9,42 +9,25 @@ use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 
 /**
- * 图片下载工具
+ * 文件下载工具
  */
-class ImgTool extends DownloaderTool
+class FileTool extends DownloaderTool
 {
 
-
     /**
-     * 判断是否为图片
+     * 判断是否为文件
      * @param string $file_name
      * @return array
      */
-    static function isImg(string $file_name = ''): array
+    static function isFile(string $file_name = ''): array
     {
-        $file = fopen($file_name, "rb");
-        $bin = fread($file, 2); // 只读2字节
-
-        fclose($file);
-        $str_info = @unpack("C2chars", $bin);
-
-        $type_code = intval($str_info['chars1'] . $str_info['chars2']);
-        $file_type = '';
-        if ($type_code == 255216 || $type_code == 7173 || $type_code == 13780) {
-            if($type_code == 255216) {
-                $file_type = 'jpg';
-            }
-            if($type_code == 7173) {
-                $file_type = 'gif';
-            }
-            if($type_code == 13780) {
-                $file_type = 'png';
-            }
-            return createReturn(true,[
+        $file_type = pathinfo($file_name)['extension'];
+        if ($file_type == 'pdf' || $file_type == 'docx' || $file_type == 'txt') {
+            return createReturn(true, [
                 'file_type' => $file_type
             ]);
         } else {
-            return createReturn(false,[],'抱歉，仅允许上传jpg/jpeg/gif/png格式的图片');
+            return createReturn(false, [], '抱歉，仅允许上传mp4格式的视频');
         }
     }
 
@@ -54,12 +37,12 @@ class ImgTool extends DownloaderTool
      * @param string $filename
      * @return array
      */
-    static function getOnLineImg(string $url = '', string $filename = ''): array
+    static function getOnLineFile(string $url = '', string $filename = ''): array
     {
         //本地保存地址
         $date = date("Ymd");
 
-        $save_path = app()->getRootPath().'public/downloader/img/'.$date.'/';
+        $save_path = app()->getRootPath().'public/downloader/file/'.$date.'/';
         if (!file_exists($save_path)) {
             mkdir($save_path, 0777, true); //创建目录
         }
@@ -75,7 +58,7 @@ class ImgTool extends DownloaderTool
         }
         curl_close($ch);
         if(empty($filename)) {
-            $filename = date("YmdHis") . rand(1, 99999) . '.jpg';
+            $filename = date("YmdHis") . rand(1, 99999) . '.docx';
         }
 
         //w+ 读写方式打开，将文件指针指向文件头并将文件大小截为零。如果文件不存在则尝试创建之。
@@ -90,13 +73,12 @@ class ImgTool extends DownloaderTool
             'module' => AttachmentModel::MODULE_IMAGE,
             'file_name' => $filename,
             'file_path' => $file_path,
-            'file_url'  => $host.'/downloader/img/'.$date.'/'.$filename,
+            'file_url'  => $host.'/downloader/file/'.$date.'/'.$filename,
             'filesize' => filesize($file_path),
-            'file_thumb' => $host.'/downloader/img/'.$date.'/'.$filename,
+            'file_thumb' => $host.'/statics/admin/upload/pdf.png',
             'fileext' => pathinfo($file_path)['extension'],
             'hash' => hash_file('md5',$file_path)
         ]);
     }
-
 
 }
