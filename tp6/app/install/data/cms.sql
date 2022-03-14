@@ -292,6 +292,8 @@ INSERT INTO `cms_config` VALUES ('50', 'attachment_aliyun_expire_time', 'OSS-临
 INSERT INTO `cms_config` VALUES ('51', 'attachment_local_domain', '本地存储驱动-附件域名', 1, '');
 INSERT INTO `cms_config` VALUES ('52', 'admin_operation_switch', '是否启用后台操作日志', 1, 1);
 INSERT INTO `cms_config` VALUES ('53', 'attachment_aliyun_is_direct', 'oss-开启直传', '1', '0');
+INSERT INTO `cms_config` VALUES ('54', 'downloader_retry_switch', '下载中心-任务启动失败是否重启', '1', '0');
+INSERT INTO `cms_config` VALUES ('55', 'downloader_retry_num', '下载中心-重启的次数', '1', '0');
 
 
 -- ----------------------------

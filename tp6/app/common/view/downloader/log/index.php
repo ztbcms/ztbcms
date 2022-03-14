@@ -21,50 +21,68 @@
                   highlight-current-row
                   style="width: 100%;"
         >
-            <el-table-column label="下载链接" min-width="150" align="center">
+            <el-table-column label="下载结果" align="left" min-width="250">
                 <template slot-scope="{row}">
+                    <span>{{ row.downloader_state_name }}</span>
+                    <i v-if="row.downloader_state == 10 || row.downloader_state == 20" class="el-icon-loading">
+                    </i>
+
+                    <el-tooltip
+                            style="margin-left: 5px;"
+                            v-if="row.downloader_result"
+                            class="item"
+                            effect="dark"
+                            :content="row.downloader_result"
+                            placement="top-start">
+                        <el-link type="danger"> 原因</el-link>
+                    </el-tooltip>
+
+                    <br>
                     <span>{{ row.downloader_url }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column label="下载结果" align="left" min-width="140">
+            <el-table-column label="文件信息" align="left" min-width="280">
                 <template slot-scope="{row}">
-                    <span>{{ row.downloader_state_name }}</span>
-                    <div v-if="row.downloader_result" >
-                        <span > （{{ row.downloader_result }}）</span>
+                    <div v-if="row.file_name">
+                        <span> 文件名 ：{{ row.file_name }}</span>
+                        <br>
+                        <span v-if="row.file_path">{{ row.file_path }}</span>
                     </div>
+                    <span v-else> - </span>
                 </template>
             </el-table-column>
 
-            <el-table-column label="文件名称" align="left" min-width="100">
+            <el-table-column label="文件" align="left" min-width="80">
                 <template slot-scope="{row}">
-                    <span v-if="row.file_name" >{{ row.file_name }}</span>
-                    <span v-else > - </span>
-                </template>
-            </el-table-column>
 
-            <el-table-column label="文件路径" align="left" min-width="180">
-                <template slot-scope="{row}">
-                    <span v-if="row.file_path" >{{ row.file_path }}</span>
-                    <span v-else > - </span>
-                </template>
-            </el-table-column>
-
-            <el-table-column label="文件访问地址" align="left" min-width="180">
-                <template slot-scope="{row}">
-                    <span v-if="row.file_url" >{{ row.file_url }}</span>
-                    <span v-else > - </span>
+                    <div v-if="row.file_url">
+                        <a :href="row.file_url" target="_blank">
+                            <el-image
+                                    style="width: 50px; height: 50px"
+                                    :src="row.file_thumb"
+                                    :fit="fit">
+                            </el-image>
+                        </a>
+                    </div>
+                    <span v-else> - </span>
                 </template>
             </el-table-column>
 
             <el-table-column label="下载时长" align="left" min-width="80">
                 <template slot-scope="{row}">
-                    <span v-if="row.downloader_state == 30" >{{ row.downloader_duration }} s</span>
-                    <span v-else > - </span>
+                    <span v-if="row.downloader_state == 30">{{ row.downloader_duration }} s</span>
+                    <span v-else> - </span>
                 </template>
             </el-table-column>
 
-            <el-table-column label="时间" min-width="150" align="center">
+            <el-table-column label="重试次数" align="left" min-width="80">
+                <template slot-scope="{row}">
+                    {{ row.downloader_implement_num }} 次
+                </template>
+            </el-table-column>
+
+            <el-table-column label="时间" min-width="120" align="center">
                 <template slot-scope="{row}">
                     <span>{{ row.create_time }}</span>
                 </template>
@@ -94,14 +112,14 @@
 
         <div class="pagination-container" style="margin-top: 15px;">
             <el-pagination
-                background
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total"
-                v-show="total>0"
-                :current-page.sync="listQuery.page"
-                :page-size.sync="listQuery.limit"
-                @current-change="getList"
-                :page-size="10"
+                    background
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total"
+                    v-show="total>0"
+                    :current-page.sync="listQuery.page"
+                    :page-size.sync="listQuery.limit"
+                    @current-change="getList"
+                    :page-size="10"
             >
             </el-pagination>
         </div>
@@ -124,9 +142,7 @@
                     keywords: ''
                 },
             },
-            computed: {
-
-            },
+            computed: {},
             watch: {},
             filters: {
                 parseTime: function (time, format) {

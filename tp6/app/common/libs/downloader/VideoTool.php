@@ -6,6 +6,7 @@
 namespace app\common\libs\downloader;
 
 use app\common\model\ConfigModel;
+use app\common\model\upload\AttachmentModel;
 
 /**
  * 视频下载工具
@@ -41,7 +42,7 @@ class VideoTool
         //本地保存地址
         $date = date("Ymd");
 
-        $save_path = app()->getRootPath().'public/downloader/video/'.$date.'/';
+        $save_path = app()->getRootPath() . 'public/downloader/video/' . $date . '/';
         if (!file_exists($save_path)) {
             mkdir($save_path, 0777, true); //创建目录
         }
@@ -54,10 +55,10 @@ class VideoTool
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); //对于https的不验证ssl证书
         $resource = curl_exec($ch);
         if ($resource === FALSE) {
-            return createReturn(false,[],"CURL Error:" . curl_error($ch));
+            return createReturn(false, [], "CURL Error:" . curl_error($ch));
         }
         curl_close($ch);
-        if(empty($filename)) {
+        if (empty($filename)) {
             $filename = date("YmdHis") . rand(1, 99999) . '.jpg';
         }
 
@@ -66,11 +67,19 @@ class VideoTool
         fwrite($file, $resource); //将内容$resource写入打开的文件$file中
         fclose($file);
 
+        $file_path = $save_path . $filename;
+
         $host = ConfigModel::getConfigs()['siteurl'];
-        return createReturn(true,[
+        return createReturn(true, [
+            'module' => AttachmentModel::MODULE_VIDEO,
             'file_name' => $filename,
-            'file_path' => $save_path . $filename,
-            'file_url'  => $host.'/downloader/video/'.$date.'/'.$filename
+            'file_path' => $file_path,
+            'file_url' => $host . '/downloader/video/' . $date . '/' . $filename,
+            'filesize' => filesize($file_path),
+            //todo : 视频缩略图暂时使用固定的缩略图
+            'file_thumb' => $host . '/statics/admin/upload/video.png',
+            'fileext' => pathinfo($file_path)['extension'],
+            'hash' => hash_file('md5',$file_path)
         ]);
     }
 

@@ -13,11 +13,26 @@
                     :closable="false">
                 <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为 站点设置 - 网站访问地址中设置的域名</p>
                 <p>2) 队列启动的命令为  php think queue:work --queue downloader （前提 composer require topthink/think-queue ）</p>
-                <p>3) 队列未开启的情况定时任务也会每隔一分钟进行执行 （开启）</p>
-                <p>4) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) </p>
-                <p>5) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
-                <p>6) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
-                <p>7) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
+                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) </p>
+                <p>4) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
+            </el-alert>
+
+            <el-alert
+                    style="margin-bottom: 15px;"
+                    title="计划任务"
+                    type="info"
+                    :closable="false">
+                <p>1) 启动 app\common\cronscript\DownloaderRetryScript 可帮助下载失败的任务进行重启</p>
+                <p>2) 启动 app\common\cronscript\DownloaderRetryScript 可帮助队列任务遗漏的未开始任务进行执行</p>
+            </el-alert>
+
+            <el-alert
+                    style="margin-bottom: 15px;"
+                    title="测试连接"
+                    type="info"
+                    :closable="false">
+                <p>1) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
+                <p>2) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
             </el-alert>
 
 
@@ -47,6 +62,10 @@
                     min-width="120">
                 <template slot-scope="props">
                     {{ props.row.downloader_state_name }}
+
+                    <i v-if="props.row.downloader_state == 10 || props.row.downloader_state == 20" class="el-icon-loading">
+                    </i>
+
                     <div v-if="props.row.downloader_result" >
                         <span > （{{ props.row.downloader_result }}）</span>
                     </div>

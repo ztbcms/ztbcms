@@ -6,6 +6,7 @@
 namespace app\common\libs\downloader;
 
 use app\common\model\ConfigModel;
+use app\common\model\upload\AttachmentModel;
 
 /**
  * 图片下载工具
@@ -82,12 +83,18 @@ class ImgTool
         fwrite($file, $resource); //将内容$resource写入打开的文件$file中
         fclose($file);
 
-        $host = ConfigModel::getConfigs()['siteurl'];
+        $file_path = $save_path . $filename;
 
+        $host = ConfigModel::getConfigs()['siteurl'];
         return createReturn(true,[
+            'module' => AttachmentModel::MODULE_IMAGE,
             'file_name' => $filename,
-            'file_path' => $save_path . $filename,
-            'file_url'  => $host.'/downloader/img/'.$date.'/'.$filename
+            'file_path' => $file_path,
+            'file_url'  => $host.'/downloader/img/'.$date.'/'.$filename,
+            'filesize' => filesize($file_path),
+            'file_thumb' => $host.'/downloader/img/'.$date.'/'.$filename,
+            'fileext' => pathinfo($file_path)['extension'],
+            'hash' => hash_file('md5',$file_path)
         ]);
     }
 

@@ -9,9 +9,10 @@ use app\common\model\downloader\DownloaderModel;
 use app\common\service\downloader\DownloaderService;
 
 /**
- * 下载中心
+ * 下载中心-执行待开始的下载任务
+ * （正常情况不需要要使用该定时任务）
  */
-class DownloaderScript extends CronScript
+class DownloaderImplementScript extends CronScript
 {
 
     public function run($cronId): array
@@ -53,7 +54,7 @@ class DownloaderScript extends CronScript
         return DownloaderModel::where([
             ['downloader_state', '=', DownloaderModel::WAIT_DOWNLOADER],
             ['downloader_id', '>', $downloader_id],
-        ])->value('order_invoice_goods_id');
+        ])->value('downloader_id');
     }
 
 }
