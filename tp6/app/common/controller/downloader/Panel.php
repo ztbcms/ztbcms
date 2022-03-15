@@ -56,13 +56,6 @@ class Panel extends AdminController
                 ->findOrEmpty()->delete();
             return json(self::createReturn(true,'','操作成功'));
         }
-
-        return view();
-    }
-
-
-    public function log(){
-
         return view();
     }
 
