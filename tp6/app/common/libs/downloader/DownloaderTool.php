@@ -87,6 +87,8 @@ class DownloaderTool
             // 保存路径
             $save_path_base = '/downloader/' . substr(md5($url), 0, 2) .'/';
             $save_path = app()->getRootPath() . 'public' . $save_path_base;
+            $file_path = $save_path . $filename;
+            $file_path_base = $save_path_base . $filename;
             if (!file_exists($save_path)) {
                 mkdir($save_path, 0777, true); //创建目录
                 $ch = curl_init();
@@ -105,21 +107,31 @@ class DownloaderTool
                 fwrite($file, $resource); //将内容$resource写入打开的文件$file中
                 fclose($file);
             }
-
-            $file_path = $save_path . $filename;
-            $file_path_base = $save_path_base . $filename;
             // 访问地址
             $host = AdminConfigService::getInstance()->getConfig('siteurl')['data'];
             $file_url = rtrim($host, '/') . $file_path_base;
-
+            $file_thumb = '';
+            if (in_array($file_extension, ['jpg', 'gif', 'png', 'jpeg', 'bmp'])) {
+                //图片
+                $file_thumb = rtrim($host, '/') . $file_path_base;
+            }
+            if (in_array($file_extension, ['mp4'])) {
+                //视频
+                $file_thumb = rtrim($host, '/') . '/statics/admin/upload/video.png';
+            }
+            if (in_array($file_extension, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'])) {
+                //文件
+                $file_thumb = rtrim($host, '/') . '/statics/admin/upload/file.png';
+            }
             return createReturn(true, [
                 'module' => $module,
                 'file_name' => $filename,
                 'file_path' => $file_path_base,
                 'file_url' => $file_url,
-                'filesize' => filesize($file_path),
-                'fileext' => $file_extension,
-                'hash' => hash_file('md5', $file_path)
+                'file_thumb' => $file_thumb,
+                'file_size' => filesize($file_path),
+                'file_ext' => $file_extension,
+                'file_hash' => hash_file('md5', $file_path)
             ]);
         } catch (Exception | Error $e) {
             return createReturn(false, [], $e->getMessage());

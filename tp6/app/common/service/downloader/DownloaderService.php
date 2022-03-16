@@ -24,19 +24,6 @@ class DownloaderService extends BaseService
 {
 
     /**
-     * 校验下载的任务
-     * @param string $url
-     * @return array
-     */
-    static function checkCreateDownloaderTask(string $url = '')
-    {
-        if (empty($url)) {
-            return self::createReturn(false, '', '抱歉，下载的链接不能为空');
-        }
-        return self::createReturn(true);
-    }
-
-    /**
      * 创建下载任务
      * @param string $url
      * @return array
@@ -95,9 +82,11 @@ class DownloaderService extends BaseService
             if ($downloaderRes['status']) {
                 $updateData['downloader_state'] = DownloaderModel::STATE_SUCCESS;
                 $updateData['file_name'] = $downloaderData['file_name'] ?? '';
+                $updateData['file_name'] = $downloaderData['file_name'] ?? '';
                 $updateData['file_path'] = $downloaderData['file_path'] ?? '';
                 $updateData['file_url'] = $downloaderData['file_url'] ?? '';
                 $updateData['file_thumb'] = $downloaderData['file_thumb'] ?? '';
+                $updateData['file_hash'] = $downloaderData['file_hash'] ?? '';
             } else {
                 $updateData['downloader_state'] = DownloaderModel::STATE_FAIL;
             }
@@ -123,14 +112,15 @@ class DownloaderService extends BaseService
             $attachmentModel->filepath = $downloaderData['file_path'] ?? '';
             $attachmentModel->fileurl = $downloaderData['file_url'] ?? '';
             $attachmentModel->filethumb = $downloaderData['file_thumb'] ?? '';
-            $attachmentModel->filesize = $downloaderData['filesize'] ?? 0;
-            $attachmentModel->fileext = $downloaderData['fileext'] ?? '';
+            $attachmentModel->filesize = $downloaderData['file_size'] ?? 0;
+            $attachmentModel->fileext = $downloaderData['file_ext'] ?? '';
             $attachmentModel->upload_ip = $_SERVER['REMOTE_ADDR'];
             $attachmentModel->create_time = time();
             $attachmentModel->update_time = time();
             $attachmentModel->user_type = 'admin';
             $attachmentModel->user_id = 0;
-            $attachmentModel->hash = $downloaderData['hash'] ?? '';
+            $attachmentModel->hash = $downloaderData['file_hash'] ?? '';
+            $attachmentModel->hash = $downloaderData['file_hash'] ?? '';
             $attachmentModel->save();
         }
 

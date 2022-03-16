@@ -130,7 +130,7 @@
 
                 setInterval(function () {
                     that.getList()
-                }, 2 * 1000)
+                }, 5 * 1000)
             },
             methods: {
                 //创建下载任务
