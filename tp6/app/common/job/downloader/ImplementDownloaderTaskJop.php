@@ -13,15 +13,16 @@ use think\queue\Job;
 class ImplementDownloaderTaskJop extends BaseQueueJob
 {
 
-
     function fire(Job $job, $data): bool
     {
         try {
             $downloader_id = $data['downloader_id'] ?? '';
-            DownloaderService::implementDownloaderTask($downloader_id);
+            if ($downloader_id) {
+                DownloaderService::implementDownloaderTask($downloader_id);
+            }
             $job->delete();
             return true;
-        } catch (\Exception|\Error $exception) {
+        } catch (\Exception | \Error $exception) {
             $job->delete();
             return true;
         }
@@ -30,7 +31,7 @@ class ImplementDownloaderTaskJop extends BaseQueueJob
     function failed($data)
     {
         $downloader_id = $data['downloader_id'] ?? '';
-        Log::debug('ImplementDownloaderTaskJop::failed。。。(downloader_id : '.$downloader_id.')');
+        Log::debug('ImplementDownloaderTaskJop::下载失败(downloader_id : ' . $downloader_id . ')');
     }
 
 }

@@ -84,27 +84,28 @@ class DownloaderTool
     static function doDownloadFile(string $url = '', string $filename = '', $file_extension = '', string $module = '')
     {
         try {
-            $date = date("Ymd");
-            $save_path_base = '/downloader/' . $module . '/' . $date . '/';
+            // 保存路径
+            $save_path_base = '/downloader/' . substr(md5($url), 0, 2) .'/';
             $save_path = app()->getRootPath() . 'public' . $save_path_base;
             if (!file_exists($save_path)) {
                 mkdir($save_path, 0777, true); //创建目录
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); //对于https的不验证ssl证书
+                $resource = curl_exec($ch);
+                if ($resource === FALSE) {
+                    return createReturn(false, [], "CURL Error:" . curl_error($ch));
+                }
+                curl_close($ch);
+                //w+ 读写方式打开，将文件指针指向文件头并将文件大小截为零。如果文件不存在则尝试创建之。
+                $file = fopen($save_path . $filename, 'w+'); //打开一个文件或 URL
+                fwrite($file, $resource); //将内容$resource写入打开的文件$file中
+                fclose($file);
             }
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); //对于https的不验证ssl证书
-            $resource = curl_exec($ch);
-            if ($resource === FALSE) {
-                return createReturn(false, [], "CURL Error:" . curl_error($ch));
-            }
-            curl_close($ch);
-            //w+ 读写方式打开，将文件指针指向文件头并将文件大小截为零。如果文件不存在则尝试创建之。
-            $file = fopen($save_path . $filename, 'w+'); //打开一个文件或 URL
-            fwrite($file, $resource); //将内容$resource写入打开的文件$file中
-            fclose($file);
+
             $file_path = $save_path . $filename;
             $file_path_base = $save_path_base . $filename;
             // 访问地址

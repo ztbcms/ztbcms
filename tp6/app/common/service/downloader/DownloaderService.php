@@ -12,6 +12,7 @@ use app\common\libs\downloader\VideoTool;
 use app\common\model\downloader\DownloaderModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
+use think\Exception;
 use think\facade\Queue;
 
 /**
@@ -42,11 +43,10 @@ class DownloaderService extends BaseService
      */
     static function createDownloaderTask(string $url = '')
     {
-        $checkRes = self::checkCreateDownloaderTask($url);
-        if (!$checkRes['status']) {
-            return $checkRes;
+        $url = trim($url);
+        if (empty($url) || strpos($url, 'http') !== 0) {
+            return self::createReturn(false, '', '参数异常：url格式错误');
         }
-
         $DownloaderModel = new DownloaderModel();
         $downloader_id = $DownloaderModel
             ->where('downloader_url', '=', $url)
@@ -76,7 +76,7 @@ class DownloaderService extends BaseService
      */
     static function implementDownloaderTask(int $downloader_id = 0)
     {
-        $start_duration = microtime(true);
+        $start_duration = intval(microtime(true));
         $DownloaderModel = new DownloaderModel();
         $downloader = $DownloaderModel->where([
             ['downloader_id', '=', $downloader_id],
@@ -107,7 +107,7 @@ class DownloaderService extends BaseService
             $updateData['downloader_result'] = $exception->getMessage();
         }
 
-        $updateData['downloader_duration'] = (microtime(true) - $start_duration);
+        $updateData['downloader_duration'] = (intval(microtime(true)) - $start_duration);
         $updateData['update_time'] = time();
 
         $DownloaderModel

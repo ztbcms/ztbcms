@@ -25,7 +25,7 @@
                 <p>1) app\common\cronscript\DownloaderImplementScript 触发启动下载任务（不推荐以此方式启动）</p>
                 <p>2) app\common\cronscript\DownloaderRetryScript 可帮助队列任务遗漏的未开始任务进行执行</p>
             </el-alert>
-            
+
             <el-input placeholder="请填写需要下载的URL" style="width: 300px;" v-model="url" size="mini">
 
             </el-input>
