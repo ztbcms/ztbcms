@@ -6,7 +6,6 @@
 namespace app\common\libs\downloader;
 
 use app\admin\service\AdminConfigService;
-use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use Error;
 use Exception;

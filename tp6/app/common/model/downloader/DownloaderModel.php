@@ -26,8 +26,8 @@ class DownloaderModel extends Model
 
     //等待下载
     const STATE_WAIT = 10;
-    //启动下载
-    const STATE_START = 20;
+    //启动下载-下载中
+    const STATE_PROCESSING = 20;
     //下载成功
     const STATE_SUCCESS = 30;
     //下载失败
@@ -46,7 +46,7 @@ class DownloaderModel extends Model
         if ($downloader_state == self::STATE_WAIT) {
             return '等待下载';
         }
-        if ($downloader_state == self::STATE_START) {
+        if ($downloader_state == self::STATE_PROCESSING) {
             return '下载中';
         }
         if ($downloader_state == self::STATE_SUCCESS) {

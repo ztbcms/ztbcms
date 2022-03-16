@@ -133,7 +133,8 @@ CREATE TABLE `cms_attachment` (
   `user_type` varchar(32) DEFAULT NULL COMMENT '上传用户类型 admin后台',
   `user_id` varchar(16) DEFAULT NULL COMMENT '上传用户ID',
   `hash` varchar(64) DEFAULT '' COMMENT '附件hash值（md5）',
-  PRIMARY KEY (`aid`)
+  PRIMARY KEY (`aid`),
+  KEY `hash` (`hash`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
 
 
@@ -182,7 +183,8 @@ CREATE TABLE `cms_queue_failed_jobs` (
 DROP TABLE IF EXISTS `cms_downloader`;
 CREATE TABLE `cms_downloader`  (
     `downloader_id` int(15) unsigned NOT NULL AUTO_INCREMENT,
-    `downloader_url` varchar(255) NOT NULL DEFAULT '' COMMENT '下载链接',
+    `downloader_url` text NOT NULL COMMENT '下载链接',
+    `downloader_url_hash` varchar(255) DEFAULT NULL COMMENT '下载链接Hash',
     `downloader_state` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '下载状态 （10待下载 20下载中  30下载成功 40下载失败）',
     `downloader_result` varchar(255) NOT NULL DEFAULT '' COMMENT '下载结果',
     `downloader_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载时长',
