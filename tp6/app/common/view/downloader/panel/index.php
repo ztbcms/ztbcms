@@ -11,10 +11,10 @@
                     title="说明"
                     type="info"
                     :closable="false">
-                <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为 站点设置 - 网站访问地址中设置的域名</p>
-                <p>2) 队列启动的命令为  php think queue:work --queue downloader （前提 composer require topthink/think-queue ）</p>
+                <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为『站点设置』-『网站访问地址』中设置的域名</p>
+                <p>2) 启动下载任务队列的命令为 php think queue:work --queue downloader</p>
                 <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) 文件(pdf,docx,txt)</p>
-                <p>4) 确保下载路径在写去权限 app()->getRootPath().'public/downloader </p>
+                <p>4) 确保下载路径（public/downloader）有读写权限 </p>
             </el-alert>
 
             <el-alert
@@ -22,22 +22,10 @@
                     title="计划任务"
                     type="info"
                     :closable="false">
-                <p>1) 启动 app\common\cronscript\DownloaderRetryScript 可帮助下载失败的任务进行重启</p>
-                <p>2) 启动 app\common\cronscript\DownloaderRetryScript 可帮助队列任务遗漏的未开始任务进行执行</p>
+                <p>1) app\common\cronscript\DownloaderImplementScript 触发启动下载任务（不推荐以此方式启动）</p>
+                <p>2) app\common\cronscript\DownloaderRetryScript 可帮助队列任务遗漏的未开始任务进行执行</p>
             </el-alert>
-
-            <el-alert
-                    style="margin-bottom: 15px;"
-                    title="测试连接"
-                    type="info"
-                    :closable="false">
-                <p>1) 测试视频 ：https://vd2.bdstatic.com/mda-kahifai35xn97s75/v1-cae/sc/mda-kahifai35xn97s75.mp4 </p>
-                <p>2) 测试图片 ：https://ms.bdimg.com/pacific/0/pic/-186488820_-183993379.png </p>
-                <p>3) 测试文件 ：https://wasterecycling.oss-cn-shenzhen.aliyuncs.com/image/20200925/%E8%81%8A%E5%A4%A9%E5%AE%A4%E8%AF%B4%E6%98%8E.docx  </p>
-                <p>3) 测试文件 ：https://wasterecycling.oss-cn-shenzhen.aliyuncs.com/image/20200925/%E8%81%8A%E5%A4%A9%E5%AE%A4%E8%AF%B4%E6%98%8E.pdf  </p>
-            </el-alert>
-
-
+            
             <el-input placeholder="请填写需要下载的URL" style="width: 300px;" v-model="url" size="mini">
 
             </el-input>
@@ -60,7 +48,7 @@
             </el-table-column>
 
             <el-table-column
-                    label="下载状态"
+                    label="状态"
                     min-width="120">
                 <template slot-scope="{row}">
                     <span>{{ row.downloader_state_name }}</span>
@@ -81,15 +69,8 @@
 
             <el-table-column label="文件" align="left" min-width="80">
                 <template slot-scope="{row}">
-
                     <div v-if="row.file_url">
-                        <a :href="row.file_url" target="_blank">
-                            <el-image
-                                    style="width: 50px; height: 50px"
-                                    :src="row.file_thumb"
-                                    :fit="fit">
-                            </el-image>
-                        </a>
+                        <el-link :href="row.file_url" target="_blank" type="primary">点击预览</el-link>
                     </div>
                     <span v-else> - </span>
                 </template>
@@ -136,7 +117,7 @@
             el: "#app",
             data: {
                 url: '',
-                downloader_ids : [],
+                downloader_ids: [],
                 lists: [],
                 totalCount: 0,
                 pageSize: 10,
@@ -182,7 +163,7 @@
                     $.ajax({
                         url: "{:api_url('/common/downloader.Panel/index')}",
                         data: {
-                            downloader_ids :  this.downloader_ids,
+                            downloader_ids: this.downloader_ids,
                             page: this.currentPage,
                             _action: 'list'
                         },

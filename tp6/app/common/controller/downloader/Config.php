@@ -7,7 +7,6 @@ namespace app\common\controller\downloader;
 
 use app\admin\service\AdminConfigService;
 use app\common\controller\AdminController;
-use app\common\model\downloader\DownloaderModel;
 use think\Request;
 
 
@@ -17,7 +16,7 @@ class Config extends AdminController
     /**
      * 下载中心配置
      *
-     * @param  Request  $request
+     * @param Request $request
      *
      * @return \think\response\Json|\think\response\View
      * @throws \think\db\exception\DataNotFoundException
@@ -27,11 +26,11 @@ class Config extends AdminController
     function index(Request $request)
     {
         $adminConfigService = new AdminConfigService();
-
         if ($request->isPost()) {
+            // 设置
             $data = [
-                'downloader_retry_switch'   => $request->post("downloader_retry_switch"),
-                'downloader_retry_num'     => $request->post("downloader_retry_num"),
+                'downloader_retry_switch' => $request->post("downloader_retry_switch"),
+                'downloader_retry_num' => $request->post("downloader_retry_num"),
             ];
             $res = $adminConfigService->updateConfig($data);
             return json($res);

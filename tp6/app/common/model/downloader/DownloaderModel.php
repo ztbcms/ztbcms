@@ -17,7 +17,6 @@ use think\model\concern\SoftDelete;
  */
 class DownloaderModel extends Model
 {
-
     use SoftDelete;
 
     protected $name = 'downloader';
@@ -26,13 +25,13 @@ class DownloaderModel extends Model
     protected $defaultSoftDelete = 0;
 
     //等待下载
-    const WAIT_DOWNLOADER = 10;
+    const STATE_WAIT = 10;
     //启动下载
-    const START_DOWNLOADER = 20;
+    const STATE_START = 20;
     //下载成功
-    const SUCCESS_DOWNLOADER = 30;
+    const STATE_SUCCESS = 30;
     //下载失败
-    const FAIL_DOWNLOADER = 40;
+    const STATE_FAIL = 40;
 
 
     /**
@@ -41,19 +40,19 @@ class DownloaderModel extends Model
      * @param $data
      * @return string
      */
-    public function getDownloaderStateNameAttr($v,$data): string
+    public function getDownloaderStateNameAttr($v, $data): string
     {
         $downloader_state = $data['downloader_state'] ?? '';
-        if($downloader_state == self::WAIT_DOWNLOADER) {
+        if ($downloader_state == self::STATE_WAIT) {
             return '等待下载';
         }
-        if($downloader_state == self::START_DOWNLOADER) {
+        if ($downloader_state == self::STATE_START) {
             return '下载中';
         }
-        if($downloader_state == self::SUCCESS_DOWNLOADER) {
+        if ($downloader_state == self::STATE_SUCCESS) {
             return '下载成功';
         }
-        if($downloader_state == self::FAIL_DOWNLOADER) {
+        if ($downloader_state == self::STATE_FAIL) {
             return '下载失败';
         }
         return '';

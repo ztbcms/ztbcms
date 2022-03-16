@@ -45,9 +45,9 @@
             <el-table-column label="文件信息" align="left" min-width="280">
                 <template slot-scope="{row}">
                     <div v-if="row.file_name">
-                        <span> 文件名 ：{{ row.file_name }}</span>
+                        <span>文件名 ：{{ row.file_name }}</span>
                         <br>
-                        <span v-if="row.file_path">{{ row.file_path }}</span>
+                        <span v-if="row.file_path">保存路径：{{ row.file_path }}</span>
                     </div>
                     <span v-else> - </span>
                 </template>
@@ -55,15 +55,8 @@
 
             <el-table-column label="文件" align="left" min-width="80">
                 <template slot-scope="{row}">
-
                     <div v-if="row.file_url">
-                        <a :href="row.file_url" target="_blank">
-                            <el-image
-                                    style="width: 50px; height: 50px"
-                                    :src="row.file_thumb"
-                                    :fit="fit">
-                            </el-image>
-                        </a>
+                        <el-link :href="row.file_url" target="_blank" type="primary">点击预览</el-link>
                     </div>
                     <span v-else> - </span>
                 </template>

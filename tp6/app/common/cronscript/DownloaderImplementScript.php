@@ -10,7 +10,7 @@ use app\common\service\downloader\DownloaderService;
 
 /**
  * 下载中心-执行待开始的下载任务
- * （正常情况不需要要使用该定时任务）
+ * 建议采用队列方式启动，计划任务会影响其他项目
  */
 class DownloaderImplementScript extends CronScript
 {
@@ -52,7 +52,7 @@ class DownloaderImplementScript extends CronScript
     function getNextTask($downloader_id = 0)
     {
         return DownloaderModel::where([
-            ['downloader_state', '=', DownloaderModel::WAIT_DOWNLOADER],
+            ['downloader_state', '=', DownloaderModel::STATE_WAIT],
             ['downloader_id', '>', $downloader_id],
         ])->value('downloader_id');
     }

@@ -5,6 +5,7 @@
 
 namespace app\common\libs\downloader;
 
+use app\admin\service\AdminConfigService;
 use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use Error;
@@ -16,47 +17,76 @@ use Exception;
 class DownloaderTool
 {
 
+    static function getFileExtensionByUrl($url)
+    {
+        $path_info = pathinfo($url);
+        if (isset($path_info['extension'])) {
+            return $path_info['extension'];
+        }
+        return '';
+    }
+
     /**
-     * 线上文件下载
+     * 根据文件名称获取扩展名
+     * @param $file_name
+     * @return mixed|string|void
+     */
+    static function getFileExtensionByFileName($file_name)
+    {
+        $path_info = pathinfo($file_name);
+        if (isset($path_info['extension'])) {
+            return $path_info['extension'];
+        }
+        return '';
+    }
+
+    /**
+     * 在线文件下载
      * @param string $url
      * @param string $file_name
      * @return array
      */
-    public static function downloaderOnLine(string $url = '', string $file_name = ''): array
+    static function downloaderFile(string $url, string $file_name = ''): array
     {
-        $path_info = pathinfo($url);
-        if(isset($path_info['extension'])) {
-            $file_type = $path_info['extension'];
-            if($file_type == 'jpg' || $file_type == 'gif' || $file_type == 'png') {
-                //图片
-                return self::getOnLine($url,$file_name.'.'.$file_type,AttachmentModel::MODULE_IMAGE);
-            }
-            if($file_type == 'mp4') {
-                //视频
-                return self::getOnLine($url,$file_name.'.'.$file_type,AttachmentModel::MODULE_VIDEO);
-            }
-            if($file_type == 'pdf' || $file_type == 'docx' || $file_type == 'txt') {
-                //文件
-                return self::getOnLine($url,$file_name.'.'.$file_type,AttachmentModel::MODULE_FILE);
-            }
+        // 文件类型获取 文件名称 > URL 中获取
+        $file_extension = self::getFileExtensionByFileName($file_name);
+        if (empty($file_extension)) {
+            $file_extension = self::getFileExtensionByUrl($url);
+        } else {
+            $file_extension = '';
         }
-        return createReturn(false,[],'抱歉,上传的类型暂不支持');
+        if (empty($file_name)) {
+            $file_name = md5($url) . '.' . $file_extension;
+        }
+        if (in_array($file_extension, ['jpg', 'gif', 'png', 'jpeg', 'bmp'])) {
+            //图片
+            return self::doDownloadFile($url, $file_name, $file_extension, AttachmentModel::MODULE_IMAGE);
+        }
+        if (in_array($file_extension, ['mp4'])) {
+            //视频
+            return self::doDownloadFile($url, $file_name, $file_extension, AttachmentModel::MODULE_VIDEO);
+        }
+        if (in_array($file_extension, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'])) {
+            //文件
+            return self::doDownloadFile($url, $file_name, $file_extension, AttachmentModel::MODULE_FILE);
+        }
+        return createReturn(false, null, '文件类型暂不支持');
     }
 
 
     /**
-     * 文件下载
+     * 文件下载实现
      * @param string $url
      * @param string $filename
      * @param string $module
      * @return array
      */
-    static function getOnLine(string $url = '', string $filename = '',string $module = ''): array
+    static function doDownloadFile(string $url = '', string $filename = '', $file_extension = '', string $module = '')
     {
-
         try {
             $date = date("Ymd");
-            $save_path = app()->getRootPath().'public/downloader/'.$module.'/'.$date.'/';
+            $save_path_base = '/downloader/' . $module . '/' . $date . '/';
+            $save_path = app()->getRootPath() . 'public' . $save_path_base;
             if (!file_exists($save_path)) {
                 mkdir($save_path, 0777, true); //创建目录
             }
@@ -68,51 +98,30 @@ class DownloaderTool
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); //对于https的不验证ssl证书
             $resource = curl_exec($ch);
             if ($resource === FALSE) {
-                return createReturn(false,[],"CURL Error:" . curl_error($ch));
+                return createReturn(false, [], "CURL Error:" . curl_error($ch));
             }
             curl_close($ch);
-
-            $host = ConfigModel::getConfigs()['siteurl'];
-
-            $file_type = '';
-            $file_thumb = '';
-            if($module == AttachmentModel::MODULE_IMAGE) {
-                //图片
-                $file_type = '.jpg';
-                $file_thumb = $host.'/downloader/'.$module.'/'.$date.'/'.$filename;
-            }
-            if($module == AttachmentModel::MODULE_VIDEO) {
-                //视频
-                $file_type = '.mp4';
-                $file_thumb = $host . '/statics/admin/upload/video.png';
-            }
-            if($module == AttachmentModel::MODULE_FILE) {
-                //文件
-                $file_type = '.docx';
-                $file_thumb = $host.'/statics/admin/upload/pdf.png';
-            }
-
-            if(empty($filename)) {
-                $filename = date("YmdHis") . rand(1, 99999).$file_type;
-            }
             //w+ 读写方式打开，将文件指针指向文件头并将文件大小截为零。如果文件不存在则尝试创建之。
             $file = fopen($save_path . $filename, 'w+'); //打开一个文件或 URL
             fwrite($file, $resource); //将内容$resource写入打开的文件$file中
             fclose($file);
             $file_path = $save_path . $filename;
+            $file_path_base = $save_path_base . $filename;
+            // 访问地址
+            $host = AdminConfigService::getInstance()->getConfig('siteurl')['data'];
+            $file_url = rtrim($host, '/') . $file_path_base;
 
-            return createReturn(true,[
+            return createReturn(true, [
                 'module' => $module,
                 'file_name' => $filename,
-                'file_path' => $file_path,
-                'file_url'  => $host.'/downloader/'.$module.'/'.$date.'/'.$filename,
+                'file_path' => $file_path_base,
+                'file_url' => $file_url,
                 'filesize' => filesize($file_path),
-                'file_thumb' => $file_thumb,
-                'fileext' => pathinfo($file_path)['extension'],
-                'hash' => hash_file('md5',$file_path)
+                'fileext' => $file_extension,
+                'hash' => hash_file('md5', $file_path)
             ]);
-        } catch (Exception|Error $e) {
-            return createReturn(false,[], $e->getMessage());
+        } catch (Exception | Error $e) {
+            return createReturn(false, [], $e->getMessage());
         }
     }
 }

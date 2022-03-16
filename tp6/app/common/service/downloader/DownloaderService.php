@@ -27,7 +27,7 @@ class DownloaderService extends BaseService
      * @param string $url
      * @return array
      */
-    static function checkCreateDownloaderTask(string $url = ''): array
+    static function checkCreateDownloaderTask(string $url = '')
     {
         if (empty($url)) {
             return self::createReturn(false, '', '抱歉，下载的链接不能为空');
@@ -40,7 +40,7 @@ class DownloaderService extends BaseService
      * @param string $url
      * @return array
      */
-    static function createDownloaderTask(string $url = ''): array
+    static function createDownloaderTask(string $url = '')
     {
         $checkRes = self::checkCreateDownloaderTask($url);
         if (!$checkRes['status']) {
@@ -49,23 +49,21 @@ class DownloaderService extends BaseService
 
         $DownloaderModel = new DownloaderModel();
         $downloader_id = $DownloaderModel
-            ->where('downloader_url','=',$url)
-            ->where('downloader_state','<>',DownloaderModel::FAIL_DOWNLOADER)
+            ->where('downloader_url', '=', $url)
+            ->where('downloader_state', '<>', DownloaderModel::STATE_FAIL)
             ->value('downloader_id');
-        if(empty($downloader_id)) {
+        if (empty($downloader_id)) {
             //已经下载过的文件不进行二次下载
             $downloader_id = $DownloaderModel->insertGetId([
                 'downloader_url' => $url,
-                'downloader_state' => DownloaderModel::WAIT_DOWNLOADER,
+                'downloader_state' => DownloaderModel::STATE_WAIT,
                 'create_time' => time(),
                 'update_time' => time()
             ]);
-
-            Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
-                'downloader_id' => $downloader_id
-            ], 'downloader');
         }
-
+        Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
+            'downloader_id' => $downloader_id
+        ], 'downloader');
         return self::createReturn(true, [
             'downloader_id' => $downloader_id
         ], '创建成功');
@@ -76,40 +74,36 @@ class DownloaderService extends BaseService
      * @param int $downloader_id
      * @return array
      */
-    static function implementDownloaderTask(int $downloader_id = 0): array
+    static function implementDownloaderTask(int $downloader_id = 0)
     {
         $start_duration = microtime(true);
         $DownloaderModel = new DownloaderModel();
-        $downloader = $DownloaderModel
-            ->where('downloader_id', '=', $downloader_id)
-            ->where('downloader_state', '<>', DownloaderModel::SUCCESS_DOWNLOADER)
-            ->findOrEmpty();
+        $downloader = $DownloaderModel->where([
+            ['downloader_id', '=', $downloader_id],
+            ['downloader_state', '<>', DownloaderModel::STATE_SUCCESS],
+        ])->findOrEmpty();
         if ($downloader->isEmpty()) {
-            return self::createReturn(false, '', '抱歉，不存在需要执行的任务');
+            return self::createReturn(false, '', '找不到下载任务');
         }
-
-        $DownloaderModel
-            ->where('downloader_id', '=', $downloader_id)
-            ->update([
-                'downloader_state' => DownloaderModel::START_DOWNLOADER
-            ]);
-
-        $downloader_url = $downloader['downloader_url'];
+        $DownloaderModel->where('downloader_id', '=', $downloader_id)->update([
+            'downloader_state' => DownloaderModel::STATE_START
+        ]);
+        $downloader_url = $downloader->downloader_url;
         try {
-            $downloaderRes =  DownloaderTool::downloaderOnLine($downloader_url,time());
+            $downloaderRes = DownloaderTool::downloaderFile($downloader_url, $downloader->file_name);
             $downloaderData = $downloaderRes['data'];
             if ($downloaderRes['status']) {
-                $updateData['downloader_state'] = DownloaderModel::SUCCESS_DOWNLOADER;
+                $updateData['downloader_state'] = DownloaderModel::STATE_SUCCESS;
                 $updateData['file_name'] = $downloaderData['file_name'] ?? '';
                 $updateData['file_path'] = $downloaderData['file_path'] ?? '';
                 $updateData['file_url'] = $downloaderData['file_url'] ?? '';
                 $updateData['file_thumb'] = $downloaderData['file_thumb'] ?? '';
             } else {
-                $updateData['downloader_state'] = DownloaderModel::FAIL_DOWNLOADER;
+                $updateData['downloader_state'] = DownloaderModel::STATE_FAIL;
             }
             $updateData['downloader_result'] = $downloaderRes['msg'];
-        } catch (\Exception|\Error $exception) {
-            $updateData['downloader_state'] = DownloaderModel::FAIL_DOWNLOADER;
+        } catch (\Exception | \Error $exception) {
+            $updateData['downloader_state'] = DownloaderModel::STATE_FAIL;
             $updateData['downloader_result'] = $exception->getMessage();
         }
 
@@ -120,7 +114,7 @@ class DownloaderService extends BaseService
             ->where('downloader_id', '=', $downloader_id)
             ->update($updateData);
 
-        if ($updateData['downloader_state'] == DownloaderModel::SUCCESS_DOWNLOADER) {
+        if ($updateData['downloader_state'] == DownloaderModel::STATE_SUCCESS) {
             //文件下载成功的情况 ，将文件同步进入附件表, 默认为本地上传
             $attachmentModel = new AttachmentModel();
             $attachmentModel->driver = 'Local';
@@ -153,13 +147,13 @@ class DownloaderService extends BaseService
         $DownloaderModel = new DownloaderModel();
         $downloader = $DownloaderModel
             ->where('downloader_id', '=', $downloader_id)
-            ->where('downloader_state', '=', DownloaderModel::FAIL_DOWNLOADER)
+            ->where('downloader_state', '=', DownloaderModel::STATE_FAIL)
             ->findOrEmpty();
         if ($downloader->isEmpty()) {
             return self::createReturn(false, '', '抱歉，该任务不需要重启');
         }
 
-        $downloader->downloader_state = DownloaderModel::WAIT_DOWNLOADER;
+        $downloader->downloader_state = DownloaderModel::STATE_WAIT;
         $downloader->downloader_implement_num += 1;
         $downloader->downloader_next_implement_time = time();
         $downloader->downloader_result = '';
