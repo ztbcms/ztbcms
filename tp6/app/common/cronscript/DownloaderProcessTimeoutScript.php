@@ -26,14 +26,14 @@ class DownloaderProcessTimeoutScript extends CronScript
         $downloader_id = $this->getNextTask(0, $limit_time);
         while ($downloader_id) {
             try {
-                $retryRes = DownloaderService::faildDownloadTask($downloader_id, '执行超时');
+                $result = DownloaderService::faildDownloadTask($downloader_id, '执行超时');
             } catch (\Exception $e) {
-                $retryRes['status'] = false;
-                $retryRes['code'] = 400;
-                $retryRes['msg'] = $e->getMessage();
+                $result['status'] = false;
+                $result['code'] = 400;
+                $result['msg'] = $e->getMessage();
             }
             $total++;
-            if ($retryRes['status']) {
+            if ($result['status']) {
                 $success++;
             } else {
                 $error++;

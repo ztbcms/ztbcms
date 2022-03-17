@@ -34,14 +34,14 @@ class DownloaderRetryScript extends CronScript
         $downloader_id = $this->getNextTask(0, $downloader_retry_num);
         while ($downloader_id) {
             try {
-                $retryRes = DownloaderService::retryDownloaderTask($downloader_id);
+                $result = DownloaderService::retryDownloaderTask($downloader_id);
             } catch (\Exception $e) {
-                $retryRes['status'] = false;
-                $retryRes['code'] = 500;
-                $retryRes['msg'] = $e->getMessage();
+                $result['status'] = false;
+                $result['code'] = 500;
+                $result['msg'] = $e->getMessage();
             }
             $total++;
-            if ($retryRes['status']) {
+            if ($result['status']) {
                 $success++;
             } else {
                 $error++;

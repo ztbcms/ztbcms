@@ -25,15 +25,15 @@ class DownloaderImplementScript extends CronScript
 
         while ($downloader_id) {
             try {
-                $billingRes = DownloaderService::implementDownloaderTask($downloader_id);
+                $result = DownloaderService::implementDownloaderTask($downloader_id);
             } catch (\Exception $e) {
-                $billingRes['status'] = false;
-                $billingRes['code'] = 400;
-                $billingRes['msg'] = $e->getMessage();
+                $result['status'] = false;
+                $result['code'] = 400;
+                $result['msg'] = $e->getMessage();
             }
 
             $total++;
-            if ($billingRes['status'])  {
+            if ($result['status'])  {
                 $success++;
             } else {
                 $error ++;

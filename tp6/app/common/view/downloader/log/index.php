@@ -197,7 +197,7 @@
                         downloader_id: downloader_id,
                         _action: 'implement'
                     }
-                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                    this.httpPost("{:api_url('/common/downloader.Log/index')}", data, function (res) {
                         if (res.status) {
                             _this.getList();
                         }
@@ -210,7 +210,7 @@
                         downloader_id: downloader_id,
                         _action: 'retry'
                     }
-                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                    this.httpPost("{:api_url('/common/downloader.Log/index')}", data, function (res) {
                         if (res.status) {
                             _this.getList();
                         }
@@ -225,22 +225,15 @@
                 },
                 doDeleteDownloaderTask: function (downloader_id) {
                     var _this = this
-                    $.ajax({
-                        url: "{:api_url('/common/downloader.Panel/index')}",
-                        data: {
-                            downloader_id: downloader_id,
-                            _action: 'delete'
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            if (res.status) {
-                                _this.getList();
-                                layer.msg(res.msg, {time: 1000});
-                            } else {
-                                layer.msg(res.msg, {time: 1000});
-                            }
+                    var data = {
+                        downloader_id: downloader_id,
+                        _action: 'delete'
+                    }
+                    this.httpPost("{:api_url('/common/downloader.Log/index')}", data, function (res) {
+                        if (res.status) {
+                            _this.getList();
                         }
+                        layer.msg(res.msg, {time: 1000});
                     })
                 },
                 onChangeDownloadState: function(){

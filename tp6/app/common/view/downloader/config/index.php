@@ -11,8 +11,18 @@
                      :rules="rules" size="medium"
                      label-width="180px"
                      style="margin-top: 6px">
+                <el-form-item label="访问域名" prop="downloader_domain">
+                    <el-input type="text" v-model="formData.downloader_domain" placeholder="" clearable :style="{width: '100%'}">
+                    </el-input>
+                    <small>* 填写示例：http://ztbcms.com 请勿以 / 结尾</small>
+                </el-form-item>
+                <el-form-item label="任务超时时间（秒）" prop="downloader_retry_num">
+                    <el-input type="number" v-model="formData.downloader_timeout" placeholder="" clearable :style="{width: '100%'}">
+                    </el-input>
+                    <small>* 执行超过X秒视为执行失败</small>
+                </el-form-item>
 
-                <el-form-item label="任务启动失败是否重启" prop="downloader_retry_switch">
+                <el-form-item label="任务失败时" prop="downloader_retry_switch">
                     <el-radio-group v-model="formData.downloader_retry_switch" size="medium">
                         <el-radio v-for="(item, index) in downloaderRetrySwitchOptions" :key="index"
                                   :label="item.value"
@@ -49,6 +59,8 @@
                     formData: {
                         downloader_retry_switch: "",
                         downloader_retry_num: "",
+                        downloader_timeout: "",
+                        downloader_domain: "",
                     },
                     rules: {
                         downloader_retry_switch: [{

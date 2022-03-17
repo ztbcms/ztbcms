@@ -25,12 +25,14 @@ class Config extends AdminController
      */
     function index(Request $request)
     {
-        $adminConfigService = new AdminConfigService();
+        $adminConfigService = AdminConfigService::getInstance();
         if ($request->isPost()) {
             // 设置
             $data = [
                 'downloader_retry_switch' => $request->post("downloader_retry_switch"),
                 'downloader_retry_num' => $request->post("downloader_retry_num"),
+                'downloader_timeout' => $request->post("downloader_timeout"),
+                'downloader_domain' => $request->post("downloader_domain"),
             ];
             $res = $adminConfigService->updateConfig($data);
             return json($res);
@@ -40,7 +42,7 @@ class Config extends AdminController
             // 获取详情
             $_config = $adminConfigService->getConfig(null, false)['data'];
             $fields = [
-                'downloader_retry_switch', 'downloader_retry_num'
+                'downloader_retry_switch', 'downloader_retry_num', 'downloader_timeout', 'downloader_domain'
             ];
             $config = [];
             foreach ($fields as $i => $key) {

@@ -11,9 +11,9 @@
                     title="说明"
                     type="info"
                     :closable="false">
-                <p>1) 由于队列无法使用 $_SERVER['HTTP_HOST'] 获取当前域名，所以下载的域名使用的为『站点设置』-『网站访问地址』中设置的域名</p>
+                <p>1) 下载的域名使用的为『下载中心』-『配置』中设置的域名</p>
                 <p>2) 启动下载任务队列的命令为 php think queue:work --queue downloader</p>
-                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) 文件(pdf,docx,txt)</p>
+                <p>3) 目前支持下载的类型 视频(mp4) 图片(jpg,png,gif) 文件(pdf,docx,xls,ppt)</p>
                 <p>4) 确保下载路径（public/downloader）有读写权限 </p>
             </el-alert>
 
@@ -22,8 +22,9 @@
                     title="计划任务"
                     type="info"
                     :closable="false">
-                <p>1) app\common\cronscript\DownloaderImplementScript 触发启动下载任务（不推荐以此方式启动）</p>
-                <p>2) app\common\cronscript\DownloaderRetryScript 可帮助队列任务遗漏的未开始任务进行执行</p>
+                <p>1) 【可选设置】app\common\cronscript\DownloaderImplementScript 触发启动下载任务（不推荐以此方式启动）</p>
+                <p>2) 【必须设置】app\common\cronscript\DownloaderRetryScript 处理失败下载任务</p>
+                <p>3) 【必须设置】app\common\cronscript\DownloaderProcessTimeoutScript 处理超时下载任务</p>
             </el-alert>
 
             <el-input placeholder="请填写需要下载的URL" style="width: 300px;" v-model="url" size="mini">

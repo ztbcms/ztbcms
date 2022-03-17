@@ -107,10 +107,10 @@ class DownloaderTool
                 fclose($file);
             }
             // 访问地址
-            $host = AdminConfigService::getInstance()->getConfig('siteurl')['data'];
+            $host = AdminConfigService::getInstance()->getConfig('downloader_domain')['data'];
             $file_url = rtrim($host, '/') . $file_path_base;
             $file_thumb = '';
-            if (in_array($file_extension, ['jpg', 'gif', 'png', 'jpeg', 'bmp'])) {
+            if (in_array($file_extension, ['jpg', 'gif', 'png', 'jpeg'])) {
                 //图片
                 $file_thumb = rtrim($host, '/') . $file_path_base;
             }
