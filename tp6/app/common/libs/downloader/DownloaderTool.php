@@ -51,8 +51,6 @@ class DownloaderTool
         $file_extension = self::getFileExtensionByFileName($file_name);
         if (empty($file_extension)) {
             $file_extension = self::getFileExtensionByUrl($url);
-        } else {
-            $file_extension = '';
         }
         if (empty($file_name)) {
             $file_name = md5($url) . '.' . $file_extension;

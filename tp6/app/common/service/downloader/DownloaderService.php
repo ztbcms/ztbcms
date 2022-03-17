@@ -125,22 +125,23 @@ class DownloaderService extends BaseService
             if ($downloaderRes['status']) {
                 $updateData['downloader_state'] = DownloaderModel::STATE_SUCCESS;
                 $updateData['file_name'] = $downloaderData['file_name'] ?? '';
-                $updateData['file_name'] = $downloaderData['file_name'] ?? '';
                 $updateData['file_path'] = $downloaderData['file_path'] ?? '';
                 $updateData['file_url'] = $downloaderData['file_url'] ?? '';
                 $updateData['file_thumb'] = $downloaderData['file_thumb'] ?? '';
                 $updateData['file_hash'] = $downloaderData['file_hash'] ?? '';
+                $updateData['file_size'] = $downloaderData['file_size'] ?? '';
+                $updateData['file_ext'] = $downloaderData['file_ext'] ?? '';
             } else {
                 $updateData['downloader_state'] = DownloaderModel::STATE_FAIL;
+                $updateData['downloader_result'] = $downloaderRes['msg'];
             }
             $updateData['downloader_result'] = $downloaderRes['msg'];
         } catch (\Exception | \Error $exception) {
             $updateData['downloader_state'] = DownloaderModel::STATE_FAIL;
             $updateData['downloader_result'] = $exception->getMessage();
         }
-
         $updateData['process_end_time'] = time();
-        $updateData['downloader_duration'] = ($updateData['process_end_time'] - $start_time);
+        $updateData['downloader_duration'] = $updateData['process_end_time'] - $start_time;
         if ($updateData['downloader_duration'] <= 0) {
             $updateData['downloader_duration'] = 1;
         }
@@ -149,25 +150,26 @@ class DownloaderService extends BaseService
 
         if ($updateData['downloader_state'] == DownloaderModel::STATE_SUCCESS) {
             //文件下载成功的情况 ，将文件同步进入附件表, 默认为本地上传
-            $attachmentModel = new AttachmentModel();
-            $attachmentModel->driver = 'Local';
-            $attachmentModel->module = $downloaderData['module'] ?? '';
-            $attachmentModel->filename = $downloaderData['file_name'] ?? '';
-            $attachmentModel->filepath = $downloaderData['file_path'] ?? '';
-            $attachmentModel->fileurl = $downloaderData['file_url'] ?? '';
-            $attachmentModel->filethumb = $downloaderData['file_thumb'] ?? '';
-            $attachmentModel->filesize = $downloaderData['file_size'] ?? 0;
-            $attachmentModel->fileext = $downloaderData['file_ext'] ?? '';
-            $attachmentModel->upload_ip = $_SERVER['REMOTE_ADDR'];
-            $attachmentModel->create_time = time();
-            $attachmentModel->update_time = time();
-            $attachmentModel->user_type = 'admin';
-            $attachmentModel->user_id = 0;
-            $attachmentModel->hash = $downloaderData['file_hash'] ?? '';
-            $attachmentModel->save();
+            $attachment = AttachmentModel::where('hash', $downloaderData['file_hash'])->find();
+            if (!$attachment) {
+                $attachment->driver = 'Local';
+                $attachment->module = $downloaderData['module'] ?? '';
+                $attachment->filename = $downloaderData['file_name'] ?? '';
+                $attachment->filepath = $downloaderData['file_path'] ?? '';
+                $attachment->fileurl = $downloaderData['file_url'] ?? '';
+                $attachment->filethumb = $downloaderData['file_thumb'] ?? '';
+                $attachment->filesize = $downloaderData['file_size'] ?? 0;
+                $attachment->fileext = $downloaderData['file_ext'] ?? '';
+                $attachment->upload_ip = $_SERVER['REMOTE_ADDR'];
+                $attachment->create_time = time();
+                $attachment->update_time = time();
+                $attachment->user_type = 'admin';
+                $attachment->user_id = 0;
+                $attachment->hash = $downloaderData['file_hash'] ?? '';
+                $attachment->save();
+            }
         }
-
-        return self::createReturn(true, [], '执行成功');
+        return self::createReturn(true, [], '执行完成');
     }
 
     /**

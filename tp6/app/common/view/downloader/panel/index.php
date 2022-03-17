@@ -131,7 +131,7 @@
 
                 setInterval(function () {
                     that.getList()
-                }, 5 * 1000)
+                }, 10 * 1000)
             },
             methods: {
                 //创建下载任务

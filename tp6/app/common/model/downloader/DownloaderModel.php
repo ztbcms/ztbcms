@@ -17,8 +17,6 @@ use think\model\concern\SoftDelete;
  */
 class DownloaderModel extends Model
 {
-    use SoftDelete;
-
     protected $name = 'downloader';
     protected $pk = 'downloader_id';
     protected $deleteTime = 'delete_time';
