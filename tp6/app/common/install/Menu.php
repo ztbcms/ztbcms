@@ -133,6 +133,32 @@ return array(
                     ]
                 ]
             ],
+            [
+                "route" => "common/downloader.Panel/index",
+                "type" => 0,
+                "status" => 1,
+                "name" => "下载中心",
+                "child" => [
+                    [
+                        "route" => "common/downloader.Config/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "配置",
+                    ],
+                    [
+                        "route" => "common/downloader.Panel/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "下载中心",
+                    ],
+                    [
+                        "route" => "common/downloader.Log/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "下载记录",
+                    ],
+                ]
+            ],
         ],
     ),
 );
