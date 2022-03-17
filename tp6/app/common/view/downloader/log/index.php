@@ -37,7 +37,7 @@
 
                     <el-tooltip
                             style="margin-left: 5px;"
-                            v-if="row.downloader_result"
+                            v-if="row.downloader_state == 40 && row.downloader_result"
                             class="item"
                             effect="dark"
                             :content="row.downloader_result"

@@ -293,7 +293,7 @@ INSERT INTO `cms_config` VALUES ('51', 'attachment_local_domain', '本地存储�
 INSERT INTO `cms_config` VALUES ('52', 'admin_operation_switch', '是否启用后台操作日志', 1, 1);
 INSERT INTO `cms_config` VALUES ('53', 'attachment_aliyun_is_direct', 'oss-开启直传', '1', '0');
 INSERT INTO `cms_config` VALUES ('54', 'downloader_retry_switch', '下载中心-任务启动失败是否重启', '1', '0');
-INSERT INTO `cms_config` VALUES ('55', 'downloader_retry_num', '下载中心-重启的次数', '1', '0');
+INSERT INTO `cms_config` VALUES ('55', 'downloader_retry_num', '下载中心-重启的次数', '1', '3');
 INSERT INTO `cms_config` VALUES ('56', 'downloader_timeout', '下载中心-下载超时时间（秒）', '1', '300');
 INSERT INTO `cms_config` VALUES ('57', 'downloader_domain', '下载中心-访问域名', '1', '');
 

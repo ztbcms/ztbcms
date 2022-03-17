@@ -19,9 +19,6 @@ class DownloaderModel extends Model
 {
     protected $name = 'downloader';
     protected $pk = 'downloader_id';
-    protected $deleteTime = 'delete_time';
-    protected $defaultSoftDelete = 0;
-
 
     //等待下载
     const STATE_WAIT = 10;

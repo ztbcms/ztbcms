@@ -58,7 +58,7 @@
 
                     <el-tooltip
                             style="margin-left: 5px;"
-                            v-if="row.downloader_result"
+                            v-if="row.downloader_state == 40 && row.downloader_result"
                             class="item"
                             effect="dark"
                             :content="row.downloader_result"
@@ -137,66 +137,47 @@
                 //创建下载任务
                 createDownloaderTask: function () {
                     var _this = this
-                    $.ajax({
-                        url: "{:api_url('/common/downloader.Panel/index')}",
-                        data: {
-                            url: _this.url,
-                            _action: 'submit'
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            if (res.status) {
-
-                                _this.downloader_ids.push(res.data.downloader_id);
-
-                                _this.getList();
-                                _this.url = '';
-                            } else {
-                                layer.msg(res.msg, {time: 1000});
-                            }
+                    var data = {
+                        url: _this.url,
+                        _action: 'submit'
+                    }
+                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                        if (res.status) {
+                            _this.downloader_ids.push(res.data.downloader_id);
+                            _this.getList();
+                            _this.url = '';
+                        } else {
+                            layer.msg(res.msg, {time: 1000});
                         }
                     })
                 },
                 getList: function () {
                     window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                     var _this = this
-                    $.ajax({
-                        url: "{:api_url('/common/downloader.Panel/index')}",
-                        data: {
-                            downloader_ids: this.downloader_ids,
-                            page: this.currentPage,
-                            _action: 'list'
-                        },
-                        dataType: 'json',
-                        type: 'get',
-                        success: function (res) {
-                            var data = res.data;
-                            _this.lists = data.data;
-                            _this.totalCount = data.total;
-                            _this.pageSize = data.per_page;
-                            _this.pageCount = data.last_page;
-                            _this.currentPage = data.current_page;
-                        }
+                    var data = {
+                        downloader_ids: this.downloader_ids,
+                        page: this.currentPage,
+                        _action: 'list'
+                    }
+                    this.httpGet("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                        var _data = res.data;
+                        _this.lists = _data.data;
+                        _this.totalCount = _data.total;
+                        _this.pageSize = _data.per_page;
+                        _this.pageCount = _data.last_page;
+                        _this.currentPage = _data.current_page;
                     })
                 },
                 implementDownloaderTask: function (downloader_id) {
                     var _this = this
-                    $.ajax({
-                        url: "{:api_url('/common/downloader.Panel/index')}",
-                        data: {
-                            downloader_id: downloader_id,
-                            _action: 'implement'
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            if (res.status) {
-                                _this.getList();
-                                layer.msg(res.msg, {time: 1000});
-                            } else {
-                                layer.msg(res.msg, {time: 1000});
-                            }
+                    var data = {
+                        downloader_id: downloader_id,
+                        _action: 'implement'
+                    }
+                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                        layer.msg(res.msg, {time: 1000});
+                        if (res.status) {
+                            _this.getList();
                         }
                     })
                 },
@@ -208,21 +189,15 @@
                 },
                 doDeleteDownloaderTask: function (downloader_id) {
                     var _this = this
-                    $.ajax({
-                        url: "{:api_url('/common/downloader.Panel/index')}",
-                        data: {
-                            downloader_id: downloader_id,
-                            _action: 'delete'
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            if (res.status) {
-                                _this.getList();
-                                layer.msg(res.msg, {time: 1000});
-                            } else {
-                                layer.msg(res.msg, {time: 1000});
-                            }
+                    var data = {
+                        downloader_id: downloader_id,
+                        _action: 'delete'
+                    }
+                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                        layer.msg(res.msg, {time: 1000});
+                        if (res.status) {
+                            _this.getList();
+
                         }
                     })
                 },

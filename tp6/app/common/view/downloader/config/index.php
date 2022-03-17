@@ -32,8 +32,8 @@
                     </el-radio-group>
                 </el-form-item>
 
-                <el-form-item label="重启的次数" prop="downloader_retry_num">
-                    <el-input type="number" v-model="formData.downloader_retry_num" placeholder="请输入需要重启的次数" clearable :style="{width: '100%'}">
+                <el-form-item label="重试的次数" prop="downloader_retry_num">
+                    <el-input :disabled="formData.downloader_retry_switch == '0'" type="number" v-model="formData.downloader_retry_num" placeholder="请输入需要重启的次数" clearable :style="{width: '100%'}">
                     </el-input>
                 </el-form-item>
 
@@ -75,10 +75,10 @@
                         }],
                     },
                     downloaderRetrySwitchOptions: [{
-                        "label": "重启",
+                        "label": "重试",
                         "value": '1'
                     }, {
-                        "label": "不重启",
+                        "label": "不重试",
                         "value": '0'
                     }]
                 }
