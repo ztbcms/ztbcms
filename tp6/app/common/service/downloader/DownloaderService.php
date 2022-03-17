@@ -161,8 +161,6 @@ class DownloaderService extends BaseService
                 $attachment->filesize = $downloaderData['file_size'] ?? 0;
                 $attachment->fileext = $downloaderData['file_ext'] ?? '';
                 $attachment->upload_ip = $_SERVER['REMOTE_ADDR'];
-                $attachment->create_time = time();
-                $attachment->update_time = time();
                 $attachment->user_type = 'admin';
                 $attachment->user_id = 0;
                 $attachment->hash = $downloaderData['file_hash'] ?? '';
