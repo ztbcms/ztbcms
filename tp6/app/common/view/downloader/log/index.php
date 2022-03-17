@@ -14,6 +14,14 @@
             <el-button @click="doSearch" type="primary">筛选</el-button>
         </div>
 
+        <el-tabs v-model="listQuery.downloader_state" @tab-click="onChangeDownloadState">
+            <el-tab-pane label="全部" name="0"></el-tab-pane>
+            <el-tab-pane label="待下载" name="10"></el-tab-pane>
+            <el-tab-pane label="下载中" name="20"></el-tab-pane>
+            <el-tab-pane label="下载成功" name="30"></el-tab-pane>
+            <el-tab-pane label="下载失败" name="40"></el-tab-pane>
+        </el-tabs>
+
         <el-table size="small"
                   :key="tableKey"
                   :data="lists"
@@ -62,10 +70,13 @@
                 </template>
             </el-table-column>
 
-            <el-table-column label="下载时长" align="left" min-width="80">
+            <el-table-column label="下载时长" align="left" min-width="120">
                 <template slot-scope="{row}">
-                    <span v-if="row.downloader_state == 30">{{ row.downloader_duration }} s</span>
-                    <span v-else> - </span>
+                    <span>开始时间 ：{{ row.process_start_date }}</span>
+                    <br>
+                    <span>结束时间 ：{{ row.process_end_date }}</span>
+                    <br>
+                    <span v-if="row.downloader_state == 30">耗时：{{ row.downloader_duration }} s</span>
                 </template>
             </el-table-column>
 
@@ -88,10 +99,17 @@
                     label="操作">
                 <template slot-scope="props">
                     <el-button
-                            v-if="props.row.downloader_state != 30"
+                            v-if="props.row.downloader_state == 10"
                             @click="implementDownloaderTask(props.row.downloader_id)"
                             type="text" size="mini">
                         立即执行
+                    </el-button>
+
+                    <el-button
+                            v-if="props.row.downloader_state == 40"
+                            @click="retryDownloaderTask(props.row.downloader_id)"
+                            type="text" size="mini">
+                        重新下载
                     </el-button>
 
                     <el-button @click="deleteDownloaderTask(props.row.downloader_id)"
@@ -132,7 +150,8 @@
                 listQuery: {
                     page: 1,
                     limit: 20,
-                    keywords: ''
+                    keywords: '',
+                    downloader_status: '0',
                 },
             },
             computed: {},
@@ -174,22 +193,28 @@
                 },
                 implementDownloaderTask: function (downloader_id) {
                     var _this = this
-                    $.ajax({
-                        url: "{:api_url('/common/downloader.Panel/index')}",
-                        data: {
-                            downloader_id: downloader_id,
-                            _action: 'implement'
-                        },
-                        dataType: 'json',
-                        type: 'post',
-                        success: function (res) {
-                            if (res.status) {
-                                _this.getList();
-                                layer.msg(res.msg, {time: 1000});
-                            } else {
-                                layer.msg(res.msg, {time: 1000});
-                            }
+                    var data = {
+                        downloader_id: downloader_id,
+                        _action: 'implement'
+                    }
+                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                        if (res.status) {
+                            _this.getList();
                         }
+                        layer.msg(res.msg, {time: 1000});
+                    })
+                },
+                retryDownloaderTask: function (downloader_id) {
+                    var _this = this
+                    var data = {
+                        downloader_id: downloader_id,
+                        _action: 'retry'
+                    }
+                    this.httpPost("{:api_url('/common/downloader.Panel/index')}", data, function (res) {
+                        if (res.status) {
+                            _this.getList();
+                        }
+                        layer.msg(res.msg, {time: 1000});
                     })
                 },
                 deleteDownloaderTask: function (downloader_id) {
@@ -218,6 +243,10 @@
                         }
                     })
                 },
+                onChangeDownloadState: function(){
+                    this.listQuery.page = 1
+                    this.getList()
+                }
             },
             mounted: function () {
                 this.getList();

@@ -39,21 +39,24 @@ class Panel extends AdminController
                 ->paginate(input('limit'));
             return json(self::createReturn(true, $list));
         }
-
         if ($request->isPost() && $request->post('_action') == 'submit') {
             //创建下载任务
             $url = input('url', '', 'trim');
             $res = DownloaderService::createDownloaderTask($url);
             return json($res);
         }
-
         if ($request->isPost() && $request->post('_action') == 'implement') {
             //执行下载任务
             $downloader_id = input('downloader_id', '', 'trim');
             $res = DownloaderService::implementDownloaderTask($downloader_id);
             return json($res);
         }
-
+        if ($request->isPost() && $request->post('_action') == 'retry') {
+            //重试下载任务
+            $downloader_id = input('downloader_id', '', 'trim');
+            $res = DownloaderService::retryDownloaderTask($downloader_id);
+            return json($res);
+        }
         if ($request->isPost() && $request->post('_action') == 'delete') {
             //删除下载任务
             $downloader_id = input('downloader_id', '', 'trim');

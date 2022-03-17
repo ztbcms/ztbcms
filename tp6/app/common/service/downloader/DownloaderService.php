@@ -183,19 +183,40 @@ class DownloaderService extends BaseService
             ->where('downloader_state', '=', DownloaderModel::STATE_FAIL)
             ->findOrEmpty();
         if ($downloader->isEmpty()) {
-            return self::createReturn(false, '', '抱歉，该任务不需要重启');
+            return self::createReturn(false, '', '该任务不需要重启');
         }
-
         $downloader->downloader_state = DownloaderModel::STATE_WAIT;
         $downloader->downloader_implement_num += 1;
         $downloader->downloader_next_implement_time = time();
         $downloader->downloader_result = '';
+        $downloader->downloader_duration = 0;
+        $downloader->process_start_time = 0;
+        $downloader->process_end_time = 0;
         $downloader->save();
-
         Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
             'downloader_id' => $downloader_id
         ], 'downloader');
+        return self::createReturn(true, [], '下载任务已重启');
+    }
 
-        return self::createReturn(true, [], '重启下载任务');
+    /**
+     * 使下载任务失败
+     * @param $downloader_id
+     * @param string $faild_msg
+     * @return array
+     */
+    static function faildDownloadTask($downloader_id, $faild_msg = '')
+    {
+        $DownloaderModel = new DownloaderModel();
+        $downloader = $DownloaderModel
+            ->where('downloader_id', '=', $downloader_id)
+            ->findOrEmpty();
+        if ($downloader->isEmpty()) {
+            return self::createReturn(false, '', '找不到任务');
+        }
+        $downloader->downloader_state = DownloaderModel::STATE_FAIL;
+        $downloader->downloader_result = $faild_msg;
+        $downloader->save();
+        return self::createReturn(true, [], '下载任务已失败');
     }
 }

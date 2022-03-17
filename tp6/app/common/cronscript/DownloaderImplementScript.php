@@ -10,7 +10,7 @@ use app\common\service\downloader\DownloaderService;
 
 /**
  * 下载中心-执行待开始的下载任务
- * 建议采用队列方式启动，计划任务会影响其他项目
+ * 建议采用队列方式启动，大文件下载比较耗时，以计划任务形式启动会影响其他任务
  */
 class DownloaderImplementScript extends CronScript
 {
@@ -28,7 +28,7 @@ class DownloaderImplementScript extends CronScript
                 $billingRes = DownloaderService::implementDownloaderTask($downloader_id);
             } catch (\Exception $e) {
                 $billingRes['status'] = false;
-                $billingRes['code'] = 500;
+                $billingRes['code'] = 400;
                 $billingRes['msg'] = $e->getMessage();
             }
 

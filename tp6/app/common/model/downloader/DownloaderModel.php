@@ -24,6 +24,7 @@ class DownloaderModel extends Model
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
 
+
     //等待下载
     const STATE_WAIT = 10;
     //启动下载-下载中
@@ -56,6 +57,34 @@ class DownloaderModel extends Model
             return '下载失败';
         }
         return '';
+    }
+
+    /**
+     * 下载开始时间格式化
+     * @param $v
+     * @param $data
+     * @return string
+     */
+    public function getProcessStartDateAttr($v, $data): string
+    {
+        if (empty($data['process_start_time'])) {
+            return '';
+        }
+        return date('Y-m-d H:i:s', $data['process_start_time']);
+    }
+
+    /**
+     * 下载结束时间格式化
+     * @param $v
+     * @param $data
+     * @return string
+     */
+    public function getProcessEndDateAttr($v, $data): string
+    {
+        if (empty($data['process_end_time'])) {
+            return '';
+        }
+        return date('Y-m-d H:i:s', $data['process_end_time']);
     }
 
 }

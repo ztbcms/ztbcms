@@ -11,6 +11,7 @@ use app\common\service\downloader\DownloaderService;
 
 /**
  * 下载中心-将执行失败的下载任务重试下载
+ * 已失败的任务 => 重新进入下载队列，待下载
  */
 class DownloaderRetryScript extends CronScript
 {

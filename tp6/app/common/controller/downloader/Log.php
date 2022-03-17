@@ -22,9 +22,13 @@ class Log extends AdminController
             if ($keywords) {
                 $where[] = ['downloader_url|downloader_result|file_name', 'like', '%' . $keywords . '%'];
             }
+            $downloader_state = intval(input('downloader_state', 0));
+            if ($downloader_state !== 0) {
+                $where[] = ['downloader_state', '=', $downloader_state];
+            }
             $list = $DownloaderModel
                 ->where($where)
-                ->append(['downloader_state_name'])
+                ->append(['downloader_state_name', 'process_start_date', 'process_end_date'])
                 ->order('create_time desc')
                 ->paginate(input('limit'));
             return json(self::createReturn(true, $list));
