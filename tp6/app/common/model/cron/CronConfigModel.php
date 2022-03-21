@@ -21,7 +21,8 @@ class CronConfigModel extends Model
      * 获取定时任务的状态
      * @return array
      */
-    public function getCronStatus(){
+    public function getCronStatus()
+    {
         $cronConfig = $this->column('value', 'key');
         $cronStatus = $this->_getCronExecuteStatus();
         $cronEntryUrl = api_url('/common/cron.index/index/cron_secret_key/' . $cronConfig[CronConfigModel::KEY_ENABLE_SECRET_KEY]);
@@ -36,7 +37,8 @@ class CronConfigModel extends Model
      * 获取任务进行的状态
      * @return array
      */
-    public function _getCronExecuteStatus(){
+    public function _getCronExecuteStatus()
+    {
         $cron_execute_status = [
             'current_exec_amount' => 0, //正在执行任务数量
             'current_exec_cron' => [],//正在执行任务列表
