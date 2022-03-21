@@ -109,7 +109,7 @@
             </el-form-item>
 
             <el-form-item label="执行文件">
-                <el-select v-model="form.cron_file" placeholder="请选择" style="width: 400px">
+                <el-select v-model="form.cron_file" placeholder="请选择" style="width: 400px" filterable>
                     <?php foreach ($cronFileList as $value): ?>
                         <el-option
                                 key="{$value}"

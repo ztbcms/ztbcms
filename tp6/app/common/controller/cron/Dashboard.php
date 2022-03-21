@@ -90,11 +90,14 @@ class Dashboard extends AdminController
         ignore_user_abort(true);
         $cronId = $request->post('cron_id');
         $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
-        if (!$cron->isEmpty() && $cron->runAction()) {
-            return self::createReturn(true, [], '执行成功');
-        } else {
-            return self::createReturn(false, [], '执行失败');
+        if ($cron->isEmpty()) {
+            return self::createReturn(false, [], '找不到计划任务ID：' . $cronId);
         }
+        $res = $cron->runAction();
+        if ($res['status']) {
+            return self::createReturn(true, [], '执行成功');
+        }
+        return self::createReturn(false, null, '执行失败' );
     }
 
     /**
