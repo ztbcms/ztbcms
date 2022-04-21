@@ -16,8 +16,8 @@
                                             :class="{'group_active' : now_group == 0}">
                                             未分组
                                         </li>
-                                        <template v-for="item in galleryGroupList">
-                                            <li class="el-menu-item" style="padding: 0 8px;position: relative;"
+                                        <template v-for="(item,index) in galleryGroupList">
+                                            <li :key="index" class="el-menu-item" style="padding: 0 8px;position: relative;"
                                                 :class="{'group_active' : now_group == item.group_id }">
                                             <span @click="selectGroup(item.group_id)"
                                                   style="word-break:break-all; white-space:normal; width:75%;line-height: 20px;vertical-align:middle;display:inline-block;">{{item.group_name}}</span>
@@ -86,8 +86,8 @@
                                                    placeholder="移动至" style="width:130px;margin-left: 10px;" size="small"
                                                    @change="moveGroup">
                                             <el-option label="0" value="0">未分组</el-option>
-                                            <el-option :label="item.group_name" :value="item.group_id"
-                                                       v-for="item in galleryGroupList">{{item.group_name}}
+                                            <el-option v-for="(item, index) in galleryGroupList" :key="index" :label="item.group_name" :value="item.group_id">
+                                                {{item.group_name}}
                                             </el-option>
                                         </el-select>
                                     </div>

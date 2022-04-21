@@ -79,7 +79,7 @@
             <h3>后台上传示例</h3>
             <div>
                 <template v-for="(file, index) in uploadedImageList">
-                    <div class="imgListItem">
+                    <div :key="index" class="imgListItem">
                         <img :src="file.fileurl" :alt="file.filename" style="width: 128px;height: 128px;">
                         <div class="deleteMask">
                             <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"
@@ -95,7 +95,7 @@
             <span style="color: #666;font-size: 14px;">私有读：目前支持阿里云OSS私有读配置(视频，文件同理)，私有读文件需要存文件 aid，每次获取都需要返回临时地址</span>
             <div style="margin-top: 20px">
                 <template v-for="(file, index) in uploadedVideoList">
-                    <div class="imgListItem">
+                    <div :key="index" class="imgListItem">
                         <img :src="file.filethumb" style="width: 128px;height: 128px;">
                         <div class="deleteMask">
                             <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"
@@ -110,7 +110,7 @@
 
             <div style="margin-top: 20px">
                 <template v-for="(file, index) in uploadeFileList">
-                    <div class="imgListItem">
+                    <div :key="index" class="imgListItem">
                         <img :src="file.filethumb" style="width: 128px;height: 128px;">
                         <div class="deleteMask">
                             <span style="line-height: 128px;font-size: 22px" class="el-icon-delete"

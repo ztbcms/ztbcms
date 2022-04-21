@@ -86,8 +86,8 @@
                                                    placeholder="移动至" style="width:130px;margin-left: 10px;" size="small"
                                                    @change="moveGroup">
                                             <el-option label="0" value="0">未分组</el-option>
-                                            <el-option :label="item.group_name" :value="item.group_id"
-                                                       v-for="item in galleryGroupList">{{item.group_name}}
+                                            <el-option v-for="item in galleryGroupList" :key="index" :label="item.group_name" :value="item.group_id">
+                                                {{item.group_name}}
                                             </el-option>
                                         </el-select>
                                     </div>
