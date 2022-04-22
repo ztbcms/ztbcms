@@ -14,7 +14,7 @@
 <script src="/statics/admin/ueditor/cms_uploadImage/index.js"></script>
 <!--  CMS上传图片组件  -->
 
-<!--  CMS上传视频组件,不需要时，可以直接注释  -->
-<link rel="stylesheet" href="/statics/admin/ueditor/cms_uploadVideo/index.css">
-<script src="/statics/admin/ueditor/cms_uploadVideo/index.js"></script>
+<!--  CMS上传视频组件,不需要时，可以直接注释 默认不显示  -->
+<!--<link rel="stylesheet" href="/statics/admin/ueditor/cms_uploadVideo/index.css">-->
+<!--<script src="/statics/admin/ueditor/cms_uploadVideo/index.js"></script>-->
 <!--  CMS上传图片组件  -->

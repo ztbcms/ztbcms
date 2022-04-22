@@ -10,13 +10,17 @@ class CronModel extends Model
     protected $name = 'tp6_cron';
     protected $type
         = [
-
             'modified_time' => 'timestamp',
-            'next_time'     => 'timestamp'
+            'next_time' => 'timestamp'
         ];
+    protected $pk = '';
     const OPEN_STATUS_ON = 1;
     const OPEN_STATUS_OFF = 0;
 
+    /**
+     * 执行任务
+     * @return array
+     */
     public function runAction()
     {
         //载入文件
@@ -25,45 +29,39 @@ class CronModel extends Model
         $cronLog = new CronLogModel();
         $cronLog->start_time = $start_time;
         $cronLog->cron_id = $this->cron_id;
-
         try {
             $cron = new $class();
-            $start_time = time();
             $result_msg = $cron->run($this->cron_id);
             if (!$result_msg) {
                 $result_msg = [
                     'status' => true,
-                    'msg'    => '执行完成，未返回结果',
+                    'msg' => '执行完成，未返回结果',
                 ];
             }
             if (!is_string($result_msg)) {
                 $result_msg = json_encode($result_msg, true);
             }
-
             //处理完成
-            $end_time = time();
-            $use_time = $end_time - $start_time;
             $result = CronLogModel::RESULT_SUCCESS;
         } catch (\Exception $exception) {
             // 异常
             $this->errorCount++;
-            $errorStr = $exception->getMessage()." \r\n".$exception->getFile()." 第 ".$exception->getLine()." 行.\n";
+            $errorStr = $exception->getMessage() . " \r\n" . $exception->getFile() . " 第 " . $exception->getLine() . " 行.\n";
             $errorStr .= $exception->getTraceAsString();
 
-            $end_time = time();
-            $use_time = $end_time - $start_time;
             $result = CronLogModel::RESULT_FAIL;
             $result_msg = $errorStr;
         } catch (\Error $error) {
             // 错误
             $this->errorCount++;
-            $errorStr = $error->getMessage()." \r\n".$error->getFile()." 第 ".$error->getLine()." 行.\n";
+            $errorStr = $error->getMessage() . " \r\n" . $error->getFile() . " 第 " . $error->getLine() . " 行.\n";
             $errorStr .= $error->getTraceAsString();
 
-            $end_time = time();
-            $use_time = $end_time - $start_time;
             $result = CronLogModel::RESULT_FAIL;
             $result_msg = $errorStr;
+        } finally {
+            $end_time = time();
+            $use_time = ($end_time - $start_time) <= 0 ? 1 : $end_time - $start_time;
         }
 
         $cronLog->end_time = $end_time;
@@ -71,7 +69,7 @@ class CronModel extends Model
         $cronLog->use_time = $use_time;
         $cronLog->result_msg = $result_msg;
         $cronLog->save();
-        return true;
+        return createReturn($result == CronLogModel::RESULT_SUCCESS, $cronLog, $result_msg);
     }
 
     private static function _getMouthDays($month, $isLeapYear)
@@ -160,18 +158,18 @@ class CronModel extends Model
 
         list($day, $hour, $minute) = explode('-', $loopDaytime);
         if ($loopType == 'week') {
-            $type .= '星期'.self::_capitalWeek($day);
+            $type .= '星期' . self::_capitalWeek($day);
         } elseif ($day == 99) {
             $type .= '最后一天';
         } else {
-            $type .= $day ? $day.'日' : '';
+            $type .= $day ? $day . '日' : '';
         }
         if ($loopType == 'week' || $loopType == 'month') {
-            $type .= $hour.'时';
+            $type .= $hour . '时';
         } else {
-            $type .= $hour ? $hour.'时' : '';
+            $type .= $hour ? $hour . '时' : '';
         }
-        $type .= $minute ? $minute.'分' : '00分';
+        $type .= $minute ? $minute . '分' : '00分';
         return $type;
     }
 
@@ -187,7 +185,7 @@ class CronModel extends Model
                 //获取 计划任务 下一次执行时间
                 $nextTime = self::getNextTime('month', $day, $hour);
                 //循环类型时间（日-时-分）
-                $loopDaytime = $day.'-'.$hour.'-0';
+                $loopDaytime = $day . '-' . $hour . '-0';
                 break;
             case 'week':
                 $day = $loopData['week_day'];
@@ -195,22 +193,22 @@ class CronModel extends Model
                 //获取 计划任务 下一次执行时间
                 $nextTime = self::getNextTime('week', $day, $hour);
                 //循环类型时间（日-时-分）
-                $loopDaytime = $day.'-'.$hour.'-0';
+                $loopDaytime = $day . '-' . $hour . '-0';
                 break;
             case 'day':
                 $hour = $loopData['day_hour'];
                 $nextTime = self::getNextTime('day', 0, $hour);
                 //循环类型时间（日-时-分）
-                $loopDaytime = '0-'.$hour.'-0';
+                $loopDaytime = '0-' . $hour . '-0';
                 break;
             case 'hour':
                 $minute = $loopData['hour_minute'];
                 //获取 计划任务 下一次执行时间
                 $nextTime = self::getNextTime('hour', 0, 0, $minute);
-                $loopDaytime = '0-0-'.$minute;
+                $loopDaytime = '0-0-' . $minute;
                 break;
             case 'now':
-                $time = (int) $loopData['now_time'];
+                $time = (int)$loopData['now_time'];
                 $type = $loopData['now_type'];
                 if (!$time) {
                     return false;
@@ -220,7 +218,7 @@ class CronModel extends Model
                 $day = $type == 'day' ? $time : 0;
                 $nexttime = self::getNextTime('now', $day, $hour, $minute);
                 $nextTime = $nexttime;
-                $loopDaytime = $day.'-'.$hour.'-'.$minute;
+                $loopDaytime = $day . '-' . $hour . '-' . $minute;
                 break;
             default:
                 return false;

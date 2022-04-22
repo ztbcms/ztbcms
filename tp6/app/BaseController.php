@@ -4,6 +4,7 @@ namespace app;
 
 use think\App;
 use think\exception\ValidateException;
+use think\response\Json;
 use think\Validate;
 
 /**
@@ -38,7 +39,7 @@ abstract class BaseController
     /**
      * 构造方法
      * @access public
-     * @param  App $app 应用对象
+     * @param  App  $app  应用对象
      */
     public function __construct(App $app)
     {
@@ -57,10 +58,10 @@ abstract class BaseController
     /**
      * 验证数据
      * @access protected
-     * @param  array $data 数据
-     * @param  string|array $validate 验证器名或者验证规则数组
-     * @param  array $message 提示信息
-     * @param  bool $batch 是否批量验证
+     * @param  array  $data  数据
+     * @param  string|array  $validate  验证器名或者验证规则数组
+     * @param  array  $message  提示信息
+     * @param  bool  $batch  是否批量验证
      * @return array|string|true
      * @throws ValidateException
      */
@@ -94,11 +95,11 @@ abstract class BaseController
     /**
      * 创建统一的返回结果
      *
-     * @param boolean $status 返回状态
-     * @param array $data 返回数据
-     * @param string $msg 返回提示
-     * @param string $code 错误码
-     * @param string $url 下一跳地址
+     * @param  boolean  $status  返回状态
+     * @param  array  $data  返回数据
+     * @param  string  $msg  返回提示
+     * @param  string  $code  错误码
+     * @param  string  $url  下一跳地址
      *
      * @return array
      */
@@ -110,26 +111,51 @@ abstract class BaseController
         }
         return [
             'status' => $status,
-            'code' => $code,
-            'data' => $data,
-            'msg' => $msg,
-            'url' => $url,
+            'code'   => $code,
+            'data'   => $data,
+            'msg'    => $msg,
+            'url'    => $url,
         ];
     }
 
     /**
      * 构建json响应对象
-     * @param boolean $status 返回状态
-     * @param array $data 返回数据
-     * @param string $msg 返回提示
-     * @param string $code 错误码
-     * @param string $url 下一跳地址
+     * @param  boolean  $status  返回状态
+     * @param  array  $data  返回数据
+     * @param  string  $msg  返回提示
+     * @param  string  $code  错误码
+     * @param  string  $url  下一跳地址
      *
-     * @return \think\response\Json
+     * @return Json
      */
-    static function makeJsonReturn($status, $data = [], $msg = '', $code = null, $url = '')
+    static function makeJsonReturn($status, $data = [], $msg = '', $code = null, $url = ''): Json
     {
         return json(self::createReturn($status, $data, $msg, $code, $url));
     }
 
+    /**
+     * 获取成功状态的json返回
+     * @param  array  $data
+     * @param  string  $msg
+     * @param  null  $code
+     * @param  string  $url
+     * @return Json
+     */
+    static function returnSuccessJson(array $data = [], string $msg = '', $code = null, string $url = ''): Json
+    {
+        return self::makeJsonReturn(true, $data, $msg, $code, $url);
+    }
+
+    /**
+     * 获取失败状态的json返回
+     * @param  string  $msg
+     * @param  array  $data
+     * @param  null  $code
+     * @param  string  $url
+     * @return Json
+     */
+    static function returnErrorJson(string $msg = '', array $data = [], $code = null, string $url = ''): Json
+    {
+        return self::makeJsonReturn(false, $data, $msg, $code, $url);
+    }
 }

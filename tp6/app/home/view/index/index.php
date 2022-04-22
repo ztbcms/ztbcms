@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo \app\common\model\ConfigModel::getConfigs()['sitename'] ?? 'ZTBCMS' ?></title>
+    <title>{$site_config['sitename']}</title>
     <link rel="stylesheet" type="text/css" href="/statics/modules/home/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/statics/modules/home/css/component.css">
 </head>
@@ -14,9 +14,9 @@
     <div class="content">
         <div id="large-header" class="large-header">
             <canvas id="demo-canvas" width="1590" height="711"></canvas>
-            <h2 class="main-title"><?php echo \app\common\model\ConfigModel::getConfigs()['sitename'] ?? 'ZTBCMS' ?><br>
+            <h2 class="main-title">{$site_config['sitename']}<br>
                 <br/>
-                <span style="font-size: 16px"><?php echo \app\common\model\ConfigModel::getConfigs()['siteinfo'] ?? '高性能、模块化应用开发框架' ?></span><br/>
+                <span style="font-size: 16px">{$site_config['siteinfo']}</span><br/>
                 <br/>
                 <span  style="font-size: 16px">
                     {if $enable_install }

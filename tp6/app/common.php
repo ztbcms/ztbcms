@@ -4,14 +4,16 @@
 if (!function_exists('build_url')) {
     /**
      * 构建路由
-     * @param  string $string
+     *
+     * @param  string  $string
      * @param  array  $vars
      * @param  bool  $suffix
      * @param  bool  $domain
      *
      * @return string
      */
-    function build_url($string, array $vars = [], $suffix = false, $domain = true){
+    function build_url($string, array $vars = [], $suffix = false, $domain = true)
+    {
         if (strpos('/', $string) === 0) {
             return url($string, $vars, $suffix, $domain)->build();
         }
@@ -23,7 +25,7 @@ if (!function_exists('api_url')) {
     /**
      * 快捷生成API路由
      *
-     * @param string $string 路由如：/a/b/c
+     * @param  string  $string  路由如：/a/b/c
      * @param  array  $vars
      *
      * @return string
@@ -34,20 +36,25 @@ if (!function_exists('api_url')) {
     }
 }
 
-if(!function_exists('createReturn')) {
+if (!function_exists('createReturn')) {
 
     /**
      * 统一返回的格式
+     *
      * @param $status
-     * @param array $data 返回的内容
-     * @param string $msg 提示的文案
-     * @param null $code 状态值
-     * @param string $url
+     * @param  array  $data  返回的内容
+     * @param  string  $msg  提示的文案
+     * @param  null  $code  状态值
+     * @param  string  $url
+     *
      * @return array
      */
-    function createReturn($status, $data = [], $msg = '', $code = null, $url = '') {
+    function createReturn($status, $data = [], $msg = '', $code = null, $url = '')
+    {
         //默认成功则为200 错误则为400
-        if(empty($code)) $code = $status ? 200 : 400;
+        if (empty($code)) {
+            $code = $status ? 200 : 400;
+        }
         return [
             'status' => $status,
             'code'   => $code,
@@ -56,5 +63,25 @@ if(!function_exists('createReturn')) {
             'url'    => $url,
         ];
     }
+}
 
+if (!function_exists('cacheKey')) {
+    /**
+     * 生成cache key
+     * @param  object  $obj 调用对象
+     * @param  string  $method 调用方法
+     * @param  array  $params 调用参数
+     *
+     * @return false|string
+     */
+    function cacheKey(object $obj, $method = '', $params = [])
+    {
+        $arr = [];
+        $arr [] = get_class($obj);
+        $arr [] = $method;
+        foreach ($params as $key => $val) {
+            $arr [] = $key.'='.$val;
+        }
+        return hash('md5', join(',', $arr));
+    }
 }

@@ -12,8 +12,8 @@ return [
     'type'           => 'cache',
     // 存储连接标识 当type使用cache的时候有效
     'store'          => null,
-    // 过期时间
-    'expire'         => 1440,
+    // 过期时间，默认是7天过期
+    'expire'         => 604800,
     // 前缀
     'prefix'         => 'SID_',
 ];

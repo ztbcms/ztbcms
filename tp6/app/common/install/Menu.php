@@ -98,6 +98,12 @@ return array(
                         "type" => 1,
                         "status" => 1,
                         "name" => "上传示例",
+                    ],
+                    [
+                        "route" => "common/upload.upload/attachments",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "附件管理",
                     ]
                 ]
             ],
@@ -125,6 +131,32 @@ return array(
                         "status" => 0,
                         "name" => "发送邮件",
                     ]
+                ]
+            ],
+            [
+                "route" => "common/downloader.Panel/index",
+                "type" => 0,
+                "status" => 1,
+                "name" => "下载中心",
+                "child" => [
+                    [
+                        "route" => "common/downloader.Config/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "配置",
+                    ],
+                    [
+                        "route" => "common/downloader.Panel/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "下载中心",
+                    ],
+                    [
+                        "route" => "common/downloader.Log/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "下载记录",
+                    ],
                 ]
             ],
         ],

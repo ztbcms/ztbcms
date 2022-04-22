@@ -60,13 +60,13 @@
                             </el-button>
                             <?php } ?>
 
-                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Management', 'index')){ ?>
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'index')){ ?>
                             <el-button type="text" size="mini" @click="gotomanagerPage(scope.row.id)">
                                 成员管理
                             </el-button>
                             <?php } ?>
 
-                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'role', 'roleDelete')){ ?>
+                            <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Role', 'roleDelete')){ ?>
                             <el-button type="text" size="mini" @click="handleDelete(scope.row.id)" style="color:#F56C6C"
                                        :disabled="scope.row.id == 1">
                                 删除

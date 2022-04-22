@@ -112,7 +112,7 @@ class ModuleInstaller extends BaseService
 
         //执行数据库脚本安装
         $res = $this->_runSQL($moduleName, 'install');
-        if (!$res) {
+        if (!$res['status']) {
             $this->_installRollback($moduleName);
             return $res;
         }
@@ -182,8 +182,9 @@ class ModuleInstaller extends BaseService
         if (empty($moduleName)) {
             return self::createReturn(false, null, '模块名称不能为空');
         }
+        $fileName=ucfirst("{$moduleName}.sql"); //文件需要首字母大写
         //sql文件
-        $path = base_path().strtolower("{$moduleName}/{$dir}/")."{$moduleName}.sql";
+        $path = base_path().strtolower("{$moduleName}/{$dir}/")."{$fileName}";
 
         if (!file_exists($path)) {
             return self::createReturn(true, null, 'sql文件不存在，无需安装');

@@ -30,57 +30,6 @@ CREATE TABLE `cms_admin_panel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='常用菜单';
 
 -- ----------------------------
--- Records of cms_admin_panel
--- ----------------------------
-
-DROP TABLE IF EXISTS `cms_attachment`;
-CREATE TABLE `cms_attachment` (
-  `aid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '附件ID',
-  `driver` varchar(32) DEFAULT 'Local' COMMENT '上传驱动',
-  `group_id` int(11) DEFAULT '0',
-  `module` varchar(64) NOT NULL DEFAULT '' COMMENT '模块名称',
-  `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `filename` varchar(64) NOT NULL DEFAULT '' COMMENT '上传附件名称',
-  `filepath` varchar(256) NOT NULL DEFAULT '' COMMENT '附件路径',
-  `filethumb` varchar(256) DEFAULT NULL COMMENT '文件缩略图',
-  `fileurl` varchar(512) DEFAULT '' COMMENT '文件url',
-  `filesize` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '附件大小',
-  `fileext` varchar(16) NOT NULL DEFAULT '' COMMENT '附件扩展名',
-  `isimage` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为图片 1为图片',
-  `isthumb` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为缩略图 1为缩略图',
-  `userid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '上传用户ID',
-  `isadmin` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否后台用户上传',
-  `uploadtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上传时间',
-  `uploadip` varchar(16) NOT NULL DEFAULT '' COMMENT '上传ip',
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '附件使用状态',
-  `authcode` varchar(32) NOT NULL DEFAULT '' COMMENT '附件路径MD5值',
-  `delete_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态 0未删除 1已删除',
-  PRIMARY KEY (`aid`),
-  KEY `authcode` (`authcode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
-
-DROP TABLE IF EXISTS `cms_attachment_index`;
-CREATE TABLE `cms_attachment_index` (
-  `keyid` char(30) NOT NULL DEFAULT '' COMMENT '关联id',
-  `aid` char(10) NOT NULL DEFAULT '' COMMENT '附件ID',
-  KEY `keyid` (`keyid`),
-  KEY `aid` (`aid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件关系表';
-
-DROP TABLE IF EXISTS `cms_attachment_group`;
-CREATE TABLE `cms_attachment_group` (
-  `group_id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_type` varchar(255) NOT NULL DEFAULT '' COMMENT '分类类型',
-  `group_name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
-  `sort` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  `is_delete` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除 0否1是',
-  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `pid` int(11) DEFAULT NULL COMMENT '父ID',
-  PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
-
--- ----------------------------
 -- Table structure for cms_behavior
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_behavior`;
@@ -338,10 +287,15 @@ INSERT INTO `cms_config` VALUES ('45', 'attachment_aliyun_key_secret', 'OSS-acce
 INSERT INTO `cms_config` VALUES ('46', 'attachment_aliyun_endpoint', 'OSS-Endpoint', '1', '');
 INSERT INTO `cms_config` VALUES ('47', 'attachment_aliyun_bucket', 'OSS-bucket', '1', '');
 INSERT INTO `cms_config` VALUES ('48', 'attachment_aliyun_domain', 'OSS-外网域名', '1', '');
-INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '');
+INSERT INTO `cms_config` VALUES ('49', 'attachment_aliyun_privilege', 'OSS-读写权限', '1', '1');
 INSERT INTO `cms_config` VALUES ('50', 'attachment_aliyun_expire_time', 'OSS-临时访问链接过期时间', '1', '86400');
 INSERT INTO `cms_config` VALUES ('51', 'attachment_local_domain', '本地存储驱动-附件域名', 1, '');
 INSERT INTO `cms_config` VALUES ('52', 'admin_operation_switch', '是否启用后台操作日志', 1, 1);
+INSERT INTO `cms_config` VALUES ('53', 'attachment_aliyun_is_direct', 'oss-开启直传', '1', '0');
+INSERT INTO `cms_config` VALUES ('54', 'downloader_retry_switch', '下载中心-任务启动失败是否重启', '1', '0');
+INSERT INTO `cms_config` VALUES ('55', 'downloader_retry_num', '下载中心-重启的次数', '1', '3');
+INSERT INTO `cms_config` VALUES ('56', 'downloader_timeout', '下载中心-下载超时时间（秒）', '1', '300');
+INSERT INTO `cms_config` VALUES ('57', 'downloader_domain', '下载中心-访问域名', '1', '');
 
 
 -- ----------------------------

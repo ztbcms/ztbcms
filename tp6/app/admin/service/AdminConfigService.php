@@ -12,7 +12,7 @@ use think\facade\Cache;
 use think\facade\Db;
 
 /**
- * 管理后台配置
+ * 管理后台配置（建议使用 app\common\service\ConfigService）
  * Class AdminConfigService
  *
  * @package app\admin\service
