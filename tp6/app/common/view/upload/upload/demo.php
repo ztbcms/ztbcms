@@ -91,6 +91,7 @@
                 </template>
             </div>
             <el-button type="primary" @click="gotoUploadImage(0)">上传图片</el-button>
+            <el-button type="primary" @click="gotoUploadImageByIframe">上传图片（iframe）</el-button>
             <el-button type="danger" @click="gotoUploadImage(1)">上传图片(私有读)</el-button>
             <span style="color: #666;font-size: 14px;">私有读：目前支持阿里云OSS私有读配置(视频，文件同理)，私有读文件需要存文件 aid，每次获取都需要返回临时地址</span>
             <div style="margin-top: 20px">
@@ -107,6 +108,7 @@
                 </template>
             </div>
             <el-button type="primary" @click="gotoUploadVideo">上传视频</el-button>
+            <el-button type="primary" @click="gotoUploadVideoByIframe">上传视频（iframe）</el-button>
 
             <div style="margin-top: 20px">
                 <template v-for="(file, index) in uploadeFileList">
@@ -122,6 +124,7 @@
                 </template>
             </div>
             <el-button type="primary" @click="gotoUploadFile">上传文件</el-button>
+            <el-button type="primary" @click="gotoUploadFileByIframe">上传文件（iframe）</el-button>
 
             <div style="margin-top: 20px;line-height: 0;">
                 <ueditor-simplicity></ueditor-simplicity>
@@ -268,8 +271,72 @@
                     previewFileItem: function (index) {
                         window.open(this.uploadeFileList[index]['fileurl'])
                     },
+                    gotoUploadImageByIframe: function () {
+                        layer.open({
+                            type: 2,
+                            title: '',
+                            closeBtn: false,
+                            content: "{:api_url('common/upload.panel/imageUpload')}",
+                            area: ['720px', '550px'],
+                        })
+                    },
+                    onUploadedImage: function (event) {
+                        var that = this;
+                        console.log(event);
+                        var files = event.detail.files;
+                        console.log(files);
+                        if (files) {
+                            files.map(function (item) {
+                                that.uploadedImageList.push(item)
+                            })
+                        }
+                    },
+                    gotoUploadVideoByIframe: function () {
+                        layer.open({
+                            type: 2,
+                            title: '',
+                            closeBtn: false,
+                            content: "{:api_url('common/upload.panel/videoUpload')}",
+                            area: ['720px', '550px'],
+                        })
+                    },
+                    onUploadedVideo: function (event) {
+                        var that = this;
+                        console.log(event);
+                        var files = event.detail.files;
+                        console.log(files);
+                        if (files) {
+                            files.map(function (item) {
+                                that.uploadedVideoList.push(item)
+                            })
+                        }
+                    },
+                    gotoUploadFileByIframe: function () {
+                        layer.open({
+                            type: 2,
+                            title: '',
+                            closeBtn: false,
+                            content: "{:api_url('common/upload.panel/fileUpload')}",
+                            area: ['720px', '550px'],
+                        })
+                    },
+                    onUploadedFile: function (event) {
+                        var that = this;
+                        console.log(event);
+                        var files = event.detail.files;
+                        console.log(files);
+                        if (files) {
+                            files.map(function (item) {
+                                that.uploadeFileList.push(item)
+                            })
+                        }
+                    },
                 },
                 mounted: function () {
+                    // 弹框模式
+                    window.addEventListener('ZTBCMS_UPLOAD_IMAGE', this.onUploadedImage.bind(this));
+                    window.addEventListener('ZTBCMS_UPLOAD_VIDEO', this.onUploadedVideo.bind(this));
+                    window.addEventListener('ZTBCMS_UPLOAD_FILE', this.onUploadedFile.bind(this));
                 },
             })
         })
