@@ -89,8 +89,16 @@ class Main extends AdminController
                 'value' => Config::get('admin.application_version'),
             ],
             [
-                'name'  => '上传附件限制',
+                'name'  => '上传文件上限',
                 'value' => ini_get('upload_max_filesize'),
+            ],
+            [
+                'name'  => 'POST容量上限',
+                'value' => ini_get('post_max_size'),
+            ],
+            [
+                'name'  => '脚本内存上限',
+                'value' => ini_get('memory_limit'),
             ],
             [
                 'name'  => '执行时间限制',

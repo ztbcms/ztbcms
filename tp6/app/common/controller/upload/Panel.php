@@ -209,12 +209,11 @@ class Panel extends AdminController
         $isPrivate = $request->param('is_private', 0);
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
+            $groupId = $groupId == 'all' ? 0 : $groupId;
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
-            $userInfo = AdminUserService::getInstance()
-                ->getInfo();
-            if ($uploadService->uploadImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'],
-                AttachmentModel::USER_TYPE_ADMIN)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadImage($groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -235,10 +234,9 @@ class Panel extends AdminController
         if ($request->isPost()) {
             $isPrivate = $request->param('is_private', 0);
             $groupId = intval($request->post('group_id', ''));
+            $groupId = $groupId == 'all' ? 0 : $groupId;
             $module = $request->post('module', AttachmentModel::MODULE_IMAGE);
-
-            $userInfo = AdminUserService::getInstance()
-                ->getInfo();
+            $userInfo = AdminUserService::getInstance()->getInfo();
             $attachmentModel = new AttachmentModel();
             $attachmentModel->user_type = AttachmentModel::USER_TYPE_ADMIN;
             $attachmentModel->user_id = $userInfo['id'];
@@ -257,8 +255,7 @@ class Panel extends AdminController
             $attachmentModel->uploadtime = time();
             $attachmentModel->upload_ip = $request->ip();
             $attachmentModel->hash = '';
-            $attachmentModel->driver = ConfigService::getInstance()
-                ->getConfig('attachment_driver') ?: 'Local';
+            $attachmentModel->driver = ConfigService::getInstance()->getConfig('attachment_driver') ?: 'Local';
 
             if ($attachmentModel->save()) {
                 return json(self::createReturn(true, [], '上传成功'));
@@ -280,12 +277,11 @@ class Panel extends AdminController
         $isPrivate = $request->param('is_private', 0);
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
+            $groupId = $groupId == 'all' ? 0 : $groupId;
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
-            $userInfo = AdminUserService::getInstance()
-                ->getInfo();
-            if ($uploadService->uploadVideo($groupId == 'all' ? 0 : $groupId, $userInfo['id'],
-                AttachmentModel::USER_TYPE_ADMIN)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadVideo($groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));
@@ -307,12 +303,11 @@ class Panel extends AdminController
         $isPrivate = $request->param('is_private', 0);
         if ($request->isPost()) {
             $groupId = $request->post('group_id', '');
+            $groupId = $groupId == 'all' ? 0 : $groupId;
             $uploadService = new UploadService();
             $uploadService->isPrivate = $isPrivate == 1;
-            $userInfo = AdminUserService::getInstance()
-                ->getInfo();
-            if ($uploadService->uploadFile($groupId == 'all' ? 0 : $groupId, $userInfo['id'],
-                AttachmentModel::USER_TYPE_ADMIN)) {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            if ($uploadService->uploadFile($groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));

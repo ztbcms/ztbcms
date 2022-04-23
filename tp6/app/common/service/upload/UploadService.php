@@ -188,10 +188,12 @@ class UploadService extends BaseService
     private function upload($attachmentModel): bool
     {
         $file = request()->file('file');
+        throw_if(!$file, new \Exception('未选择文件或文件过大'));
         $attachmentModel->filename = $file->getOriginalName();
         $attachmentModel->filesize = $file->getSize();
         $attachmentModel->fileext = $file->getOriginalExtension();
-        $attachmentModel->uploadtime = time();
+        $attachmentModel->create_time = time();
+        $attachmentModel->update_time = time();
         $attachmentModel->upload_ip = get_client_ip();
         $attachmentModel->is_private = $this->isPrivate;
         $attachmentModel->hash = $file->hash('md5');

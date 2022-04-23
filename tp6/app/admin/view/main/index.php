@@ -110,7 +110,7 @@
         <!--  右侧  -->
         <el-col :span="5">
             <el-card class="system_info">
-                <el-form label-position="right" label-width="100px">
+                <el-form label-position="right" label-width="110px">
                     <template v-for="info in systemInfo">
                         <el-form-item :label="info.name" style="margin-bottom: 0px;">
                             {{info.value}}
