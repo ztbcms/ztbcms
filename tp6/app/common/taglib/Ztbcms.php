@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2021/11/10
- * Time: 09:00.
  */
 
 namespace app\common\taglib;
