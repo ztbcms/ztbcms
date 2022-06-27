@@ -25,10 +25,10 @@ class CronModel extends Model
     {
         //载入文件
         $class = $this->cron_file;
-        $start_time = time();
         $cronLog = new CronLogModel();
-        $cronLog->start_time = $start_time;
+        $cronLog->start_time = time();
         $cronLog->cron_id = $this->cron_id;
+        $start_time = intval(microtime(true) * 1000);
         try {
             $cron = new $class();
             $result_msg = $cron->run($this->cron_id);
@@ -60,11 +60,11 @@ class CronModel extends Model
             $result = CronLogModel::RESULT_FAIL;
             $result_msg = $errorStr;
         } finally {
-            $end_time = time();
+            $end_time = intval(microtime(true) * 1000);
             $use_time = ($end_time - $start_time) <= 0 ? 1 : $end_time - $start_time;
         }
 
-        $cronLog->end_time = $end_time;
+        $cronLog->end_time = time();
         $cronLog->result = $result;
         $cronLog->use_time = $use_time;
         $cronLog->result_msg = $result_msg;

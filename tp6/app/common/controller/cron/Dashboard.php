@@ -37,6 +37,10 @@ class Dashboard extends AdminController
                 $where[] = ['use_time', '>', $userTime];
             }
             $lists = CronLogModel::where($where)->order('id', 'DESC')->with('cronFile')->page($page)->limit($limit)->select()->toArray();
+            $lists = array_map(function ($item) {
+                $item['throughput'] = round(1 / ($item['use_time'] / 1000), 1);
+                return $item;
+            }, $lists);
             $total = CronLogModel::where($where)->count();
             $ret = [
                 'items'       => $lists,
