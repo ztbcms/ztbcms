@@ -192,14 +192,17 @@ CREATE TABLE `cms_downloader`  (
     `file_path` varchar(255) NOT NULL DEFAULT '' COMMENT '文件路径',
     `file_url` varchar(255) NOT NULL DEFAULT '' COMMENT '文件访问地址',
     `file_thumb` varchar(256) NOT NULL DEFAULT '' COMMENT '文件缩略图',
+    `file_hash` varchar(255) NOT NULL DEFAULT '' COMMENT '文件md5',
+    `file_size` int(11) NOT NULL DEFAULT '0' COMMENT '文件大小(bytes)',
+    `file_ext` varchar(32) NOT NULL DEFAULT '' COMMENT '文件扩展名',
     `downloader_implement_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '下载执行次数',
     `downloader_next_implement_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '下一次执行的时间',
     `create_time` int(11) unsigned DEFAULT '0' COMMENT '上传时间',
     `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
     `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
     PRIMARY KEY (`downloader_id`) USING BTREE,
-    KEY `downloader_state` (`downloader_state`) USING BTREE,
-    KEY `downloader_url` (`downloader_url`)
+    KEY `downloader_url_hash` (`downloader_url_hash`),
+    KEY `file_hash` (`file_hash`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4  COMMENT='下载中心';
 -- ----------------------------
 -- 下载中心 END

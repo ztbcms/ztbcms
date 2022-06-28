@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2022/1/13
- * Time: 11:20.
  */
 
 namespace app\common\service;

@@ -60,7 +60,13 @@
                     align="center"
                     min-width="100"
                     prop="use_time"
-                    label="耗时（秒）">
+                    label="耗时(ms)">
+            </el-table-column>
+            <el-table-column
+                    align="center"
+                    min-width="100"
+                    prop="throughput"
+                    label="吞吐率(req/s)">
             </el-table-column>
             <el-table-column
                     align="center"

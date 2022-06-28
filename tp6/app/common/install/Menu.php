@@ -159,6 +159,13 @@ return array(
                     ],
                 ]
             ],
+            [
+                "route" => "common/redis.Admin/dashboard",
+                "type" => 1,
+                "status" => 1,
+                "name" => "Redis管理",
+                "child" => []
+            ],
         ],
     ),
 );

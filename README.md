@@ -1,16 +1,18 @@
 ## ZTBCMS
 
-> 基于ThinkPHP 6 + ElementUI的快速开发框架 
+[![OSCS Status](https://www.oscs1024.com/platform/badge/ztbcms/ztbcms.svg?size=small)](https://www.oscs1024.com/project/ztbcms/ztbcms?ref=badge_small)
 
-> High-performance, modular and rapid development framework based on ThinkPHP
+基于ThinkPHP 6 + ElementUI的快速开发框架
+
+High-performance, modular and rapid development framework based on ThinkPHP
  
-[ZTBCMS在线文档](https://www.kancloud.cn/ztbcms/ztbcms/content) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template) | [PHP之道](http://www.phptherightway.com)
+[ZTBCMS在线文档](https://www.ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template) | [PHP之道](http://www.phptherightway.com)
 
 ## 主要特性
 
 - 完善的后台管理系统
     - 基于角色的权限管理
-    - 计划任务、消息组件、上传组件
+    - 计划任务、消息、上传、队列、Redis...
 - 完善的前端功能
     - 后台的默认框架 [ElementUI](https://element.eleme.cn/)
     - 强大的弹出层组件 [Layer](https://layer.layui.com/)
@@ -49,13 +51,6 @@ $ git clone --branch develop https://github.com/ztbcms/ztbcms.git
 - 主版本号 MAJOR 当你做了不兼容的 API 修改
 - 次版本号 MINOR  当你做了向下兼容的功能性新增
 - 修订号 PATCH 当你做了向下兼容的问题修正
-
-## 管理后台兼容性
-
-- IE 10或以上
-
-Javascript:
-- 请务必使用ES 5的语法，增加兼容性（不要使用ES 6的`let`、`const` `=>`等语法糖）
 
 ## License 
 
