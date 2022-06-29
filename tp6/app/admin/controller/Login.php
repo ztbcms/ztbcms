@@ -59,8 +59,8 @@ class Login extends AdminController
         //记录登录失败者IP
         $ip = request()->ip();
         $form = Request::param('form');
-        $username = trim($form['username']);
-        $password = trim($form['password']);
+        $username = urldecode(base64_decode($form['username']));
+        $password = urldecode(base64_decode($form['password']));
         $code = trim($form['code']);
         if (empty($username) || empty($password)) {
             return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
