@@ -3,7 +3,7 @@
         <div>
             <el-form :inline="true" :model="searchForm" class="demo-form-inline">
                 <el-form-item label="">
-                    <el-select v-model="searchForm.cron_id" placeholder="请选择计划任务">
+                    <el-select v-model="searchForm.cron_id" placeholder="请选择计划任务" :filterable="true"  style="min-width: 240px">
                         <?php foreach ($corns as $key => $corn): ?>
                             <el-option label="{$corn}" value="{$key}"></el-option>
                         <?php endforeach; ?>
@@ -12,9 +12,9 @@
                 <el-form-item label="">
                     <el-date-picker
                             v-model="searchForm.datetime"
-                            type="datetimerange"
+                            type="daterange"
                             range-separator="至"
-                            value-format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期">
                     </el-date-picker>
@@ -38,7 +38,7 @@
             </el-table-column>
             <el-table-column
                     min-width="240"
-                    align="center"
+                    align="left"
                     prop="cron_file"
                     label="计划任务"
             >
@@ -111,7 +111,7 @@
             data: {
                 searchForm: {
                     cron_id: "",
-                    datetime: "",
+                    datetime: ["{:date('Y-m-d')}", "{:date('Y-m-d')}"],
                     user_time: ""
                 },
                 lists: [],

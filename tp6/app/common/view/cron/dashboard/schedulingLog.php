@@ -5,9 +5,9 @@
                 <el-form-item label="">
                     <el-date-picker
                             v-model="searchForm.datetime"
-                            type="datetimerange"
+                            type="daterange"
                             range-separator="至"
-                            value-format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期">
                     </el-date-picker>
@@ -26,8 +26,8 @@
             <el-table-column
                     align="center"
                     prop="id"
-                    label="id"
-                    width="60">
+                    label="ID"
+                    width="120">
             </el-table-column>
             <el-table-column
                     min-width="180"
@@ -79,7 +79,9 @@
                 lists: [],
                 total_pages: 0,
                 pageCount: 1,
-                searchForm: {}
+                searchForm: {
+                    datetime: ["{:date('Y-m-d')}", "{:date('Y-m-d')}"]
+                }
             },
             mounted: function () {
                 this.getList()
