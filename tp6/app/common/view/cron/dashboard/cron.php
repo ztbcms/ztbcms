@@ -25,6 +25,11 @@
                 highlight-current-row
                 style="width: 100%">
             <el-table-column
+                    prop="cron_id"
+                    label="ID"
+                    min-width="80">
+            </el-table-column>
+            <el-table-column
                     prop="subject"
                     label="计划标题"
                     min-width="200">

@@ -20,7 +20,6 @@
                      src="{:api_url('/admin/Checkcode/index?code_len=4&font_size=20&width=130&height=50')}"
                      onclick="refreshs()"></a>
             </div>
-            <p style="font-size: 12px;color: #7884a0;margin-top: 4px;">* 数据传输采用128位加密技术，保障您的信息安全</p>
             <div class="btn-box">
                 <button class="default" onclick="doLogin()" disabled>登录</button>
             </div>
@@ -237,11 +236,10 @@
         var username = $('input#username').val();
         var password = $('input#password').val();
         var code = $('input#code').val();
-        var __crypto_key__ = $('input#__crypto_key__').val();
         var data = {
-            username: username,
-            password: password,
-            code: code,
+            username: btoa(encodeURIComponent(username.trim())),
+            password: btoa(encodeURIComponent(password.trim())),
+            code: code.trim(),
         };
 
         $.ajax({

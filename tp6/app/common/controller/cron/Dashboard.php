@@ -27,11 +27,10 @@ class Dashboard extends AdminController
             if ($cronId) {
                 $where[] = ['cron_id', '=', $cronId];
             }
-            if ($datetime) {
-                foreach ($datetime as &$time) {
-                    $time = strtotime($time);
-                }
-                $where[] = ['start_time', 'between', $datetime];
+            if (!empty($datetime)) {
+                $_start_time = strtotime($datetime[0]);
+                $_end_time = strtotime($datetime[1] . '23:59:59');
+                $where[] = ['start_time', 'between', [$_start_time, $_end_time]];
             }
             if ($userTime) {
                 $where[] = ['use_time', '>', $userTime];
@@ -62,14 +61,12 @@ class Dashboard extends AdminController
             $page = $request->get('page', 1);
             $limit = $request->get('limit', 15);
             $datetime = $request->get('datetime', '');
-            $datetime = $request->get('datetime', '');
             $userTime = $request->get('user_time', '');
             $where = [];
             if ($datetime) {
-                foreach ($datetime as &$time) {
-                    $time = strtotime($time);
-                }
-                $where[] = ['start_time', 'between', $datetime];
+                $_start_time = strtotime($datetime[0]);
+                $_end_time = strtotime($datetime[1] . '23:59:59');
+                $where[] = ['start_time', 'between', [$_start_time, $_end_time]];
             }
             if ($userTime) {
                 $where[] = ['use_time', '>', $userTime];
