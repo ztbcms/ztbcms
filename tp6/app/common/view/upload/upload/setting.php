@@ -1,7 +1,7 @@
 <div>
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="24" :md="18">
+            <el-col :sm="8" :md="6">
                 <template>
                     <div>
                         <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
@@ -89,7 +89,7 @@
                             <el-form-item label="允许上传附件类型" prop="uploadallowext">
                                 <el-input v-model="formData.uploadallowext" placeholder="请输入允许上传附件类型" clearable
                                           :style="{width: '100%'}">
-                                    <template slot="append">多个用"|"隔开</template>
+                                    <template slot="append">用"|"隔开</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="前台允许上传附件大小" prop="qtuploadmaxsize">
@@ -101,15 +101,16 @@
                             <el-form-item label="前台允许上传附件类型" prop="qtuploadallowext">
                                 <el-input v-model="formData.qtuploadallowext" placeholder="请输入前台允许上传附件类型" clearable
                                           :style="{width: '100%'}">
-                                    <template slot="append">多个用"|"隔开</template>
+                                    <template slot="append">用"|"隔开</template>
                                 </el-input>
                             </el-form-item>
                             <template v-if="formData.attachment_driver == 'Local'">
                                 <el-form-item label="保存远程图片过滤域名" prop="fileexclude">
                                     <el-input v-model="formData.fileexclude" placeholder="请输入保存远程图片过滤域名" clearable
                                               :style="{width: '100%'}">
-                                        <template slot="append">多个用"|"隔开，域名以"/"结尾，例如：http://www.ztbcms.com/</template>
+                                        <template slot="append"></template>
                                     </el-input>
+                                    <small>多个用"|"隔开，域名以"/"结尾,例如：http://www.ztbcms.com/</small>
                                 </el-form-item>
                                 <el-form-item label="是否开启图片水印" prop="watermarkenable">
                                     <el-radio-group v-model="formData.watermarkenable" size="medium">
@@ -134,19 +135,19 @@
                                 <el-form-item label="水印图片" prop="watermarkimg">
                                     <el-input v-model="formData.watermarkimg" placeholder="请输入水印图片" clearable
                                               :style="{width: '100%'}">
-                                        <template slot="append">水印存放路径从网站根目录起</template>
+                                        <template slot="append">从网站根目录算起</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="水印透明度" prop="watermarkpct">
                                     <el-input v-model="formData.watermarkpct" placeholder="请输入水印透明度" clearable
                                               :style="{width: '100%'}">
-                                        <template slot="append">0-100之间的数字，0代表完全透明，100代表不透明</template>
+                                        <template slot="append">0-100数字，0完全透明，100不透明</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="JPEG 水印质量" prop="watermarkquality">
                                     <el-input v-model="formData.watermarkquality" placeholder="请输入JPEG 水印质量" clearable
                                               :style="{width: '100%'}">
-                                        <template slot="append">0-100之间的数字,决定 jpg 格式图片的质量，100为原图</template>
+                                        <template slot="append">0-100数字，100为原图</template>
                                     </el-input>
                                 </el-form-item>
 
