@@ -70,7 +70,7 @@ class Main extends AdminController
             ],
             [
                 'name'  => '数据库地址',
-                'value' => Config::get('database.connections.mysql.hostname'),
+                'value' => Config::get('database.connections.mysql.hostname') . ':' . Config::get('database.connections.mysql.hostport'),
             ],
             [
                 'name'  => '产品名称',
