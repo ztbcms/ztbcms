@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\HttpFoundation\Session\Storage\Proxy;
 
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\StrictSessionHandler;
+
 /**
  * @author Drak <drak@zikula.org>
  */
@@ -21,8 +23,8 @@ class SessionHandlerProxy extends AbstractProxy implements \SessionHandlerInterf
     public function __construct(\SessionHandlerInterface $handler)
     {
         $this->handler = $handler;
-        $this->wrapper = ($handler instanceof \SessionHandler);
-        $this->saveHandlerName = $this->wrapper ? ini_get('session.save_handler') : 'user';
+        $this->wrapper = $handler instanceof \SessionHandler;
+        $this->saveHandlerName = $this->wrapper || ($handler instanceof StrictSessionHandler && $handler->isWrapper()) ? \ini_get('session.save_handler') : 'user';
     }
 
     /**
@@ -41,7 +43,7 @@ class SessionHandlerProxy extends AbstractProxy implements \SessionHandlerInterf
     #[\ReturnTypeWillChange]
     public function open($savePath, $sessionName)
     {
-        return (bool) $this->handler->open($savePath, $sessionName);
+        return $this->handler->open($savePath, $sessionName);
     }
 
     /**
@@ -50,16 +52,16 @@ class SessionHandlerProxy extends AbstractProxy implements \SessionHandlerInterf
     #[\ReturnTypeWillChange]
     public function close()
     {
-        return (bool) $this->handler->close();
+        return $this->handler->close();
     }
 
     /**
-     * @return string
+     * @return string|false
      */
     #[\ReturnTypeWillChange]
     public function read($sessionId)
     {
-        return (string) $this->handler->read($sessionId);
+        return $this->handler->read($sessionId);
     }
 
     /**
@@ -68,7 +70,7 @@ class SessionHandlerProxy extends AbstractProxy implements \SessionHandlerInterf
     #[\ReturnTypeWillChange]
     public function write($sessionId, $data)
     {
-        return (bool) $this->handler->write($sessionId, $data);
+        return $this->handler->write($sessionId, $data);
     }
 
     /**
@@ -77,7 +79,7 @@ class SessionHandlerProxy extends AbstractProxy implements \SessionHandlerInterf
     #[\ReturnTypeWillChange]
     public function destroy($sessionId)
     {
-        return (bool) $this->handler->destroy($sessionId);
+        return $this->handler->destroy($sessionId);
     }
 
     /**

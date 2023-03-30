@@ -66,8 +66,8 @@ trait Mixin
     public static function mixin($mixin)
     {
         \is_string($mixin) && trait_exists($mixin)
-            ? static::loadMixinTrait($mixin)
-            : static::loadMixinClass($mixin);
+            ? self::loadMixinTrait($mixin)
+            : self::loadMixinClass($mixin);
     }
 
     /**
@@ -115,7 +115,7 @@ trait Mixin
                 }
 
                 // in case of errors not converted into exceptions
-                $closure = $closure ?? $closureBase;
+                $closure = $closure ?: $closureBase;
 
                 return $closure(...\func_get_args());
             });
@@ -151,22 +151,12 @@ trait Mixin
     protected static function bindMacroContext($context, callable $callable)
     {
         static::$macroContextStack[] = $context;
-        $exception = null;
-        $result = null;
 
         try {
-            $result = $callable();
-        } catch (Throwable $throwable) {
-            $exception = $throwable;
+            return $callable();
+        } finally {
+            array_pop(static::$macroContextStack);
         }
-
-        array_pop(static::$macroContextStack);
-
-        if ($exception) {
-            throw $exception;
-        }
-
-        return $result;
     }
 
     /**

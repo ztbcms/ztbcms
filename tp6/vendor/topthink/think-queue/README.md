@@ -10,7 +10,7 @@
 
 ### 公共配置
 
-```
+```bash
 [
     'default'=>'sync' //驱动类型，可选择 sync(默认):同步执行，database:数据库驱动,redis:Redis驱动//或其他自定义的完整的类名
 ]
@@ -18,8 +18,7 @@
 
 
 ## 创建任务类
-> 单模块项目推荐使用 `app\job` 作为任务类的命名空间
-> 多模块项目可用使用 `app\module\job` 作为任务类的命名空间
+> 推荐使用 `app\job` 作为任务类的命名空间
 > 也可以放在任意可以自动加载到的地方
 
 任务类不需继承任何类，如果这个类只有一个任务，那么就只需要提供一个`fire`方法就可以了，如果有多个小任务，就写多个方法，下面发布任务的时候会有区别  
@@ -29,7 +28,7 @@
 
 ### 下面写两个例子
 
-```
+```php
 namespace app\job;
 
 use think\queue\Job;
@@ -62,7 +61,7 @@ class Job1{
 
 ```
 
-```
+```php
 
 namespace app\lib\job;
 
@@ -94,8 +93,7 @@ class Job2{
 > `think\facade\Queue::push($job, $data = '', $queue = null)` 和 `think\facade\Queue::later($delay, $job, $data = '', $queue = null)` 两个方法，前者是立即执行，后者是在`$delay`秒后执行
 
 `$job` 是任务名  
-单模块的，且命名空间是`app\job`的，比如上面的例子一,写`Job1`类名即可  
-多模块的，且命名空间是`app\module\job`的，写`model/Job1`即可  
+命名空间是`app\job`的，比如上面的例子一,写`Job1`类名即可  
 其他的需要些完整的类名，比如上面的例子二，需要写完整的类名`app\lib\job\Job2`  
 如果一个任务类里有多个小任务的话，如上面的例子二，需要用@+方法名`app\lib\job\Job2@task1`、`app\lib\job\Job2@task2`
 
@@ -105,10 +103,12 @@ class Job2{
 
 ## 监听任务并执行
 
-> php think queue:listen
+```bash
+&> php think queue:listen
 
-> php think queue:work
+&> php think queue:work
+```
 
-两种，具体的可选参数可以输入命令加 --help 查看
+两种，具体的可选参数可以输入命令加 `--help` 查看
 
->可配合supervisor使用，保证进程常驻
+> 可配合supervisor使用，保证进程常驻

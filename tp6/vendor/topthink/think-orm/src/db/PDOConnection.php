@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace think\db;
 
@@ -81,6 +81,8 @@ abstract class PDOConnection extends Connection
         'break_reconnect' => false,
         // 断线标识字符串
         'break_match_str' => [],
+        // 自动参数绑定
+        'auto_param_bind' => true,
     ];
 
     /**
@@ -279,7 +281,7 @@ abstract class PDOConnection extends Connection
      */
     protected function getFieldType(string $type): string
     {
-        if (0 === strpos($type, 'set') || 0 === strpos($type, 'enum')) {
+        if (0 === stripos($type, 'set') || 0 === stripos($type, 'enum')) {
             $result = 'string';
         } elseif (preg_match('/(double|float|decimal|real|numeric)/is', $type)) {
             $result = 'float';
@@ -287,11 +289,11 @@ abstract class PDOConnection extends Connection
             $result = 'int';
         } elseif (preg_match('/bool/is', $type)) {
             $result = 'bool';
-        } elseif (0 === strpos($type, 'timestamp')) {
+        } elseif (0 === stripos($type, 'timestamp')) {
             $result = 'timestamp';
-        } elseif (0 === strpos($type, 'datetime')) {
+        } elseif (0 === stripos($type, 'datetime')) {
             $result = 'datetime';
-        } elseif (0 === strpos($type, 'date')) {
+        } elseif (0 === stripos($type, 'date')) {
             $result = 'date';
         } else {
             $result = 'string';
@@ -352,15 +354,13 @@ abstract class PDOConnection extends Connection
         if (!isset($this->info[$schema]) || $force) {
             // 读取字段缓存
             $cacheKey   = $this->getSchemaCacheKey($schema);
-            $cacheField = $this->config['fields_cache'] && !empty($this->cache);
-
-            if ($cacheField && !$force) {
+            if ($this->config['fields_cache'] && !empty($this->cache) && !$force) {
                 $info = $this->cache->get($cacheKey);
             }
 
             if (empty($info)) {
                 $info = $this->getTableFieldsInfo($tableName);
-                if ($cacheField) {
+                if (!empty($this->cache) && ($this->config['fields_cache'] || $force)) {
                     $this->cache->set($cacheKey, $info);
                 }
             }
@@ -709,9 +709,10 @@ abstract class PDOConnection extends Connection
 
         $this->getPDOStatement($sql, $bind, $master, $procedure);
 
-        $resultSet = $this->getResult($procedure);
+        $resultSet    = $this->getResult($procedure);
+        $requireCache = $query->getOptions('cache_always') || !empty($resultSet);
 
-        if (isset($cacheItem) && $resultSet) {
+        if (isset($cacheItem) && $requireCache) {
             // 缓存数据集
             $cacheItem->set($resultSet);
             $this->cacheData($cacheItem);
@@ -1184,13 +1185,13 @@ abstract class PDOConnection extends Connection
             $key = null;
         }
 
-        if (\is_string($column)) {
-            $column = \trim($column);
+        if (is_string($column)) {
+            $column = trim($column);
             if ('*' !== $column) {
-                $column = \array_map('\trim', \explode(',', $column));
+                $column = array_map('trim', explode(',', $column));
             }
-        } elseif (\is_array($column)) {
-            if (\in_array('*', $column)) {
+        } elseif (is_array($column)) {
+            if (in_array('*', $column)) {
                 $column = '*';
             }
         } else {
@@ -1198,7 +1199,7 @@ abstract class PDOConnection extends Connection
         }
 
         $field = $column;
-        if ('*' !== $column && $key && !\in_array($key, $column)) {
+        if ('*' !== $column && $key && !in_array($key, $column)) {
             $field[] = $key;
         }
 
@@ -1233,19 +1234,23 @@ abstract class PDOConnection extends Connection
 
         if (empty($resultSet)) {
             $result = [];
-        } elseif ('*' !== $column && \count($column) === 1) {
-            $column = \array_shift($column);
-            if (\strpos($column, ' ')) {
-                $column = \substr(\strrchr(\trim($column), ' '), 1);
+        } elseif ('*' !== $column && count($column) === 1) {
+            $column = array_shift($column);
+            if (strpos($column, ' ')) {
+                $column = substr(strrchr(trim($column), ' '), 1);
             }
 
-            if (\strpos($column, '.')) {
-                [$alias, $column] = \explode('.', $column);
+            if (strpos($column, '.')) {
+                [$alias, $column] = explode('.', $column);
             }
 
-            $result = \array_column($resultSet, $column, $key);
+            if (strpos($column, '->')) {
+                $column = $this->builder->parseKey($query, $column);
+            }
+
+            $result = array_column($resultSet, $column, $key);
         } elseif ($key) {
-            $result = \array_column($resultSet, null, $key);
+            $result = array_column($resultSet, null, $key);
         } else {
             $result = $resultSet;
         }
@@ -1280,8 +1285,8 @@ abstract class PDOConnection extends Connection
 
             // 判断占位符
             $sql = is_numeric($key) ?
-            substr_replace($sql, $value, strpos($sql, '?'), 1) :
-            substr_replace($sql, $value, strpos($sql, ':' . $key), strlen(':' . $key));
+                substr_replace($sql, $value, strpos($sql, '?'), 1) :
+                substr_replace($sql, $value, strpos($sql, ':' . $key), strlen(':' . $key));
         }
 
         return rtrim($sql);
@@ -1442,7 +1447,7 @@ abstract class PDOConnection extends Connection
 
             if (1 == $this->transTimes) {
                 $this->linkID->beginTransaction();
-            } elseif ($this->transTimes > 1 && $this->supportSavepoint()) {
+            } elseif ($this->transTimes > 1 && $this->supportSavepoint() && $this->linkID->inTransaction()) {
                 $this->linkID->exec(
                     $this->parseSavepoint('trans' . $this->transTimes)
                 );
@@ -1473,7 +1478,7 @@ abstract class PDOConnection extends Connection
     {
         $this->initConnect(true);
 
-        if (1 == $this->transTimes) {
+        if (1 == $this->transTimes && $this->linkID->inTransaction()) {
             $this->linkID->commit();
         }
 
@@ -1490,12 +1495,14 @@ abstract class PDOConnection extends Connection
     {
         $this->initConnect(true);
 
-        if (1 == $this->transTimes) {
-            $this->linkID->rollBack();
-        } elseif ($this->transTimes > 1 && $this->supportSavepoint()) {
-            $this->linkID->exec(
-                $this->parseSavepointRollBack('trans' . $this->transTimes)
-            );
+        if ($this->linkID->inTransaction()) {
+            if (1 == $this->transTimes) {
+                $this->linkID->rollBack();
+            } elseif ($this->transTimes > 1 && $this->supportSavepoint()) {
+                $this->linkID->exec(
+                    $this->parseSavepointRollBack('trans' . $this->transTimes)
+                );
+            }
         }
 
         $this->transTimes = max(0, $this->transTimes - 1);
@@ -1641,7 +1648,7 @@ abstract class PDOConnection extends Connection
         $pk = $query->getAutoInc();
 
         if ($pk) {
-            $type = $this->getFieldBindType($pk);
+            $type = $this->getFieldsBind($query->getTable())[$pk];
 
             if (PDO::PARAM_INT == $type) {
                 $insertId = (int) $insertId;
@@ -1756,13 +1763,76 @@ abstract class PDOConnection extends Connection
     }
 
     /**
+     * 获取数据库的唯一标识
+     * @access public
+     * @param string $suffix 标识后缀
+     * @return string
+     */
+    public function getUniqueXid(string $suffix = ''): string
+    {
+        return $this->config['hostname'] . '_' . $this->config['database'] . $suffix;
+    }
+
+    /**
+     * 执行数据库Xa事务
+     * @access public
+     * @param  callable $callback 数据操作方法回调
+     * @param  array    $dbs      多个查询对象或者连接对象
+     * @return mixed
+     * @throws PDOException
+     * @throws \Exception
+     * @throws \Throwable
+     */
+    public function transactionXa(callable $callback, array $dbs = [])
+    {
+        $xid = uniqid('xa');
+
+        if (empty($dbs)) {
+            $dbs[] = $this;
+        }
+
+        foreach ($dbs as $key => $db) {
+            if ($db instanceof BaseQuery) {
+                $db = $db->getConnection();
+
+                $dbs[$key] = $db;
+            }
+
+            $db->startTransXa($db->getUniqueXid('_' . $xid) );
+        }
+
+        try {
+            $result = null;
+            if (is_callable($callback)) {
+                $result = $callback($this);
+            }
+
+            foreach ($dbs as $db) {
+                $db->prepareXa($db->getUniqueXid('_' . $xid));
+            }
+
+            foreach ($dbs as $db) {
+                $db->commitXa($db->getUniqueXid('_' . $xid) );
+            }
+
+            return $result;
+        } catch (\Exception | \Throwable $e) {
+            foreach ($dbs as $db) {
+                $db->rollbackXa($db->getUniqueXid('_' . $xid) );
+            }
+            throw $e;
+        }
+    }
+
+    /**
      * 启动XA事务
      * @access public
      * @param  string $xid XA事务id
      * @return void
      */
-    public function startTransXa(string $xid)
-    {}
+    public function startTransXa(string $xid): void
+    {
+    }
 
     /**
      * 预编译XA事务
@@ -1770,8 +1840,9 @@ abstract class PDOConnection extends Connection
      * @param  string $xid XA事务id
      * @return void
      */
-    public function prepareXa(string $xid)
-    {}
+    public function prepareXa(string $xid): void
+    {
+    }
 
     /**
      * 提交XA事务
@@ -1779,8 +1850,9 @@ abstract class PDOConnection extends Connection
      * @param  string $xid XA事务id
      * @return void
      */
-    public function commitXa(string $xid)
-    {}
+    public function commitXa(string $xid): void
+    {
+    }
 
     /**
      * 回滚XA事务
@@ -1788,6 +1860,7 @@ abstract class PDOConnection extends Connection
      * @param  string $xid XA事务id
      * @return void
      */
-    public function rollbackXa(string $xid)
-    {}
+    public function rollbackXa(string $xid): void
+    {
+    }
 }
