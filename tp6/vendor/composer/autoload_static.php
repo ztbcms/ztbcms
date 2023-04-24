@@ -95,6 +95,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
         'E' => 
         array (
             'EasyWeChat\\' => 11,
@@ -276,6 +280,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'EasyWeChat\\' => 
         array (
