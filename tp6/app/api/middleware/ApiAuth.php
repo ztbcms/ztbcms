@@ -5,6 +5,7 @@
 
 namespace app\api\middleware;
 
+use app\common\service\jwt\JwtService;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use think\response\Json;
@@ -70,16 +71,15 @@ class ApiAuth
         if (empty($auth_str) || empty($auth_str[1])) {
             return json(createReturn(false, null, '凭证不能为空'));
         }
-        $token = $auth_str[1];
-        $config = config('api.jwt');
-        try {
-            $info = JWT::decode($token, new Key($config['secret_key'], $config['algorithm']));
-            // 注入登录用户信息
-            $request->authorization = $info;
-            return $next($request);
-        } catch (\Exception $exception) {
-            return json(createReturn(false, null, '认证失败：凭证无效'));
+        $token = $auth_str[1];   // 生成 JWT
+        $jwtService = new JwtService();
+        $res = $jwtService->parserToken($token);
+        if(!$res['status']){
+            return json($res);
         }
+        // 注入登录用户信息
+        $request->authorization = $res['data'];
+        return $next($request);
     }
 
     /**

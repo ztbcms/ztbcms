@@ -5,7 +5,7 @@
 
 namespace app\api\controller;
 
-use Firebase\JWT\JWT;
+use app\common\service\jwt\JwtService;
 use think\Request;
 
 class Common extends BaseApi
@@ -25,10 +25,10 @@ class Common extends BaseApi
             "exp" => time() + 7 * 24 * 60 * 60, // 有效期
         );
         // 生成 JWT
-        $config = config('api.jwt');
-        $jwt = JWT::encode($payload, $config['secret_key'], $config['algorithm']);
+        $jwtService = new JwtService();
+        $res = $jwtService->createToken($payload);
         return self::makeJsonReturn(true, [
-            'token' => $jwt,
+            'token' => $res['data']['token'],
         ], '认证完成');
     }
 
