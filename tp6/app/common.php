@@ -85,3 +85,79 @@ if (!function_exists('cacheKey')) {
         return hash('md5', join(',', $arr));
     }
 }
+
+if (!function_exists('distanceBetween')) {
+    /**
+     * 计算两个地球坐标之间的距离，单位：千米km
+     * @param $lng1 float 经度1
+     * @param $lat1 float 纬度1
+     * @param $lng2 float 经度2
+     * @param $lat2 float 纬度2
+     *
+     * @return float
+     */
+    function distanceBetween($lng1, $lat1, $lng2, $lat2)
+    {
+        // 角度转换为弧度
+        $radLat1 = deg2rad($lat1);
+        $radLat2 = deg2rad($lat2);
+        $radLng1 = deg2rad($lng1);
+        $radLng2 = deg2rad($lng2);
+        $a = $radLat1 - $radLat2;
+        $b = $radLng1 - $radLng2;
+        // 地球半径 6378.137km
+        $distance = 2 * asin(sqrt(pow(sin($a / 2), 2) + cos($radLat1) * cos($radLat2) * pow(sin($b / 2), 2))) * 6378.137;
+        return round($distance, 1);
+    }
+}
+
+
+if (!function_exists('generateToken')) {
+    /**
+     * 生成token
+     * @param string $salt 随机参数，用于分布式项目并发生成token
+     *
+     * @return false|string
+     */
+    function generateToken($salt = '')
+    {
+        return hash('sha256', $salt . microtime(true));
+    }
+}
+
+if (!function_exists('generateUniqueId')) {
+    /**
+     * 生成唯一ID
+     * 测试：50个进程随机生成100w个ID 不重复
+     *
+     * @return false|string
+     */
+    function generateUniqueId()
+    {
+        return md5(uniqid(getmypid(), true));
+    }
+}
+
+if (!function_exists('now_ms')) {
+    /**
+     * 获取当前毫秒时间（Millisecond） 1s=1000ms
+     * @return int
+     */
+    function now_ms()
+    {
+        list($usec, $sec) = explode(' ', microtime());
+        return intval(($sec + $usec) * 1000);
+    }
+}
+
+if (!function_exists('now_us')) {
+    /**
+     * 获取当前微妙(Microsecond) 1s=1000000us
+     * @return int
+     */
+    function now_us()
+    {
+        list($usec, $sec) = explode(' ', microtime());
+        return intval(($sec + $usec) * 1000000);
+    }
+}
