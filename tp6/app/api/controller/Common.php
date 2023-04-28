@@ -26,9 +26,9 @@ class Common extends BaseApi
         );
         // 生成 JWT
         $jwtService = new JwtService();
-        $res = $jwtService->createToken($payload);
+        $token = $jwtService->createToken($payload);
         return self::makeJsonReturn(true, [
-            'token' => $res['data']['token'],
+            'token' => $token,
         ], '认证完成');
     }
 
