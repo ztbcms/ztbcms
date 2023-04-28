@@ -12,7 +12,6 @@
 namespace think\model\relation;
 
 use Closure;
-use think\helper\Str;
 use think\Model;
 
 /**
@@ -40,6 +39,8 @@ class HasOneThrough extends HasManyThrough
 
         if ($relationModel) {
             $relationModel->setParent(clone $this->parent);
+        } else {
+            $relationModel = $this->getDefaultModel();
         }
 
         return $relationModel;
@@ -79,7 +80,7 @@ class HasOneThrough extends HasManyThrough
             foreach ($resultSet as $result) {
                 // 关联模型
                 if (!isset($data[$result->$localKey])) {
-                    $relationModel = null;
+                    $relationModel = $this->getDefaultModel();
                 } else {
                     $relationModel = $data[$result->$localKey];
                     $relationModel->setParent(clone $result);
@@ -115,7 +116,7 @@ class HasOneThrough extends HasManyThrough
 
         // 关联模型
         if (!isset($data[$result->$localKey])) {
-            $relationModel = null;
+            $relationModel = $this->getDefaultModel();
         } else {
             $relationModel = $data[$result->$localKey];
             $relationModel->setParent(clone $result);

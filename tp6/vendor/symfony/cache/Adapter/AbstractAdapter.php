@@ -74,7 +74,7 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Logg
                     $key = (string) $key;
                     if (null === $item->expiry) {
                         $ttl = 0 < $defaultLifetime ? $defaultLifetime : 0;
-                    } elseif (0 === $item->expiry) {
+                    } elseif (!$item->expiry) {
                         $ttl = 0;
                     } elseif (0 >= $ttl = (int) (0.1 + $item->expiry - $now)) {
                         $expiredIds[] = $getId($key);
@@ -112,7 +112,7 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Logg
             return $opcache;
         }
 
-        if (\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !filter_var(ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN)) {
+        if (\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !filter_var(\ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN)) {
             return $opcache;
         }
 
@@ -133,7 +133,11 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Logg
             return MemcachedAdapter::createConnection($dsn, $options);
         }
         if (0 === strpos($dsn, 'couchbase:')) {
-            return CouchbaseBucketAdapter::createConnection($dsn, $options);
+            if (CouchbaseBucketAdapter::isSupported()) {
+                return CouchbaseBucketAdapter::createConnection($dsn, $options);
+            }
+
+            return CouchbaseCollectionAdapter::createConnection($dsn, $options);
         }
 
         throw new InvalidArgumentException(sprintf('Unsupported DSN: "%s".', $dsn));
@@ -151,7 +155,12 @@ abstract class AbstractAdapter implements AdapterInterface, CacheInterface, Logg
         $retry = $this->deferred = [];
 
         if ($expiredIds) {
-            $this->doDelete($expiredIds);
+            try {
+                $this->doDelete($expiredIds);
+            } catch (\Exception $e) {
+                $ok = false;
+                CacheItem::log($this->logger, 'Failed to delete expired items: '.$e->getMessage(), ['exception' => $e, 'cache-adapter' => get_debug_type($this)]);
+            }
         }
         foreach ($byLifetime as $lifetime => $values) {
             try {

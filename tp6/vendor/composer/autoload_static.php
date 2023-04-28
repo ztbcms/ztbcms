@@ -7,8 +7,8 @@ namespace Composer\Autoload;
 class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
 {
     public static $files = array (
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -18,7 +18,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         'd767e4fc2dc52fe66584ab8c6684783e' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/helpers.php',
-        '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '66453932bc1be9fb2f910a27947d11b6' => __DIR__ . '/..' . '/alibabacloud/client/src/Functions.php',
@@ -63,7 +62,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\Cache\\' => 24,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
-            'Stringy\\' => 8,
         ),
         'P' => 
         array (
@@ -87,12 +85,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             'Monolog\\' => 8,
         ),
-        'L' => 
-        array (
-            'League\\MimeTypeDetection\\' => 25,
-            'League\\Flysystem\\Cached\\' => 24,
-            'League\\Flysystem\\' => 17,
-        ),
         'J' => 
         array (
             'JmesPath\\' => 9,
@@ -102,6 +94,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+        ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
         ),
         'E' => 
         array (
@@ -216,10 +212,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
         ),
-        'Stringy\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/danielstjules/stringy/src',
-        ),
         'Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
@@ -273,18 +265,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
-        'League\\MimeTypeDetection\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
-        ),
-        'League\\Flysystem\\Cached\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/flysystem-cached-adapter/src',
-        ),
-        'League\\Flysystem\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/flysystem/src',
-        ),
         'JmesPath\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
@@ -300,6 +280,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'EasyWeChat\\' => 
         array (
@@ -341,6 +325,7 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',

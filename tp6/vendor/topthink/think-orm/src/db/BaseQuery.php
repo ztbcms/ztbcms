@@ -137,7 +137,7 @@ abstract class BaseQuery
             $query->name($this->name);
         }
 
-        if (isset($this->options['json'])) {
+        if (!empty($this->options['json'])) {
             $query->json($this->options['json'], $this->options['json_assoc']);
         }
 
@@ -260,19 +260,30 @@ abstract class BaseQuery
      */
     public function value(string $field, $default = null)
     {
-        return $this->connection->value($this, $field, $default);
+        $result = $this->connection->value($this, $field, $default);
+
+        $array[$field] = $result;
+        $this->result($array);
+
+        return $array[$field];
     }
 
     /**
      * 得到某个列的数组
      * @access public
      * @param string|array $field 字段名 多个字段用逗号分隔
-     * @param string $key   索引
+     * @param string       $key   索引
      * @return array
      */
     public function column($field, string $key = ''): array
     {
-        return $this->connection->column($this, $field, $key);
+        $result = $this->connection->column($this, $field, $key);
+
+        if (count($result) != count($result, 1)) {
+            $this->resultSet($result, false);
+        }
+
+        return $result;
     }
 
     /**
@@ -339,7 +350,7 @@ abstract class BaseQuery
             $field = array_merge((array) $this->options['field'], $field);
         }
 
-        $this->options['field'] = array_unique($field);
+        $this->options['field'] = array_unique($field, SORT_REGULAR);
 
         return $this;
     }
@@ -368,7 +379,7 @@ abstract class BaseQuery
             $field = array_merge((array) $this->options['field'], $field);
         }
 
-        $this->options['field'] = array_unique($field);
+        $this->options['field'] = array_unique($field, SORT_REGULAR);
 
         return $this;
     }
@@ -413,7 +424,7 @@ abstract class BaseQuery
             $field = array_merge((array) $this->options['field'], $field);
         }
 
-        $this->options['field'] = array_unique($field);
+        $this->options['field'] = array_unique($field, SORT_REGULAR);
 
         return $this;
     }
@@ -617,11 +628,19 @@ abstract class BaseQuery
         if (!isset($total) && !$simple) {
             $options = $this->getOptions();
 
-            unset($this->options['order'], $this->options['limit'], $this->options['page'], $this->options['field']);
+            unset($this->options['order'], $this->options['cache'], $this->options['limit'], $this->options['page'], $this->options['field']);
 
-            $bind    = $this->bind;
-            $total   = $this->count();
-            $results = $total > 0 ? $this->options($options)->bind($bind)->page($page, $listRows)->select() : [];
+            $bind  = $this->bind;
+            $total = $this->count();
+            if ($total > 0) {
+                $results = $this->options($options)->bind($bind)->page($page, $listRows)->select();
+            } else {
+                if (!empty($this->model)) {
+                    $results = new \think\model\Collection([]);
+                } else {
+                    $results = new \think\Collection([]);
+                }
+            }
         } elseif ($simple) {
             $results = $this->limit(($page - 1) * $listRows, $listRows + 1)->select();
             $total   = null;
@@ -686,7 +705,7 @@ abstract class BaseQuery
             ->limit(1)
             ->find();
 
-        $result = $data[$key];
+        $result = $data[$key] ?? 0;
 
         if (is_numeric($result)) {
             $lastId = 'asc' == $sort ? ($result - 1) + ($page - 1) * $listRows : ($result + 1) - ($page - 1) * $listRows;
@@ -741,19 +760,20 @@ abstract class BaseQuery
 
         return [
             'data'   => $result,
-            'lastId' => $last[$key],
+            'lastId' => $last ? $last[$key] : null,
         ];
     }
 
     /**
-     * 查询缓存
+     * 查询缓存 数据为空不缓存
      * @access public
      * @param mixed             $key    缓存key
      * @param integer|\DateTime $expire 缓存有效期
      * @param string|array      $tag    缓存标签
+     * @param bool              $always 始终缓存
      * @return $this
      */
-    public function cache($key = true, $expire = null, $tag = null)
+    public function cache($key = true, $expire = null, $tag = null, bool $always = false)
     {
         if (false === $key || !$this->getConnection()->getCache()) {
             return $this;
@@ -764,9 +784,23 @@ abstract class BaseQuery
             $key    = true;
         }
 
-        $this->options['cache'] = [$key, $expire, $tag];
+        $this->options['cache']        = [$key, $expire, $tag];
+        $this->options['cache_always'] = $always;
 
         return $this;
+    }
+
+    /**
+     * 查询缓存 允许缓存空数据
+     * @access public
+     * @param mixed             $key    缓存key
+     * @param integer|\DateTime $expire 缓存有效期
+     * @param string|array      $tag    缓存标签
+     * @return $this
+     */
+    public function cacheAlways($key = true, $expire = null, $tag = null)
+    {
+        return $this->cache($key, $expire, $tag, true);
     }
 
     /**
@@ -852,6 +886,7 @@ abstract class BaseQuery
     {
         $this->options['json']       = $json;
         $this->options['json_assoc'] = $assoc;
+
         return $this;
     }
 
@@ -1109,7 +1144,7 @@ abstract class BaseQuery
      * 查找单条记录
      * @access public
      * @param mixed $data 查询数据
-     * @return array|Model|null|static
+     * @return array|Model|null|static|mixed
      * @throws Exception
      * @throws ModelNotFoundException
      * @throws DataNotFoundException
@@ -1134,7 +1169,7 @@ abstract class BaseQuery
 
         if (!empty($this->model)) {
             // 返回模型对象
-            $this->resultToModel($result, $this->options);
+            $this->resultToModel($result);
         } else {
             $this->result($result);
         }
@@ -1163,7 +1198,7 @@ abstract class BaseQuery
             $this->parseView($options);
         }
 
-        foreach (['data', 'order', 'join', 'union'] as $name) {
+        foreach (['data', 'order', 'join', 'union', 'filter', 'json', 'with_attr', 'with_relation_attr'] as $name) {
             if (!isset($options[$name])) {
                 $options[$name] = [];
             }
@@ -1173,7 +1208,7 @@ abstract class BaseQuery
             $options['strict'] = $this->connection->getConfig('fields_strict');
         }
 
-        foreach (['master', 'lock', 'fetch_sql', 'array', 'distinct', 'procedure'] as $name) {
+        foreach (['master', 'lock', 'fetch_sql', 'array', 'distinct', 'procedure', 'with_cache'] as $name) {
             if (!isset($options[$name])) {
                 $options[$name] = false;
             }
