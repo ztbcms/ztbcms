@@ -97,6 +97,10 @@
     .pagination-container {
         padding: 32px 16px;
     }
+
+    .el-table td{
+        padding: 4px;
+    }
 </style>
 
 <script>
