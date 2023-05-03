@@ -233,6 +233,10 @@
 
     //登录请求
     function doLogin() {
+        if (window.requesting) {
+            return;
+        }
+        window.requesting = true
         var username = $('input#username').val();
         var password = $('input#password').val();
         var code = $('input#code').val();
@@ -257,6 +261,9 @@
                     }, 800)
                 }
                 refreshs();
+            },
+            complete: function (){
+                window.requesting = false
             }
         })
     }
