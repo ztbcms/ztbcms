@@ -11,29 +11,31 @@ use think\Response;
  */
 class Cors
 {
-    protected $header
-        = [
-            'Access-Control-Allow-Credentials' => 'true',
-            'Access-Control-Max-Age'           => 1800,
-            'Access-Control-Allow-Methods'     => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers'     => '*',
-        ];
-
+    protected $header = [
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Credentials' => 'true',
+        'Access-Control-Max-Age' => 3600,
+        'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers' => '*',
+    ];
 
     /**
      * 允许跨域请求
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed|Response
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
+        $origin = $request->header('Origin');
+        if (!empty($origin)) {
+            $this->header['Access-Control-Allow-Origin'] = $origin;
+        }
         if ($request->isOptions()) {
             return response('', 200, $this->header);
         }
-
-        return $next($request);
+        return $next($request)->header($this->header);
     }
 }

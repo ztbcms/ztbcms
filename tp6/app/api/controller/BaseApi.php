@@ -8,7 +8,6 @@ namespace app\api\controller;
 use app\api\middleware\ApiAuth;
 use app\BaseController;
 use think\App;
-use think\middleware\AllowCrossDomain;
 
 /**
  * API基类
@@ -25,7 +24,6 @@ class BaseApi extends BaseController
     protected $skillAuthActions = [];
 
     protected $middleware = [
-        AllowCrossDomain::class,
         ApiAuth::class,
     ];
 
