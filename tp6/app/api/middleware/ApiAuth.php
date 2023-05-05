@@ -63,19 +63,20 @@ class ApiAuth
      */
     private function auth($request, \Closure $next)
     {
+        // header格式: Authorization: Bearer xxxxx
         $auth_str = request()->header('Authorization');
         if (empty($auth_str)) {
-            return json(createReturn(false, null, '凭证不能为空'));
+            return json(createReturn(false, null, '凭证不能为空', 401));
         }
         $auth_str = explode(' ', $auth_str);
         if (empty($auth_str) || empty($auth_str[1])) {
-            return json(createReturn(false, null, '凭证不能为空'));
+            return json(createReturn(false, null, '凭证不能为空', 401));
         }
-        $token = $auth_str[1];   // 生成 JWT
+        $token = $auth_str[1];
         $jwtService = new JwtService();
         $res = $jwtService->parserToken($token);
         if(!$res['status']){
-            return json($res);
+            return json(createReturn(false, null, $res['msg'], 401));
         }
         // 注入登录用户信息
         $request->authorization = $res['data'];
