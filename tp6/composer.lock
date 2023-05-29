@@ -3186,16 +3186,16 @@
         },
         {
             "name": "topthink/framework",
-            "version": "v6.1.2",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/framework.git",
-                "reference": "67235be5b919aaaf1de5aed9839f65d8e766aca3"
+                "reference": "7c324e7011246f0064b055b62ab9c3921cf0a041"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/framework/zipball/67235be5b919aaaf1de5aed9839f65d8e766aca3",
-                "reference": "67235be5b919aaaf1de5aed9839f65d8e766aca3",
+                "url": "https://api.github.com/repos/top-think/framework/zipball/7c324e7011246f0064b055b62ab9c3921cf0a041",
+                "reference": "7c324e7011246f0064b055b62ab9c3921cf0a041",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3251,9 +3251,9 @@
             ],
             "support": {
                 "issues": "https://github.com/top-think/framework/issues",
-                "source": "https://github.com/top-think/framework/tree/v6.1.2"
+                "source": "https://github.com/top-think/framework/tree/v6.1.3"
             },
-            "time": "2023-02-08T02:24:01+00:00"
+            "time": "2023-05-22T03:02:08+00:00"
         },
         {
             "name": "topthink/think-helper",
