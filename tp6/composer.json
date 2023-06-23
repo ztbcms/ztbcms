@@ -34,7 +34,8 @@
         "topthink/think-migration": "^3.0",
         "predis/predis": "^2.0",
         "nesbot/carbon": "^2.66",
-        "firebase/php-jwt": "^6.4"
+        "firebase/php-jwt": "^6.4",
+        "intervention/image": "^2.7"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
