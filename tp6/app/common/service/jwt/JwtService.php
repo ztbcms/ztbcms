@@ -46,9 +46,9 @@ class JwtService extends BaseService
     {
         try {
             $info = JWT::decode($token, new Key($this->config['secret_key'], $this->config['algorithm']));
-            return self::createReturn(true, json_decode(json_encode($info), true), '认证通过');
+            return self::createReturn(true, json_decode(json_encode($info), true), 'OK');
         } catch (\Exception $exception) {
-            return self::createReturn(false, null, '认证失败：凭证无效');
+            return self::createReturn(false, null, 'Token无效');
         }
     }
 }

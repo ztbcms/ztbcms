@@ -89,6 +89,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             'JmesPath\\' => 9,
         ),
+        'I' => 
+        array (
+            'Intervention\\Image\\' => 19,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -268,6 +272,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'JmesPath\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
+        ),
+        'Intervention\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
