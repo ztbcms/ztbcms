@@ -24,4 +24,23 @@ class ArrayHelper
         }
         return $result;
     }
+
+    /**
+     * 在对象数组中提取某个字段来创建新的数组
+     * 示例：
+     *  [['uid'=>1],['uid'=>2],['uid'=>3]] === arrayTakeKeyValue(array,'uid') ==> [1,2,3]
+     * @param array $array
+     * @param $key
+     * @return array
+     */
+    static function arrayTakeKeyValue(array $array, $key)
+    {
+        $result = [];
+        foreach ($array as $item) {
+            if (isset($item[$key])) {
+                $result[] = $item[$key];
+            }
+        }
+        return $result;
+    }
 }
