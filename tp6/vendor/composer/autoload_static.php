@@ -12,7 +12,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '35fab96057f1bf5e7aba31a8a6d5fdde' => __DIR__ . '/..' . '/topthink/think-orm/stubs/load_stubs.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
@@ -71,6 +70,7 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
             'Psr\\Http\\Client\\' => 16,
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
+            'Psr\\Clock\\' => 10,
             'Psr\\Cache\\' => 10,
             'Predis\\' => 7,
             'Phinx\\' => 6,
@@ -110,6 +110,7 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         ),
         'C' => 
         array (
+            'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
         ),
         'A' => 
@@ -141,8 +142,8 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
             0 => __DIR__ . '/..' . '/topthink/framework/src/think',
             1 => __DIR__ . '/..' . '/topthink/think-helper/src',
             2 => __DIR__ . '/..' . '/topthink/think-orm/src',
-            3 => __DIR__ . '/..' . '/topthink/think-queue/src',
-            4 => __DIR__ . '/..' . '/topthink/think-template/src',
+            3 => __DIR__ . '/..' . '/topthink/think-template/src',
+            4 => __DIR__ . '/..' . '/topthink/think-queue/src',
         ),
         'clagiordano\\weblibs\\configmanager\\' => 
         array (
@@ -241,6 +242,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'Psr\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/clock/src',
+        ),
         'Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
@@ -251,7 +256,7 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         ),
         'Phinx\\' => 
         array (
-            0 => __DIR__ . '/..' . '/topthink/think-migration/phinx/src/Phinx',
+            0 => __DIR__ . '/..' . '/topthink/think-migration/phinx',
         ),
         'PHPMailer\\PHPMailer\\' => 
         array (
@@ -300,6 +305,10 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'EasyWeChatComposer\\' => 
         array (
             0 => __DIR__ . '/..' . '/easywechat-composer/easywechat-composer/src',
+        ),
+        'Carbon\\Doctrine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
         ),
         'Carbon\\' => 
         array (
