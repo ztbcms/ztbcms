@@ -46,7 +46,9 @@ class Index extends BaseController
         //日志信息
         $startTime = time();
         //执行计划任务
-        $this->runCron();
+        do {
+            $next = $this->runCron();
+        } while ($next);
         //记录执行日志
         $endEime = time();
         $schedulingLogModel->start_time = $startTime;
@@ -75,7 +77,7 @@ class Index extends BaseController
             ->order('next_time', 'ASC')->findOrEmpty();
         //检测是否还有需要执行的任务
         if ($cron->isEmpty()) {
-            return;
+            return false;
         }
         //记录cron数量
         $this->cronCount += 1;
@@ -89,7 +91,6 @@ class Index extends BaseController
         ]);
         // 执行
         $cron->runAction();
-        // 下一个
-        $this->runCron();
+        return true;
     }
 }
