@@ -29,8 +29,8 @@ abstract class CronScript
      *
      * @return array
      */
-    static function createReturn($status, $data = [], $msg = '', $code = null, $url = '')
+    static function createReturn($status, $data = [], $msg = '', $code = null)
     {
-        return createReturn($status, $data, $msg, $code, $url);
+        return createReturn($status, $data, $msg, $code);
     }
 }

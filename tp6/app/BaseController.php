@@ -99,11 +99,10 @@ abstract class BaseController
      * @param  array  $data  返回数据
      * @param  string  $msg  返回提示
      * @param  string  $code  错误码
-     * @param  string  $url  下一跳地址
      *
      * @return array
      */
-    static function createReturn($status, $data = [], $msg = '', $code = null, $url = '')
+    static function createReturn($status, $data = [], $msg = '', $code = null)
     {
         //默认成功则为200 错误则为400
         if (empty($code)) {
@@ -114,7 +113,6 @@ abstract class BaseController
             'code'   => $code,
             'data'   => $data,
             'msg'    => $msg,
-            'url'    => $url,
         ];
     }
 
@@ -124,13 +122,12 @@ abstract class BaseController
      * @param  array  $data  返回数据
      * @param  string  $msg  返回提示
      * @param  string  $code  错误码
-     * @param  string  $url  下一跳地址
      *
      * @return Json
      */
-    static function makeJsonReturn($status, $data = [], $msg = '', $code = null, $url = ''): Json
+    static function makeJsonReturn($status, $data = [], $msg = '', $code = null): Json
     {
-        return json(self::createReturn($status, $data, $msg, $code, $url));
+        return json(self::createReturn($status, $data, $msg, $code));
     }
 
     /**
@@ -141,9 +138,9 @@ abstract class BaseController
      * @param  string  $url
      * @return Json
      */
-    static function returnSuccessJson(array $data = [], string $msg = '', $code = null, string $url = ''): Json
+    static function returnSuccessJson(array $data = [], string $msg = '', $code = null): Json
     {
-        return self::makeJsonReturn(true, $data, $msg, $code, $url);
+        return self::makeJsonReturn(true, $data, $msg, $code);
     }
 
     /**
@@ -154,8 +151,8 @@ abstract class BaseController
      * @param  string  $url
      * @return Json
      */
-    static function returnErrorJson(string $msg = '', array $data = [], $code = null, string $url = ''): Json
+    static function returnErrorJson(string $msg = '', array $data = [], $code = null): Json
     {
-        return self::makeJsonReturn(false, $data, $msg, $code, $url);
+        return self::makeJsonReturn(false, $data, $msg, $code);
     }
 }
