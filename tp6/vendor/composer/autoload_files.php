@@ -19,8 +19,8 @@ return array(
     'b067bc7112e384b61c701452d53a14a8' => $vendorDir . '/mtdowling/jmespath.php/src/JmesPath.php',
     '25072dd6e2470089de65ae7bf11d3109' => $vendorDir . '/symfony/polyfill-php72/bootstrap.php',
     '66453932bc1be9fb2f910a27947d11b6' => $vendorDir . '/alibabacloud/client/src/Functions.php',
-    'f0e7e63bbb278a92db02393536748c5f' => $vendorDir . '/overtrue/wechat/src/Kernel/Support/Helpers.php',
-    '6747f579ad6817f318cc3a7e7a0abb93' => $vendorDir . '/overtrue/wechat/src/Kernel/Helpers.php',
     '667aeda72477189d0494fecd327c3641' => $vendorDir . '/symfony/var-dumper/Resources/functions/dump.php',
     'cc56288302d9df745d97c934d6a6e5f0' => $vendorDir . '/topthink/think-queue/src/common.php',
+    '313a9b01f294d730dfc8ff43b9e56416' => $vendorDir . '/w7corp/easywechat/src/Kernel/Support/Helpers.php',
+    '8cfe2b61cc956a1edbaf214308e8c9a1' => $vendorDir . '/w7corp/easywechat/src/Kernel/Helpers.php',
 );

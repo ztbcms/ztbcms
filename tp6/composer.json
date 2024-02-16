@@ -28,7 +28,7 @@
         "topthink/think-queue": "^3.0",
         "aliyuncs/oss-sdk-php": "^2.4",
         "alibabacloud/client": "^1.5",
-        "overtrue/wechat": "^4.2",
+        "w7corp/easywechat": "^4.6",
         "phpmailer/phpmailer": "^6.3",
         "guzzlehttp/guzzle": "^7.3",
         "topthink/think-migration": "^3.0",
