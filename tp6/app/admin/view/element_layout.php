@@ -29,9 +29,9 @@
 
     <!--  Element UI START  -->
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="/statics/admin/theme/elementui/elementui_2.13.2/index.css">
+    <link rel="stylesheet" href="/statics/admin/theme/elementui/2.15.14/index.css">
     <!-- 引入组件库 -->
-    <script src="/statics/admin/theme/elementui/elementui_2.13.2/index.js"></script>
+    <script src="/statics/admin/theme/elementui/2.15.14/index.js"></script>
     <!--  Element UI END  -->
     <style>
         /* vue相关  */
