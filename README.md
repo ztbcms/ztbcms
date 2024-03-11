@@ -6,7 +6,7 @@
 
 High-performance, modular and rapid development framework based on ThinkPHP
  
-[ZTBCMS在线文档](https://www.ztbcms.com) | [ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template) | [PHP之道](http://www.phptherightway.com)
+相关文档：[ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template) | [PHP之道](http://www.phptherightway.com)
 
 ## 主要特性
 
@@ -20,8 +20,9 @@ High-performance, modular and rapid development framework based on ThinkPHP
 
 ## 设计理念
 
-- 延续Thinkphp『大道至简』的设计
-- 页面即使用手册，注释即开发文档
+- 延续 ThinkPHP『大道至简』的设计
+- 约定大于配置，上手即用
+- 页面即使用手册，尽量减少文档的编写
 
 ## 环境要求
 
@@ -42,15 +43,6 @@ $ git clone --branch master https://github.com/ztbcms/ztbcms.git
 ```shell
 $ git clone --branch develop https://github.com/ztbcms/ztbcms.git
 ```
-
-
-## 版本描述
-
-版本号采用[语义化版本semver](https://semver.org/lang/zh-CN/), 采用`MAJOR.MINOR.PATCH`来描述版本
-
-- 主版本号 MAJOR 当你做了不兼容的 API 修改
-- 次版本号 MINOR  当你做了向下兼容的功能性新增
-- 修订号 PATCH 当你做了向下兼容的问题修正
 
 ## License 
 

@@ -9,3 +9,7 @@
 
 图片裁剪插件，来源地址：https://github.com/fengyuanchen/cropperjs/tree/master/dist
 
+## qrcode.js
+
+生成 qrcode 。来源：https://github.com/davidshimjs/qrcodejs
+
