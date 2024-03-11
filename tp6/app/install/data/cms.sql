@@ -787,3 +787,13 @@ CREATE TABLE `cms_user_operate_log`
   `create_time` int(11) NOT NULL COMMENT '操作时间',
     PRIMARY KEY (`id`)
 ) ENGINE = MyISAM CHARACTER SET = utf8mb4 COMMENT='用户操作日志';
+
+DROP TABLE IF EXISTS `cms_kv`;
+CREATE TABLE `cms_kv`
+(
+    `key`         varchar(256) NOT NULL,
+    `value`       text         NOT NULL,
+    `create_time` int(11) NOT NULL,
+    `update_time` int(11) NOT NULL,
+    PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
