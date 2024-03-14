@@ -43,4 +43,16 @@ class ArrayHelper
         }
         return $result;
     }
+
+    /**
+     * 对数组按指定字段升序排序
+     * @param $data
+     * @param $key
+     * @return void
+     */
+    static function sortByKey(&$data, $key) {
+        usort($data, function($a, $b) use ($key) {
+            return $a[$key] <=> $b[$key];
+        });
+    }
 }
