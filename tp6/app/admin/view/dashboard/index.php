@@ -66,24 +66,30 @@
                     <el-popover
                         class="message-list"
                         placement="bottom"
-                        width="400"
+                        width="300"
                         trigger="hover"
                         v-model="showMsg"
                     >
-                        <div v-for="item in msgList" style="margin-bottom: 10px;" @click="readMsg(item.id)" >
+                        <div style="padding-bottom: 8px;border-bottom: 1px solid gainsboro;">
+                            <span>实时拉取通知</span>
+                            <el-switch v-model="loopPullMsg"
+                                       @change="onLoopPullMsgChange">
+                            </el-switch>
+                        </div>
+                        <div v-for="item in msgList" @click="readMsg(item.id)" >
                             <div class="message-item">
                                 <i class="el-icon-s-opportunity" style="color: red;" v-if="item.read_status == 0"></i>
                                 <span>{{item.content | ellipsis}}</span>
                             </div>
                         </div>
-                        <div style="text-align: center" @click="toShowMsg">
+                        <div style="text-align: center; padding-top: 8px;" @click="toShowMsg">
                             <a style="color:#000;" href="javascript:void(0)">查看所有通知 >></a>
                         </div>
-                        <div slot="reference" @click="doShowMsg" style="display: inline-block;margin-right: 20px;">
+                        <div slot="reference" style="display: inline-block;margin-right: 20px;">
                             <span style="position: relative">
                                 <i class="el-icon-bell" style="font-size: 22px;"></i>
                             </span>
-                            <el-badge class="mark" :value="msgListTotal" v-if="msgListTotal > 0" style="position: absolute;"/>
+                            <span v-if="msgList.length > 0" style="width: 6px;height: 6px;border-radius: 10px;background-color: #F56C6C;position: absolute;"></>
                         </div>
                     </el-popover>
 
@@ -495,11 +501,21 @@
     .el-dropdown-link {
         cursor: pointer;
     }
-    .message-list{
+    .message-list {
         margin-right: 4px;
     }
+    .message-item:first-child {
+        padding-top: 12px;
+    }
+
+    .message-item {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
     .message-item:hover {
         color: #66b1ff;
+
     }
     /*顶栏消息部分 END*/
 </style>
@@ -534,7 +550,7 @@
             // 信息列表
             msgList: [],
             showMsg: false,
-            msgListTotal: 0
+            loopPullMsg: false,
         },
         filters: {
             ellipsis: function(value) {
@@ -872,21 +888,9 @@
                 }).then(function(res){
                     if (res.status) {
                         that.msgList = res.data.items
-                        that.msgListTotal = res.data.total_items
-                        if(res.data.total_items > 0){
-                        }else{
-                            that.showMsg = false
-                        }
+                        that.showMsg = that.msgList.length > 0
                     }
                 })
-            },
-            // 显示消息框
-            doShowMsg:function(){
-                if(this.msgListTotal > 0){
-                    this.showMsg = !this.showMsg
-                }else{
-                    this.showMsg = false
-                }
             },
             // 已读信息
             readMsg:function (id) {
@@ -907,6 +911,10 @@
             toShowMsg:function () {
                 this.openNewFrame('所有消息', "{:api_url('/admin/AdminMessage/index')}");
                 this.showMsg = false
+            },
+            // 长轮训消息设置变动
+            onLoopPullMsgChange: function () {
+                localStorage.setItem('__ADMIN_LOOP_PULL_MSG', this.loopPullMsg ? '1' : '0')
             }
         },
         computed: {
@@ -935,11 +943,17 @@
             this.getMenuList()
             this.getAdminUserInfo()
 
-            // 轮询消息
-            this.getAdminMessage()
-            setInterval(function () {
+            setTimeout(function () {
+                // 拉取最新通知
                 that.getAdminMessage()
-            }, 15*1000)
+                // 轮询消息
+                that.loopPullMsg = localStorage.getItem('__ADMIN_LOOP_PULL_MSG') === '1'
+                setInterval(function () {
+                    if (that.loopPullMsg) {
+                        that.getAdminMessage()
+                    }
+                }, 15 * 1000)
+            }, 2 * 1000)
         },
         unmount: function(){
             this.unregisterEvent()
