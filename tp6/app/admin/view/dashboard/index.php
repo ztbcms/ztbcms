@@ -7,14 +7,14 @@
             <el-col class="scroll-Y">
                 <!-- 左侧菜单  -->
                 <el-menu
-                    default-active="2"
-                    class="el-menu-vertical-demo"
-                    text-color="rgb(191, 203, 217)"
-                    active-text-color="#409eff"
-                    :collapse="isnavHid"
-                    :default-active="tagData.defaultActive"
-                    :class="{hid : minHid}"
-                    :unique-opened="true"
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        text-color="rgb(191, 203, 217)"
+                        active-text-color="#409eff"
+                        :collapse="isnavHid"
+                        :default-active="tagData.defaultActive"
+                        :class="{hid : minHid}"
+                        :unique-opened="true"
                 >
                     <div v-for="(item, index) in navData" :key="item.id">
                         <el-menu-item v-if="item.items.length === 0" :index="item.id" @click="goUrl([item.name], item)">
@@ -27,7 +27,8 @@
                                 <span class="title">{{item.name}}</span>
                             </template>
                             <div v-for="(val, j) in item.items" :key="val.id">
-                                <el-menu-item v-if="val.items.length === 0" :index="val.id" @click="goUrl([item.name, val.name], val)">
+                                <el-menu-item v-if="val.items.length === 0" :index="val.id"
+                                              @click="goUrl([item.name, val.name], val)">
                                     <template slot="title">
                                         <span class="title">{{val.name}}</span>
                                     </template>
@@ -36,7 +37,8 @@
                                     <template slot="title">
                                         <span class="title">{{val.name}}</span>
                                     </template>
-                                    <el-menu-item v-for="(sub, v) in val.items" :key="sub.id" :index="sub.id" @click="goUrl([item.name, val.name, sub.name], sub)">
+                                    <el-menu-item v-for="(sub, v) in val.items" :key="sub.id" :index="sub.id"
+                                                  @click="goUrl([item.name, val.name, sub.name], sub)">
                                         <template slot="title">
                                             <span class="title">{{sub.name}}</span>
                                         </template>
@@ -64,11 +66,11 @@
                 <div class="nav_right">
                     <!--  消息列表 -->
                     <el-popover
-                        class="message-list"
-                        placement="bottom"
-                        width="300"
-                        trigger="hover"
-                        v-model="showMsg"
+                            class="message-list"
+                            placement="bottom"
+                            width="300"
+                            trigger="hover"
+                            v-model="showMsg"
                     >
                         <div style="padding-bottom: 8px;border-bottom: 1px solid gainsboro;">
                             <span>实时拉取通知</span>
@@ -76,7 +78,7 @@
                                        @change="onLoopPullMsgChange">
                             </el-switch>
                         </div>
-                        <div v-for="item in msgList" @click="readMsg(item.id)" >
+                        <div v-for="item in msgList" @click="readMsg(item.id)">
                             <div class="message-item">
                                 <i class="el-icon-s-opportunity" style="color: red;" v-if="item.read_status == 0"></i>
                                 <span>{{item.content | ellipsis}}</span>
@@ -89,19 +91,21 @@
                             <span style="position: relative">
                                 <i class="el-icon-bell" style="font-size: 22px;"></i>
                             </span>
-                            <span v-if="msgList.length > 0" style="width: 6px;height: 6px;border-radius: 10px;background-color: #F56C6C;position: absolute;"></>
+                            <span v-if="msgList.length > 0"
+                                  style="width: 6px;height: 6px;border-radius: 10px;background-color: #F56C6C;position: absolute;"></span>
                         </div>
                     </el-popover>
 
                     <!--  操作下拉框 -->
                     <el-dropdown>
-                        <span class="el-dropdown-link" >
+                        <span class="el-dropdown-link">
                             <template v-if="adminUserInfo && adminUserInfo.name">
-                            {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{ adminUserInfo.name }}（{{ adminUserInfo.role_name }}）<i
+                                        class="el-icon-arrow-down el-icon--right"></i>
                             </template>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-if="hasPermission_cleanCache" >
+                            <el-dropdown-item v-if="hasPermission_cleanCache">
                                 <span @click="click_cleancache">清理缓存</span>
                             </el-dropdown-item>
                             <el-dropdown-item>
@@ -117,13 +121,13 @@
             <div class="tag" ref="tagScroll">
                 <div class="list" ref="tagList">
                     <div
-                        class="tag-item"
-                        :class="{show : item.url === iframeUrl}"
-                        v-for="(item, index) in tags"
-                        :key="index"
-                        :ref="'tag-' + index"
-                        @click="clickTag(index)"
-                        @contextmenu.prevent="openContextMenu($event, item, index)"
+                            class="tag-item"
+                            :class="{show : item.url === iframeUrl}"
+                            v-for="(item, index) in tags"
+                            :key="index"
+                            :ref="'tag-' + index"
+                            @click="clickTag(index)"
+                            @contextmenu.prevent="openContextMenu($event, item, index)"
                     >
                         <div class="chebox"></div>
                         {{item.name}}
@@ -140,7 +144,8 @@
         </div>
         <section class="app-main">
             <template v-for="(url, index) in iframeUrls">
-                <iframe :id="'iframe-'+index" :src="url" :key="url" frameborder="0" class="iframe" :style="{display: iframeUrl == url ? 'block': 'none'}"></iframe>
+                <iframe :id="'iframe-'+index" :src="url" :key="url" frameborder="0" class="iframe"
+                        :style="{display: iframeUrl == url ? 'block': 'none'}"></iframe>
             </template>
         </section>
     </div>
@@ -148,7 +153,7 @@
 </div>
 
 <style>
-    [v-cloak]{
+    [v-cloak] {
         display: none;
     }
 
@@ -262,18 +267,19 @@
         overflow: hidden;
     }
 
-    .el-submenu__title .title{
+    .el-submenu__title .title {
         color: rgb(191, 203, 217);
     }
 
     .el-menu--collapse {
         width: 36px;
     }
-    .el-menu--collapse.hid{
+
+    .el-menu--collapse.hid {
         width: 0px;
     }
 
-    .el-menu--collapse .el-submenu__title>span,
+    .el-menu--collapse .el-submenu__title > span,
     .el-menu--collapse .el-submenu__title .el-icon-arrow-right {
         height: 0;
         width: 0;
@@ -368,7 +374,7 @@
         cursor: pointer;
     }
 
-    .navbar .nav_right{
+    .navbar .nav_right {
         display: flex;
         align-items: center;
         height: 50px;
@@ -417,15 +423,18 @@
         border-radius: 4px;
         align-items: center;
     }
-    .tag-item.show{
+
+    .tag-item.show {
         background-color: #2196f3;
         color: #fff;
         border-color: #2196f3;
     }
-    .tag-item.show .chebox{
+
+    .tag-item.show .chebox {
         display: inline-block;
     }
-    .tag-item .chebox{
+
+    .tag-item .chebox {
         display: none;
         width: 8px;
         height: 8px;
@@ -433,7 +442,8 @@
         border-radius: 50%;
         margin-right: 8px;
     }
-    .tag-item .el-icon-close{
+
+    .tag-item .el-icon-close {
         width: 15px;
         height: 15px;
         text-align: center;
@@ -443,7 +453,8 @@
         margin-left: 8px;
         transition: .3s;
     }
-    .tag-item .el-icon-close:hover{
+
+    .tag-item .el-icon-close:hover {
         background-color: #b4bccc;
         color: #fff;
     }
@@ -480,6 +491,7 @@
             margin-left: 0 !important;
             display: block;
         }
+
         .mask {
             z-index: 10 !important;
         }
@@ -489,9 +501,11 @@
         .centent {
             margin-left: 36px;
         }
+
         .sidebar-container {
             left: 0;
         }
+
         .mask {
             z-index: -10;
         }
@@ -501,9 +515,11 @@
     .el-dropdown-link {
         cursor: pointer;
     }
+
     .message-list {
         margin-right: 4px;
     }
+
     .message-item:first-child {
         padding-top: 12px;
     }
@@ -517,6 +533,7 @@
         color: #66b1ff;
 
     }
+
     /*顶栏消息部分 END*/
 </style>
 
@@ -531,7 +548,7 @@
             navData: [],
             // 当前iframe内容页
             iframeUrl: '',
-            iframeUrls:[],
+            iframeUrls: [],
             // 标签列表
             tags: [
                 // {name: '概括', url: 'http://ztbweb.cn', breadcrumb: ['概括'], defaultActive: '1Admin'}
@@ -553,7 +570,7 @@
             loopPullMsg: false,
         },
         filters: {
-            ellipsis: function(value) {
+            ellipsis: function (value) {
                 if (!value) return "";
                 if (value.length > 70) {
                     return value.slice(0, 70) + "...";
@@ -563,11 +580,11 @@
         },
         methods: {
             // url点击事件
-            goUrl: function(breadcrumb, data) {
+            goUrl: function (breadcrumb, data) {
                 var that = this
                 this.iframeUrl = data.url
                 // 判断tags里面是否包含了当前点击的url
-                var tagIndex = this.tags.findIndex(function(item) {
+                var tagIndex = this.tags.findIndex(function (item) {
                     return item.url === data.url
                 })
                 if (tagIndex === -1) {
@@ -579,7 +596,7 @@
                         breadcrumb: breadcrumb,
                         defaultActive: data.id
                     })
-                    setTimeout(function() {
+                    setTimeout(function () {
                         var tagList = that.$refs.tagList
                         that.setTagScroll(tagList.clientWidth)
                     }, 100)
@@ -599,24 +616,24 @@
                 }
             },
             // 点击tag
-            clickTag: function(index) {
+            clickTag: function (index) {
                 var tag = this.tags[index]
-                if(tag){
+                if (tag) {
                     this.iframeUrl = tag.url
                 } else {
                     this.iframeUrl = ''
                 }
             },
             // tag删除事件
-            closeTag: function(index) {
+            closeTag: function (index) {
                 var tag = this.tags[index]
                 this.tags.splice(index, 1)
                 this.iframeUrls.splice(index, 1)
                 // 判断当前显示的页面是不是要被删除的页面
                 if (this.iframeUrl === tag.url) {
                     // tag定位到前一个
-                    if(index > 0){
-                        this.clickTag(index-1)
+                    if (index > 0) {
+                        this.clickTag(index - 1)
                     } else {
                         this.iframeUrl = ''
                     }
@@ -624,12 +641,12 @@
                     this.setTagScroll(tagList.clientWidth)
                 }
             },
-            setTagScroll: function(x) {
+            setTagScroll: function (x) {
                 var container = this.$refs.tagScroll
                 container.scrollTo(x, 0)
             },
             // 弹出左侧导航icon,小屏和大屏区分操作
-            navShow: function() {
+            navShow: function () {
                 this.isnavHid = !this.isnavHid
                 if (this.windowSize <= 960) {
                     this.minHid = !this.minHid
@@ -641,7 +658,7 @@
                 this.isnavHid = !this.isnavHid
             },
             // 判断当前浏览器的大小做左边导航的适配
-            onresize: function() {
+            onresize: function () {
                 var clientWidth = document.documentElement.clientWidth
                 if (clientWidth <= 960) {
                     this.minHid = true
@@ -658,7 +675,7 @@
                 }
             },
             // 右键弹出菜单
-            openContextMenu: function(e, data, index) {
+            openContextMenu: function (e, data, index) {
                 this.temData = data
                 this.tempIndex = index
                 var navWidth = this.$refs.nav.offsetWidth
@@ -669,56 +686,56 @@
                 this.$refs.contextmenu.style.top = pageY + 'px'
             },
             // 刷新
-            refreshTag: function(index) {
+            refreshTag: function (index) {
                 index = index || 0
-                if(index >= 0){
+                if (index >= 0) {
                     var iframeUrl = this.iframeUrls[index]
-                    document.getElementById('iframe-'+index).contentWindow.location.href = iframeUrl
+                    document.getElementById('iframe-' + index).contentWindow.location.href = iframeUrl
                 }
             },
             // 关闭其他
-            closeOtherTag: function(index) {
+            closeOtherTag: function (index) {
                 var that = this
-                if(this.iframeUrl !== this.tags[index].url){
+                if (this.iframeUrl !== this.tags[index].url) {
                     this.iframeUrl = this.tags[index].url
                 }
                 this.tags = [this.tags[index]]
                 this.iframeUrls = [this.iframeUrls[index]]
             },
             // 关闭全部
-            closeAllTag: function() {
+            closeAllTag: function () {
                 this.iframeUrl = ''
                 this.tags = []
                 this.iframeUrls = []
             },
             // 初始化
-            init: function(){
+            init: function () {
                 var that = this
-                window.onresize = function() {
+                window.onresize = function () {
                     that.onresize()
                 }
                 // 关闭tag上下文菜单
-                document.onclick = function(){
+                document.onclick = function () {
                     that.$refs.contextmenu.style.display = 'none'
                 }
                 // tag的滚动事件
                 var container = this.$refs.tagScroll
                 var isFF = /FireFox/i.test(navigator.userAgent)
                 if (!isFF) {
-                    container.addEventListener("mousewheel", function(e) {
+                    container.addEventListener("mousewheel", function (e) {
                         var v = -e.wheelDelta / 2
                         container.scrollLeft += v
                         e.preventDefault()
                     }, false)
                 } else {
-                    container.addEventListener("DOMMouseScroll", function(e) {
+                    container.addEventListener("DOMMouseScroll", function (e) {
                         container.scrollLeft += e.detail * 80
                         e.preventDefault()
                     }, false)
                 }
             },
             // 获取菜单
-            getMenuList: function() {
+            getMenuList: function () {
                 var that = this
                 var PermissionInLoading = this.$loading({
                     lock: true,
@@ -728,28 +745,28 @@
                     url: "{:api_url('/admin/AdminApi/getPermissionInfo')}",
                     method: 'get',
                     params: {}
-                }).then(function(res) {
+                }).then(function (res) {
                     PermissionInLoading.close()
                     if (res.status) {
                         that.roleAccessList = res.data.roleAccessList
                         var _menuList = res.data.menuList
-                        for(var i=0;i<_menuList.length;i++){
+                        for (var i = 0; i < _menuList.length; i++) {
                             // 默认icon
                             var icon = _menuList[i]['icon'] || 'icon-dashboard'
-                            _menuList[i]['icon_html'] = ' <i class="iconfont '+ icon +'"></i>'
+                            _menuList[i]['icon_html'] = ' <i class="iconfont ' + icon + '"></i>'
                         }
                         that.navData = _menuList
-                        if(_menuList && _menuList[0]){
+                        if (_menuList && _menuList[0]) {
                             var menu1 = _menuList[0]
-                            if(menu1['items'].length === 0){
+                            if (menu1['items'].length === 0) {
                                 that.goUrl([menu1['name']], menu1)
                             } else {
                                 var menu2 = menu1['items'][0]
-                                if(menu2['items'].length === 0){
+                                if (menu2['items'].length === 0) {
                                     that.goUrl([menu1['name'], menu2['name']], menu2)
                                 } else {
                                     var menu3 = menu2['items'][0]
-                                    if(menu2['items'].length === 0){
+                                    if (menu2['items'].length === 0) {
                                         that.goUrl([menu1['name'], menu2['name'], menu3['name']], menu3)
                                     }
                                 }
@@ -763,7 +780,7 @@
             //注册事件
             registerEvent: function () {
                 window.addEventListener('adminOpenNewFrame', this.handleEvent_adminOpenNewFrame.bind(this))
-                window.__adminOpenNewFrame = function(config) {
+                window.__adminOpenNewFrame = function (config) {
                     var title = config.title || ''
                     var url = config.url || ''
                     var event = new CustomEvent('adminOpenNewFrame', {
@@ -786,7 +803,7 @@
                     url: "{:api_url('/admin/AdminApi/getAdminUserInfo')}",
                     method: 'get',
                     params: {}
-                }).then(function(res){
+                }).then(function (res) {
                     if (res.status) {
                         that.adminUserInfo.name = res.data.username
                         that.adminUserInfo.role_name = res.data.role_name
@@ -800,7 +817,7 @@
              * @param title 标题
              * @param url 对应的URL
              */
-            openNewFrame: function(title, url) {
+            openNewFrame: function (title, url) {
                 this.goUrl([title], {
                     name: title,
                     url: url,
@@ -815,7 +832,7 @@
              * @param access_router 访问的路由，格式必须是：/module/controller/action   (与后台的权限配置时一致的)
              * @returns {boolean}
              */
-            hasRolePermission: function(access_router) {
+            hasRolePermission: function (access_router) {
                 var roleAccessList = this.roleAccessList
                 var access_router_arr = access_router.split('/')
 
@@ -852,20 +869,20 @@
                 return false
             },
             // 点击清理缓存
-            click_cleancache: function(){
+            click_cleancache: function () {
                 this.openNewFrame('缓存更新', "{:api_url('/admin/cache/cache')}")
             },
             // 点击退出
-            click_logout: function(){
+            click_logout: function () {
                 var that = this
                 $.ajax({
                     url: "{:api_url('/admin/Login/doLogout')}",
                     method: 'get',
                     params: {}
-                }).then(function(res){
+                }).then(function (res) {
                     if (res.status) {
                         layer.msg(res.msg)
-                        setTimeout(function(){
+                        setTimeout(function () {
                             window.location.replace(res.data.redirect)
                         }, 700)
                     } else {
@@ -874,7 +891,7 @@
                 })
             },
             // 获取后台未读消息
-            getAdminMessage: function(){
+            getAdminMessage: function () {
                 window.__GLOBAL_ELEMENT_LOADING_INSTANCE_ENABLE = false;
                 var that = this
                 $.ajax({
@@ -885,7 +902,7 @@
                         limit: 10,
                         read_status: 0
                     }
-                }).then(function(res){
+                }).then(function (res) {
                     if (res.status) {
                         that.msgList = res.data.items
                         that.showMsg = that.msgList.length > 0
@@ -893,7 +910,7 @@
                 })
             },
             // 已读信息
-            readMsg:function (id) {
+            readMsg: function (id) {
                 var that = this;
                 $.ajax({
                     url: "{:api_url('/admin/AdminMessage/readMsg')}",
@@ -901,26 +918,26 @@
                     data: {
                         ids: [id]
                     }
-                }).then(function(res){
+                }).then(function (res) {
                     if (res.status) {
                         that.getAdminMessage()
                     }
                 })
             },
             // 跳转到消息列表
-            toShowMsg:function () {
+            toShowMsg: function () {
                 this.openNewFrame('所有消息', "{:api_url('/admin/AdminMessage/index')}");
                 this.showMsg = false
             },
             // 长轮训消息设置变动
             onLoopPullMsgChange: function () {
                 localStorage.setItem('__ADMIN_LOOP_PULL_MSG', this.loopPullMsg ? '1' : '0')
-            }
+            },
         },
         computed: {
-            tagData: function() {
+            tagData: function () {
                 var that = this
-                var data = this.tags.find(function(item) {
+                var data = this.tags.find(function (item) {
                     return item.url === that.iframeUrl
                 }) || {}
                 return {
@@ -929,14 +946,14 @@
                 }
             },
             // 是否有清理缓存权限
-            hasPermission_cleanCache: function() {
+            hasPermission_cleanCache: function () {
                 return this.hasRolePermission('/admin/Cache/cache')
             }
         },
-        created :function() {
+        created: function () {
             this.onresize()
         },
-        mounted :function() {
+        mounted: function () {
             var that = this
             this.init()
             this.registerEvent()
@@ -955,7 +972,7 @@
                 }, 15 * 1000)
             }, 2 * 1000)
         },
-        unmount: function(){
+        unmount: function () {
             this.unregisterEvent()
         }
     })
