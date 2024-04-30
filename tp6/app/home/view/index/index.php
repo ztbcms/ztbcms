@@ -35,9 +35,8 @@
 	width: 100%;
 ">
         <p style="width: 100%;display: block;text-align: center;">
-            Copyright 2015-<?php echo date("Y") ?>
-            <span>|</span>
-            <a href="https://beian.miit.gov.cn/" style="color: white;text-decoration: none;">粤ICP备15081885号</a>
+            Copyright 2015-<?php echo date("Y"); ?>
+
             {if !$enable_install }
             <span>|</span>
             <a title="管理后台" href="{:api_url('/admin/login/index')}" style="color: white;text-decoration: none;">管理后台</a>

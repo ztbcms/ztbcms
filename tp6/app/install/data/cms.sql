@@ -791,7 +791,7 @@ CREATE TABLE `cms_user_operate_log`
 DROP TABLE IF EXISTS `cms_kv`;
 CREATE TABLE `cms_kv`
 (
-    `key`         varchar(256) NOT NULL,
+    `key`         varchar(255) NOT NULL,
     `value`       text         NOT NULL,
     `create_time` int(11) NOT NULL,
     `update_time` int(11) NOT NULL,
