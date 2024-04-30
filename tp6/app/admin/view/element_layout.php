@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>{$_Config['sitename']?$_Config['sitename'].'-':''}系统后台</title>
+    <title>{$_Config['sitename'] ?? ''}</title>
     <!-- ztbcms 默认 iconfont -->
     <link rel="stylesheet" href="/statics/admin/ztbcms/iconfont/iconfont.css">
     <!-- jQuery 2.x -->
@@ -37,9 +37,6 @@
         /* vue相关  */
         [v-cloak] {
             display: none;
-        }
-        * {
-            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
         }
     </style>
     <script>
