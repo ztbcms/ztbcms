@@ -1,13 +1,10 @@
 <?php
+
 /**
- * Created by PhpStorm.
  * User: zhlhuang
- * Date: 2020-09-08
- * Time: 09:18.
  */
 
 namespace app\common\service;
-
 
 class BaseService
 {
@@ -33,15 +30,16 @@ class BaseService
      * 创建统一的Service返回结果
      *
      * @param boolean $status 返回状态
-     * @param array   $data   返回数据
+     * @param array|null   $data   返回数据
      * @param string  $msg    返回提示
-     * @param string  $code   错误码
+     * @param string|int|null  $code   错误码
      *
      * @return array
      */
-    static function createReturn($status, $data = [], $msg = '', $code = null) {
+    public static function createReturn($status, $data = [], $msg = '', $code = null)
+    {
         //默认成功则为200 错误则为400
-        if(empty($code)){
+        if (empty($code)) {
             $code = $status ? 200 : 400;
         }
         return [
@@ -64,7 +62,8 @@ class BaseService
      *
      * @return array
      */
-    static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages) {
+    public static function createReturnList($status, $items, $page, $limit, $total_items, $total_pages)
+    {
         $data = [
             'items'       => $items,
             'page'        => intval($page),
