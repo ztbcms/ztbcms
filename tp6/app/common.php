@@ -42,9 +42,9 @@ if (!function_exists('createReturn')) {
      * 统一返回的格式
      *
      * @param $status
-     * @param  array  $data  返回的内容
+     * @param  array|null  $data  返回的内容
      * @param  string  $msg  提示的文案
-     * @param  null  $code  状态值
+     * @param  string|int|null  $code  状态值
      *
      * @return array
      */
