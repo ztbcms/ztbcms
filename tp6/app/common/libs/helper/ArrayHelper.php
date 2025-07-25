@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author: jayinton
  */
@@ -50,9 +51,32 @@ class ArrayHelper
      * @param $key
      * @return void
      */
-    static function sortByKey(&$data, $key) {
-        usort($data, function($a, $b) use ($key) {
+    static function sortByKey(&$data, $key)
+    {
+        usort($data, function ($a, $b) use ($key) {
             return $a[$key] <=> $b[$key];
         });
+    }
+    /**
+     * 对一组数组根据指定的key进行去重
+     * 示例：（按 uid 去重）
+     * $a = [['uid'=>1,'name'=>'1'],['uid'=>2,'name'=>'2'],['uid'=>1,'name'=>'1']];
+     * array_unique_by_key($a, 'uid') ==> [['uid'=>1,'name'=>'1'],['uid'=>2,'name'=>'2']]
+     * @param mixed $list
+     * @param mixed $key
+     * @return array
+     */
+    static function array_unique_by_key($list, $key)
+    {
+        $map = [];
+        $result = [];
+        foreach ($list as $item) {
+            if (isset($map[$item[$key]])) {
+                continue;
+            }
+            $result[] = $item;
+            $map[$item[$key]] = true;
+        }
+        return $result;
     }
 }
