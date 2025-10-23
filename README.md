@@ -48,4 +48,3 @@ $ git clone --branch develop https://github.com/ztbcms/ztbcms.git
 
 [Apache License](LICENSE)
 
-## 支持/Support
