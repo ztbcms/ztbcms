@@ -94,11 +94,15 @@ class Dashboard extends AdminController
         if ($cron->isEmpty()) {
             return self::createReturn(false, [], '找不到计划任务ID：' . $cronId);
         }
-        $res = $cron->runAction();
-        if ($res['status']) {
-            return self::createReturn(true, [], '执行成功');
+        try {
+            $res = $cron->runAction();
+            if ($res['status']) {
+                return self::createReturn(true, [], '执行成功');
+            }
+            return self::createReturn(false, null, '执行失败');
+        } catch (\Throwable $e) {
+            return self::createReturn(false, null, '执行异常：' . $e->getMessage());
         }
-        return self::createReturn(false, null, '执行失败' );
     }
 
     /**
@@ -166,6 +170,7 @@ class Dashboard extends AdminController
                 //通过循环的类型和参数，获取下次执行时间和统一循环格式。
                 list($nextTime, $loopDaytime) = CronModel::getLoopData($loopType, $loopData);
                 $cronModel = CronModel::where('cron_id', $cronId)->findOrEmpty();
+                $isNew = $cronModel->isEmpty();
                 $cronModel->type = $request->post('form.type');
                 $cronModel->subject = $request->post('form.subject');
                 $cronModel->loop_type = $request->post('form.loop_type');
@@ -173,8 +178,14 @@ class Dashboard extends AdminController
                 $cronModel->isopen = $request->post('form.isopen');
                 $cronModel->loop_daytime = $loopDaytime;
                 $cronModel->next_time = $nextTime;
-                $cronModel->created_time = time();
-                $cronModel->modified_time = 0;
+                if ($isNew) {
+                    // 新增：设置创建时间
+                    $cronModel->created_time = time();
+                    $cronModel->modified_time = 0;
+                } else {
+                    // 编辑：保留原创建时间，更新修改时间
+                    $cronModel->modified_time = time();
+                }
                 if ($cronModel->save()) {
                     return self::createReturn(true, [], '操作成功');
                 } else {

@@ -14,7 +14,7 @@ if (!function_exists('build_url')) {
      */
     function build_url($string, array $vars = [], $suffix = false, $domain = true)
     {
-        if (strpos('/', $string) === 0) {
+        if (strpos($string, '/') === 0) {
             return url($string, $vars, $suffix, $domain)->build();
         }
         return url('/'.$string, $vars, $suffix, $domain)->build();

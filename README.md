@@ -48,24 +48,3 @@ $ git clone --branch develop https://github.com/ztbcms/ztbcms.git
 
 [Apache License](LICENSE)
 
-## 支持/Support
-
-<!--Support start-->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="middle">
-        <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
-          <img width="160px" src="https://i.loli.net/2019/12/05/rmZkUIH1Jgd2M5Y.png">
-        </a>
-      </td>
-      <td align="center" valign="middle">
-        <a href="https://www.jetbrains.com/?from=ztbcms" target="_blank">
-          <img width="160px" src="https://i.loli.net/2019/12/05/17jf9rLW8ixHdyD.png">
-        </a>
-      </td>
-    </tr>
-    <tr></tr>
-  </tbody>
-</table>
-<!--Support end-->
