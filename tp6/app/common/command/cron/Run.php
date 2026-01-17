@@ -42,47 +42,63 @@ class Run extends Command
             //设置指定文件的访问和修改时间
             touch($lockfile);
         }
-        $schedulingLogModel = new CronSchedulingLogModel();
-        $cron = $this->getNext(0);
-        $errorCount = 0;
-        $cronCount = 0;
-        $startTime = time();
-        while ($cron) {
-            list($day, $hour, $minute) = explode('-', $cron->loop_daytime);
-            //获取下一次执行时间
-            $nexttime = CronModel::getNextTime($cron->loop_type, $day, $hour, $minute);
-            //更新计划任务的下次执行时间
-            CronModel::where('cron_id', $cron->cron_id)->update([
-                'modified_time' => time(),
-                'next_time' => $nexttime
-            ]);
-            // 执行
-            $this->debugInfo('Processing:'.$cron->cron_file);
-            $res = $cron->runAction();
-            $this->debugInfo('Processed :'.$cron->cron_file);
-            if (!$res['status']) {
-                $errorCount++;
+
+        try {
+            $schedulingLogModel = new CronSchedulingLogModel();
+            $cron = $this->getNext(0);
+            $errorCount = 0;
+            $cronCount = 0;
+            $startTime = time();
+            while ($cron) {
+                $cronCount++;
+                list($day, $hour, $minute) = explode('-', $cron->loop_daytime);
+                //获取下一次执行时间
+                $nexttime = CronModel::getNextTime($cron->loop_type, $day, $hour, $minute);
+
+                try {
+                    //更新计划任务的下次执行时间
+                    CronModel::where('cron_id', $cron->cron_id)->update([
+                        'modified_time' => time(),
+                        'next_time' => $nexttime
+                    ]);
+                } catch (\Throwable $e) {
+                    // 数据库操作失败，记录错误并继续下一个任务
+                    $errorCount++;
+                    $this->debugInfo('Update failed for cron_id=' . $cron->cron_id . ': ' . $e->getMessage());
+                    $cron = $this->getNext($cron->cron_id);
+                    continue;
+                }
+
+                // 执行
+                $this->debugInfo('Processing:' . $cron->cron_file);
+                $res = $cron->runAction();
+                $this->debugInfo('Processed :' . $cron->cron_file);
+                if (!$res['status']) {
+                    $errorCount++;
+                }
+                // 下一个
+                $cron = $this->getNext($cron->cron_id);
             }
-            $cronCount++;
-            // 下一个
-            $cron = $this->getNext($cron->cron_id);
+            //记录执行日志
+            $endEime = time();
+            $schedulingLogModel->start_time = $startTime;
+            $schedulingLogModel->end_time = $endEime;
+            $schedulingLogModel->use_time = ($endEime - $startTime) <= 0 ? 1 : ($endEime - $startTime);
+            $schedulingLogModel->error_count = $errorCount;
+            $schedulingLogModel->cron_count = $cronCount;
+            $schedulingLogModel->save();
+            $output->writeln(json_encode([
+                'used_time' => $schedulingLogModel->use_time,
+                'msg' => 'Cron status: finish',
+                'total_amount' => $cronCount,
+                'error_amount' => $errorCount,
+            ]));
+        } finally {
+            // 确保解除锁定
+            if (file_exists($lockfile)) {
+                unlink($lockfile);
+            }
         }
-        //记录执行日志
-        $endEime = time();
-        $schedulingLogModel->start_time = $startTime;
-        $schedulingLogModel->end_time = $endEime;
-        $schedulingLogModel->use_time = ($endEime - $startTime) <= 0 ? 1 : ($endEime - $startTime);
-        $schedulingLogModel->error_count = $errorCount;
-        $schedulingLogModel->cron_count = $cronCount;
-        $schedulingLogModel->save();
-        // 解除锁定
-        unlink($lockfile);
-        $output->writeln(json_encode([
-            'used_time' => $schedulingLogModel->use_time,
-            'msg' => 'Cron status: finish',
-            'total_amount' => $cronCount,
-            'error_amount' => $errorCount,
-        ]));
     }
 
     function getNext($last_cron_id)
