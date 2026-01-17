@@ -39,30 +39,36 @@ class Index extends BaseController
             //设置指定文件的访问和修改时间
             touch($lockfile);
         }
-        // 不限制执行时间
-        set_time_limit(0);
-        ignore_user_abort(true);
-        $schedulingLogModel = new CronSchedulingLogModel();
-        //日志信息
-        $startTime = time();
-        //执行计划任务
-        do {
-            $next = $this->runCron();
-        } while ($next);
-        //记录执行日志
-        $endEime = time();
-        $schedulingLogModel->start_time = $startTime;
-        $schedulingLogModel->end_time = $endEime;
-        $schedulingLogModel->use_time = (int) ($endEime - $startTime);
-        $schedulingLogModel->error_count = $this->errorCount;
-        $schedulingLogModel->cron_count = $this->cronCount;
-        //记录执行日志
-        $schedulingLogModel->save();
-        // 解除锁定
-        unlink($lockfile);
-        $end_at = time();
-        $used_time = $end_at - $start_at;
-        return json(['used_time' => $used_time, 'msg' => 'Cron status: finish']);
+
+        try {
+            // 不限制执行时间
+            set_time_limit(0);
+            ignore_user_abort(true);
+            $schedulingLogModel = new CronSchedulingLogModel();
+            //日志信息
+            $startTime = time();
+            //执行计划任务
+            do {
+                $next = $this->runCron();
+            } while ($next);
+            //记录执行日志
+            $endEime = time();
+            $schedulingLogModel->start_time = $startTime;
+            $schedulingLogModel->end_time = $endEime;
+            $schedulingLogModel->use_time = (int) ($endEime - $startTime);
+            $schedulingLogModel->error_count = $this->errorCount;
+            $schedulingLogModel->cron_count = $this->cronCount;
+            //记录执行日志
+            $schedulingLogModel->save();
+            $end_at = time();
+            $used_time = $end_at - $start_at;
+            return json(['used_time' => $used_time, 'msg' => 'Cron status: finish']);
+        } finally {
+            // 确保解除锁定
+            if (file_exists($lockfile)) {
+                unlink($lockfile);
+            }
+        }
     }
 
     /**
@@ -84,13 +90,26 @@ class Index extends BaseController
         list($day, $hour, $minute) = explode('-', $cron['loop_daytime']);
         //获取下一次执行时间
         $nexttime = CronModel::getNextTime($cron->loop_type, $day, $hour, $minute);
-        //更新计划任务的下次执行时间
-        CronModel::where('cron_id', $cron->cron_id)->update([
-            'modified_time' => $_time,
-            'next_time'     => $nexttime
-        ]);
-        // 执行
-        $cron->runAction();
+
+        try {
+            //更新计划任务的下次执行时间
+            CronModel::where('cron_id', $cron->cron_id)->update([
+                'modified_time' => $_time,
+                'next_time'     => $nexttime
+            ]);
+        } catch (\Throwable $e) {
+            // 数据库操作失败，记录错误并继续下一个任务
+            $this->errorCount++;
+            \think\facade\Log::error("Cron update failed for cron_id={$cron->cron_id}: " . $e->getMessage());
+            return true;
+        }
+
+        // 执行任务并检查返回值
+        $result = $cron->runAction();
+        if ($result['status'] === false) {
+            $this->errorCount++;
+        }
+
         return true;
     }
 }
