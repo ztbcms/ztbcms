@@ -8,10 +8,11 @@
 
 ## 组件文档
 
-- [KV 组件](./KV组件.md) - 键值对存储组件，支持缓存和持久化
-- [Lock 组件](./Lock组件.md) - 基于 KV 组件的分布式锁实现
+- [KV 组件](./KVComponent.md) - 键值对存储组件，支持缓存和持久化
+- [Lock 组件](./LockComponent.md) - 基于 KV 组件的分布式锁实现
+- [队列任务组件](./QueueComponent.md) - 队列任务的使用方法和开发规范
 
 ## 开发指南
 
 - [起步](./GetStart.md)
-- [模块开发](./模块开发.md)
+- [模块开发](./ModuleDevelopment.md)
