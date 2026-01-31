@@ -83,6 +83,11 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             'Monolog\\' => 8,
         ),
+        'L' => 
+        array (
+            'League\\MimeTypeDetection\\' => 25,
+            'League\\Flysystem\\' => 17,
+        ),
         'J' => 
         array (
             'JmesPath\\' => 9,
@@ -137,11 +142,12 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         ),
         'think\\' => 
         array (
-            0 => __DIR__ . '/..' . '/topthink/think-helper/src',
-            1 => __DIR__ . '/..' . '/topthink/think-orm/src',
-            2 => __DIR__ . '/..' . '/topthink/think-queue/src',
-            3 => __DIR__ . '/..' . '/topthink/think-template/src',
-            4 => __DIR__ . '/..' . '/topthink/framework/src/think',
+            0 => __DIR__ . '/..' . '/topthink/framework/src/think',
+            1 => __DIR__ . '/..' . '/topthink/think-helper/src',
+            2 => __DIR__ . '/..' . '/topthink/think-orm/src',
+            3 => __DIR__ . '/..' . '/topthink/think-queue/src',
+            4 => __DIR__ . '/..' . '/topthink/think-template/src',
+            5 => __DIR__ . '/..' . '/topthink/think-filesystem/src',
         ),
         'clagiordano\\weblibs\\configmanager\\' => 
         array (
@@ -267,6 +273,14 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'League\\MimeTypeDetection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
+        ),
+        'League\\Flysystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
         'JmesPath\\' => 
         array (

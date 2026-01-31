@@ -35,7 +35,8 @@
         "predis/predis": "^2.0",
         "nesbot/carbon": "^2.66",
         "firebase/php-jwt": "^6.4",
-        "intervention/image": "^2.7"
+        "intervention/image": "^2.7",
+        "topthink/think-filesystem": "^2.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
