@@ -33,9 +33,7 @@ class LocalDriver extends UploadDriver
     function upload(AttachmentModel $attachmentModel)
     {
         $file = request()->file('file');
-        $url = Filesystem::disk(self::DISK_CONFIG)
-            ->getConfig()
-            ->get('url');
+        $url = Filesystem::getDiskConfig(self::DISK_CONFIG, 'url', '');
         $saveName = Filesystem::disk(self::DISK_CONFIG)
             ->putFile($attachmentModel->module, $file);
         $attachmentModel->filepath = $saveName;
