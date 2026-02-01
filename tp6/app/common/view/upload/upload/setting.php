@@ -1,7 +1,7 @@
 <div>
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <el-col :sm="8" :md="6">
+            <el-col :sm="12" :md="12">
                 <template>
                     <div>
                         <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
