@@ -26,6 +26,44 @@ class Upload extends AdminController
     }
 
     /**
+     * 获取上传用的临时 JWT Token
+     * 用于后台管理员上传文件时的身份识别
+     *
+     * @return \think\response\Json
+     */
+    function getUploadToken()
+    {
+        // 获取当前登录的管理员信息
+        $adminUserService = \app\admin\service\AdminUserService::getInstance();
+        $adminInfo = $adminUserService->getInfo();
+
+        if (empty($adminInfo)) {
+            return self::returnErrorJson('未登录');
+        }
+
+        // 支持自定义 user_type 和 user_id (用于测试)
+        $userType = request()->param('user_type', 'admin');
+        $userId = request()->param('user_id');
+
+        // 如果未传入 user_id,使用当前登录管理员的 ID
+        if (empty($userId)) {
+            $userId = $adminInfo['id'] ?? 0;
+        }
+
+        // 生成临时 JWT Token (有效期 1 小时)
+        $jwtService = new \app\common\service\jwt\JwtService();
+        $payload = [
+            'uid' => intval($userId),
+            'user_type' => $userType,
+            'exp' => time() + 3600, // 1小时后过期
+        ];
+
+        $token = $jwtService->createToken($payload);
+
+        return self::returnSuccessJson(['token' => $token]);
+    }
+
+    /**
      * 上传设置
      *
      * @param Request $request
