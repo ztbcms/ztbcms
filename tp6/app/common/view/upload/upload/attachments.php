@@ -4,11 +4,12 @@
 
             <el-form-item label="上传时间">
                 <el-date-picker
-                        v-model="searchForm.create_time"
-                        type="daterange"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期">
+                    v-model="searchForm.create_time"
+                    type="daterange"
+                    value-format="yyyy-MM-dd"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
 
@@ -33,8 +34,7 @@
             style="width: 100%"
             fit
             highlight-current-row
-            @selection-change="handleSelectionChange"
-        >
+            @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"
                 width="55"
@@ -51,7 +51,7 @@
             </el-table-column>
 
             <el-table-column
-                align="center"
+                align="left"
                 label="附件名称"
                 min-width="160">
                 <template slot-scope="scope">
@@ -60,10 +60,19 @@
             </el-table-column>
 
             <el-table-column
+                align="center"
+                label="存储驱动"
+                width="90">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.driver }}</span>
+                </template>
+            </el-table-column>
+
+            <el-table-column
                 align="left"
                 prop="grade_name"
                 label="附件大小"
-                min-width="60">
+                width="90">
                 <template slot-scope="scope">
                     <span>{{ scope.row.filesize }} KB</span>
                 </template>
@@ -71,10 +80,10 @@
 
 
             <el-table-column
-                    align="left"
-                    prop="grade_name"
-                    label="上传时间"
-                    min-width="120">
+                align="left"
+                prop="grade_name"
+                label="上传时间"
+                width="180">
                 <template slot-scope="scope">
                     <span>{{ scope.row.create_time }}</span>
                 </template>
@@ -82,7 +91,6 @@
 
 
             <el-table-column
-                min-width="190"
                 align="center"
                 fixed="right"
                 label="操作">
@@ -103,7 +111,7 @@
                 @current-change="currentPageChange"
                 layout="prev, pager, next"
                 :current-page="currentPage"
-                :page-count="totalCount"
+                :page-count="pageCount"
                 :page-size="pageSize"
                 :total="totalCount">
             </el-pagination>
@@ -113,14 +121,13 @@
 
 
 <script>
-    $(function () {
+    $(function() {
         new Vue({
             el: "#app",
             data: {
                 searchForm: {
                     create_time: [],
-                    filename: "",
-                    upload_time: [],
+                    filename: ""
                 },
                 defaultImage: '/statics/images/member/nophoto.gif',
                 multipleSelection: [],
@@ -132,60 +139,62 @@
                 currentPage: 1,
             },
             watch: {
-                "searchForm.tab": function () {
+                "searchForm.tab": function() {
                     this.getList()
                 }
             },
             computed: {
-                request_url: function () {
+                request_url: function() {
                     return "{:api_Url('/common/upload.Upload/attachments')}"
                 }
             },
-            mounted: function () {
+            mounted: function() {
                 this.getList()
             },
             methods: {
                 // 全选
-                handleSelectionChange: function (val) {
+                handleSelectionChange: function(val) {
                     this.multipleSelection = val;
                     var selectIds = [];
-                    this.multipleSelection.forEach(function (val) {
+                    this.multipleSelection.forEach(function(val) {
                         selectIds.push(val.aid);
                     })
                     this.selectIds = selectIds;
                 },
-                currentPageChange: function (e) {
+                currentPageChange: function(e) {
                     this.currentPage = e;
                     this.getList();
                 },
                 // 搜索
-                search: function () {
+                search: function() {
                     this.currentPage = 1;
                     this.getList();
                 },
                 // 获取列表
-                getList: function () {
+                getList: function() {
                     var that = this
                     var data = this.searchForm
                     data['_action'] = 'getList'
                     data['page'] = this.currentPage
                     data['limit'] = this.pageSize
-                    this.httpGet(this.request_url, data, function (res) {
+                    this.httpGet(this.request_url, data, function(res) {
                         that.lists = res.data.items;
                         that.totalCount = res.data.total_items;
-                        that.page = res.data.page;
-                        that.limit = res.data.limit;
-                        that.page_count = res.data.total_pages;
+                        that.currentPage = res.data.page;
+                        that.pageCount = res.data.total_pages;
                     })
                 },
                 // 预览
-                doPreview: function (url) {
+                doPreview: function(url) {
                     window.open(url)
                 },
                 // 删除单个
-                doDelete: function (item) {
+                doDelete: function(item) {
                     var that = this
-                    this.httpPost(this.request_url, {_action:'doDelete', aid: item.aid}, function (res) {
+                    this.httpPost(this.request_url, {
+                        _action: 'doDelete',
+                        aid: item.aid
+                    }, function(res) {
                         if (res.status) {
                             that.$message.success(res.msg)
                             that.getList()
@@ -195,9 +204,12 @@
                     })
                 },
                 // 批量删除
-                doBatchDelete: function () {
+                doBatchDelete: function() {
                     var that = this
-                    this.httpPost(this.request_url, {_action:'doBatchDelete', aids: that.selectIds}, function (res) {
+                    this.httpPost(this.request_url, {
+                        _action: 'doBatchDelete',
+                        aids: that.selectIds
+                    }, function(res) {
                         if (res.status) {
                             that.$message.success(res.msg)
                             that.getList()

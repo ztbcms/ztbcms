@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User: zhlhuang
  * Date: 2020-09-15
@@ -35,6 +36,7 @@ class AttachmentModel extends Model
 
     const DRIVER_ALIYUN = "Aliyun";
     const DRIVER_LOCAL = "Local";
+    const DRIVER_QINIU = "Qiniu";
 
     const IS_IMAGES_YES = 1;
     const IS_IMAGES_NO = 0;
@@ -51,20 +53,17 @@ class AttachmentModel extends Model
      * @param $value
      * @param $data
      *
-     * @return bool
+     * @return string
      */
     public function getFilethumbAttr($value, $data)
     {
-        $is_private = $data['is_private'] ?? self::IS_PRIVATE_NO;
-        if ($is_private) {
+        $isPrivate = $data['is_private'] ?? self::IS_PRIVATE_NO;
+        if ($isPrivate) {
+            // 私有读时，缩略图也需要签名 URL
             $uploadService = new UploadService($data['driver']);
-            $uploadService->setIsPrivate($is_private);
-            $res = $uploadService->getPrivateThumbUrl($data['filepath']);
-            if ($res) {
-                return $res;
-            } else {
-                return $value;
-            }
+            $uploadService->setIsPrivate(true);
+            $res = $uploadService->getPrivateUrl($data['filepath']);
+            return $res ?: $value;
         }
 
         return $value;
@@ -75,20 +74,16 @@ class AttachmentModel extends Model
      *
      * @param $value
      * @param $data
-     * @return mixed
+     * @return string
      */
     public function getFileurlAttr($value, $data)
     {
-        $is_private = $data['is_private'] ?? self::IS_PRIVATE_NO;
-        if ($is_private == self::IS_PRIVATE_YES) {
+        $isPrivate = $data['is_private'] ?? self::IS_PRIVATE_NO;
+        if ($isPrivate == self::IS_PRIVATE_YES) {
             $uploadService = new UploadService($data['driver']);
-            $uploadService->setIsPrivate($is_private);
+            $uploadService->setIsPrivate(true);
             $res = $uploadService->getPrivateUrl($data['filepath']);
-            if ($res) {
-                return $res;
-            } else {
-                return $value;
-            }
+            return $res ?: $value;
         }
 
         return $value;
