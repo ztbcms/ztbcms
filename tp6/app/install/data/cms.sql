@@ -296,6 +296,21 @@ INSERT INTO `cms_config` VALUES ('54', 'downloader_retry_switch', '下载中心-
 INSERT INTO `cms_config` VALUES ('55', 'downloader_retry_num', '下载中心-重启的次数', '1', '3');
 INSERT INTO `cms_config` VALUES ('56', 'downloader_timeout', '下载中心-下载超时时间（秒）', '1', '300');
 INSERT INTO `cms_config` VALUES ('57', 'downloader_domain', '下载中心-访问域名', '1', '');
+-- 腾讯云 COS 配置
+INSERT INTO `cms_config` VALUES ('58', 'attachment_tencent_secret_id', '腾讯云-SecretId', '1', '');
+INSERT INTO `cms_config` VALUES ('59', 'attachment_tencent_secret_key', '腾讯云-SecretKey', '1', '');
+INSERT INTO `cms_config` VALUES ('60', 'attachment_tencent_region', '腾讯云-Region', '1', '');
+INSERT INTO `cms_config` VALUES ('61', 'attachment_tencent_bucket', '腾讯云-Bucket', '1', '');
+INSERT INTO `cms_config` VALUES ('62', 'attachment_tencent_privilege', '腾讯云-读写权限', '1', '1');
+INSERT INTO `cms_config` VALUES ('63', 'attachment_tencent_expire_time', '腾讯云-临时访问链接过期时间', '1', '3600');
+-- 七牛云配置
+INSERT INTO `cms_config` VALUES ('64', 'attachment_qiniu_access_key', '七牛云-AccessKey', '1', '');
+INSERT INTO `cms_config` VALUES ('65', 'attachment_qiniu_secret_key', '七牛云-SecretKey', '1', '');
+INSERT INTO `cms_config` VALUES ('66', 'attachment_qiniu_bucket', '七牛云-Bucket', '1', '');
+INSERT INTO `cms_config` VALUES ('67', 'attachment_qiniu_domain', '七牛云-CDN域名', '1', '');
+INSERT INTO `cms_config` VALUES ('68', 'attachment_qiniu_privilege', '七牛云-读写权限', '1', '1');
+INSERT INTO `cms_config` VALUES ('69', 'attachment_qiniu_expire_time', '七牛云-临时访问链接过期时间', '1', '3600');
+INSERT INTO `cms_config` VALUES ('70', 'attachment_aliyun_sts_role_arn', 'OSS-STS角色ARN', '1', '');
 
 
 -- ----------------------------

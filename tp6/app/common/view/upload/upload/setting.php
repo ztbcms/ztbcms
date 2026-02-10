@@ -7,37 +7,39 @@
                         <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="180px">
                             <el-form-item label="存储方式" prop="attachment_driver">
                                 <el-select v-model="formData.attachment_driver" placeholder="请选择网站存储方案" clearable
-                                           :style="{width: '100%'}">
+                                    :style="{width: '100%'}">
                                     <el-option label="本地"
-                                               value="Local"></el-option>
+                                        value="Local"></el-option>
                                     <el-option label="阿里云OSS"
-                                               value="Aliyun"></el-option>
+                                        value="Aliyun"></el-option>
+                                    <el-option label="七牛云"
+                                        value="Qiniu"></el-option>
                                 </el-select>
                             </el-form-item>
                             <!--阿里云-->
                             <template v-if="formData.attachment_driver == 'Aliyun'">
                                 <el-form-item label="oss-keyId"
-                                              prop="attachment_aliyun_key_id">
+                                    prop="attachment_aliyun_key_id">
                                     <el-input v-model="formData.attachment_aliyun_key_id"
-                                              placeholder="请输入OSS-accessKeyId"></el-input>
+                                        placeholder="请输入OSS-accessKeyId"></el-input>
                                 </el-form-item>
                                 <el-form-item label="oss-keySecret"
-                                              prop="attachment_aliyun_key_secret">
+                                    prop="attachment_aliyun_key_secret">
                                     <el-input v-model="formData.attachment_aliyun_key_secret"
-                                              placeholder="请输入OSS-accessKeySecret"></el-input>
+                                        placeholder="请输入OSS-accessKeySecret"></el-input>
                                 </el-form-item>
                                 <el-form-item label="oss-Endpoint"
-                                              prop="attachment_aliyun_endpoint">
+                                    prop="attachment_aliyun_endpoint">
                                     <el-input v-model="formData.attachment_aliyun_endpoint"
-                                              placeholder="请输入OSS-Endpoint(同一地域可以使用内网)"></el-input>
+                                        placeholder="请输入OSS-Endpoint(同一地域可以使用内网)"></el-input>
                                 </el-form-item>
                                 <el-form-item label="oss-bucket"
-                                              prop="attachment_aliyun_bucket">
+                                    prop="attachment_aliyun_bucket">
                                     <el-input v-model="formData.attachment_aliyun_bucket"
-                                              placeholder="请输入OSS-bucket"></el-input>
+                                        placeholder="请输入OSS-bucket"></el-input>
                                 </el-form-item>
                                 <el-form-item label="oss-开启直传"
-                                              prop="attachment_aliyun_privilege">
+                                    prop="attachment_aliyun_privilege">
                                     <el-radio v-model="formData.attachment_aliyun_is_direct" label="0">禁止</el-radio>
                                     <el-radio v-model="formData.attachment_aliyun_is_direct" label="1">开启</el-radio>
                                     <div>
@@ -45,27 +47,56 @@
                                     </div>
                                 </el-form-item>
                                 <el-form-item label="oss-STS RoleArn"
-                                              prop="attachment_aliyun_privilege">
+                                    prop="attachment_aliyun_privilege">
                                     <el-input v-model="formData.attachment_aliyun_sts_role_arn"
-                                              placeholder="请输入STS RoleArn"></el-input>
+                                        placeholder="请输入STS RoleArn"></el-input>
                                     <div>
                                         <small style="font-size: 12px;">因为开启直传需要有指定指定角色授予权限，具体看
                                             <el-link style="font-size: 12px;" :underline="false" type="primary"
-                                                     target="_blank"
-                                                     href="https://help.aliyun.com/document_detail/100624.html">官方文档
+                                                target="_blank"
+                                                href="https://help.aliyun.com/document_detail/100624.html">官方文档
                                             </el-link>
                                         </small>
                                     </div>
                                 </el-form-item>
                                 <el-form-item label="oss-读写权限"
-                                              prop="attachment_aliyun_privilege">
+                                    prop="attachment_aliyun_privilege">
                                     <el-radio v-model="formData.attachment_aliyun_privilege" label="1">公共读</el-radio>
                                     <el-radio v-model="formData.attachment_aliyun_privilege" label="2">私有</el-radio>
                                 </el-form-item>
                                 <el-form-item v-if="formData.attachment_aliyun_privilege==2" label="oss-临时访问链接过期时间"
-                                              prop="attachment_aliyun_expire_time">
+                                    prop="attachment_aliyun_expire_time">
                                     <el-input type="number" v-model="formData.attachment_aliyun_expire_time"
-                                              placeholder="请输入临时链接过期时间">
+                                        placeholder="请输入临时链接过期时间">
+                                        <template slot="append">秒</template>
+                                    </el-input>
+                                </el-form-item>
+                            </template>
+                            <!--七牛云-->
+                            <template v-if="formData.attachment_driver == 'Qiniu'">
+                                <el-form-item label="qiniu-AccessKey">
+                                    <el-input v-model="formData.attachment_qiniu_access_key"
+                                        placeholder="请输入七牛云AccessKey"></el-input>
+                                </el-form-item>
+                                <el-form-item label="qiniu-SecretKey">
+                                    <el-input v-model="formData.attachment_qiniu_secret_key"
+                                        placeholder="请输入七牛云SecretKey"></el-input>
+                                </el-form-item>
+                                <el-form-item label="qiniu-Bucket">
+                                    <el-input v-model="formData.attachment_qiniu_bucket"
+                                        placeholder="请输入存储空间名称"></el-input>
+                                </el-form-item>
+                                <el-form-item label="qiniu-CDN域名">
+                                    <el-input v-model="formData.attachment_qiniu_domain"
+                                        placeholder="请输入CDN加速域名，如 https://cdn.example.com"></el-input>
+                                </el-form-item>
+                                <el-form-item label="qiniu-读写权限">
+                                    <el-radio v-model="formData.attachment_qiniu_privilege" label="1">公共读</el-radio>
+                                    <el-radio v-model="formData.attachment_qiniu_privilege" label="2">私有</el-radio>
+                                </el-form-item>
+                                <el-form-item v-if="formData.attachment_qiniu_privilege==2" label="qiniu-临时访问链接过期时间">
+                                    <el-input type="number" v-model="formData.attachment_qiniu_expire_time"
+                                        placeholder="请输入临时链接过期时间">
                                         <template slot="append">秒</template>
                                     </el-input>
                                 </el-form-item>
@@ -73,41 +104,50 @@
                             <!--本地-->
                             <template v-if="formData.attachment_driver == 'Local'">
                                 <el-form-item label="附件域名"
-                                              prop="attachment_local_domain">
+                                    prop="attachment_local_domain">
                                     <el-input v-model="formData.attachment_local_domain"
-                                              placeholder="请输入附件域名，示例：http://ztbcms.com">
+                                        placeholder="请输入附件域名，示例：http://ztbcms.com">
                                         <template slot="append">默认为当前站点域名</template>
                                     </el-input>
                                 </el-form-item>
                             </template>
                             <el-form-item label="允许上传附件大小" prop="uploadmaxsize">
                                 <el-input v-model="formData.uploadmaxsize" placeholder="请输入允许上传附件大小" clearable
-                                          :style="{width: '100%'}">
+                                    :style="{width: '100%'}">
                                     <template slot="append">KB</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="允许上传附件类型" prop="uploadallowext">
                                 <el-input v-model="formData.uploadallowext" placeholder="请输入允许上传附件类型" clearable
-                                          :style="{width: '100%'}">
+                                    :style="{width: '100%'}">
                                     <template slot="append">用"|"隔开</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="前台允许上传附件大小" prop="qtuploadmaxsize">
                                 <el-input v-model="formData.qtuploadmaxsize" placeholder="请输入前台允许上传附件大小" clearable
-                                          :style="{width: '100%'}">
+                                    :style="{width: '100%'}">
                                     <template slot="append">KB</template>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="前台允许上传附件类型" prop="qtuploadallowext">
                                 <el-input v-model="formData.qtuploadallowext" placeholder="请输入前台允许上传附件类型" clearable
-                                          :style="{width: '100%'}">
+                                    :style="{width: '100%'}">
                                     <template slot="append">用"|"隔开</template>
                                 </el-input>
+                            </el-form-item>
+                            <el-form-item label="直传文件路径模板" prop="attachment_direct_file_dir_template">
+                                <el-input v-model="formData.attachment_direct_file_dir_template" placeholder="请输入直传文件路径模板" clearable
+                                    :style="{width: '100%'}">
+                                    <template slot="append">默认：{module}/{Y}/{m}/{d}/</template>
+                                </el-input>
+                                <div>
+                                    <small>支持占位符：{module}、{Y}、{m}、{d}。示例：{module}/{Y}{m}{d}/</small>
+                                </div>
                             </el-form-item>
                             <template v-if="formData.attachment_driver == 'Local'">
                                 <el-form-item label="保存远程图片过滤域名" prop="fileexclude">
                                     <el-input v-model="formData.fileexclude" placeholder="请输入保存远程图片过滤域名" clearable
-                                              :style="{width: '100%'}">
+                                        :style="{width: '100%'}">
                                         <template slot="append"></template>
                                     </el-input>
                                     <small>多个用"|"隔开，域名以"/"结尾,例如：http://www.ztbcms.com/</small>
@@ -115,38 +155,38 @@
                                 <el-form-item label="是否开启图片水印" prop="watermarkenable">
                                     <el-radio-group v-model="formData.watermarkenable" size="medium">
                                         <el-radio v-for="(item, index) in watermarkenableOptions" :key="index"
-                                                  :label="item.value"
-                                                  :disabled="item.disabled">{{item.label}}
+                                            :label="item.value"
+                                            :disabled="item.disabled">{{item.label}}
                                         </el-radio>
                                     </el-radio-group>
                                 </el-form-item>
                                 <el-form-item label="水印添加条件（宽）" prop="watermarkminwidth">
                                     <el-input v-model="formData.watermarkminwidth" placeholder="请输入水印添加条件（宽）" clearable
-                                              :style="{width: '100%'}">
+                                        :style="{width: '100%'}">
                                         <template slot="append">PX</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="水印添加条件（高）" prop="watermarkminheight">
                                     <el-input v-model="formData.watermarkminheight" placeholder="请输入水印添加条件（高）" clearable
-                                              :style="{width: '100%'}">
+                                        :style="{width: '100%'}">
                                         <template slot="append">PX</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="水印图片" prop="watermarkimg">
                                     <el-input v-model="formData.watermarkimg" placeholder="请输入水印图片" clearable
-                                              :style="{width: '100%'}">
+                                        :style="{width: '100%'}">
                                         <template slot="append">从网站根目录算起</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="水印透明度" prop="watermarkpct">
                                     <el-input v-model="formData.watermarkpct" placeholder="请输入水印透明度" clearable
-                                              :style="{width: '100%'}">
+                                        :style="{width: '100%'}">
                                         <template slot="append">0-100数字，0完全透明，100不透明</template>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item label="JPEG 水印质量" prop="watermarkquality">
                                     <el-input v-model="formData.watermarkquality" placeholder="请输入JPEG 水印质量" clearable
-                                              :style="{width: '100%'}">
+                                        :style="{width: '100%'}">
                                         <template slot="append">0-100数字，100为原图</template>
                                     </el-input>
                                 </el-form-item>
@@ -183,7 +223,7 @@
                                             </li>
                                         </ul>
                                         <input v-model="formData.watermarkpos" id="J_locate_input" name="watermarkpos"
-                                               type="hidden">
+                                            type="hidden">
                                     </div>
                                 </el-form-item>
                             </template>
@@ -198,13 +238,13 @@
     </div>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             window.app = new Vue({
                 el: '#app',
                 // 插入export default里面的内容
                 components: {},
                 props: [],
-                data: function () {
+                data: function() {
                     return {
                         driver_list: [],
                         formData: {},
@@ -246,9 +286,8 @@
                 },
                 computed: {},
                 watch: {},
-                created: function () {
-                },
-                mounted: function () {
+                created: function() {},
+                mounted: function() {
                     this.getInfo()
                 },
                 methods: {
@@ -259,16 +298,16 @@
                             }
                         })
                     },
-                    submitForm: function () {
+                    submitForm: function() {
                         var that = this
-                        this.$refs['elForm'].validate(function (valid) {
+                        this.$refs['elForm'].validate(function(valid) {
                             if (!valid) return;
                             $.ajax({
                                 url: "{:api_url('common/upload.upload/setting')}",
                                 method: 'post',
                                 dataType: 'json',
                                 data: that.formData,
-                                success: function (res) {
+                                success: function(res) {
                                     if (res.status) {
                                         layer.msg('操作成功')
                                     } else {
@@ -283,9 +322,9 @@
         });
 
 
-        $(function () {
+        $(function() {
             //水印位置
-            $('#J_locate_list > li > a').click(function (e) {
+            $('#J_locate_list > li > a').click(function(e) {
                 e.preventDefault();
                 var $this = $(this);
                 $this.parents('li').addClass('current').siblings('.current').removeClass('current');
@@ -294,15 +333,30 @@
                 window.app.formData.watermarkpos = $this.data('value');
             });
         });
-
     </script>
 
     <style>
-        html, body,
-        div, dl, dt, dd, ul, p, th, td,
-        h1, h2, h3, h4, h5, h6,
-        pre, code, form,
-        fieldset, legend {
+        html,
+        body,
+        div,
+        dl,
+        dt,
+        dd,
+        ul,
+        p,
+        th,
+        td,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        pre,
+        code,
+        form,
+        fieldset,
+        legend {
             margin: 0;
             padding: 0;
         }
@@ -405,6 +459,5 @@
             clear: both;
             visibility: hidden;
         }
-
     </style>
 </div>

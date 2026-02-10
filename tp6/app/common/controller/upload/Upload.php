@@ -9,6 +9,7 @@ use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
 use app\common\service\ConfigService;
+use app\common\service\upload\UploadService;
 use think\facade\Db;
 use think\facade\View;
 use think\Request;
@@ -23,6 +24,16 @@ class Upload extends AdminController
     function demo()
     {
         return View::fetch('demo');
+    }
+
+    /**
+     * 直传示例
+     *
+     * @return string
+     */
+    function directUploadDemo()
+    {
+        return View::fetch('direct_upload_demo');
     }
 
     /**
@@ -41,7 +52,7 @@ class Upload extends AdminController
             return self::returnErrorJson('未登录');
         }
 
-        // 支持自定义 user_type 和 user_id (用于测试)
+        // 支持自定义 user_type 和 user_id
         $userType = request()->param('user_type', 'admin');
         $userId = request()->param('user_id');
 
@@ -81,6 +92,7 @@ class Upload extends AdminController
             $fields = [
                 'attachment_driver',
                 'attachment_local_domain',
+                // 阿里云 OSS
                 'attachment_aliyun_key_id',
                 'attachment_aliyun_key_secret',
                 'attachment_aliyun_endpoint',
@@ -89,6 +101,16 @@ class Upload extends AdminController
                 'attachment_aliyun_is_direct',
                 'attachment_aliyun_privilege',
                 'attachment_aliyun_expire_time',
+                // 七牛云
+                'attachment_qiniu_access_key',
+                'attachment_qiniu_secret_key',
+                'attachment_qiniu_bucket',
+                'attachment_qiniu_domain',
+                'attachment_qiniu_privilege',
+                'attachment_qiniu_expire_time',
+                // 直传路径模板
+                'attachment_direct_file_dir_template',
+                // 通用配置
                 'uploadmaxsize',
                 'uploadallowext',
                 'qtuploadmaxsize',
@@ -136,6 +158,10 @@ class Upload extends AdminController
             if (!empty($filename)) {
                 $where[] = ['filename', 'like', '%' . $filename . '%'];
             }
+            $createTime = input('create_time/a', []);
+            if (is_array($createTime) && count($createTime) === 2 && !empty($createTime[0]) && !empty($createTime[1])) {
+                $where[] = ['create_time', 'between', [strtotime($createTime[0]), strtotime($createTime[1]) + 24 * 60 * 60 - 1]];
+            }
             $page = input('page', 1);
             $limit = input('limit', 15);
             $items = AttachmentModel::where($where)
@@ -159,17 +185,37 @@ class Upload extends AdminController
             }
             $attachment = AttachmentModel::where('aid', $aid)
                 ->find();
+            if (empty($attachment)) {
+                return self::makeJsonReturn(false, null, '附件不存在或已删除');
+            }
+            if ($attachment && $attachment->filepath) {
+                $uploadService = new \app\common\service\upload\UploadService($attachment->driver ?: '');
+                $uploadService->deleteFile($attachment->filepath);
+            }
             $attachment->delete();
 
             return self::makeJsonReturn(true, null, '操作完成');
         }
         if ($action == 'doBatchDelete') {
-            $aids = input('aids');
+            $aids = input('aids/a', []);
             if (empty($aids)) {
                 return self::makeJsonReturn(false, null, '请选择附件');
             }
-            $attachments = AttachmentModel::where('aid', 'in', join(',', $aids))
+            $aidList = array_map('intval', $aids);
+            $aidList = array_unique(array_filter($aidList, function ($item) {
+                return $item > 0;
+            }));
+            if (empty($aidList)) {
+                return self::makeJsonReturn(false, null, '请选择有效附件');
+            }
+            $attachments = AttachmentModel::where('aid', 'in', $aidList)
                 ->select();
+            foreach ($attachments as $attachment) {
+                if ($attachment->filepath) {
+                    $uploadService = new \app\common\service\upload\UploadService($attachment->driver ?: '');
+                    $uploadService->deleteFile($attachment->filepath);
+                }
+            }
             $attachments->delete();
 
             return self::makeJsonReturn(true, null, '操作完成');

@@ -1,18 +1,15 @@
 <?php
+
 /**
  * User: zhlhuang
  */
 
 namespace app\common\controller\upload;
 
-use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
-use app\common\libs\upload\AliyunDriver;
 use app\common\model\upload\AttachmentGroupModel;
 use app\common\model\upload\AttachmentModel;
-use app\common\service\ConfigService;
 use app\common\service\upload\UploadService;
-use think\App;
 use think\facade\View;
 use think\Request;
 
@@ -24,6 +21,67 @@ use think\Request;
 class Panel extends AdminController
 {
     public $noNeedPermission = ['*'];
+
+    /**
+     * 统一上传面板入口
+     *
+     * @param Request $request
+     * @return string
+     */
+    function index(Request $request)
+    {
+        $module = $this->normalizeModule((string)$request->get('module', AttachmentModel::MODULE_IMAGE));
+        $isPrivate = intval($request->param('is_private', 0));
+
+        $panelTitleMap = [
+            AttachmentModel::MODULE_IMAGE => '图片上传',
+            AttachmentModel::MODULE_VIDEO => '视频上传',
+            AttachmentModel::MODULE_FILE => '文件上传',
+        ];
+        $acceptMap = [
+            AttachmentModel::MODULE_IMAGE => 'image/*',
+            AttachmentModel::MODULE_VIDEO => 'video/*',
+            AttachmentModel::MODULE_FILE => '.xls,.doc,.ppt,.xlsx,.docx,.pptx,.pdf',
+        ];
+        $callbackMap = [
+            AttachmentModel::MODULE_IMAGE => 'ZTBCMS_UPLOAD_IMAGE',
+            AttachmentModel::MODULE_VIDEO => 'ZTBCMS_UPLOAD_VIDEO',
+            AttachmentModel::MODULE_FILE => 'ZTBCMS_UPLOAD_FILE',
+        ];
+        $maxUploadMap = [
+            AttachmentModel::MODULE_IMAGE => 99,
+            AttachmentModel::MODULE_VIDEO => 99,
+            AttachmentModel::MODULE_FILE => 10,
+        ];
+
+        return View::fetch('index', [
+            'module' => $module,
+            'groupType' => $module,
+            'isPrivate' => $isPrivate,
+            'panelTitle' => $panelTitleMap[$module] ?? $panelTitleMap[AttachmentModel::MODULE_IMAGE],
+            'accept' => $acceptMap[$module] ?? $acceptMap[AttachmentModel::MODULE_IMAGE],
+            'callbackDefault' => $callbackMap[$module] ?? $callbackMap[AttachmentModel::MODULE_IMAGE],
+            'maxUpload' => $maxUploadMap[$module] ?? $maxUploadMap[AttachmentModel::MODULE_IMAGE],
+        ]);
+    }
+
+    /**
+     * 归一化模块类型
+     *
+     * @param string $module
+     * @return string
+     */
+    private function normalizeModule(string $module): string
+    {
+        $module = strtolower(trim($module));
+        $allowModules = [
+            AttachmentModel::MODULE_IMAGE,
+            AttachmentModel::MODULE_VIDEO,
+            AttachmentModel::MODULE_FILE,
+        ];
+
+        return in_array($module, $allowModules, true) ? $module : AttachmentModel::MODULE_IMAGE;
+    }
 
     /**
      * 删除文件
@@ -86,7 +144,7 @@ class Panel extends AdminController
      */
     function getFilesByGroupIdList(Request $request)
     {
-        $module = $request->get('module', AttachmentModel::MODULE_IMAGE);
+        $module = $this->normalizeModule((string)$request->get('module', AttachmentModel::MODULE_IMAGE));
         $where[] = ['module', '=', $module];
         $where[] = ['user_type', '=', AttachmentModel::USER_TYPE_ADMIN];
 
@@ -94,23 +152,13 @@ class Panel extends AdminController
         if ($groupId !== 'all') {
             $where[] = ['group_id', '=', $groupId];
         }
+        $limit = $request->get('limit', 10);
         $file_list = AttachmentModel::where($where)
-            ->visible(['aid', 'filename', 'filepath', 'fileurl', 'filethumb'])
+            ->visible(['aid', 'filename', 'filepath', 'fileurl', 'filethumb', 'filesize', 'create_time'])
             ->order('aid', 'DESC')
-            ->paginate(15);
+            ->paginate($limit);
 
-        $aliyun_is_direct = ConfigService::getInstance()
-            ->getConfig('attachment_aliyun_is_direct', '0');
-        $aliyun_sts = [];
-        if (intval($aliyun_is_direct) === 1) {
-            $aliyun_sts = (new AliyunDriver(ConfigService::getInstance()
-                ->getConfigList()))->getStsToken($module);
-            if (empty($aliyun_sts)) {
-                //如果返回为空，则不使用直传
-                $aliyun_is_direct = 0;
-            }
-        }
-        $setting = compact('aliyun_is_direct', 'aliyun_sts', 'module');
+        $setting = compact('module');
 
         return self::createReturn(true, compact('file_list', 'setting'), 'ok');
     }
@@ -197,125 +245,6 @@ class Panel extends AdminController
         return self::createReturn(true, $lists, 'ok');
     }
 
-    /**
-     * 图片上传面板
-     *
-     * @param Request $request
-     *
-     * @return string|\think\response\Json
-     */
-    function imageUpload(Request $request)
-    {
-        $isPrivate = $request->param('is_private', 0);
-        if ($request->isPost()) {
-            $groupId = $request->post('group_id', '');
-            $groupId = $groupId == 'all' ? 0 : $groupId;
-            $uploadService = new UploadService();
-            $uploadService->isPrivate = $isPrivate == 1;
-            $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadImage($groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
-                return json(self::createReturn(true, [], '上传成功'));
-            } else {
-                return json(self::createReturn(false, [], $uploadService->getError()));
-            }
-        }
-
-        return View::fetch('imageUpload', ['isPrivate' => $isPrivate]);
-    }
-
-    /**
-     * 直传文件保存信息
-     *
-     * @param Request $request
-     * @return \think\response\Json|void
-     */
-    function directUpload(Request $request)
-    {
-        if ($request->isPost()) {
-            $isPrivate = $request->param('is_private', 0);
-            $groupId = intval($request->post('group_id', ''));
-            $groupId = $groupId == 'all' ? 0 : $groupId;
-            $module = $request->post('module', AttachmentModel::MODULE_IMAGE);
-            $userInfo = AdminUserService::getInstance()->getInfo();
-            $attachmentModel = new AttachmentModel();
-            $attachmentModel->user_type = AttachmentModel::USER_TYPE_ADMIN;
-            $attachmentModel->user_id = $userInfo['id'];
-            $attachmentModel->group_id = $groupId;
-            $attachmentModel->module = $module;
-            $attachmentModel->filename = $request->post('filename', '');
-            $attachmentModel->filesize = $request->post('filesize', '');
-            $attachmentModel->fileext = $request->post('fileext', '');
-            $attachmentModel->fileurl = $request->post('fileurl', '');
-            $attachmentModel->filepath = $request->post('filepath', '');
-            $attachmentModel->is_private = $isPrivate;
-
-            $uploadService = new UploadService();
-            $uploadService->isPrivate = (intval($isPrivate) == 1);
-            $attachmentModel->filethumb = $uploadService->getFileThumbUrl($attachmentModel); //获取缩略图
-            $attachmentModel->uploadtime = time();
-            $attachmentModel->upload_ip = $request->ip();
-            $attachmentModel->hash = '';
-            $attachmentModel->driver = ConfigService::getInstance()->getConfig('attachment_driver') ?: 'Local';
-
-            if ($attachmentModel->save()) {
-                return json(self::createReturn(true, [], '上传成功'));
-            } else {
-                return json(self::createReturn(false, [], $uploadService->getError()));
-            }
-        }
-    }
-
-    /**
-     * 视频上传面板
-     *
-     * @param Request $request
-     *
-     * @return string|\think\response\Json
-     */
-    function videoUpload(Request $request)
-    {
-        $isPrivate = $request->param('is_private', 0);
-        if ($request->isPost()) {
-            $groupId = $request->post('group_id', '');
-            $groupId = $groupId == 'all' ? 0 : $groupId;
-            $uploadService = new UploadService();
-            $uploadService->isPrivate = $isPrivate == 1;
-            $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadVideo($groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
-                return json(self::createReturn(true, [], '上传成功'));
-            } else {
-                return json(self::createReturn(false, [], $uploadService->getError()));
-            }
-        }
-
-        return View::fetch('videoUpload', ['isPrivate' => $isPrivate]);
-    }
-
-    /**
-     * 文件（文档）上传面板
-     *
-     * @param Request $request
-     *
-     * @return string|\think\response\Json
-     */
-    function fileUpload(Request $request)
-    {
-        $isPrivate = $request->param('is_private', 0);
-        if ($request->isPost()) {
-            $groupId = $request->post('group_id', '');
-            $groupId = $groupId == 'all' ? 0 : $groupId;
-            $uploadService = new UploadService();
-            $uploadService->isPrivate = $isPrivate == 1;
-            $userInfo = AdminUserService::getInstance()->getInfo();
-            if ($uploadService->uploadFile($groupId, $userInfo['id'], AttachmentModel::USER_TYPE_ADMIN)) {
-                return json(self::createReturn(true, [], '上传成功'));
-            } else {
-                return json(self::createReturn(false, [], $uploadService->getError()));
-            }
-        }
-
-        return View::fetch('fileUpload', ['isPrivate' => $isPrivate]);
-    }
 
     /**
      * 上传UEditor文件图片
@@ -331,8 +260,11 @@ class Panel extends AdminController
             $uploadService = new UploadService();
             $userInfo = AdminUserService::getInstance()
                 ->getInfo();
-            if ($uploadService->uploadUEImage($groupId == 'all' ? 0 : $groupId, $userInfo['id'],
-                AttachmentModel::USER_TYPE_ADMIN)) {
+            if ($uploadService->uploadUEImage(
+                $groupId == 'all' ? 0 : $groupId,
+                $userInfo['id'],
+                AttachmentModel::USER_TYPE_ADMIN
+            )) {
                 return json(self::createReturn(true, [], '上传成功'));
             } else {
                 return json(self::createReturn(false, [], $uploadService->getError()));

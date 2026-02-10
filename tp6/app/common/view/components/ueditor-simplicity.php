@@ -24,14 +24,9 @@
                 <textarea id="editor_content" :style="`height: `+height+`px;width: `+width+`px;`"></textarea>
             </div>
         </div>
-        <div>
-            <select-ue-image :show="show_image" :is_private="0" @confirm="confirmImage"
-                             @close="show_image=false"></select-ue-image>
-        </div>
     </div>
 </script>
 
-{ztbcms:include file="common/@/components/select-ue-image"}
 <script>
     $(function () {
         var ueditorInstance = UE.getEditor('editor_content');
@@ -49,7 +44,6 @@
             },
             data() {
                 return {
-                    show_image: false,
                 }
             },
             watch: {},
@@ -66,19 +60,33 @@
                             );
                         }
                     }
+                },
+                onUploadedImage(event) {
+                    var files = (event && event.detail && event.detail.files) ? event.detail.files : [];
+                    this.confirmImage(files)
                 }
             },
             mounted() {
+                window.addEventListener('ZTBCMS_UPLOAD_UE_IMAGE', this.onUploadedImage);
                 UE.registerUI('cms_uploadImage', (editor, uiName) => {
                     var btn = new UE.ui.Button({
                         name: 'cms-uploadImage',
                         title: '内置图片上传',
                         onclick: () => {
-                            this.show_image = true
+                            layer.open({
+                                type: 2,
+                                title: '',
+                                closeBtn: false,
+                                content: "{:api_url('common/upload.panel/index')}?module=image&callback=ZTBCMS_UPLOAD_UE_IMAGE",
+                                area: ['720px', '550px'],
+                            })
                         }
                     });
                     return btn;
                 });
+            },
+            beforeDestroy() {
+                window.removeEventListener('ZTBCMS_UPLOAD_UE_IMAGE', this.onUploadedImage);
             }
         });
     })

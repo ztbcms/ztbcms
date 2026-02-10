@@ -242,7 +242,7 @@
                         type: 2,
                         title: '',
                         closeBtn: false,
-                        content: "{:api_url('common/upload.panel/imageUpload')}",
+                        content: "{:api_url('common/upload.panel/index')}?module=image",
                         area: ['670px', '550px'],
                     })
                 },
