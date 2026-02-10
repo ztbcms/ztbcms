@@ -29,7 +29,7 @@ CREATE TABLE `cms_tp6_cron_log` (
   `result_msg` text COMMENT '执行日志信息',
   PRIMARY KEY (`id`),
   KEY `result` (`result`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志';
 
 DROP TABLE IF EXISTS `cms_tp6_cron_scheduling_log`;
 CREATE TABLE `cms_tp6_cron_scheduling_log` (
@@ -40,7 +40,7 @@ CREATE TABLE `cms_tp6_cron_scheduling_log` (
   `error_count` int(11) NOT NULL COMMENT '错误数量',
   `cron_count` int(11) NOT NULL COMMENT '周期内执行计划任务次数',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='调度运行日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调度运行日志';
 
 -- 配置表
 DROP TABLE IF EXISTS `cms_tp6_cron_config`;
@@ -93,7 +93,7 @@ CREATE TABLE `cms_tp6_message_send_log` (
   `create_time` int(11) DEFAULT '0' COMMENT '日志创建时间',
   `update_time` int(11) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='消息发送处理日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息发送处理日志';
 
 
 -- ----------------------------
@@ -111,7 +111,7 @@ CREATE TABLE `cms_attachment_group` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
 
 DROP TABLE IF EXISTS `cms_attachment`;
 CREATE TABLE `cms_attachment` (
@@ -134,17 +134,13 @@ CREATE TABLE `cms_attachment` (
   `user_id` varchar(16) DEFAULT NULL COMMENT '上传用户ID',
   `hash` varchar(64) DEFAULT '' COMMENT '附件hash值（md5）',
   PRIMARY KEY (`aid`),
-  KEY `hash` (`hash`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
+  KEY `idx_hash` (`hash`),
+  KEY `idx_panel_module_user_aid` (`delete_time`, `user_type`, `module`, `aid`),
+  KEY `idx_panel_module_user_group_aid` (`delete_time`, `user_type`, `module`, `group_id`, `aid`),
+  KEY `idx_direct_record_lookup` (`delete_time`, `user_id`, `user_type`, `driver`, `filepath`(128)),
+  KEY `idx_attach_module_aid` (`delete_time`, `module`, `aid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
 
-
-DROP TABLE IF EXISTS `cms_attachment_index`;
-CREATE TABLE `cms_attachment_index` (
-    `keyid` varchar(128) NOT NULL DEFAULT '' COMMENT '关联id',
-    `aid` int(11) NOT NULL COMMENT '附件ID',
-    KEY `keyid` (`keyid`),
-    KEY `aid` (`aid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='附件关系表';
 
 -- ----------------------------
 -- 队列
