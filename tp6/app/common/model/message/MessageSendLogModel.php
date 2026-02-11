@@ -6,7 +6,7 @@ use think\Model;
 
 class MessageSendLogModel extends Model
 {
-    protected $name = 'tp6_message_send_log';
+    protected $name = 'message_send_log';
 
     const STATUS_SUCCESSS = 1;
     const STATUS_FAIL = 0;

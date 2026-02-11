@@ -15,7 +15,7 @@ use think\Model;
 
 class MessageModel extends Model
 {
-    protected $name = 'tp6_message_msg';
+    protected $name = 'message_msg';
 
 
     //=== 消息类型
