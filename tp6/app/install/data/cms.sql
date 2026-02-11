@@ -5,11 +5,13 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_access`;
 CREATE TABLE `cms_access` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `role_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '角色id',
   `app` varchar(255) NOT NULL DEFAULT '' COMMENT '模块',
   `controller` varchar(255) NOT NULL DEFAULT '' COMMENT '控制器',
   `action` varchar(255) NOT NULL DEFAULT '' COMMENT '方法',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否有效 0无效 1有效',
+  PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色权限表';
 
@@ -28,200 +30,6 @@ CREATE TABLE `cms_admin_panel` (
   `url` char(255) NOT NULL DEFAULT '' COMMENT '菜单地址',
   UNIQUE KEY `userid` (`mid`,`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='常用菜单';
-
--- ----------------------------
--- Table structure for cms_behavior
--- ----------------------------
-DROP TABLE IF EXISTS `cms_behavior`;
-CREATE TABLE `cms_behavior` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(128) NOT NULL DEFAULT '' COMMENT '行为唯一标识',
-  `title` varchar(256) NOT NULL DEFAULT '' COMMENT '行为说明',
-  `remark` varchar(256) NOT NULL DEFAULT '' COMMENT '行为描述',
-  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-控制器，2-视图',
-  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态（0：禁用，1：正常）',
-  `system` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否系统',
-  `module` varchar(128) NOT NULL DEFAULT '' COMMENT '所属模块',
-  `datetime` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统行为表';
-
--- ----------------------------
--- Records of cms_behavior
--- ----------------------------
-INSERT INTO `cms_behavior` (`id`, `name`, `title`, `remark`, `type`, `status`, `system`, `module`, `datetime`)
-VALUES
-    (1, 'app_init', '应用初始化标签位', '应用初始化标签位', 1, 1, 1, '', 1381021393),
-    (2, 'path_info', 'PATH_INFO检测标签位', 'PATH_INFO检测标签位', 1, 1, 1, '', 1381021411),
-    (3, 'app_begin', '应用开始标签位', '应用开始标签位', 1, 1, 1, '', 1381021424),
-    (4, 'action_name', '操作方法名标签位', '操作方法名标签位', 1, 1, 1, '', 1381021437),
-    (5, 'action_begin', '控制器开始标签位', '控制器开始标签位', 1, 1, 1, '', 1381021450),
-    (6, 'view_begin', '视图输出开始标签位', '视图输出开始标签位', 1, 1, 1, '', 1381021463),
-    (7, 'view_parse', '视图解析标签位', '视图解析标签位', 1, 1, 1, '', 1381021476),
-    (8, 'template_filter', '模板内容解析标签位', '模板内容解析标签位', 1, 1, 1, '', 1381021488),
-    (9, 'view_filter', '视图输出过滤标签位', '视图输出过滤标签位', 1, 1, 1, '', 1381021621),
-    (10, 'view_end', '视图输出结束标签位', '视图输出结束标签位', 1, 1, 1, '', 1381021631),
-    (11, 'action_end', '控制器结束标签位', '控制器结束标签位', 1, 1, 1, '', 1381021642),
-    (12, 'app_end', '应用结束标签位', '应用结束标签位', 1, 1, 1, '', 1381021654),
-    (13, 'appframe_rbac_init', '后台权限控制', '后台权限控制', 1, 1, 1, '', 1381023560),
-    (14, 'content_add_begin', '内容添加完成时行为调用', '内容添加完成时行为调用', 1, 1, 1, '', 1381023560),
-    (15, 'content_add_end', '内容添加结束时行为调用', '内容添加结束时行为调用', 1, 1, 1, '', 1381023560),
-    (16, 'content_edit_begin', '内容编辑完成时行为调用', '内容编辑完成时行为调用', 1, 1, 1, '', 1381023560),
-    (17, 'content_edit_end', '内容编辑结束时行为调用', '内容编辑结束时行为调用', 1, 1, 1, '', 1381023560),
-    (18, 'content_check_begin', '内容审核前的行为调用', '内容审核前的行为调用', 1, 1, 1, '', 1381023560),
-    (19, 'content_check_end', '内容审核后的行为调用', '内容审核后的行为调用', 1, 1, 1, '', 1381023560),
-    (20, 'content_delete_begin', '内容删除前的行为调用', '内容删除前的行为调用', 1, 1, 1, '', 1381023560),
-    (21, 'content_delete_end', '内容删除后的行为调用', '内容删除后的行为调用', 1, 1, 1, '', 1381023560),
-    (22, 'content_model_edit_field', '模型字段编辑', '模型字段编辑', 1, 1, 1, '', 1381023560),
-    (23, 'ajax_return', 'ajax请求完成', 'ajax请求完成', 1, 1, 1, '', 1381023560);
-
--- ----------------------------
--- Table structure for cms_behavior_log
--- ----------------------------
-DROP TABLE IF EXISTS `cms_behavior_log`;
-CREATE TABLE `cms_behavior_log` (
-  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `ruleid` int(10) NOT NULL DEFAULT '0' COMMENT '行为ID',
-  `guid` char(50) NOT NULL DEFAULT '' COMMENT '标识',
-  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '执行行为的时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='行为日志';
-
--- ----------------------------
--- Records of cms_behavior_log
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_behavior_rule
--- ----------------------------
-DROP TABLE IF EXISTS `cms_behavior_rule`;
-CREATE TABLE `cms_behavior_rule` (
-  `ruleid` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `behaviorid` int(11) NOT NULL DEFAULT '0' COMMENT '行为id',
-  `system` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否系统',
-  `module` char(20) NOT NULL DEFAULT '' COMMENT '规则所属模块',
-  `addons` char(20) NOT NULL DEFAULT '' COMMENT '规则所属插件',
-  `rule` text COMMENT '行为规则',
-  `listorder` tinyint(3) NOT NULL DEFAULT '0' COMMENT '排序',
-  `datetime` int(10) NOT NULL DEFAULT '0' COMMENT '添加时间',
-  PRIMARY KEY (`ruleid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='行为规则表';
-
--- ----------------------------
--- Records of cms_behavior_rule
--- ----------------------------
-INSERT INTO `cms_behavior_rule` VALUES ('1', '1', '1', '', '', 'phpfile:BuildLiteBehavior', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('2', '3', '1', '', '', 'phpfile:ReadHtmlCacheBehavior', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('3', '12', '1', '', '', 'phpfile:ShowPageTraceBehavior', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('4', '7', '1', '', '', 'phpfile:ParseTemplateBehavior', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('5', '8', '1', '', '', 'phpfile:ContentReplaceBehavior', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('6', '9', '1', '', '', 'phpfile:WriteHtmlCacheBehavior', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('7', '1', '1', '', '', 'phpfile:AppInitBehavior|module:Common', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('8', '3', '1', '', '', 'phpfile:AppBeginBehavior|module:Common', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('9', '6', '1', '', '', 'phpfile:ViewBeginBehavior|module:Common', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('10', '22', '1', '', '', 'phpfile:ContentModelEditFieldBehavior|module:Content', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('11', '3', '1', '', '', 'phpfile:ReadRequestCacheBehavior|module:Common', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('12', '9', '1', '', '', 'phpfile:WriteRequestCacheBehavior|module:Common', '0', '1381021954');
-INSERT INTO `cms_behavior_rule` VALUES ('13', '23', '1', '', '', 'phpfile:WriteRequestCacheBehavior|module:Common', '0', '1381021954');
-
--- ----------------------------
--- Table structure for cms_cache
--- ----------------------------
-DROP TABLE IF EXISTS `cms_cache`;
-CREATE TABLE `cms_cache` (
-  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '自增长ID',
-  `key` char(100) NOT NULL DEFAULT '' COMMENT '缓存key值',
-  `name` char(100) NOT NULL DEFAULT '' COMMENT '名称',
-  `module` char(20) NOT NULL DEFAULT '' COMMENT '模块名称',
-  `model` char(30) NOT NULL DEFAULT '' COMMENT '模型名称',
-  `action` char(30) NOT NULL DEFAULT '' COMMENT '方法名',
-  `param` char(255) NOT NULL DEFAULT '' COMMENT '参数',
-  `system` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否系统',
-  PRIMARY KEY (`id`),
-  KEY `ckey` (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='缓存更新列队';
-
--- ----------------------------
--- Records of cms_cache
--- ----------------------------
-INSERT INTO `cms_cache` VALUES ('1', 'Config', '网站配置', '', 'Config', 'config_cache', '', '1');
-INSERT INTO `cms_cache` VALUES ('2', 'Module', '可用模块列表', '', 'Module', 'module_cache', '', '1');
-INSERT INTO `cms_cache` VALUES ('3', 'Behavior', '行为列表', '', 'Behavior', 'behavior_cache', '', '1');
-INSERT INTO `cms_cache` VALUES ('4', 'Menu', '后台菜单', 'Admin', 'Menu', 'menu_cache', '', '0');
-INSERT INTO `cms_cache` VALUES ('5', 'Category', '栏目索引', 'Content', 'Category', 'category_cache', '', '0');
-INSERT INTO `cms_cache` VALUES ('6', 'Model', '模型列表', 'Content', 'Model', 'model_cache', '', '0');
-INSERT INTO `cms_cache` VALUES ('7', 'Urlrules', 'URL规则', 'Content', 'Urlrule', 'urlrule_cache', '', '0');
-INSERT INTO `cms_cache` VALUES ('8', 'ModelField', '模型字段', 'Content', 'ModelField', 'model_field_cache', '', '0');
-INSERT INTO `cms_cache` VALUES ('9', 'Position', '推荐位', 'Content', 'Position', 'position_cache', '', '0');
-
--- ----------------------------
--- Table structure for cms_category
--- ----------------------------
-DROP TABLE IF EXISTS `cms_category`;
-CREATE TABLE `cms_category` (
-  `catid` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '栏目ID',
-  `module` varchar(15) NOT NULL DEFAULT '' COMMENT '所属模块',
-  `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '类别',
-  `modelid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
-  `domain` varchar(200) NOT NULL DEFAULT '' COMMENT '栏目绑定域名',
-  `parentid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
-  `arrparentid` varchar(255) NOT NULL DEFAULT '' COMMENT '所有父ID',
-  `child` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否存在子栏目，1存在',
-  `arrchildid` mediumtext COMMENT '所有子栏目ID',
-  `catname` varchar(30) NOT NULL DEFAULT '' COMMENT '栏目名称',
-  `image` varchar(100) NOT NULL DEFAULT '' COMMENT '栏目图片',
-  `description` mediumtext COMMENT '栏目描述',
-  `parentdir` varchar(100) NOT NULL DEFAULT '' COMMENT '父目录',
-  `catdir` varchar(30) NOT NULL DEFAULT '' COMMENT '栏目目录',
-  `url` varchar(100) NOT NULL DEFAULT '' COMMENT '链接地址',
-  `hits` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '栏目点击数',
-  `setting` mediumtext COMMENT '相关配置信息',
-  `listorder` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  `ismenu` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否显示',
-  `sethtml` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否生成静态',
-  `letter` varchar(30) NOT NULL DEFAULT '' COMMENT '栏目拼音',
-  PRIMARY KEY (`catid`),
-  KEY `module` (`module`,`parentid`,`listorder`,`catid`),
-  KEY `siteid` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='栏目表';
-
--- ----------------------------
--- Records of cms_category
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_category_field
--- ----------------------------
-DROP TABLE IF EXISTS `cms_category_field`;
-CREATE TABLE `cms_category_field` (
-  `fid` smallint(6) NOT NULL AUTO_INCREMENT COMMENT '自增长id',
-  `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `fieldname` varchar(30) NOT NULL DEFAULT '' COMMENT '字段名',
-  `type` varchar(10) NOT NULL DEFAULT '' COMMENT '类型,input',
-  `setting` mediumtext COMMENT '其他',
-  `createtime` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`fid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='栏目扩展字段列表';
-
--- ----------------------------
--- Records of cms_category_field
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_category_priv
--- ----------------------------
-DROP TABLE IF EXISTS `cms_category_priv`;
-CREATE TABLE `cms_category_priv` (
-  `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `roleid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '角色或者组ID',
-  `is_admin` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为管理员 1、管理员',
-  `action` char(30) NOT NULL DEFAULT '' COMMENT '动作',
-  KEY `catid` (`catid`,`roleid`,`is_admin`,`action`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='栏目权限表';
-
--- ----------------------------
--- Records of cms_category_priv
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cms_config
@@ -325,68 +133,6 @@ CREATE TABLE `cms_config_field` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for cms_customlist
--- ----------------------------
-DROP TABLE IF EXISTS `cms_customlist`;
-CREATE TABLE `cms_customlist` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自定义列表ID',
-  `url` char(100) NOT NULL DEFAULT '' COMMENT '访问地址',
-  `name` varchar(60) NOT NULL DEFAULT '' COMMENT '列表标题',
-  `title` varchar(120) NOT NULL DEFAULT '' COMMENT '网页标题',
-  `keywords` varchar(40) NOT NULL DEFAULT '' COMMENT '网页关键字',
-  `description` text COMMENT '页面简介',
-  `totalsql` text COMMENT '数据统计SQL',
-  `listsql` text COMMENT '数据查询SQL',
-  `lencord` int(11) NOT NULL DEFAULT '0' COMMENT '每页显示',
-  `urlruleid` int(11) NOT NULL DEFAULT '0' COMMENT 'URL规则ID',
-  `urlrule` varchar(120) NOT NULL DEFAULT '' COMMENT 'URL规则',
-  `template` mediumtext COMMENT '模板',
-  `listpath` varchar(60) NOT NULL DEFAULT '' COMMENT '列表模板文件',
-  `createtime` int(10) NOT NULL DEFAULT '0' COMMENT '添加时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='自定义列表';
-
--- ----------------------------
--- Records of cms_customlist
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_customtemp
--- ----------------------------
-DROP TABLE IF EXISTS `cms_customtemp`;
-CREATE TABLE `cms_customtemp` (
-  `tempid` smallint(6) NOT NULL AUTO_INCREMENT COMMENT '模板ID',
-  `name` varchar(40)  NOT NULL DEFAULT '' COMMENT '模板名称',
-  `tempname` varchar(30) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '模板完整文件名',
-  `temppath` varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '模板生成路径',
-  `temptext` mediumtext CHARACTER SET utf8 COMMENT '模板内容',
-  PRIMARY KEY (`tempid`),
-  KEY `tempname` (`tempname`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='自定义模板表';
-
--- ----------------------------
--- Records of cms_customtemp
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_locking
--- ----------------------------
-DROP TABLE IF EXISTS `cms_locking`;
-CREATE TABLE `cms_locking` (
-  `userid` int(11) NOT NULL COMMENT '用户ID',
-  `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
-  `catid` smallint(5) NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `id` mediumint(8) NOT NULL DEFAULT '0' COMMENT '信息ID',
-  `locktime` int(10) NOT NULL DEFAULT '0' COMMENT '锁定时间',
-  KEY `userid` (`userid`),
-  KEY `onlinetime` (`locktime`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COMMENT='信息锁定';
-
--- ----------------------------
--- Records of cms_locking
--- ----------------------------
-
--- ----------------------------
 -- Table structure for cms_login_log
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_login_log`;
@@ -400,7 +146,7 @@ CREATE TABLE `cms_login_log` (
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
   PRIMARY KEY (`id`),
   KEY `logintime` (`logintime`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
 
 -- ----------------------------
 -- Table structure for cms_menu
@@ -423,78 +169,6 @@ CREATE TABLE `cms_menu` (
   KEY `parentid` (`parentid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台菜单表';
 
-
--- ----------------------------
--- Table structure for cms_model
--- ----------------------------
-DROP TABLE IF EXISTS `cms_model`;
-CREATE TABLE `cms_model` (
-  `modelid` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(30) NOT NULL DEFAULT '' COMMENT '模型名称',
-  `description` char(100) NOT NULL DEFAULT '' COMMENT '描述',
-  `tablename` varchar(64) NOT NULL DEFAULT '' COMMENT '表名',
-  `setting` text COMMENT '配置信息',
-  `addtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `items` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '信息数',
-  `enablesearch` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否开启全站搜索',
-  `disabled` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否禁用 1禁用',
-  `default_style` char(30) NOT NULL DEFAULT '' COMMENT '风格',
-  `category_template` varchar(128) NOT NULL DEFAULT '' COMMENT '栏目模板',
-  `list_template` varchar(128) NOT NULL DEFAULT '' COMMENT '列表模板',
-  `show_template` varchar(128) NOT NULL DEFAULT '' COMMENT '内容模板',
-  `list_customtemplate` varchar(128) NOT NULL DEFAULT '' COMMENT '后台列表页',
-  `js_template` varchar(128) NOT NULL DEFAULT '' COMMENT 'JS模板',
-  `sort` tinyint(3) NOT NULL DEFAULT '0' COMMENT '排序',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '模块标识',
-  `add_customtemplate` varchar(128) NOT NULL DEFAULT '' COMMENT '添加信息模板',
-  `edit_customtemplate` varchar(128) NOT NULL DEFAULT '' COMMENT '编辑信息模板',
-  PRIMARY KEY (`modelid`),
-  KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='内容模型列表';
-
--- ----------------------------
--- Records of cms_model
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_model_field
--- ----------------------------
-DROP TABLE IF EXISTS `cms_model_field`;
-CREATE TABLE `cms_model_field` (
-  `fieldid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `modelid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
-  `field` varchar(64) NOT NULL DEFAULT '' COMMENT '字段名',
-  `name` varchar(128) NOT NULL DEFAULT '' COMMENT '别名',
-  `tips` text COMMENT '字段提示',
-  `css` varchar(30) NOT NULL DEFAULT '' COMMENT '表单样式',
-  `minlength` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最小值',
-  `maxlength` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最大值',
-  `pattern` varchar(255) NOT NULL DEFAULT '' COMMENT '数据校验正则',
-  `errortips` varchar(255) NOT NULL DEFAULT '' COMMENT '数据校验未通过的提示信息',
-  `formtype` varchar(20) NOT NULL DEFAULT '' COMMENT '字段类型',
-  `setting` mediumtext,
-  `formattribute` varchar(255) NOT NULL DEFAULT '',
-  `unsetgroupids` varchar(255) NOT NULL DEFAULT '',
-  `unsetroleids` varchar(255) NOT NULL DEFAULT '',
-  `iscore` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否内部字段 1是',
-  `issystem` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否系统字段 1 是',
-  `isunique` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '值唯一',
-  `isbase` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '作为基本信息',
-  `issearch` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '作为搜索条件',
-  `isadd` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '在前台投稿中显示',
-  `isfulltext` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '作为全站搜索信息',
-  `isposition` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否入库到推荐位',
-  `listorder` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `disabled` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1 禁用 0启用',
-  `isomnipotent` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`fieldid`),
-  KEY `modelid` (`modelid`,`disabled`),
-  KEY `field` (`field`,`modelid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模型字段列表';
-
--- ----------------------------
--- Records of cms_model_field
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for cms_module
@@ -531,74 +205,9 @@ CREATE TABLE `cms_operation_log` (
     `params` text NOT NULL COMMENT '请求参数',
     `response` text NOT NULL COMMENT '响应结果',
     PRIMARY KEY (`id`),
-    KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
-
-
--- ----------------------------
--- Table structure for cms_page
--- ----------------------------
-DROP TABLE IF EXISTS `cms_page`;
-CREATE TABLE `cms_page` (
-  `catid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `title` varchar(160) NOT NULL DEFAULT '' COMMENT '标题',
-  `style` varchar(24) NOT NULL DEFAULT '' COMMENT '样式',
-  `keywords` varchar(40) NOT NULL DEFAULT '' COMMENT '关键字',
-  `content` text COMMENT '内容',
-  `template` varchar(30) NOT NULL DEFAULT '',
-  `updatetime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  PRIMARY KEY (`catid`),
-  KEY `catid` (`catid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='单页内容表';
-
--- ----------------------------
--- Records of cms_page
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_position
--- ----------------------------
-DROP TABLE IF EXISTS `cms_position`;
-CREATE TABLE `cms_position` (
-  `posid` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '推荐位id',
-  `modelid` char(30) NOT NULL DEFAULT '' COMMENT '模型id',
-  `catid` varchar(255) NOT NULL DEFAULT '' COMMENT '栏目id',
-  `name` char(30) NOT NULL DEFAULT '' COMMENT '推荐位名称',
-  `maxnum` int(11) NOT NULL DEFAULT '20' COMMENT '最大存储数据量',
-  `extention` char(100) NOT NULL DEFAULT '',
-  `listorder` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  PRIMARY KEY (`posid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推荐位';
-
--- ----------------------------
--- Records of cms_position
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_position_data
--- ----------------------------
-DROP TABLE IF EXISTS `cms_position_data`;
-CREATE TABLE `cms_position_data` (
-  `id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'ID',
-  `catid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `posid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '推荐位ID',
-  `module` char(20) NOT NULL DEFAULT '' COMMENT '模型',
-  `modelid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
-  `thumb` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有缩略图',
-  `data` text NOT NULL COMMENT '数据信息',
-  `listorder` int(11) NOT NULL AUTO_INCREMENT COMMENT '排序',
-  `expiration` int(10) NOT NULL,
-  `extention` char(30) NOT NULL DEFAULT '',
-  `synedit` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否同步编辑',
-  `inputtime` int(11) NOT NULL COMMENT '创建时间',
-  `updatetime` int(11) NOT NULL COMMENT '更新时间',
-  KEY `posid` (`posid`),
-  KEY `listorder` (`listorder`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推荐位数据表';
-
--- ----------------------------
--- Records of cms_position_data
--- ----------------------------
+    KEY `time` (`time`),
+    KEY `uid_time` (`uid`, `time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台操作日志表';
 
 -- ----------------------------
 -- Table structure for cms_role
@@ -624,103 +233,6 @@ CREATE TABLE `cms_role` (
 INSERT INTO `cms_role` VALUES ('1', '超级管理员', '0', '1', '拥有网站最高管理员权限！', '1329633709', '1329633709', '0');
 INSERT INTO `cms_role` VALUES ('2', '站点管理员', '1', '1', '站点管理员', '1329633722', '1399780945', '0');
 INSERT INTO `cms_role` VALUES ('3', '发布人员', '2', '1', '发布人员', '1329633733', '1399798954', '0');
-
--- ----------------------------
--- Table structure for cms_tags
--- ----------------------------
-DROP TABLE IF EXISTS `cms_tags`;
-CREATE TABLE `cms_tags` (
-  `tagid` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'tagID',
-  `tag` char(20) NOT NULL DEFAULT '' COMMENT 'tag名称',
-  `seo_title` varchar(255) NOT NULL DEFAULT '' COMMENT 'seo标题',
-  `seo_keyword` varchar(255) NOT NULL DEFAULT '' COMMENT 'seo关键字',
-  `seo_description` varchar(255) NOT NULL DEFAULT '' COMMENT 'seo简介',
-  `style` char(5) NOT NULL DEFAULT '' COMMENT '附加状态码',
-  `usetimes` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '信息总数',
-  `lastusetime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后使用时间',
-  `hits` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '点击数',
-  `lasthittime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最近访问时间',
-  `listorder` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
-  PRIMARY KEY (`tagid`),
-  UNIQUE KEY `tag` (`tag`),
-  KEY `usetimes` (`usetimes`,`listorder`),
-  KEY `hits` (`hits`,`listorder`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='tags主表';
-
--- ----------------------------
--- Records of cms_tags
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_tags_content
--- ----------------------------
-DROP TABLE IF EXISTS `cms_tags_content`;
-CREATE TABLE `cms_tags_content` (
-  `tag` char(20) NOT NULL COMMENT 'tag名称',
-  `url` varchar(255) NOT NULL DEFAULT '' COMMENT '信息地址',
-  `title` varchar(80) NOT NULL DEFAULT '' COMMENT '标题',
-  `modelid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '模型ID',
-  `contentid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '信息ID',
-  `catid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `updatetime` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  KEY `modelid` (`modelid`,`contentid`),
-  KEY `tag` (`tag`(10))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='tags数据表';
-
--- ----------------------------
--- Records of cms_tags_content
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_terms
--- ----------------------------
-DROP TABLE IF EXISTS `cms_terms`;
-CREATE TABLE `cms_terms` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '分类ID',
-  `parentid` smallint(5) NOT NULL DEFAULT '0' COMMENT '父ID',
-  `name` varchar(200) NOT NULL DEFAULT '' COMMENT '分类名称',
-  `module` varchar(200) NOT NULL DEFAULT '' COMMENT '所属模块',
-  `setting` mediumtext COMMENT '相关配置信息',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
-
--- ----------------------------
--- Records of cms_terms
--- ----------------------------
-
--- ----------------------------
--- Table structure for cms_urlrule
--- ----------------------------
-DROP TABLE IF EXISTS `cms_urlrule`;
-CREATE TABLE `cms_urlrule` (
-  `urlruleid` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '规则id',
-  `module` varchar(15) NOT NULL DEFAULT '' COMMENT '所属模块',
-  `file` varchar(20) NOT NULL DEFAULT '' COMMENT '所属文件',
-  `ishtml` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '生成静态规则 1 静态',
-  `urlrule` varchar(255) NOT NULL DEFAULT '' COMMENT 'url规则',
-  `example` varchar(255) NOT NULL DEFAULT '' COMMENT '示例',
-  PRIMARY KEY (`urlruleid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='内容模型URL规则';
-
--- ----------------------------
--- Records of cms_urlrule
--- ----------------------------
-INSERT INTO `cms_urlrule` VALUES ('1', 'content', 'category', '0', 'index.php?a=lists&catid={$catid}|index.php?a=lists&catid={$catid}&page={$page}', '动态：index.php?a=lists&catid=1&page=1');
-INSERT INTO `cms_urlrule` VALUES ('2', 'content', 'category', '1', '{$categorydir}{$catdir}/index.shtml|{$categorydir}{$catdir}/index_{$page}.shtml', '静态：news/china/1000.shtml');
-INSERT INTO `cms_urlrule` VALUES ('3', 'content', 'show', '1', '{$year}/{$catdir}_{$month}/{$id}.shtml|{$year}/{$catdir}_{$month}/{$id}_{$page}.shtml', '静态：2010/catdir_07/1_2.shtml');
-INSERT INTO `cms_urlrule` VALUES ('4', 'content', 'show', '0', 'index.php?a=shows&catid={$catid}&id={$id}|index.php?a=shows&catid={$catid}&id={$id}&page={$page}', '动态：index.php?m=Index&a=shows&catid=1&id=1');
-INSERT INTO `cms_urlrule` VALUES ('5', 'content', 'category', '1', 'news/{$catid}.shtml|news/{$catid}-{$page}.shtml', '静态：news/1.shtml');
-INSERT INTO `cms_urlrule` VALUES ('6', 'content', 'category', '0', 'list-{$catid}.html|list-{$catid}-{$page}.html', '伪静态：list-1-1.html');
-INSERT INTO `cms_urlrule` VALUES ('7', 'content', 'tags', '0', 'index.php?a=tags&amp;tagid={$tagid}|index.php?a=tags&amp;tagid={$tagid}&amp;page={$page}', '动态：index.php?a=tags&amp;tagid=1');
-INSERT INTO `cms_urlrule` VALUES ('8', 'content', 'tags', '0', 'index.php?a=tags&amp;tag={$tag}|/index.php?a=tags&amp;tag={$tag}&amp;page={$page}', '动态：index.php?a=tags&amp;tag=标签');
-INSERT INTO `cms_urlrule` VALUES ('9', 'content', 'tags', '0', 'tag-{$tag}.html|tag-{$tag}-{$page}.html', '伪静态：tag-标签.html');
-INSERT INTO `cms_urlrule` VALUES ('10', 'content', 'tags', '0', 'tag-{$tagid}.html|tag-{$tagid}-{$page}.html', '伪静态：tag-1.html');
-INSERT INTO `cms_urlrule` VALUES ('11', 'content', 'index', '1', 'index.html|index_{$page}.html', '静态：index_2.html');
-INSERT INTO `cms_urlrule` VALUES ('12', 'content', 'index', '0', 'index.html|index_{$page}.html', '伪静态：index_2.html');
-INSERT INTO `cms_urlrule` VALUES ('13', 'content', 'index', '0', 'index.php|index.php?page={$page}', '动态：index.php?page=2');
-INSERT INTO `cms_urlrule` VALUES ('14', 'content', 'category', '1', 'download.shtml|download_{$page}.shtml', '静态：download.shtml');
-INSERT INTO `cms_urlrule` VALUES ('15', 'content', 'show', '1', '{$categorydir}{$id}.shtml|{$categorydir}{$id}_{$page}.shtml', '静态：/父栏目/1.shtml');
-INSERT INTO `cms_urlrule` VALUES ('16', 'content', 'show', '1', '{$catdir}/{$id}.shtml|{$catdir}/{$id}_{$page}.shtml', '示例：/栏目/1.html');
 
 -- ----------------------------
 -- Table structure for cms_user
@@ -768,7 +280,7 @@ CREATE TABLE `cms_admin_message` (
   `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
   PRIMARY KEY (`id`),
   KEY `receiver` (`receiver`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='后台消息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台消息';
 
 DROP TABLE IF EXISTS `cms_email_send_log`;
 CREATE TABLE `cms_email_send_log` (
@@ -780,7 +292,8 @@ CREATE TABLE `cms_email_send_log` (
   `status` tinyint(11) NOT NULL DEFAULT '1' COMMENT '发送状态 0失败 1成功',
   `error_msg` varchar(512) NOT NULL DEFAULT '' COMMENT '错误信息',
   `send_time` int(11) NOT NULL COMMENT '发送时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `send_time` (`send_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邮件发送记录';
 
 DROP TABLE IF EXISTS `cms_user_operate_log`;
@@ -794,8 +307,9 @@ CREATE TABLE `cms_user_operate_log`
   `source` varchar(255) NOT NULL DEFAULT '' COMMENT '来源项',
   `content` varchar(255) NOT NULL DEFAULT '' COMMENT '操作内容',
   `create_time` int(11) NOT NULL COMMENT '操作时间',
-    PRIMARY KEY (`id`)
-) ENGINE = MyISAM CHARACTER SET = utf8mb4 COMMENT='用户操作日志';
+    PRIMARY KEY (`id`),
+    KEY `user_id_create_time` (`user_id`, `create_time`)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT='用户操作日志';
 
 DROP TABLE IF EXISTS `cms_kv`;
 CREATE TABLE `cms_kv`
@@ -805,4 +319,4 @@ CREATE TABLE `cms_kv`
     `create_time` int(11) NOT NULL,
     `update_time` int(11) NOT NULL,
     PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

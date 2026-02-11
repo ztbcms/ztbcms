@@ -16,7 +16,7 @@ CREATE TABLE `cms_tp6_cron` (
   `data` text COMMENT '数据',
   PRIMARY KEY (`cron_id`),
   KEY `idx_next_time` (`next_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务表';
 
 DROP TABLE IF EXISTS `cms_tp6_cron_log`;
 CREATE TABLE `cms_tp6_cron_log` (
@@ -29,7 +29,7 @@ CREATE TABLE `cms_tp6_cron_log` (
   `result_msg` text COMMENT '执行日志信息',
   PRIMARY KEY (`id`),
   KEY `result` (`result`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务执行日志';
 
 DROP TABLE IF EXISTS `cms_tp6_cron_scheduling_log`;
 CREATE TABLE `cms_tp6_cron_scheduling_log` (
@@ -40,7 +40,7 @@ CREATE TABLE `cms_tp6_cron_scheduling_log` (
   `error_count` int(11) NOT NULL COMMENT '错误数量',
   `cron_count` int(11) NOT NULL COMMENT '周期内执行计划任务次数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调度运行日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='调度运行日志';
 
 -- 配置表
 DROP TABLE IF EXISTS `cms_tp6_cron_config`;
@@ -50,7 +50,7 @@ CREATE TABLE `cms_tp6_cron_config` (
   `title` varchar(32) NOT NULL DEFAULT '' COMMENT '标题',
   `descrption` varchar(32) NOT NULL DEFAULT '',
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `cms_tp6_cron_config` (`key`, `value`, `title`, `descrption`)
 VALUES
@@ -81,7 +81,7 @@ CREATE TABLE `cms_tp6_message_msg` (
   `read_time` int(11) NOT NULL DEFAULT '0' COMMENT '阅读时间',
   `process_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '处理次数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  COMMENT='消息记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息记录';
 
 DROP TABLE IF EXISTS `cms_tp6_message_send_log`;
 CREATE TABLE `cms_tp6_message_send_log` (
@@ -156,7 +156,7 @@ CREATE TABLE `cms_queue_jobs` (
   `create_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `queue` (`queue`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-任务表';
 
 DROP TABLE IF EXISTS `cms_queue_failed_jobs`;
 CREATE TABLE `cms_queue_failed_jobs` (
@@ -167,7 +167,7 @@ CREATE TABLE `cms_queue_failed_jobs` (
  `exception` longtext NOT NULL,
  `fail_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-失败任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-失败任务表';
 
 -- ----------------------------
 -- 队列 END
