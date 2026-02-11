@@ -212,10 +212,6 @@ class Index extends BaseController
         $seo_description = input('siteinfo', '', 'trim');
         //关键词
         $seo_keywords = input('sitekeywords', '', 'trim');
-        //测试数据
-        $testdata = input('testdata', '', 'intval');
-
-
         $res = $this->_doTestDbConnection();
         if (!$res['status']) {
             return self::makeJsonReturn(true, [
@@ -230,11 +226,6 @@ class Index extends BaseController
 
         //读取数据文件
         $sqldata = file_get_contents(app_path().'data/cms.sql');
-        //读取测试数据
-        if ($testdata) {
-            $sqldataDemo = file_get_contents(app_path().'data/cms_demo.sql');
-            $sqldata = $sqldata."\r\n".$sqldataDemo;
-        }
         $sqlFormat = SqlHelper::splitSQL($sqldata, $dbPrefix);
         /**
          * 执行SQL语句
