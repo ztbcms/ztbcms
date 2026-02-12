@@ -43,16 +43,12 @@ class ModuleUninstaller extends ModuleInstaller
         }
         //删除安装记录
         Db::name('module')->where('module', $moduleName)->delete();
-        //执行卸载脚本
-        $this->_runInstallScript($moduleName, 'uninstall');
         //删除菜单项
         $this->_uninstallMenu($moduleName);
         //执行数据库脚本安装
         $this->_runSQL($moduleName, 'uninstall');
         //静态资源移除
         $this->_removeResource($moduleName);
-        //卸载结束，最后调用卸载脚本完成
-        $this->_runInstallScriptEnd($moduleName, 'uninstall');
 
         return self::createReturn(true, null, '卸载完成');
     }

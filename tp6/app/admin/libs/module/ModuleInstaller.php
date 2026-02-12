@@ -124,14 +124,9 @@ class ModuleInstaller extends BaseService
             return $res;
         }
 
-        // TODO 执行安装脚本
-        $this->_runInstallScript($moduleName, 'install');
-
         //静态资源文件
         $this->_copyResource($moduleName);
 
-        //安装结束，最后调用安装脚本完成
-        $this->_runInstallScriptEnd($moduleName, 'install');
         return self::createReturn(true, null, '安装完成');
     }
 
@@ -255,18 +250,6 @@ class ModuleInstaller extends BaseService
         //删除安装状态
         Db::name('module')->where('module', $moduleName)->delete();
         return self::createReturn(true, null, '安装回滚完成');
-    }
-
-    // TODO 执行 install.php 前置方法
-    function _runInstallScript($moduleName, $type = '')
-    {
-        return true;
-    }
-
-    // TODO 执行 install.php的后置方法
-    function _runInstallScriptEnd($moduleName, $type = '')
-    {
-        return true;
     }
 
     /**
