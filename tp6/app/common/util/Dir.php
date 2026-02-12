@@ -1,12 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-03
- * Time: 21:43.
- */
-
-/**
  * DirectoryIterator实现类 PHP5以上内置了DirectoryIterator类
  *
  * @category   ORG

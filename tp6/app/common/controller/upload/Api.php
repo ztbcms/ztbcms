@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-16
- * Time: 15:55.
- */
-
 declare(strict_types=1);
 
 namespace app\common\controller\upload;

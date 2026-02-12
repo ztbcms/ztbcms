@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-15
- * Time: 14:49.
- */
-
 namespace app\common\model\upload;
 
 
