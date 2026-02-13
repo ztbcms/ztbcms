@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-07
- * Time: 09:36.
- */
-
 namespace app\common\model;
 
 

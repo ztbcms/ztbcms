@@ -24,9 +24,6 @@
         })(window.Vue);
     </script>
 
-    <!-- 时间格式化工具  -->
-    <script src="/statics/admin/momentjs/2.24.0.js"></script>
-
     <!--  Element UI START  -->
     <!-- 引入样式 -->
     <link rel="stylesheet" href="/statics/admin/theme/elementui/2.15.14/index.css">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User: jayinton
  */
@@ -16,18 +17,11 @@ use think\facade\View;
 class Page extends AdminController
 {
     /**
-     * 在线表单
-     * @return string
-     */
-    public function diyForm(){
-        return View::fetch('diyForm');
-    }
-
-    /**
      * 列表页
      * @return string
      */
-    public function list(){
+    public function list()
+    {
         return View::fetch('list');
     }
 
@@ -35,7 +29,8 @@ class Page extends AdminController
      * 表单页
      * @return string
      */
-    public function form(){
+    public function form()
+    {
         return View::fetch('form');
     }
 
@@ -43,7 +38,8 @@ class Page extends AdminController
      * 图片预览
      * @return string
      */
-    public function image(){
+    public function image()
+    {
         return View::fetch('image');
     }
 }

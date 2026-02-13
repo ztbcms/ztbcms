@@ -7,7 +7,7 @@ use think\Model;
 
 class CronModel extends Model
 {
-    protected $name = 'tp6_cron';
+    protected $name = 'cron';
     protected $type
         = [
             'modified_time' => 'timestamp',

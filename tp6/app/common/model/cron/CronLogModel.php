@@ -9,7 +9,7 @@ use think\Request;
 class CronLogModel extends Model
 {
 
-    protected $name = 'tp6_cron_log';
+    protected $name = 'cron_log';
     /**
      * 运行结果：待执行
      */

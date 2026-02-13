@@ -140,13 +140,6 @@
                             <div id="J_install_tip_manager_email"></div>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="tar">测试数据：</td>
-                        <td><input name="testdata" type="checkbox" value="1" alt="测试数据需要安装在根目录下才可以完整体验" title="测试数据需要安装在根目录下才可以完整体验"/><span class="gray">默认测试数据，了解ZTBCMS！</span></td>
-                        <td>
-                            <div id="J_install_tip_manager_email"></div>
-                        </td>
-                    </tr>
                 </table>
                 <div id="J_response_tips" style="display:none;"></div>
             </div>

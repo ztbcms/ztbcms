@@ -1,8 +1,8 @@
 -- ----------------------------
 -- 计划任务
 -- ----------------------------
-DROP TABLE IF EXISTS `cms_tp6_cron`;
-CREATE TABLE `cms_tp6_cron` (
+DROP TABLE IF EXISTS `cms_cron`;
+CREATE TABLE `cms_cron` (
   `cron_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '计划任务ID',
   `type` tinyint(2) DEFAULT '0' COMMENT '计划任务类型',
   `subject` varchar(50) NOT NULL DEFAULT '' COMMENT '计划任务名称',
@@ -16,10 +16,10 @@ CREATE TABLE `cms_tp6_cron` (
   `data` text COMMENT '数据',
   PRIMARY KEY (`cron_id`),
   KEY `idx_next_time` (`next_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务表';
 
-DROP TABLE IF EXISTS `cms_tp6_cron_log`;
-CREATE TABLE `cms_tp6_cron_log` (
+DROP TABLE IF EXISTS `cms_cron_log`;
+CREATE TABLE `cms_cron_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `cron_id` int(11) NOT NULL COMMENT '计划任务ID',
   `start_time` int(11) NOT NULL COMMENT '开始时间',
@@ -29,10 +29,10 @@ CREATE TABLE `cms_tp6_cron_log` (
   `result_msg` text COMMENT '执行日志信息',
   PRIMARY KEY (`id`),
   KEY `result` (`result`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务执行日志';
 
-DROP TABLE IF EXISTS `cms_tp6_cron_scheduling_log`;
-CREATE TABLE `cms_tp6_cron_scheduling_log` (
+DROP TABLE IF EXISTS `cms_cron_scheduling_log`;
+CREATE TABLE `cms_cron_scheduling_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `start_time` int(11) NOT NULL COMMENT '开始时间',
   `end_time` int(11) NOT NULL COMMENT '结束时间',
@@ -40,19 +40,19 @@ CREATE TABLE `cms_tp6_cron_scheduling_log` (
   `error_count` int(11) NOT NULL COMMENT '错误数量',
   `cron_count` int(11) NOT NULL COMMENT '周期内执行计划任务次数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调度运行日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='调度运行日志';
 
 -- 配置表
-DROP TABLE IF EXISTS `cms_tp6_cron_config`;
-CREATE TABLE `cms_tp6_cron_config` (
+DROP TABLE IF EXISTS `cms_cron_config`;
+CREATE TABLE `cms_cron_config` (
   `key` varchar(32) NOT NULL DEFAULT '' COMMENT '键',
   `value` varchar(256) NOT NULL DEFAULT '' COMMENT '值',
   `title` varchar(32) NOT NULL DEFAULT '' COMMENT '标题',
   `descrption` varchar(32) NOT NULL DEFAULT '',
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `cms_tp6_cron_config` (`key`, `value`, `title`, `descrption`)
+INSERT INTO `cms_cron_config` (`key`, `value`, `title`, `descrption`)
 VALUES
 	('enable_cron', '1', '是否启用', '1启动 0停止'),
 	('secret_key', '', '私钥', '');
@@ -61,8 +61,8 @@ VALUES
 -- 消息
 -- ----------------------------
 
-DROP TABLE IF EXISTS `cms_tp6_message_msg`;
-CREATE TABLE `cms_tp6_message_msg` (
+DROP TABLE IF EXISTS `cms_message_msg`;
+CREATE TABLE `cms_message_msg` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(128) NOT NULL DEFAULT '' COMMENT '消息标题',
   `content` varchar(512) NOT NULL DEFAULT '' COMMENT '消息内容',
@@ -81,10 +81,10 @@ CREATE TABLE `cms_tp6_message_msg` (
   `read_time` int(11) NOT NULL DEFAULT '0' COMMENT '阅读时间',
   `process_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '处理次数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8  COMMENT='消息记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息记录';
 
-DROP TABLE IF EXISTS `cms_tp6_message_send_log`;
-CREATE TABLE `cms_tp6_message_send_log` (
+DROP TABLE IF EXISTS `cms_message_send_log`;
+CREATE TABLE `cms_message_send_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `message_id` int(11) DEFAULT '0' COMMENT '消息id',
   `sender` varchar(256) DEFAULT '' COMMENT '消息处理器',
@@ -156,7 +156,7 @@ CREATE TABLE `cms_queue_jobs` (
   `create_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `queue` (`queue`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-任务表';
 
 DROP TABLE IF EXISTS `cms_queue_failed_jobs`;
 CREATE TABLE `cms_queue_failed_jobs` (
@@ -167,7 +167,7 @@ CREATE TABLE `cms_queue_failed_jobs` (
  `exception` longtext NOT NULL,
  `fail_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='队列-失败任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-失败任务表';
 
 -- ----------------------------
 -- 队列 END

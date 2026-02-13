@@ -7,7 +7,7 @@ use think\Model;
 
 class CronConfigModel extends Model
 {
-    protected $name = 'tp6_cron_config';
+    protected $name = 'cron_config';
 
     //是否启用计划任务
     const KEY_ENABLE_CRON = 'enable_cron';
@@ -67,5 +67,4 @@ class CronConfigModel extends Model
         $cron_execute_status['current_exec_cron'] = $exec_cron_list;
         return $cron_execute_status;
     }
-
 }

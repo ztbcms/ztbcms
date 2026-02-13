@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zhlhuang
- * Date: 2020-09-18
- * Time: 10:40.
- */
-
 namespace app\common\exception;
 
 use Throwable;
