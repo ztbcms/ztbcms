@@ -32,14 +32,6 @@ return [
                 "remark" => "",
                 "child"  => [
                     [
-                        "route"  => "demo/admin.page/diyForm",
-                        "type"   => 1,
-                        "status" => 1,
-                        "name"   => "在线表单",
-                        "remark" => "",
-                        "child"  => []
-                    ],
-                    [
                         "route"  => "demo/admin.page/list",
                         "type"   => 1,
                         "status" => 1,
