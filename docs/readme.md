@@ -20,4 +20,5 @@
 
 - [起步](./GetStart.md)
 - [模块开发](./ModuleDevelopment.md)
+- [路由开发指南](./RouteGuide.md)
 - [数据库迁移（Migrate）](./MigrateGuide.md)

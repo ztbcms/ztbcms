@@ -10,8 +10,14 @@ return [
     'app_namespace'    => '',
     // 是否启用路由
     'with_route'       => true,
+    // 自动多应用模式声明：
+    // 项目按 app/{应用名} 结构解析应用，例如访问 /news/content/index 时，
+    // 会优先把 news 识别为应用，并进入 app/news/ 目录加载控制器、配置与路由
     'auto_multi_app'   => true,
-    // 开启应用快速访问
+    // 应用快速访问：
+    // 当 URL 首段不是有效应用名时，自动回退到 default_app 指定的默认应用
+    // 例如访问 /hello 时，如果不存在 app/hello/，则会回退到 home 应用
+    // 此时应到 app/home/route/app.php 中定义路由，例如：Route::get('hello/[:name]', 'Index/hello');
     'app_express'    =>    true,
     // 默认应用
     'default_app'      => 'home',
