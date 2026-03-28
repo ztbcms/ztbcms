@@ -7,7 +7,7 @@
 $commands = [];
 
 // Tips: 在对应App目录中创建`console.php`, 往 $apps 填写App名称即可
-$apps = ['common'];
+$apps = ['common', 'admin'];
 $app_cmds = [];
 foreach ($apps as $app) {
     $console_file = app_path($app . '/config/') . 'console.php';

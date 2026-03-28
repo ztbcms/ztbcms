@@ -53,10 +53,10 @@ class UserOperateLogService extends BaseService
     {
         $userInfo = AdminUserService::getInstance()->getInfo();
         $data = [
-            'user_id'     => $userInfo['id'],
-            'user_name'   => $userInfo['username'],
+            'user_id'     => $operateData['user_id'] ?? ($userInfo['id'] ?? 0),
+            'user_name'   => $operateData['user_name'] ?? ($userInfo['username'] ?? 'cli'),
             'create_time' => time(),
-            'ip'          => request()->ip(),
+            'ip'          => $operateData['ip'] ?? request()->ip(),
             'source_type' => $operateData['source_type'] ?? '',
             'source'      => $operateData['source'] ?? 0,
             'content'     => $operateData['content'] ?? ''

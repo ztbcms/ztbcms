@@ -175,9 +175,12 @@ class ModuleService extends BaseService
         $installedModuleMap = $this->getInstallModuleMap()['data'];
         $moduleList = [];
         foreach ($dirs_arr as $moduleName => $moduleFilePath) {
+            $moduleDir = strtolower($moduleName);
             $moduleName = ucwords($moduleName);
             $moduleInfo = isset($installedModuleMap[strtolower($moduleName)]) ? $installedModuleMap[strtolower($moduleName)] : null;
             $config = array(
+                //真实模块目录
+                'module_dir'   => $moduleDir,
                 //模块目录
                 'module'       => $moduleName,
                 //模块名称

@@ -58,6 +58,13 @@
 | `php think cron:exec` | 执行指定的计划任务 |
 | `php think cron:clean` | 清理计划任务缓存 |
 
+## 模块管理（module）
+| 命令 | 说明 |
+|------|------|
+| `php think module:list` | 列出所有本地模块及安装状态 |
+| `php think module:install <module_name>` | 安装指定模块 |
+| `php think module:uninstall <module_name>` | 卸载指定模块（需确认，`--force` 跳过） |
+
 ## 其他
 | 命令 | 说明 |
 |------|------|
