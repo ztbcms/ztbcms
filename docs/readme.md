@@ -22,3 +22,4 @@
 - [模块开发](./ModuleDevelopment.md)
 - [路由开发指南](./RouteGuide.md)
 - [数据库迁移（Migrate）](./MigrateGuide.md)
+- [php think 命令速查](./ThinkCommand.md) - 代码生成、迁移、队列、计划任务等 CLI 命令速查
