@@ -1,11 +1,7 @@
 ## ZTBCMS
 
-[![OSCS Status](https://www.oscs1024.com/platform/badge/ztbcms/ztbcms.svg?size=small)](https://www.oscs1024.com/project/ztbcms/ztbcms?ref=badge_small)
-
 基于ThinkPHP 6 + ElementUI的快速开发框架
 
-High-performance, modular and rapid development framework based on ThinkPHP
- 
 相关文档：[ThinkPHP文档](https://www.kancloud.cn/manual/thinkphp6_0/) | [ThinkTemplate模板](https://www.kancloud.cn/manual/think-template) | [PHP之道](http://www.phptherightway.com)
 
 ## 主要特性
