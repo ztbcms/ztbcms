@@ -6,17 +6,26 @@
 // 注册应用的命令行
 $commands = [];
 
-// Tips: 在对应App目录中创建`console.php`, 往 $apps 填写App名称即可
-$apps = ['common', 'admin'];
-$app_cmds = [];
-foreach ($apps as $app) {
-    $console_file = app_path($app . '/config/') . 'console.php';
-    if (file_exists($console_file)) {
-        $app_cmds = array_merge($app_cmds, require($console_file));
+if (!in_array(PHP_SAPI, ['cli', 'phpdbg'], true)) {
+    return [
+        // 指令定义
+        'commands' => $commands,
+    ];
+}
+
+$appCmds = [];
+$consoleFiles = glob(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'console.php') ?: [];
+
+sort($consoleFiles, SORT_STRING);
+
+foreach ($consoleFiles as $consoleFile) {
+    $appCommands = require $consoleFile;
+    if (is_array($appCommands)) {
+        $appCmds = array_merge($appCmds, $appCommands);
     }
 }
 
 return [
     // 指令定义
-    'commands' => array_merge($commands, $app_cmds),
+    'commands' => array_merge($commands, $appCmds),
 ];
