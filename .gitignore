@@ -3,6 +3,3 @@
 d/
 runtime/
 
-# 本地数据库配置
-tp6/config/local_dataconfig.php
-

@@ -319,4 +319,4 @@ CREATE TABLE `cms_kv`
     `create_time` int(11) NOT NULL,
     `update_time` int(11) NOT NULL,
     PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='键值对表';

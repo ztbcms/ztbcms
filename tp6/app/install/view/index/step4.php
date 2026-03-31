@@ -9,7 +9,7 @@
 <body>
 <div class="wrap">
     <div class="header">
-        <h1 class="logo">logo</h1>
+        <h1 class="logo">ZTBCMS</h1>
         <div class="icon_install">安装向导</div>
         <div class="version">
             <?php echo \think\facade\Config::get('admin.cms_version'); ?>
@@ -27,7 +27,7 @@
             <ul id="loginner">
             </ul>
         </div>
-        <div class="bottom tac"><a href="javascript:;" class="btn_old"><img src="/statics/modules/install/images/install/loading.gif" align="absmiddle"/>&nbsp;正在安装...</a></div>
+        <div class="bottom tac"><a href="javascript:;" class="btn_old">正在安装...</a></div>
     </section>
     <script type="text/javascript">
         var n = 0;
@@ -42,21 +42,31 @@
                 data: data,
                 dataType: 'json',
                 success: function (res) {
-                    if(res.data.msg){
-                        $('#loginner').append(res.data.msg);
+                    var resultData = res.data || {};
+
+                    if (resultData.msg) {
+                        $('#loginner').append(resultData.msg);
                     }
 
-                    if (res.data.n == '999999') {
-                        $('#dosubmit').attr("disabled", false);
-                        $('#dosubmit').removeAttr("disabled");
-                        $('#dosubmit').removeClass("nonext");
+                    if (!res.status) {
+                        alert(res.msg || resultData.msg || '安装失败');
+                        return;
+                    }
+
+                    if (resultData.n == '999999') {
+                        if ($('.error_span').length > 0) {
+                            $('.btn_old').text('部分出错，请排查');
+                            $('.btn_old').after('<p style="margin-top:20px;"><a href="javascript:gonext();" class="btn" style="background:#e53e3e;">我已知晓，仍要完成安装</a></p>');
+                            return; // 有报错则立刻挂起，不触发自动跳转
+                        }
+                        
                         setTimeout('gonext()', 1500);
                         return;
                     }
-                    if (res.data.n && res.data.n >= 0) {
-                        reloads(res.data.n);
+                    if (resultData.n && resultData.n >= 0) {
+                        reloads(resultData.n);
                     } else {
-                        alert(res.data.msg);
+                        alert(resultData.msg || res.msg || '安装失败');
                     }
                 }
             });
@@ -71,6 +81,5 @@
         })
     </script>
 </div>
-{include file="index/footer" /}
 </body>
 </html>

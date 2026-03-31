@@ -1,9 +1,6 @@
 <?php
 //引入cms数据库配置
-$cmsDataConfig = [];
-if (file_exists(config_path() . "dataconfig.php")) {
-    $cmsDataConfig = include config_path() . "dataconfig.php";
-}
+$cmsDataConfig = require config_path() . "dataconfig.php";
 
 return [
     // 默认使用的数据库连接配置

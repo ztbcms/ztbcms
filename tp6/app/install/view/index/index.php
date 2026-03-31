@@ -28,7 +28,5 @@ ZTBCMS 免责声明
         <div class="bottom tac"><a href="{:api_url('/install/index/step2')}" class="btn">接 受</a></div>
     </div>
 </div>
-{include file="index/footer" /}
-
 </body>
 </html>

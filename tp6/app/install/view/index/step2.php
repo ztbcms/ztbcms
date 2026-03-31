@@ -95,7 +95,6 @@
     <div class="bottom tac"> <a href="{:api_url('/install/index/step2')}" class="btn">重新检测</a><a href="{:api_url('/install/index/step3')}" class="btn next">下一步</a> </div>
   </section>
 </div>
-{include file="index/footer" /}
 <script>
 $(function(){
 	var errSum = parseInt('{$err}');

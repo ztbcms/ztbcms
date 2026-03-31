@@ -6,9 +6,7 @@
 // 系统配置
 
 //引入cms数据库配置
-if (file_exists(config_path()."dataconfig.php")) {
-    $cmsDataConfig = include config_path()."dataconfig.php";
-}
+$cmsDataConfig = require config_path()."dataconfig.php";
 
 return [
     /* 站点安全设置 */

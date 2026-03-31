@@ -148,7 +148,7 @@
             </div>
         </form>
     </section>
-    <div style="width:0;height:0;overflow:hidden;"><img src="/statics/modules/install/images/install/pop_loading.gif"></div>
+    <div style="display:none; width:0; height:0;"></div>
     <script>
         function TestDbPwd() {
 
@@ -324,6 +324,5 @@
         });
     </script>
 </div>
-{include file="index/footer" /}
 </body>
 </html>
