@@ -3,6 +3,7 @@
 ## 入门指南
 
 - [起步](./GetStart.md)
+- [系统安装向导](../tp6/app/install/README.md)
 - [菜单](./Menu.md)
 - [常见问题](./Faq.md)
 
