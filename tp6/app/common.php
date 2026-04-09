@@ -159,3 +159,15 @@ if (!function_exists('now_us')) {
         return intval(($sec + $usec) * 1000000);
     }
 }
+
+if (!function_exists('install_lock_path')) {
+    /**
+     * 安装锁文件路径
+     *
+     * @return string
+     */
+    function install_lock_path()
+    {
+        return root_path('app/install') . DIRECTORY_SEPARATOR . 'install.lock';
+    }
+}

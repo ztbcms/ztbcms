@@ -14,7 +14,7 @@ class Index extends BaseController
     public function index()
     {
         $install_path = root_path('app/install');
-        $install_lock_path = $install_path.DIRECTORY_SEPARATOR.'install.lock';
+        $install_lock_path = install_lock_path();
         $enable_install = file_exists($install_path) && !file_exists($install_lock_path);
         try {
             $config = \app\common\model\ConfigModel::getConfigs();

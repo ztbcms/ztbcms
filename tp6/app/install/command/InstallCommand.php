@@ -35,7 +35,7 @@ class InstallCommand extends Command
     {
         $isCheckEnv = $input->getOption('checkEnv');
 
-        if (!$isCheckEnv && is_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'install.lock')) {
+        if (!$isCheckEnv && is_file(install_lock_path())) {
             $output->error('系统已安装！如需重新安装，请先删除 tp6/app/install/install.lock 文件。');
             return 1;
         }
@@ -119,7 +119,7 @@ class InstallCommand extends Command
                     $n = $res['data']['n'];
                     if ($n >= 999999) {
                         $output->info('安装全部完成！锁定安装程序。');
-                        touch(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'install.lock');
+                        touch(install_lock_path());
                         return 0;
                     }
                 } else {
