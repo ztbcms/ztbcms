@@ -70,7 +70,7 @@
                         <div class="card-changyong-data">
                             <el-row>
 
-                                <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Config', 'index')){ ?>
+                                <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'Config', 'index')) { ?>
                                     <el-col :span="4">
                                         <div class="col-data" @click="gotoPage3">
                                             <div class="item-icon">
@@ -81,25 +81,18 @@
                                     </el-col>
                                 <?php } ?>
 
-                                <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'index')){ ?>
-                                <el-col :span="4">
-                                    <div class="col-data" @click="gotoPage4">
-                                        <div class="item-icon">
-                                            <i class="iconfont icon-question"></i>
+                                <?php if (\app\admin\service\AdminUserService::getInstance()->hasPermission('admin', 'AdminManager', 'index')) { ?>
+                                    <el-col :span="4">
+                                        <div class="col-data" @click="gotoPage4">
+                                            <div class="item-icon">
+                                                <i class="iconfont icon-question"></i>
+                                            </div>
+                                            <div class="item-label">管理员管理</div>
                                         </div>
-                                        <div class="item-label">管理员管理</div>
-                                    </div>
-                                </el-col>
+                                    </el-col>
                                 <?php } ?>
 
-                                <el-col :span="4">
-                                    <div class="col-data" @click="gotoPage5">
-                                        <div class="item-icon">
-                                            <i class="el-icon-tickets"></i>
-                                        </div>
-                                        <div class="item-label">开发文档</div>
-                                    </div>
-                                </el-col>
+
                             </el-row>
                         </div>
 
@@ -124,7 +117,6 @@
 </div>
 
 <style>
-
     /* 后台统计  */
     .card-summary .card-summary-label {
         font-size: 14px;
@@ -200,7 +192,7 @@
 </style>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         new Vue({
             el: '#app',
             data: {
@@ -211,16 +203,16 @@
             watch: {},
             filters: {},
             methods: {
-                getInfo: function () {
+                getInfo: function() {
                     var that = this;
                     $.ajax({
                         url: "{:api_url('/admin/Main/index')}",
                         data: {
-                            '_action' : 'getMainInfo'
+                            '_action': 'getMainInfo'
                         },
                         dataType: 'json',
                         type: 'get',
-                        success: function (res) {
+                        success: function(res) {
                             var data = res.data;
                             that.systemInfo = data.system_info;
                             that.adminStatisticsInfo = data.admin_statistics_info
@@ -230,17 +222,17 @@
                 },
 
 
-                gotoPage3: function () {
+                gotoPage3: function() {
                     this.openNewIframeByUrl('站点配置', "{:api_url('/admin/Config/index')}")
                 },
-                gotoPage4: function () {
+                gotoPage4: function() {
                     this.openNewIframeByUrl('管理员管理', "{:api_url('/admin/AdminManager/index')}")
                 },
-                gotoPage5: function () {
+                gotoPage5: function() {
                     this.openNewIframeByUrl('开发文档', "http://www.ztbcms.com/")
                 }
             },
-            mounted: function () {
+            mounted: function() {
                 this.getInfo();
             }
         })
