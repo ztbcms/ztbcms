@@ -2,8 +2,7 @@
 
 ## 入门指南
 
-- [起步](./GetStart.md)
-- [系统安装向导](../tp6/app/install/README.md)
+- [安装框架](./GetStart.md)
 - [菜单](./Menu.md)
 - [常见问题](./Faq.md)
 
@@ -20,6 +19,8 @@
 ## 开发指南
 
 - [起步](./GetStart.md)
+- [后端开发指南](./backend.md)
+- [前端与视图交互](./frontend.md)
 - [模块开发](./ModuleDevelopment.md)
 - [路由开发指南](./RouteGuide.md)
 - [数据库迁移（Migrate）](./MigrateGuide.md)
