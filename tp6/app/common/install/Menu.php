@@ -56,32 +56,6 @@ return array(
                 ]
             ],
             [
-                "route" => "common/message.message/index",
-                "type" => 0,
-                "status" => 1,
-                "name" => "消息管理",
-                "child" => [
-                    [
-                        "route" => "common/message.message/index",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "消息列表",
-                    ],
-                    [
-                        "route" => "common/message.message/sendLog",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "发送日志",
-                    ],
-                    [
-                        "route" => "common/message.message/addMessage",
-                        "type" => 0,
-                        "status" => 1,
-                        "name" => "新建消息",
-                    ],
-                ]
-            ],
-            [
                 "route" => "common/upload.upload/setting",
                 "type" => 0,
                 "status" => 1,

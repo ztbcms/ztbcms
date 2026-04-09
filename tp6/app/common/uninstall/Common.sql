@@ -7,12 +7,6 @@ DROP TABLE IF EXISTS `cms_cron_scheduling_log`;
 DROP TABLE IF EXISTS `cms_cron_config`;
 
 -- ----------------------------
--- 消息
--- ----------------------------
-DROP TABLE IF EXISTS `cms_message_msg`;
-DROP TABLE IF EXISTS `cms_message_send_log`;
-
--- ----------------------------
 -- 附件
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_attachment_group`;
