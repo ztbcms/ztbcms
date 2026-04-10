@@ -6,7 +6,7 @@ return [
     'scene' => [
         'default' => [
             // 密钥
-            'secret_key' => env('JWT_SECRET_KEY', 'Your_Key'),
+            'secret_key' => env('JWT_SECRET_KEY', env('security.authcode')),
             // 算法
             'algorithm' => env('JWT_ALGORITHM', 'HS256'),
             // Token有效期，单位为秒
