@@ -49,17 +49,13 @@
                     }
 
                     if (!res.status) {
+                        $('.btn_old').text('安装失败，请处理后重试');
                         alert(res.msg || resultData.msg || '安装失败');
                         return;
                     }
 
                     if (resultData.n == '999999') {
-                        if ($('.error_span').length > 0) {
-                            $('.btn_old').text('部分出错，请排查');
-                            $('.btn_old').after('<p style="margin-top:20px;"><a href="javascript:gonext();" class="btn" style="background:#e53e3e;">我已知晓，仍要完成安装</a></p>');
-                            return; // 有报错则立刻挂起，不触发自动跳转
-                        }
-                        
+                        $('.btn_old').text('安装完成，正在跳转...');
                         setTimeout('gonext()', 1500);
                         return;
                     }

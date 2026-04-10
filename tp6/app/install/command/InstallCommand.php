@@ -164,7 +164,12 @@ class InstallCommand extends Command
 
     protected function formatMessage($message)
     {
-        $message = str_replace('&radic;', '√', (string) $message);
-        return trim(html_entity_decode(strip_tags($message), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $message = str_replace(['</li><li', '</li> <li'], ["</li>\n<li", "</li>\n<li"], (string) $message);
+        $message = str_replace(['<li>', '</li>'], ['', "\n"], $message);
+        $message = str_replace('&radic;', '√', $message);
+        $message = str_replace('&times;', '×', $message);
+        $message = html_entity_decode(strip_tags($message), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $message = preg_replace("/\n{2,}/", "\n", $message);
+        return trim((string) $message);
     }
 }

@@ -11,6 +11,10 @@ use app\BaseController;
 
 class Index extends BaseController
 {
+    protected $middleware = [
+        \think\middleware\SessionInit::class,
+    ];
+
     protected function initialize()
     {
         parent::initialize();
