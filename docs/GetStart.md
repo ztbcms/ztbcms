@@ -40,13 +40,20 @@ location / {
 
 系统提供两种方式进行自动化安装，请根据您的使用场景进行选择：
 
-- **网页控制台安装**（推荐新手）：
+- **1.网页控制台安装**：
   配置好运行目录指向 `tp6/public/` 并在浏览器直接访问：`http://{您的域名}/install/index/index`，依照页面提示下一步即可。
 
-- **命令行 CLI 安装**（推荐 Docker 及 CI/CD 用户）：
+- **2.命令行 CLI 安装**（推荐）：
   在项目根目录下进入终端，执行指令：
-  ```bash
-  php think ztbcms:install
-  ```
+```bash
+php think ztbcms:install -f \
+  --db_host 127.0.0.1 \
+  --db_port 3306 \
+  --db_name your_db \
+  --db_user root \
+  --db_pwd root_password \
+  --manager admin \
+  --manager_pwd admin_password
+```
 
 > **进阶参考**：关于一键静默安装参数和防重复安装机制，请详细查阅 [系统安装向导](../tp6/app/install/README.md)
