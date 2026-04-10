@@ -21,10 +21,7 @@ class JwtService extends BaseService
     {
         $scenes = config('jwt.scene');
         throw_if(!isset($scenes[$scene]), new Exception('Not found scene:' . $scene));
-        $this->config = $scenes['default'];
-        if ($scene == 'default') {
-            $this->config = array_merge($scenes['default'], $scenes[$scene]);
-        }
+        $this->config = array_merge($scenes['default'], $scenes[$scene]);
     }
 
     /**
