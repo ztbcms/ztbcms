@@ -20,15 +20,16 @@ class ApiAuth
      */
     public function handle($request, \Closure $next)
     {
+        $action = $request->action();
         // 跳过认证
         $skillAuthActions = $request->skillAuthActions ?? [];
-        if (!empty($skillAuthActions) && $this->_checkActionMatch($request->action(), $skillAuthActions)) {
+        if (!empty($skillAuthActions) && $this->_checkActionMatch($action, $skillAuthActions)) {
             // 不需要验证用户凭证
             return $next($request);
         }
         // 尝试认证，即认证不通过时不会中断请求
         $tryAuthActions = $request->tryAuthActions ?? [];
-        if (!empty($tryAuthActions) && $this->_checkActionMatch($request->action(), $tryAuthActions)) {
+        if (!empty($tryAuthActions) && $this->_checkActionMatch($action, $tryAuthActions)) {
             return $this->tryAuth($request, $next);
         }
         return $this->auth($request, $next, 401);

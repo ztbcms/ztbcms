@@ -21,6 +21,7 @@
 - [后端开发指南](./backend.md)
 - [前端与视图交互](./frontend.md)
 - [模块开发](./ModuleDevelopment.md)
+- [API 模块快速上手](../tp6/app/api/README.md) - API 模块的登录鉴权与限流配置说明
 - [路由开发指南](./RouteGuide.md)
 - [数据库迁移（Migrate）](./MigrateGuide.md)
 - [php think 命令速查](./ThinkCommand.md) - 代码生成、迁移、队列、计划任务等 CLI 命令速查
