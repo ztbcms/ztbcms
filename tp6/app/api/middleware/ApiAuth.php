@@ -22,8 +22,8 @@ class ApiAuth
     {
         $action = $request->action();
         // 跳过认证
-        $skillAuthActions = $request->skillAuthActions ?? [];
-        if (!empty($skillAuthActions) && $this->_checkActionMatch($action, $skillAuthActions)) {
+        $skipAuthActions = $request->skipAuthActions ?? [];
+        if (!empty($skipAuthActions) && $this->_checkActionMatch($action, $skipAuthActions)) {
             // 不需要验证用户凭证
             return $next($request);
         }

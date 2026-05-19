@@ -23,7 +23,7 @@ class User extends BaseApi
     /**
      * 跳过登录校验的方法
      */
-    protected $skillAuthActions = ['login'];
+    protected $skipAuthActions = ['login'];
 
     public function login()
     {
@@ -41,7 +41,7 @@ class User extends BaseApi
 
 说明：
 
-- `login` 被加入 `$skillAuthActions` 后，无需登录也可以访问
+- `login` 被加入 `$skipAuthActions` 后，无需登录也可以访问
 - `profile` 没有被排除，默认需要登录后访问
 - 登录成功后，请在请求头中带上 `Authorization: Bearer token`
 
@@ -53,7 +53,7 @@ class User extends BaseApi
 
 ### 2. 跳过指定方法的登录校验
 
-如果只想让部分方法免登录，可以设置 `$skillAuthActions`：
+如果只想让部分方法免登录，可以设置 `$skipAuthActions`：
 
 ```php
 <?php
@@ -62,7 +62,7 @@ namespace app\api\controller;
 
 class Article extends BaseApi
 {
-    protected $skillAuthActions = ['list', 'detail'];
+    protected $skipAuthActions = ['list', 'detail'];
 
     public function list()
     {
@@ -92,7 +92,7 @@ class Article extends BaseApi
 如果当前控制器全部接口都不需要登录，可以这样写：
 
 ```php
-protected $skillAuthActions = ['*'];
+protected $skipAuthActions = ['*'];
 ```
 
 ### 4. 指定方法走“尝试登录”
@@ -108,7 +108,7 @@ use think\Request;
 
 class Feed extends BaseApi
 {
-    protected $skillAuthActions = ['index'];
+    protected $skipAuthActions = ['index'];
     protected $tryAuthActions = ['index'];
 
     public function index(Request $request)
@@ -162,7 +162,7 @@ namespace app\api\controller;
 
 class Sms extends BaseApi
 {
-    protected $skillAuthActions = ['sendCode'];
+    protected $skipAuthActions = ['sendCode'];
 
     protected $apiRateLimit = [
         'enabled' => true,
@@ -231,7 +231,7 @@ namespace app\api\controller;
 
 class Auth extends BaseApi
 {
-    protected $skillAuthActions = ['login', 'sendSms'];
+    protected $skipAuthActions = ['login', 'sendSms'];
 
     protected $apiRateLimit = [
         'enabled' => true,

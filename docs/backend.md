@@ -29,13 +29,13 @@ class Region extends AdminController
 
 - 对外 API 推荐继承 `BaseApi`
 - `BaseApi` 已内置接口鉴权与限流中间件
-- 完全免鉴权的方法放在 `$skillAuthActions`
+- 完全免鉴权的方法放在 `$skipAuthActions`
 - “有 token 就识别，没有也可访问”的方法放在 `$tryAuthActions`
 
 ```php
 class DemoApi extends BaseApi
 {
-    protected $skillAuthActions = ['ping'];
+    protected $skipAuthActions = ['ping'];
     protected $tryAuthActions = ['detail'];
 }
 ```
