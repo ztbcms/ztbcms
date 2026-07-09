@@ -10,7 +10,7 @@ use think\Request;
 
 class Common extends BaseApi
 {
-    protected $skillAuthActions = ['login'];
+    protected $skipAuthActions = ['login'];
 
     /**
      * 登录

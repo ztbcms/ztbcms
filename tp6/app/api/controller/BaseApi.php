@@ -23,7 +23,7 @@ class BaseApi extends BaseController
      * 1、若跳过全部，可以填写*
      * 2、跳过指定action，可填写 ['actionA', 'actionB']
      */
-    protected $skillAuthActions = [];
+    protected $skipAuthActions = [];
     // 尝试认证Actions
     protected $tryAuthActions = [];
     /**
@@ -73,7 +73,7 @@ class BaseApi extends BaseController
     {
         parent::__construct($app);
         // 往请求注入
-        $app->request->skillAuthActions = $this->skillAuthActions ?? [];
+        $app->request->skipAuthActions = $this->skipAuthActions ?? [];
         $app->request->tryAuthActions = $this->tryAuthActions ?? [];
         $app->request->apiRateLimit = $this->apiRateLimit;
     }

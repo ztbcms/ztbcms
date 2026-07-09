@@ -145,6 +145,8 @@ CREATE TABLE `cms_downloader`  (
     `downloader_state` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '下载状态 （10待下载 20下载中  30下载成功 40下载失败）',
     `downloader_result` varchar(255) NOT NULL DEFAULT '' COMMENT '下载结果',
     `downloader_duration` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下载时长',
+    `process_start_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '下载开始时间',
+    `process_end_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '下载结束时间',
     `file_name` varchar(255) NOT NULL DEFAULT '' COMMENT '文件名称',
     `file_path` varchar(255) NOT NULL DEFAULT '' COMMENT '文件路径',
     `file_url` varchar(255) NOT NULL DEFAULT '' COMMENT '文件访问地址',
@@ -159,7 +161,8 @@ CREATE TABLE `cms_downloader`  (
     `delete_time` int(11) DEFAULT '0' COMMENT '删除时间',
     PRIMARY KEY (`downloader_id`) USING BTREE,
     KEY `downloader_url_hash` (`downloader_url_hash`),
-    KEY `file_hash` (`file_hash`)
+    KEY `file_hash` (`file_hash`),
+    KEY `idx_state_process_start_id` (`downloader_state`, `process_start_time`, `downloader_id`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4  COMMENT='下载中心';
 -- ----------------------------
 -- 下载中心 END

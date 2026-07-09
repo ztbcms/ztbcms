@@ -175,9 +175,11 @@ $res = DownloaderService::retryDownloaderTask($downloaderId);
 
 - 任务字段：`downloader_id`、`downloader_url`、`downloader_url_hash`
 - 状态字段：`downloader_state`、`downloader_result`、`downloader_duration`
+- 执行时间字段：`process_start_time`、`process_end_time`（下载开始/结束时间，超时扫描依赖）
 - 文件字段：`file_name`、`file_path`、`file_url`、`file_thumb`、`file_hash`、`file_size`、`file_ext`
 - 重试字段：`downloader_implement_num`、`downloader_next_implement_time`
 - 时间字段：`create_time`、`update_time`、`delete_time`
+- 索引：`idx_state_process_start_id`（`downloader_state`, `process_start_time`, `downloader_id`）
 
 ## 常见问题排查
 
