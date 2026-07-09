@@ -29,15 +29,17 @@ class UserOperateLogService extends BaseService
     static function getUserOperateLogList($where = [], $order = '', $page = '', $limit = '', $time = [])
     {
         $UserOperatelogModel = new UserOperateLogModel();
-        $db = $UserOperatelogModel->where($where)->order($order)->page($page)->limit($limit);
+        $db = $UserOperatelogModel->where($where)->page($page)->limit($limit);
+        $countDb = (new UserOperateLogModel())->where($where);
         if (!empty($time)) {
             $db->whereTime('create_time', 'between', $time);
+            $countDb->whereTime('create_time', 'between', $time);
         }
         if (!empty($order)) {
             $db->order($order);
         }
         $items = $db->select();
-        $total_items = $UserOperatelogModel->where($where)->count();
+        $total_items = $countDb->count();
         $total_page = ceil($total_items / $limit);
         return self::createReturnList(true, $items, $page, $limit, $total_items, $total_page);
     }
