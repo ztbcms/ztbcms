@@ -152,6 +152,7 @@ class DownloaderService extends BaseService
             //文件下载成功的情况 ，将文件同步进入附件表, 默认为本地上传
             $attachment = AttachmentModel::where('hash', $downloaderData['file_hash'])->find();
             if (!$attachment) {
+                $attachment = new AttachmentModel();
                 $attachment->driver = 'Local';
                 $attachment->module = $downloaderData['module'] ?? '';
                 $attachment->filename = $downloaderData['file_name'] ?? '';
