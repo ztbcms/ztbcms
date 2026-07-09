@@ -55,7 +55,7 @@ class CronConfigModel extends Model
         $exec_cron_list = [];
         $exec_cron_map = [];
         foreach ($cronlog_list as $i => $log) {
-            $cron = $CronModel->where('crod_id', $log['cron_id'])->findOrEmpty();
+            $cron = $CronModel->where('cron_id', $log['cron_id'])->findOrEmpty();
             if (!$cron->isEmpty() && empty($exec_cron_map[$cron->cron_id])) {
                 $exec_cron_list [] = [
                     'cron_id' => $cron->cron_id,
