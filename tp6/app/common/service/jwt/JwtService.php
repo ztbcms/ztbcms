@@ -22,6 +22,10 @@ class JwtService extends BaseService
         $scenes = config('jwt.scene');
         throw_if(!isset($scenes[$scene]), new Exception('Not found scene:' . $scene));
         $this->config = array_merge($scenes['default'], $scenes[$scene]);
+        throw_if(
+            trim((string)($this->config['secret_key'] ?? '')) === '',
+            new Exception('JWT secret key is not configured:' . $scene)
+        );
     }
 
     /**
