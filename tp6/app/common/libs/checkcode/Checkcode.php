@@ -106,7 +106,7 @@ class Checkcode
             if (!$isFontcolor) {
                 $this->fontcolor = imagecolorallocate($this->img, mt_rand(0, 156), mt_rand(0, 156), mt_rand(0, 156));
             }
-            imagettftext($this->img, $this->fontsize, mt_rand(-30, 30), $_x * $i + mt_rand(1, 5), $this->height / 1.4, $this->fontcolor, $this->font, $this->code[$i]);
+            imagettftext($this->img, $this->fontsize, mt_rand(-30, 30), (int) ($_x * $i + mt_rand(1, 5)), (int) ($this->height / 1.4), $this->fontcolor, $this->font, $this->code[$i]);
         }
     }
 
