@@ -59,6 +59,7 @@ class MenuModel extends Model
                 }
             }
             $array = array(
+                "_tree_id" => $id,
                 "icon" => $a['icon'],
                 "id" => $id . $name,
                 "pid" => $a['parentid'],
@@ -70,11 +71,31 @@ class MenuModel extends Model
             $list [] = $array;
         }
 
-        return TreeHelper::arrayToTree($list, 0, [
+        $menuTree = TreeHelper::arrayToTree($list, 0, [
+            'idKey' => '_tree_id',
             'parentKey' => 'pid',
             'childrenKey' => 'items',
             'maxLevel' => 3 //后台管理界面只支持三层，超出的不层级的不显示
         ]);
+        return $this->removeInternalTreeId($menuTree);
+    }
+
+    /**
+     * 移除菜单树内部节点ID
+     *
+     * @param array $menuList 菜单树
+     * @return array
+     */
+    private function removeInternalTreeId(array $menuList)
+    {
+        foreach ($menuList as &$menu) {
+            unset($menu['_tree_id']);
+            if (!empty($menu['items'])) {
+                $menu['items'] = $this->removeInternalTreeId($menu['items']);
+            }
+        }
+        unset($menu);
+        return $menuList;
     }
 
     /**
