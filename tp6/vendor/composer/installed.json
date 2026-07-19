@@ -157,24 +157,18 @@
         },
         {
             "name": "aliyuncs/oss-sdk-php",
-            "version": "v2.7.2",
-            "version_normalized": "2.7.2.0",
+            "version": "v2.7.3",
+            "version_normalized": "2.7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aliyun/aliyun-oss-php-sdk.git",
-                "reference": "483dd0b8bff5d47f0e4ffc99f6077a295c5ccbb5"
+                "reference": "10dbd2a7253131da60629d431c8eb6c216fbbbf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aliyun/aliyun-oss-php-sdk/zipball/483dd0b8bff5d47f0e4ffc99f6077a295c5ccbb5",
-                "reference": "483dd0b8bff5d47f0e4ffc99f6077a295c5ccbb5",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/aliyun/aliyun-oss-php-sdk/zipball/10dbd2a7253131da60629d431c8eb6c216fbbbf7",
+                "reference": "10dbd2a7253131da60629d431c8eb6c216fbbbf7",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3"
@@ -183,7 +177,7 @@
                 "php-coveralls/php-coveralls": "*",
                 "phpunit/phpunit": "*"
             },
-            "time": "2024-10-28T10:41:12+00:00",
+            "time": "2026-06-26T07:23:48+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -205,7 +199,7 @@
             "homepage": "http://www.aliyun.com/product/oss/",
             "support": {
                 "issues": "https://github.com/aliyun/aliyun-oss-php-sdk/issues",
-                "source": "https://github.com/aliyun/aliyun-oss-php-sdk/tree/v2.7.2"
+                "source": "https://github.com/aliyun/aliyun-oss-php-sdk/tree/v2.7.3"
             },
             "install-path": "../aliyuncs/oss-sdk-php"
         },
@@ -479,32 +473,27 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.10.0",
-            "version_normalized": "7.10.0.0",
+            "version": "7.15.1",
+            "version_normalized": "7.15.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
+                "reference": "61443dfb33c62f308ee8add20f45b4d6e4bf8d2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
-                "reference": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/61443dfb33c62f308ee8add20f45b4d6e4bf8d2f",
+                "reference": "61443dfb33c62f308ee8add20f45b4d6e4bf8d2f",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^2.3",
-                "guzzlehttp/psr7": "^2.8",
+                "guzzlehttp/promises": "^2.5.1",
+                "guzzlehttp/psr7": "^2.13",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
-                "symfony/deprecation-contracts": "^2.2 || ^3.0"
+                "symfony/deprecation-contracts": "^2.5 || ^3.0",
+                "symfony/polyfill-php80": "^1.25"
             },
             "provide": {
                 "psr/http-client-implementation": "1.0"
@@ -512,9 +501,10 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "ext-curl": "*",
-                "guzzle/client-integration-tests": "3.0.2",
+                "guzzle/client-integration-tests": "3.0.3",
+                "guzzlehttp/test-server": "^0.7",
                 "php-http/message-factory": "^1.1",
-                "phpunit/phpunit": "^8.5.39 || ^9.6.20",
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
@@ -522,7 +512,7 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "time": "2025-08-23T22:36:01+00:00",
+            "time": "2026-07-18T11:23:11+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -594,7 +584,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.10.0"
+                "source": "https://github.com/guzzle/guzzle/tree/7.15.1"
             },
             "funding": [
                 {
@@ -614,33 +604,28 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.3.0",
-            "version_normalized": "2.3.0.0",
+            "version": "2.5.1",
+            "version_normalized": "2.5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "481557b130ef3790cf82b713667b43030dc9c957"
+                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/481557b130ef3790cf82b713667b43030dc9c957",
-                "reference": "481557b130ef3790cf82b713667b43030dc9c957",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/9ad1e4fc607446a055b95870c7f668e93b5cff29",
+                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29",
+                "shasum": ""
             },
             "require": {
-                "php": "^7.2.5 || ^8.0"
+                "php": "^7.2.5 || ^8.0",
+                "symfony/deprecation-contracts": "^2.5 || ^3.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
-                "phpunit/phpunit": "^8.5.44 || ^9.6.25"
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34"
             },
-            "time": "2025-08-22T14:34:08+00:00",
+            "time": "2026-07-08T15:48:39+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -686,7 +671,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.3.0"
+                "source": "https://github.com/guzzle/promises/tree/2.5.1"
             },
             "funding": [
                 {
@@ -706,30 +691,26 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.8.0",
-            "version_normalized": "2.8.0.0",
+            "version": "2.13.0",
+            "version_normalized": "2.13.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "21dc724a0583619cd1652f673303492272778051"
+                "reference": "dad89620b7a6edb60c15858442eb2e408b45d8f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/21dc724a0583619cd1652f673303492272778051",
-                "reference": "21dc724a0583619cd1652f673303492272778051",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dad89620b7a6edb60c15858442eb2e408b45d8f4",
+                "reference": "dad89620b7a6edb60c15858442eb2e408b45d8f4",
+                "shasum": ""
             },
             "require": {
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-factory": "^1.0",
                 "psr/http-message": "^1.1 || ^2.0",
-                "ralouphie/getallheaders": "^3.0"
+                "ralouphie/getallheaders": "^3.0",
+                "symfony/deprecation-contracts": "^2.5 || ^3.0",
+                "symfony/polyfill-php80": "^1.25"
             },
             "provide": {
                 "psr/http-factory-implementation": "1.0",
@@ -737,13 +718,14 @@
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
-                "http-interop/http-factory-tests": "0.9.0",
-                "phpunit/phpunit": "^8.5.44 || ^9.6.25"
+                "http-interop/http-factory-tests": "1.1.0",
+                "jshttp/mime-db": "1.54.0.1",
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
-            "time": "2025-08-23T21:21:41+00:00",
+            "time": "2026-07-16T22:23:49+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -811,7 +793,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.8.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.0"
             },
             "funding": [
                 {
@@ -924,24 +906,18 @@
         },
         {
             "name": "league/flysystem",
-            "version": "2.5.0",
-            "version_normalized": "2.5.0.0",
+            "version": "2.5.0.1",
+            "version_normalized": "2.5.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "8aaffb653c5777781b0f7f69a5d937baf7ab6cdb"
+                "url": "https://github.com/Jayin/flysystem.git",
+                "reference": "e198be2ac03ca59ed9c9d3a1dbdabcbcdcdc71c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/8aaffb653c5777781b0f7f69a5d937baf7ab6cdb",
-                "reference": "8aaffb653c5777781b0f7f69a5d937baf7ab6cdb",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/Jayin/flysystem/zipball/e198be2ac03ca59ed9c9d3a1dbdabcbcdcdc71c8",
+                "reference": "e198be2ac03ca59ed9c9d3a1dbdabcbcdcdc71c8",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -965,7 +941,7 @@
                 "phpunit/phpunit": "^8.5 || ^9.4",
                 "sabre/dav": "^4.1"
             },
-            "time": "2022-09-17T21:02:32+00:00",
+            "time": "2026-07-19T15:27:17+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -973,7 +949,11 @@
                     "League\\Flysystem\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "phpstan": [
+                    "vendor/bin/phpstan analyse -l 6 src"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -985,7 +965,6 @@
             ],
             "description": "File storage abstraction for PHP",
             "keywords": [
-                "WebDAV",
                 "aws",
                 "cloud",
                 "file",
@@ -995,25 +974,8 @@
                 "ftp",
                 "s3",
                 "sftp",
-                "storage"
-            ],
-            "support": {
-                "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/2.5.0"
-            },
-            "funding": [
-                {
-                    "url": "https://ecologi.com/frankdejonge",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/frankdejonge",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
-                    "type": "tidelift"
-                }
+                "storage",
+                "webdav"
             ],
             "install-path": "../league/flysystem"
         },
@@ -1195,24 +1157,18 @@
         },
         {
             "name": "mtdowling/jmespath.php",
-            "version": "2.7.0",
-            "version_normalized": "2.7.0.0",
+            "version": "2.9.2",
+            "version_normalized": "2.9.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jmespath/jmespath.php.git",
-                "reference": "bbb69a935c2cbb0c03d7f481a238027430f6440b"
+                "reference": "2157c5e50e813ec6a96c1eed3be7f64a20fb32a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/bbb69a935c2cbb0c03d7f481a238027430f6440b",
-                "reference": "bbb69a935c2cbb0c03d7f481a238027430f6440b",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/jmespath/jmespath.php/zipball/2157c5e50e813ec6a96c1eed3be7f64a20fb32a8",
+                "reference": "2157c5e50e813ec6a96c1eed3be7f64a20fb32a8",
+                "shasum": ""
             },
             "require": {
                 "php": "^7.2.5 || ^8.0",
@@ -1220,16 +1176,16 @@
             },
             "require-dev": {
                 "composer/xdebug-handler": "^3.0.3",
-                "phpunit/phpunit": "^8.5.33"
+                "phpunit/phpunit": "^8.5.52"
             },
-            "time": "2023-08-25T10:54:48+00:00",
+            "time": "2026-07-06T18:56:19+00:00",
             "bin": [
                 "bin/jp.php"
             ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev"
+                    "dev-master": "2.9-dev"
                 }
             },
             "installation-source": "dist",
@@ -1264,7 +1220,7 @@
             ],
             "support": {
                 "issues": "https://github.com/jmespath/jmespath.php/issues",
-                "source": "https://github.com/jmespath/jmespath.php/tree/2.7.0"
+                "source": "https://github.com/jmespath/jmespath.php/tree/2.9.2"
             },
             "install-path": "../mtdowling/jmespath.php"
         },
@@ -1458,24 +1414,18 @@
         },
         {
             "name": "overtrue/socialite",
-            "version": "2.0.24",
-            "version_normalized": "2.0.24.0",
+            "version": "2.0.24.1",
+            "version_normalized": "2.0.24.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/overtrue/socialite.git",
-                "reference": "ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec"
+                "url": "https://github.com/Jayin/socialite.git",
+                "reference": "c21e789b6cd5bec4817e16687800dbd1fc1e6c2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/overtrue/socialite/zipball/ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec",
-                "reference": "ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/Jayin/socialite/zipball/c21e789b6cd5bec4817e16687800dbd1fc1e6c2c",
+                "reference": "c21e789b6cd5bec4817e16687800dbd1fc1e6c2c",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -1487,7 +1437,7 @@
                 "mockery/mockery": "~1.2",
                 "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0"
             },
-            "time": "2021-05-13T16:04:48+00:00",
+            "time": "2026-07-17T10:03:25+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1495,7 +1445,6 @@
                     "Overtrue\\Socialite\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1507,22 +1456,12 @@
             ],
             "description": "A collection of OAuth 2 packages that extracts from laravel/socialite.",
             "keywords": [
+                "OAuth",
+                "QQ",
+                "WeChat",
+                "Weibo",
                 "login",
-                "oauth",
-                "qq",
-                "social",
-                "wechat",
-                "weibo"
-            ],
-            "support": {
-                "issues": "https://github.com/overtrue/socialite/issues",
-                "source": "https://github.com/overtrue/socialite/tree/2.0.24"
-            },
-            "funding": [
-                {
-                    "url": "https://www.patreon.com/overtrue",
-                    "type": "patreon"
-                }
+                "social"
             ],
             "install-path": "../overtrue/socialite"
         },
@@ -2037,30 +1976,24 @@
         },
         {
             "name": "psr/http-factory",
-            "version": "1.0.2",
-            "version_normalized": "1.0.2.0",
+            "version": "1.1.0",
+            "version_normalized": "1.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-factory.git",
-                "reference": "e616d01114759c4c489f93b099585439f795fe35"
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/e616d01114759c4c489f93b099585439f795fe35",
-                "reference": "e616d01114759c4c489f93b099585439f795fe35",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
+                "shasum": ""
             },
             "require": {
-                "php": ">=7.0.0",
+                "php": ">=7.1",
                 "psr/http-message": "^1.0 || ^2.0"
             },
-            "time": "2023-04-10T20:10:41+00:00",
+            "time": "2024-04-15T12:06:14+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2083,7 +2016,7 @@
                     "homepage": "https://www.php-fig.org/"
                 }
             ],
-            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "description": "PSR-17: Common interfaces for PSR-7 HTTP message factories",
             "keywords": [
                 "factory",
                 "http",
@@ -2095,7 +2028,7 @@
                 "response"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-factory/tree/1.0.2"
+                "source": "https://github.com/php-fig/http-factory"
             },
             "install-path": "../psr/http-factory"
         },
@@ -2394,24 +2327,18 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v5.4.46",
-            "version_normalized": "5.4.46.0",
+            "version": "v5.4.53",
+            "version_normalized": "5.4.53.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "0fe08ee32cec2748fbfea10c52d3ee02049e0f6b"
+                "reference": "bf581474737420d5c932ae80b868e253f465ee5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/0fe08ee32cec2748fbfea10c52d3ee02049e0f6b",
-                "reference": "0fe08ee32cec2748fbfea10c52d3ee02049e0f6b",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/symfony/cache/zipball/bf581474737420d5c932ae80b868e253f465ee5b",
+                "reference": "bf581474737420d5c932ae80b868e253f465ee5b",
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
@@ -2448,7 +2375,7 @@
                 "symfony/messenger": "^4.4|^5.0|^6.0",
                 "symfony/var-dumper": "^4.4|^5.0|^6.0"
             },
-            "time": "2024-11-04T11:43:55+00:00",
+            "time": "2026-05-24T08:41:21+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2480,7 +2407,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v5.4.46"
+                "source": "https://github.com/symfony/cache/tree/v5.4.53"
             },
             "funding": [
                 {
@@ -2489,6 +2416,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
@@ -2935,24 +2866,18 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.32.0",
-            "version_normalized": "1.32.0.0",
+            "version": "v1.38.2",
+            "version_normalized": "1.38.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493"
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
-                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "shasum": ""
             },
             "require": {
                 "ext-iconv": "*",
@@ -2964,7 +2889,7 @@
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
-            "time": "2024-12-23T08:48:59+00:00",
+            "time": "2026-05-27T06:59:30+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -3005,7 +2930,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.32.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.2"
             },
             "funding": [
                 {
@@ -3014,6 +2939,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
@@ -3098,8 +3027,8 @@
         },
         {
             "name": "symfony/polyfill-php73",
-            "version": "v1.32.0",
-            "version_normalized": "1.32.0.0",
+            "version": "v1.37.0",
+            "version_normalized": "1.37.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php73.git",
@@ -3109,13 +3038,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/0f68c03565dcaaf25a890667542e8bd75fe7e5bb",
                 "reference": "0f68c03565dcaaf25a890667542e8bd75fe7e5bb",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.2"
@@ -3163,7 +3086,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php73/tree/v1.32.0"
+                "source": "https://github.com/symfony/polyfill-php73/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -3175,6 +3098,10 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
@@ -3183,29 +3110,23 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.33.0",
-            "version_normalized": "1.33.0.0",
+            "version": "v1.37.0",
+            "version_normalized": "1.37.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "0cc9dd0f17f61d8131e7df6b84bd344899fe2608"
+                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/0cc9dd0f17f61d8131e7df6b84bd344899fe2608",
-                "reference": "0cc9dd0f17f61d8131e7df6b84bd344899fe2608",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
+                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.2"
             },
-            "time": "2025-01-02T08:10:11+00:00",
+            "time": "2026-04-10T16:19:22+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -3252,7 +3173,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -3276,30 +3197,24 @@
         },
         {
             "name": "symfony/process",
-            "version": "v5.4.47",
-            "version_normalized": "5.4.47.0",
+            "version": "v5.4.51",
+            "version_normalized": "5.4.51.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "5d1662fb32ebc94f17ddb8d635454a776066733d"
+                "reference": "467bfc56f18f5ef6d5ccb09324d7e988c1c0a98f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/5d1662fb32ebc94f17ddb8d635454a776066733d",
-                "reference": "5d1662fb32ebc94f17ddb8d635454a776066733d",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/symfony/process/zipball/467bfc56f18f5ef6d5ccb09324d7e988c1c0a98f",
+                "reference": "467bfc56f18f5ef6d5ccb09324d7e988c1c0a98f",
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
                 "symfony/polyfill-php80": "^1.16"
             },
-            "time": "2024-11-06T11:36:42+00:00",
+            "time": "2026-01-26T15:53:37+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3327,7 +3242,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v5.4.47"
+                "source": "https://github.com/symfony/process/tree/v5.4.51"
             },
             "funding": [
                 {
@@ -3336,6 +3251,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
@@ -4507,24 +4426,18 @@
         },
         {
             "name": "w7corp/easywechat",
-            "version": "4.9.0",
-            "version_normalized": "4.9.0.0",
+            "version": "4.9.0.1",
+            "version_normalized": "4.9.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/w7corp/easywechat.git",
-                "reference": "92791f5d957269c633b9aa175f842f6006f945b1"
+                "url": "https://github.com/Jayin/easywechat.git",
+                "reference": "81eb126ef1956167b1f3cf0213a8eacab8c5aafe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/w7corp/easywechat/zipball/92791f5d957269c633b9aa175f842f6006f945b1",
-                "reference": "92791f5d957269c633b9aa175f842f6006f945b1",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/Jayin/easywechat/zipball/81eb126ef1956167b1f3cf0213a8eacab8c5aafe",
+                "reference": "81eb126ef1956167b1f3cf0213a8eacab8c5aafe",
+                "shasum": ""
             },
             "require": {
                 "easywechat-composer/easywechat-composer": "^1.1",
@@ -4533,35 +4446,60 @@
                 "ext-simplexml": "*",
                 "guzzlehttp/guzzle": "^6.2 || ^7.0",
                 "monolog/monolog": "^1.22 || ^2.0",
-                "overtrue/socialite": "~2.0",
+                "overtrue/socialite": "~2.0.24.1",
                 "php": ">=7.2",
                 "pimple/pimple": "^3.0",
+                "psr/log": "^1.1",
                 "psr/simple-cache": "^1.0",
                 "symfony/cache": "^3.3 || ^4.3 || ^5.0",
                 "symfony/event-dispatcher": "^4.3 || ^5.0",
                 "symfony/http-foundation": "^2.7 || ^3.0 || ^4.0 || ^5.0",
                 "symfony/psr-http-message-bridge": "^0.3 || ^1.0 || ^2.0"
             },
+            "replace": {
+                "overtrue/wechat": "self.version"
+            },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.15",
                 "mikey179/vfsstream": "^1.6",
                 "mockery/mockery": "^1.2.3",
                 "phpstan/phpstan": "^0.12.0",
-                "phpunit/phpunit": "^7.5"
+                "phpunit/phpunit": "^7.5 || ^9.6"
             },
-            "time": "2023-04-28T03:30:34+00:00",
+            "time": "2026-07-17T10:30:26+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
+                "psr-4": {
+                    "EasyWeChat\\": "src/"
+                },
                 "files": [
                     "src/Kernel/Support/Helpers.php",
                     "src/Kernel/Helpers.php"
-                ],
+                ]
+            },
+            "autoload-dev": {
                 "psr-4": {
-                    "EasyWeChat\\": "src/"
+                    "EasyWeChat\\Tests\\": "tests/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "phpcs": [
+                    "vendor/bin/php-cs-fixer fix"
+                ],
+                "phpstan": [
+                    "vendor/bin/phpstan analyse"
+                ],
+                "check-style": [
+                    "php-cs-fixer fix --using-cache=no --diff --config=.php_cs --dry-run --ansi"
+                ],
+                "fix-style": [
+                    "php-cs-fixer fix --using-cache=no --config=.php_cs --ansi"
+                ],
+                "test": [
+                    "vendor/bin/phpunit --colors=always"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -4578,16 +4516,6 @@
                 "wechat",
                 "weixin",
                 "weixin-sdk"
-            ],
-            "support": {
-                "issues": "https://github.com/w7corp/easywechat/issues",
-                "source": "https://github.com/w7corp/easywechat/tree/4.9.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/overtrue",
-                    "type": "github"
-                }
             ],
             "install-path": "../w7corp/easywechat"
         }

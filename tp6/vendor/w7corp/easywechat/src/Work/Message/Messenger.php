@@ -181,7 +181,7 @@ class Messenger
 
         return $this->client->send($message);
     }
-    
+
     /**
      * @param string $msgid
      *

@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class OAuthTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         m::close();
     }
@@ -119,11 +119,10 @@ class OAuthTest extends TestCase
         $this->assertSame('foo', $user->getId());
     }
 
-    /**
-     * @expectedException \Overtrue\Socialite\InvalidStateException
-     */
     public function testExceptionIsThrownIfStateIsInvalid()
     {
+        $this->expectException(\Overtrue\Socialite\InvalidStateException::class);
+
         $request = Request::create('foo', 'GET', ['state' => str_repeat('B', 40), 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
         $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
@@ -137,12 +136,11 @@ class OAuthTest extends TestCase
         $user = $provider->user();
     }
 
-    /**
-     * @expectedException \Overtrue\Socialite\AuthorizeFailedException
-     * @expectedExceptionMessage Authorize Failed: {"error":"scope is invalid"}
-     */
     public function testExceptionisThrownIfAuthorizeFailed()
     {
+        $this->expectException(\Overtrue\Socialite\AuthorizeFailedException::class);
+        $this->expectExceptionMessage('Authorize Failed: {"error":"scope is invalid"}');
+
         $request = Request::create('foo', 'GET', ['state' => str_repeat('A', 40), 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
         $session->shouldReceive('get')->once()->with('state')->andReturn(str_repeat('A', 40));
@@ -170,11 +168,10 @@ class OAuthTest extends TestCase
         $user = $provider->user();
     }
 
-    /**
-     * @expectedException \Overtrue\Socialite\InvalidStateException
-     */
     public function testExceptionIsThrownIfStateIsNotSet()
     {
+        $this->expectException(\Overtrue\Socialite\InvalidStateException::class);
+
         $request = Request::create('foo', 'GET', ['state' => 'state', 'code' => 'code']);
         $request->setSession($session = m::mock('Symfony\Component\HttpFoundation\Session\SessionInterface'));
         $session->shouldReceive('get')->once()->with('state');

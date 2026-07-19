@@ -176,6 +176,7 @@ class User implements ArrayAccess, UserInterface, JsonSerializable, \Serializabl
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->attributes;
@@ -184,6 +185,30 @@ class User implements ArrayAccess, UserInterface, JsonSerializable, \Serializabl
     public function serialize()
     {
         return serialize($this->attributes);
+    }
+
+    /**
+     * Serialize the user attributes
+     *
+     * @return array
+     */
+    public function __serialize()
+    {
+        return ['attributes' => $this->attributes];
+    }
+
+    /**
+     * Restore the user attributes
+     *
+     * @param array $data
+     *
+     * @return void
+     */
+    public function __unserialize(array $data)
+    {
+        $this->attributes = isset($data['attributes']) && is_array($data['attributes'])
+            ? $data['attributes']
+            : [];
     }
 
     /**

@@ -11,7 +11,7 @@ class UnableToCheckFileExistence extends RuntimeException implements FilesystemO
 {
     public static function forLocation(string $path, Throwable $exception = null): UnableToCheckFileExistence
     {
-        return new UnableToCheckFileExistence("Unable to check file existence for: ${path}", 0, $exception);
+        return new UnableToCheckFileExistence("Unable to check file existence for: {$path}", 0, $exception);
     }
 
     public function operation(): string

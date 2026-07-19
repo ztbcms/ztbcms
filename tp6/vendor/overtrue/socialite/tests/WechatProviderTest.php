@@ -25,7 +25,11 @@ class WechatProviderTest extends TestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
         $this->assertStringStartsWith('https://open.weixin.qq.com/connect/qrconnect', $response->getTargetUrl());
-        $this->assertRegExp('/redirect_uri=http%3A%2F%2Flocalhost%2Fsocialite%2Fcallback.php/', $response->getTargetUrl());
+        if (method_exists($this, 'assertMatchesRegularExpression')) {
+            $this->assertMatchesRegularExpression('/redirect_uri=http%3A%2F%2Flocalhost%2Fsocialite%2Fcallback.php/', $response->getTargetUrl());
+        } else {
+            $this->assertRegExp('/redirect_uri=http%3A%2F%2Flocalhost%2Fsocialite%2Fcallback.php/', $response->getTargetUrl());
+        }
     }
 
     public function testWeChatProviderTokenUrlAndRequestFields()
