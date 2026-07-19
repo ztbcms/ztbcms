@@ -7,6 +7,7 @@ use app\admin\model\OperationlogModel;
 use app\admin\service\AdminConfigService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
+use app\common\libs\helper\PaginationHelper;
 use app\common\service\BaseService;
 use think\Request;
 
@@ -57,8 +58,8 @@ class Logs extends AdminController
             if (!empty($sort_time)) {
                 $order = ['logintime' => $sort_time == 'desc' ? 'desc' : 'asc'];
             }
-            $page = input('page', 1, 'trim');
-            $limit = input('limit', 20, 'trim');
+            $page = PaginationHelper::normalizePage(input('page', 1));
+            $limit = PaginationHelper::normalizeLimit(input('limit', 20));
             $LoginlogModel = new LoginlogModel();
             $items = $LoginlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
             $total_items = $LoginlogModel->where($where)->count();
@@ -114,8 +115,8 @@ class Logs extends AdminController
             if ($status != '') {
                 $where[] = ['status', '=', (int) $status];
             }
-            $page = input('page', 1, 'trim');
-            $limit = input('limit', 20, 'trim');
+            $page = PaginationHelper::normalizePage(input('page', 1));
+            $limit = PaginationHelper::normalizeLimit(input('limit', 20));
             $sort_time = input('sort_time', '', 'trim');
             $order = ["id" => "desc"];
             if (!empty($sort_time)) {

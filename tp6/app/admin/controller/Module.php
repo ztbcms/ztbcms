@@ -12,6 +12,7 @@ use app\admin\libs\module\ModuleUninstaller;
 use app\admin\service\ModuleService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
+use app\common\libs\helper\PaginationHelper;
 use think\facade\Db;
 use think\facade\Request;
 
@@ -41,8 +42,8 @@ class Module extends AdminController
      */
     private function _getModuleList()
     {
-        $page = input('page', 1, 'intval');
-        $limit = input('limit', 15, 'intval');
+        $page = PaginationHelper::normalizePage(input('page', 1));
+        $limit = PaginationHelper::normalizeLimit(input('limit', 15), 15);
 
         $service = new ModuleService();
         $moduleList = $service->getLocalModuleList()['data'];
@@ -50,15 +51,8 @@ class Module extends AdminController
         $total_items = count($moduleList);
         //把一个数组分割为新的数组块
         $dirs_arr = array_chunk($moduleList, $limit, true);
-        //当前分页
-        $page = max($page, 1);
         //根据分页取到对应的模块列表数据
-
-        if($dirs_arr) {
-            $list = $dirs_arr[intval($page - 1)];
-        } else {
-            $list = [];
-        }
+        $list = $dirs_arr[$page - 1] ?? [];
         return self::makeJsonReturn(true, [
             'page'        => $page,
             'limit'       => $limit,
