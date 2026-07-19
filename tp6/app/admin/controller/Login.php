@@ -53,15 +53,37 @@ class Login extends AdminController
 
     /**
      * 登录操作
+     *
+     * @return \think\response\Json
      */
     function doLogin()
     {
         //记录登录失败者IP
         $ip = request()->ip();
-        $form = Request::param('form');
-        $username = urldecode(base64_decode($form['username']));
-        $password = urldecode(base64_decode($form['password']));
-        $code = trim($form['code']);
+        $form = Request::param('form', []);
+        if (!is_array($form)) {
+            return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
+        }
+
+        $encodedUsername = $form['username'] ?? null;
+        $encodedPassword = $form['password'] ?? null;
+        $code = $form['code'] ?? null;
+        if (!is_string($encodedUsername) || !is_string($encodedPassword)) {
+            return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
+        }
+        if (!is_string($code)) {
+            return self::makeJsonReturn(false, null, '请输入验证码');
+        }
+
+        $decodedUsername = base64_decode($encodedUsername, true);
+        $decodedPassword = base64_decode($encodedPassword, true);
+        if ($decodedUsername === false || $decodedPassword === false) {
+            return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
+        }
+
+        $username = urldecode($decodedUsername);
+        $password = urldecode($decodedPassword);
+        $code = trim($code);
         if (empty($username) || empty($password)) {
             return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
         }
