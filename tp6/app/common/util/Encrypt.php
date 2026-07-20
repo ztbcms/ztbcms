@@ -35,6 +35,9 @@ class Encrypt
     public static function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
         // 动态密匙长度，相同的明文会生成不同密文就是依靠动态密匙
         $ckey_length = 4;
+        if ($operation == 'DECODE' && (!is_string($string) || $string === '')) {
+            return '';
+        }
         // 密匙
         $authcode = Config::get('system.authcode', '');
         $key = md5(($key ? $key : $authcode));
@@ -76,15 +79,20 @@ class Encrypt
             $result .= chr(ord($string[$i]) ^ ($box[($box[$a] + $box[$j]) % 256]));
         }
         if ($operation == 'DECODE') {
-            // substr($result, 0, 10) == 0 验证数据有效性
-            // substr($result, 0, 10) - time() > 0 验证数据有效性
-            // substr($result, 10, 16) == substr(md5(substr($result, 26).$keyb), 0, 16) 验证数据完整性
-            // 验证数据有效性，请看未加密明文的格式
-            if ((substr($result, 0, 10) == 0 || substr($result, 0, 10) - time() > 0) && substr($result, 10, 16) == substr(md5(substr($result, 26) . $keyb), 0, 16)) {
-                return substr($result, 26);
-            } else {
+            if (strlen($result) < 26) {
                 return '';
             }
+
+            $expiryTime = substr($result, 0, 10);
+            if (!ctype_digit($expiryTime)) {
+                return '';
+            }
+
+            $content = substr($result, 26);
+            $signature = substr($result, 10, 16);
+            $isValidTime = $expiryTime === '0000000000' || (int) $expiryTime > time();
+            $isValidSignature = $signature === substr(md5($content . $keyb), 0, 16);
+            return $isValidTime && $isValidSignature ? $content : '';
         } else {
             // 把动态密匙保存在密文里，这也是为什么同样的明文，生产不同密文后能解密的原因
             // 因为加密后的密文可能是一些特殊字符，复制过程可能会丢失，所以用base64编码

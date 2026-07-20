@@ -43,7 +43,7 @@ class Client extends BaseClient
     {
         return $this->httpPostJson('cgi-bin/message/send', $message);
     }
-    
+
     /**
      * @param string $msgid
      *

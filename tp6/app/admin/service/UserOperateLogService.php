@@ -7,6 +7,7 @@ namespace app\admin\service;
 
 
 use app\admin\model\UserOperateLogModel;
+use app\common\libs\helper\PaginationHelper;
 use app\common\service\BaseService;
 
 class UserOperateLogService extends BaseService
@@ -28,6 +29,8 @@ class UserOperateLogService extends BaseService
      */
     static function getUserOperateLogList($where = [], $order = '', $page = '', $limit = '', $time = [])
     {
+        $page = PaginationHelper::normalizePage($page);
+        $limit = PaginationHelper::normalizeLimit($limit);
         $UserOperatelogModel = new UserOperateLogModel();
         $db = $UserOperatelogModel->where($where)->page($page)->limit($limit);
         $countDb = (new UserOperateLogModel())->where($where);

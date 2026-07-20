@@ -27,13 +27,19 @@ class XML
      */
     public static function parse($xml)
     {
-        $backup = libxml_disable_entity_loader(true);
+        $backup = null;
 
-        $result = self::normalize(simplexml_load_string(self::sanitize($xml), 'SimpleXMLElement', LIBXML_COMPACT | LIBXML_NOCDATA | LIBXML_NOBLANKS));
+        if (PHP_VERSION_ID < 80000) {
+            $backup = libxml_disable_entity_loader(true);
+        }
 
-        libxml_disable_entity_loader($backup);
-
-        return $result;
+        try {
+            return self::normalize(simplexml_load_string(self::sanitize($xml), 'SimpleXMLElement', LIBXML_COMPACT | LIBXML_NOCDATA | LIBXML_NOBLANKS));
+        } finally {
+            if (PHP_VERSION_ID < 80000) {
+                libxml_disable_entity_loader($backup);
+            }
+        }
     }
 
     /**
@@ -161,6 +167,6 @@ class XML
      */
     public static function sanitize($xml)
     {
-        return preg_replace('/[^\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]+/u', '', $xml);
+        return preg_replace('/[^\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]+/u', '', (string) $xml);
     }
 }

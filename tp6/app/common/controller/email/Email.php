@@ -8,6 +8,7 @@ namespace app\common\controller\email;
 
 use app\admin\service\AdminConfigService;
 use app\common\controller\AdminController;
+use app\common\libs\helper\PaginationHelper;
 use app\common\model\email\EmailSendLogModel;
 use app\common\service\email\EmailService;
 use think\Request;
@@ -90,8 +91,8 @@ class Email extends AdminController
                 $where[] = ['status', '=', $status];
             }
 
-            $page = input('page', 1, 'trim');
-            $limit = input('limit', 10, 'trim');
+            $page = PaginationHelper::normalizePage(input('page', 1));
+            $limit = PaginationHelper::normalizeLimit(input('limit', 10), 10);
 
             $logModel = new EmailSendLogModel();
             $db = $logModel->where($where)->order(['id' => 'desc'])->page($page)->limit($limit);

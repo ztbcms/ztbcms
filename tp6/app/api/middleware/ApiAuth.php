@@ -78,7 +78,7 @@ class ApiAuth
             return json(createReturn(false, null, '凭证不能为空', $unauth_code));
         }
         $token = $auth_str[1];
-        $jwtService = new JwtService();
+        $jwtService = new JwtService($this->getJwtScene($request));
         $res = $jwtService->parserToken($token);
         if (!$res['status']) {
             return json(createReturn(false, null, $res['msg'], $unauth_code));
@@ -106,7 +106,7 @@ class ApiAuth
             return $next($request);
         }
         $token = $auth_str[1];
-        $jwtService = new JwtService();
+        $jwtService = new JwtService($this->getJwtScene($request));
         $res = $jwtService->parserToken($token);
         if (!$res['status']) {
             return $next($request);
@@ -114,6 +114,20 @@ class ApiAuth
         // 注入登录用户信息
         $request->authorization = $res['data'];
         return $next($request);
+    }
+
+    /**
+     * 获取 JWT 场景
+     *
+     * 仅从服务端注入的请求上下文读取，不从用户输入决定场景。
+     *
+     * @param $request 请求对象
+     * @return string
+     */
+    private function getJwtScene($request): string
+    {
+        $scene = trim((string)($request->jwtScene ?? 'default'));
+        return $scene !== '' ? $scene : 'default';
     }
 
     /**

@@ -8,6 +8,7 @@ use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronLogModel;
 use app\common\model\cron\CronModel;
 use app\common\model\cron\CronSchedulingLogModel;
+use app\common\libs\helper\PaginationHelper;
 use app\common\util\Dir;
 use think\facade\View;
 use think\Request;
@@ -18,8 +19,8 @@ class Dashboard extends AdminController
     function cronLog(Request $request)
     {
         if ($request->isGet() && $request->get('_action') == 'getList') {
-            $page = $request->get('page', 1);
-            $limit = $request->get('limit', 15);
+            $page = PaginationHelper::normalizePage($request->get('page', 1));
+            $limit = PaginationHelper::normalizeLimit($request->get('limit', 15), 15);
             $cronId = $request->get('cron_id', '');
             $datetime = $request->get('datetime', '');
             $userTime = $request->get('user_time', '');
@@ -37,7 +38,8 @@ class Dashboard extends AdminController
             }
             $lists = CronLogModel::where($where)->order('id', 'DESC')->with('cronFile')->page($page)->limit($limit)->select()->toArray();
             $lists = array_map(function ($item) {
-                $item['throughput'] = round(1 / ($item['use_time'] / 1000), 1);
+                $useTime = floatval($item['use_time'] ?? 0);
+                $item['throughput'] = $useTime > 0 ? round(1000 / $useTime, 1) : 0.0;
                 return $item;
             }, $lists);
             $total = CronLogModel::where($where)->count();
@@ -58,8 +60,8 @@ class Dashboard extends AdminController
     function schedulingLog(Request $request)
     {
         if ($request->isGet() && $request->get('_action') == 'getList') {
-            $page = $request->get('page', 1);
-            $limit = $request->get('limit', 15);
+            $page = PaginationHelper::normalizePage($request->get('page', 1));
+            $limit = PaginationHelper::normalizeLimit($request->get('limit', 15), 15);
             $datetime = $request->get('datetime', '');
             $userTime = $request->get('user_time', '');
             $where = [];

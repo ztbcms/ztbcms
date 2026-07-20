@@ -77,6 +77,7 @@ class AccessToken implements AccessTokenInterface, ArrayAccess, JsonSerializable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getToken();

@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4 <8.0 || >=8.3 <8.4",
         "topthink/framework": "^6.0.0",
         "topthink/think-orm": "^2.0",
         "topthink/think-multi-app": "^1.0",
@@ -28,7 +28,7 @@
         "topthink/think-queue": "^3.0",
         "aliyuncs/oss-sdk-php": "^2.4",
         "alibabacloud/client": "^1.5",
-        "w7corp/easywechat": "^4.6",
+        "w7corp/easywechat": "4.9.0.1",
         "phpmailer/phpmailer": "^6.3",
         "guzzlehttp/guzzle": "^7.3",
         "topthink/think-migration": "^3.0",
@@ -37,6 +37,7 @@
         "firebase/php-jwt": "^6.4",
         "intervention/image": "^2.7",
         "topthink/think-filesystem": "^2.0",
+        "league/flysystem": "2.5.0.1",
         "qiniu/php-sdk": "^7.14"
     },
     "require-dev": {
@@ -63,10 +64,25 @@
             "@php think vendor:publish"
         ]
     },
-    "repositories": {
-        "packagist": {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Jayin/flysystem.git",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Jayin/easywechat.git",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Jayin/socialite.git",
+            "no-api": true
+        },
+        {
             "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
+            "url": "https://repo.packagist.org"
         }
-    }
+    ]
 }

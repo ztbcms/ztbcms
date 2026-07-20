@@ -30,16 +30,19 @@ class ArrayAccessible implements ArrayAccess, IteratorAggregate, Arrayable
         $this->array = $array;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->array);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->array[$offset];
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (null === $offset) {
@@ -49,11 +52,13 @@ class ArrayAccessible implements ArrayAccess, IteratorAggregate, Arrayable
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->array[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->array);

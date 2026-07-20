@@ -158,7 +158,8 @@ class ServiceContainer extends Container
         }
     }
 
-    public function getClient () {
+    public function getClient()
+    {
         return new BaseClient($this);
     }
 }

@@ -27,6 +27,15 @@ class BaseApi extends BaseController
     // 尝试认证Actions
     protected $tryAuthActions = [];
     /**
+     * JWT 使用场景
+     *
+     * 由服务端 API 基类声明，不允许从请求参数或请求头读取。
+     * 业务模块可通过继承覆盖，例如 protected $jwtScene = 'app';
+     *
+     * @var string
+     */
+    protected $jwtScene = 'default';
+    /**
      * API 速率限制配置
      *
      * 说明：
@@ -76,5 +85,6 @@ class BaseApi extends BaseController
         $app->request->skipAuthActions = $this->skipAuthActions ?? [];
         $app->request->tryAuthActions = $this->tryAuthActions ?? [];
         $app->request->apiRateLimit = $this->apiRateLimit;
+        $app->request->jwtScene = $this->jwtScene;
     }
 }

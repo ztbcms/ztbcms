@@ -7,6 +7,7 @@
 namespace app\admin\service;
 
 use app\admin\model\AdminMessageModel;
+use app\common\libs\helper\PaginationHelper;
 use app\common\service\BaseService;
 use think\facade\Db;
 
@@ -46,6 +47,8 @@ class AdminMessageService extends BaseService
      */
     static function getAdminMessageList($where = [], $order = '', $page = 1, $limit = 20)
     {
+        $page = PaginationHelper::normalizePage($page);
+        $limit = PaginationHelper::normalizeLimit($limit);
         if (!empty($order)) {
             $order = 'id desc';
         }

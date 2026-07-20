@@ -67,7 +67,12 @@ class AdminUserService extends BaseService
      */
     public function isLogin()
     {
-        $userId = Encrypt::authcode(session(self::KEY_USER_ID), 'DECODE');
+        $token = session(self::KEY_USER_ID);
+        if (!is_string($token) || $token === '') {
+            return 0;
+        }
+
+        $userId = Encrypt::authcode($token, Encrypt::OPERATION_DECODE);
         return (int) $userId;
     }
 

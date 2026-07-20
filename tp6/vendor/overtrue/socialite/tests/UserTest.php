@@ -42,4 +42,18 @@ class UserTest extends TestCase
         $this->assertSame('fake_refresh', $user->getRefreshToken());
         $this->assertSame('{"token":"mock-token","access_token":"mock-token","refresh_token":"fake_refresh"}', json_encode($user));
     }
+
+    public function testItCanSerializeAndUnserializeUserAttributes()
+    {
+        $user = new User([
+            'id' => 'openid',
+            'nickname' => 'tester',
+        ]);
+
+        $restored = unserialize(serialize($user));
+
+        $this->assertInstanceOf(User::class, $restored);
+        $this->assertSame('openid', $restored->getId());
+        $this->assertSame('tester', $restored->getNickname());
+    }
 }
