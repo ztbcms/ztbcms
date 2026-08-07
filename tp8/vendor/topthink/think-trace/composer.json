@@ -1,0 +1,31 @@
+{
+    "name": "topthink/think-trace",
+    "description": "thinkphp debug trace",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "liu21st",
+            "email": "liu21st@gmail.com"
+        }
+    ],
+    "require": {
+    	"php": ">=8.0",
+        "topthink/framework": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "think\\trace\\": "src"
+        }
+    },
+    "extra": {
+        "think":{
+            "services":[
+                "think\\trace\\Service"
+            ],
+            "config":{
+                "trace": "src/config.php"
+            }
+        }
+    },    
+    "minimum-stability": "dev"
+}
