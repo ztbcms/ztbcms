@@ -127,6 +127,10 @@ return [
 | `route` | 格式为 `模块名/控制器/方法`，子目录控制器用 `.` 分隔，如 `demo/admin.page/list` |
 | `type` | `0` = 只作为菜单显示；`1` = 同时注册为权限节点 |
 | `status` | `1` = 在后台左侧菜单栏展示；`0` = 不展示（适用于编辑、删除等操作权限） |
+| `parameter` | 菜单链接附加参数，属于菜单身份字段 |
+| `listorder` | 菜单排序，数值越小越靠前 |
+| `icon` | 菜单图标 |
+| `remark` | 菜单备注 |
 | `child` | 子菜单数组，支持无限层级嵌套 |
 
 ### install/{ModuleName}.sql（可选）
@@ -255,6 +259,38 @@ class CleanDataScript extends CronScript
 - `Config.inc.php` 文件存在且配置正确
 - CMS 版本满足 `adaptation` 要求
 - 所有依赖模块已安装
+
+---
+
+## 已安装模块菜单同步
+
+模块安装后修改 `install/Menu.php`，可以使用独立命令预览并同步安全变更：
+
+```bash
+# 只预览差异
+php think module:menu-sync demo --dry-run
+
+# 展示差异并确认后同步
+php think module:menu-sync demo
+
+# 非交互环境跳过确认
+php think module:menu-sync demo --force
+```
+
+同步规则：
+
+- `Menu.php` 是新安装菜单和安全展示属性的配置来源
+- 支持新增菜单，以及更新 `name`、`status`、`icon`、`remark`
+- 已有菜单只有显式声明 `listorder` 时才更新排序，未声明时保留数据库人工排序
+- 父级调整只有在节点能够唯一匹配时才执行，并保留原菜单 ID
+- 配置中已经移除的节点只报告为 `STALE`，不会自动删除
+- 修改 `route`、`type`、`parameter` 或删除节点时，必须使用数据库迁移同时处理 `menu` 和 `access`
+- 新增节点不会自动授予普通角色，同步后需要按业务要求重新授权
+- `admin`、`common`、`install` 系统模块不支持该命令
+
+菜单路由统一使用 `模块名/控制器/方法` 三段格式。同步器只为兼容历史安装行为保留两段路由解析，新配置不要使用两段路由。
+
+非交互环境未传 `--dry-run` 或 `--force` 时命令会直接失败，避免部署脚本阻塞等待确认。
 
 ---
 
