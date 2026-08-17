@@ -30,7 +30,7 @@
         "alibabacloud/client": "^1.5",
         "w7corp/easywechat": "4.9.0.1",
         "phpmailer/phpmailer": "^6.3",
-        "guzzlehttp/guzzle": "^7.3",
+        "guzzlehttp/guzzle": "7.15.2",
         "topthink/think-migration": "^3.0",
         "predis/predis": "^2.0",
         "nesbot/carbon": "^2.66",
