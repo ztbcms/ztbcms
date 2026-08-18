@@ -12,7 +12,7 @@
             <div class="label">登录密码</div>
             <div class="input password-input">
                 <input type="password" placeholder="请输入密码" id="password">
-                <button class="password-toggle" type="button" aria-label="显示密码" aria-pressed="false" title="显示密码">
+                <button class="password-toggle" type="button" tabindex="-1" aria-label="显示密码" aria-pressed="false" title="显示密码">
                     <svg class="password-icon password-icon-hidden is-hidden" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M3 3l18 18M10.7 10.7a2 2 0 0 0 2.6 2.6M9.9 4.2A10.7 10.7 0 0 1 12 4c5.5 0 9 6 9 6a18.1 18.1 0 0 1-2.1 2.8M6.6 6.6C4.4 8.1 3 10 3 10s3.5 6 9 6a9.8 9.8 0 0 0 3.4-.6"/>
                     </svg>
