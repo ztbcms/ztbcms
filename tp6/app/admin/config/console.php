@@ -6,6 +6,7 @@
 return [
     // 模块管理
     'module:install'   => 'app\admin\command\ModuleInstallCommand',
+    'module:menu-sync' => 'app\admin\command\ModuleMenuSyncCommand',
     'module:uninstall' => 'app\admin\command\ModuleUninstallCommand',
     'module:list'      => 'app\admin\command\ModuleListCommand',
 ];

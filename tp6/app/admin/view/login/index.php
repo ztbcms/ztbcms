@@ -10,8 +10,17 @@
                 <input type="text" placeholder="请输入账号" id="username">
             </div>
             <div class="label">登录密码</div>
-            <div class="input">
+            <div class="input password-input">
                 <input type="password" placeholder="请输入密码" id="password">
+                <button class="password-toggle" type="button" tabindex="-1" aria-label="显示密码" aria-pressed="false" title="显示密码">
+                    <svg class="password-icon password-icon-hidden is-hidden" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 3l18 18M10.7 10.7a2 2 0 0 0 2.6 2.6M9.9 4.2A10.7 10.7 0 0 1 12 4c5.5 0 9 6 9 6a18.1 18.1 0 0 1-2.1 2.8M6.6 6.6C4.4 8.1 3 10 3 10s3.5 6 9 6a9.8 9.8 0 0 0 3.4-.6"/>
+                    </svg>
+                    <svg class="password-icon password-icon-visible" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
+                        <circle cx="12" cy="12" r="2.5"/>
+                    </svg>
+                </button>
             </div>
             <div class="label">验证码</div>
             <div class="input flex-between" style="margin-bottom: 0px">
@@ -107,6 +116,54 @@
         border-bottom: 1px solid #ededed;
     }
 
+    .password-input {
+        position: relative;
+    }
+
+    .password-input input {
+        box-sizing: border-box;
+        padding-right: 36px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 0;
+        bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        color: #909399;
+        background: transparent;
+        border: 0;
+        border-radius: 50%;
+        outline: 0;
+        cursor: pointer;
+    }
+
+    .password-toggle:hover,
+    .password-toggle:focus {
+        color: #409eff;
+        background: #ecf5ff;
+    }
+
+    .password-icon {
+        display: block;
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .password-icon.is-hidden {
+        display: none;
+    }
+
     ::-webkit-input-placeholder { /* WebKit browsers */
         color: #d8d8d8;
     }
@@ -131,7 +188,7 @@
         margin-top: 50px;
     }
 
-    button {
+    .btn-box button {
         width: 402px;
         height: 50px;
         font-size: 16px;
@@ -187,12 +244,18 @@
 
     var inputs = document.querySelectorAll('input');
     var len = inputs.length;
-    var btn = document.querySelector('button');
+    var btn = document.querySelector('.btn-box button');
+    var passwordInput = document.getElementById('password');
+    var passwordToggle = document.querySelector('.password-toggle');
+    var passwordHiddenIcon = document.querySelector('.password-icon-hidden');
+    var passwordVisibleIcon = document.querySelector('.password-icon-visible');
 
 
     for (var i = 0; i < inputs.length; i++) {
         inputs[i].addEventListener('input', inputChange);
     }
+
+    passwordToggle.addEventListener('click', togglePasswordVisibility);
 
     if (!!window.ActiveXObject || "ActiveXObject" in window){
         alert('建议使用IE11及以上的浏览器');
@@ -215,6 +278,24 @@
             btn.classList.remove('finish');
             btn.classList.add('default');
             btn.disabled = true;
+        }
+    }
+
+    //切换登录密码的显示状态
+    function togglePasswordVisibility() {
+        var isVisible = passwordInput.type === 'text';
+        var nextLabel = isVisible ? '显示密码' : '隐藏密码';
+
+        passwordInput.type = isVisible ? 'password' : 'text';
+        passwordToggle.setAttribute('aria-label', nextLabel);
+        passwordToggle.setAttribute('aria-pressed', String(!isVisible));
+        passwordToggle.setAttribute('title', nextLabel);
+        if (isVisible) {
+            passwordHiddenIcon.classList.add('is-hidden');
+            passwordVisibleIcon.classList.remove('is-hidden');
+        } else {
+            passwordHiddenIcon.classList.remove('is-hidden');
+            passwordVisibleIcon.classList.add('is-hidden');
         }
     }
 

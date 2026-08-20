@@ -16,7 +16,7 @@
             <canvas id="demo-canvas" width="1590" height="711"></canvas>
             <h2 class="main-title">{$site_config['sitename']}<br>
                 <br/>
-                <span style="font-size: 16px">{$site_config['siteinfo']}</span><br/>
+                <span style="font-size: 16px; text-transform: none;">{$site_config['siteinfo']}</span><br/>
                 <br/>
                 <span  style="font-size: 16px">
                     {if $enable_install }

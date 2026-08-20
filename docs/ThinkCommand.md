@@ -63,7 +63,14 @@
 |------|------|
 | `php think module:list` | 列出所有本地模块及安装状态 |
 | `php think module:install <module_name>` | 安装指定模块 |
+| `php think module:menu-sync <module_name> --dry-run` | 预览已安装模块的菜单差异，不写数据库 |
+| `php think module:menu-sync <module_name>` | 展示菜单差异并确认后同步 |
+| `php think module:menu-sync <module_name> --force` | 跳过确认直接同步菜单 |
 | `php think module:uninstall <module_name>` | 卸载指定模块（需确认，`--force` 跳过） |
+
+菜单同步只自动新增节点以及更新名称、状态、图标、备注、显式排序和可唯一识别的父级，不会删除遗留节点或自动授予普通角色权限。路由、类型、参数和删除节点的变化需要使用数据库迁移。
+
+非交互环境必须显式传入 `--dry-run` 或 `--force`。`admin`、`common`、`install` 系统模块不支持菜单同步。
 
 ## 其他
 | 命令 | 说明 |

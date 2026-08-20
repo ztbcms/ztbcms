@@ -7,10 +7,12 @@
 namespace app\admin\service;
 
 
+use Throwable;
+use think\facade\Db;
 use app\admin\libs\module\ModuleInstaller;
+use app\admin\libs\module\ModuleMenuSynchronizer;
 use app\admin\libs\module\ModuleUninstaller;
 use app\common\service\BaseService;
-use think\facade\Db;
 
 /**
  * 模块服务
@@ -75,6 +77,53 @@ class ModuleService extends BaseService
         }
         $installer = new ModuleUninstaller($moduleName);
         return $installer->run();
+    }
+
+    /**
+     * 分析模块菜单同步计划
+     *
+     * @param string $module 模块目录名称
+     * @return array
+     */
+    public function analyzeMenuSync(string $module): array
+    {
+        $moduleName = strtolower(trim($module));
+        if ($moduleName === '') {
+            return self::createReturn(false, null, '参数异常');
+        }
+        if (in_array($moduleName, self::SystemModuleList, true)) {
+            return self::createReturn(false, null, "系统模块 {$moduleName} 不支持菜单同步");
+        }
+
+        try {
+            return (new ModuleMenuSynchronizer($moduleName))->analyze();
+        } catch (Throwable $e) {
+            return self::createReturn(false, null, $e->getMessage());
+        }
+    }
+
+    /**
+     * 执行模块菜单同步
+     *
+     * @param string $module 模块目录名称
+     * @param string $expectedFingerprint 预览阶段计划指纹
+     * @return array
+     */
+    public function syncMenu(string $module, string $expectedFingerprint): array
+    {
+        $moduleName = strtolower(trim($module));
+        if ($moduleName === '') {
+            return self::createReturn(false, null, '参数异常');
+        }
+        if (in_array($moduleName, self::SystemModuleList, true)) {
+            return self::createReturn(false, null, "系统模块 {$moduleName} 不支持菜单同步");
+        }
+
+        try {
+            return (new ModuleMenuSynchronizer($moduleName))->sync($expectedFingerprint);
+        } catch (Throwable $e) {
+            return self::createReturn(false, null, $e->getMessage());
+        }
     }
 
     /**
