@@ -59,9 +59,25 @@ php think list
 php think clear
 php think route:list
 php think module:list
+php think module:menu-sync <module_name> --dry-run
 php think migrate:status
 php think queue:work
 ```
+
+已安装模块修改 `install/Menu.php` 后，可以使用 `module:menu-sync` 预览或同步安全的菜单变更：
+
+```bash
+# 只预览差异
+php think module:menu-sync demo --dry-run
+
+# 展示差异并确认后同步
+php think module:menu-sync demo
+
+# 非交互环境跳过确认
+php think module:menu-sync demo --force
+```
+
+命令只自动新增菜单，以及更新名称、状态、图标、备注、显式排序和可唯一识别的父级，不会删除遗留节点或自动授予普通角色权限
 
 ## 验证
 
