@@ -1,70 +1,91 @@
 <?php
-/**
- * User: cycle_3
- * Date: 2020/11/5
- * Time: 16:41
- */
 
 namespace app\admin\controller;
 
-use app\admin\service\AdminConfigService;
-use app\common\controller\AdminController;
 use think\facade\App;
 use think\facade\View;
+
+use app\admin\service\AdminConfigService;
+use app\common\controller\AdminController;
 use app\common\libs\helper\FileHelper;
 
+/**
+ * 后台缓存管理
+ *
+ * @package app\admin\controller
+ */
 class Cache extends AdminController
 {
-
     /**
-     * 清除缓存页面
-     * @return string
+     * 显示缓存管理页面或执行缓存清理
+     *
+     * @return mixed
      */
-    function cache()
+    public function cache()
     {
         set_time_limit(0);
         $type = input('type', '', 'trim');
-        if ($type == 'site') {
-            // 系统设置缓存
+        if ($type === 'site') {
+            // 清除后台配置缓存
             AdminConfigService::getInstance()->clearConfigCache();
-            //删除缓存的所有数据
-            $path = App::getRootPath() . 'runtime\\';
-            if (file_exists($path)) {
-                //判断是否存在缓存的页面文件
-                (new FileHelper)->deldir($path);
-            }
+            // 清除公共文件缓存
+            $this->clearDirectory($this->getRuntimeRootPath() . 'cache');
             return json(self::createReturn(true, '', '清除成功'));
-        } else if ($type == 'template') {
-            //删除模板缓存
-            $path = App::getRootPath() . 'runtime';
-            $scandir = scandir($path);
-            foreach ($scandir as $k => $v) {
-                if ($v != '.' && $v != '..') {
-                    if (file_exists($path . '\\' . $v . '\temp')) {
-                        //判断是否存在缓存的页面文件
-                        (new FileHelper)->deldir($path . '\\' . $v . '\temp\\');
-                    }
-                }
-            }
+        } elseif ($type === 'template') {
+            // 清除所有应用的模板编译缓存
+            $this->clearApplicationRuntimeDirectories('temp');
             return json(self::createReturn(true, '', '清除成功'));
-        } else if ($type == 'logs') {
-            //网站运行日志
-            $path = App::getRootPath() . 'runtime';
-            $scandir = scandir($path);
-            foreach ($scandir as $k => $v) {
-                if ($v != '.' && $v != '..') {
-                    if (file_exists($path . '\\' . $v . '\log')) {
-                        //判断是否存在缓存的页面文件
-                        (new FileHelper)->deldir($path . '\\' . $v . '\log\\');
-                    }
-                }
-            }
+        } elseif ($type === 'logs') {
+            // 清除公共日志及所有应用日志
+            $this->clearDirectory($this->getRuntimeRootPath() . 'log');
+            $this->clearApplicationRuntimeDirectories('log');
             return json(self::createReturn(true, '', '清除成功'));
-        } else {
-            return View::fetch('cache');
+        }
+
+        return View::fetch('cache');
+    }
+
+    /**
+     * 获取公共运行时目录
+     *
+     * @return string
+     */
+    private function getRuntimeRootPath(): string
+    {
+        return App::getRootPath() . 'runtime' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * 清除所有应用下指定名称的运行时目录
+     *
+     * @param string $directoryName 目录名称
+     * @return void
+     */
+    private function clearApplicationRuntimeDirectories(string $directoryName): void
+    {
+        $paths = glob(
+            $this->getRuntimeRootPath() . '*' . DIRECTORY_SEPARATOR . $directoryName,
+            GLOB_ONLYDIR
+        ) ?: [];
+
+        foreach ($paths as $path) {
+            $this->clearDirectory($path);
         }
     }
 
+    /**
+     * 清除指定目录内的所有文件和子目录
+     *
+     * @param string $path 目录路径
+     * @return void
+     */
+    private function clearDirectory(string $path): void
+    {
+        if (!is_dir($path)) {
+            return;
+        }
 
-
+        $path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
+        (new FileHelper())->deldir($path);
+    }
 }

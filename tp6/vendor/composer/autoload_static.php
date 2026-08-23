@@ -99,10 +99,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         array (
             'JmesPath\\' => 9,
         ),
-        'I' => 
-        array (
-            'Intervention\\Image\\' => 19,
-        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -238,8 +234,8 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -300,10 +296,6 @@ class ComposerStaticInit13dbc09f390213f91c21179ea5f9bae9
         'JmesPath\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
-        ),
-        'Intervention\\Image\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
