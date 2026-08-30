@@ -1,0 +1,121 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache not found\\.$#"
+			count: 1
+			path: src/BasicService/Jssdk/Client.php
+
+		-
+			message: "#^Method EasyWeChat\\\\BasicService\\\\Jssdk\\\\Client\\:\\:createDefaultCache\\(\\) should return Psr\\\\SimpleCache\\\\CacheInterface but returns Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache\\.$#"
+			count: 1
+			path: src/BasicService/Jssdk/Client.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache not found\\.$#"
+			count: 1
+			path: src/Kernel/AccessToken.php
+
+		-
+			message: "#^Method EasyWeChat\\\\Kernel\\\\AccessToken\\:\\:createDefaultCache\\(\\) should return Psr\\\\SimpleCache\\\\CacheInterface but returns Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache\\.$#"
+			count: 1
+			path: src/Kernel/AccessToken.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Kernel/Http/Response.php
+
+		-
+			message: "#^Default value of the parameter \\#2 \\$depth \\(float\\) of method EasyWeChat\\\\Kernel\\\\Support\\\\Arr\\:\\:flatten\\(\\) is incompatible with type int\\.$#"
+			count: 1
+			path: src/Kernel/Support/Arr.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 4
+			path: src/Kernel/Support/Collection.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache not found\\.$#"
+			count: 1
+			path: src/OfficialAccount/Card/Client.php
+
+		-
+			message: "#^Method EasyWeChat\\\\OfficialAccount\\\\Card\\\\Client\\:\\:createDefaultCache\\(\\) should return Psr\\\\SimpleCache\\\\CacheInterface but returns Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache\\.$#"
+			count: 1
+			path: src/OfficialAccount/Card/Client.php
+
+		-
+			message: "#^Method EasyWeChat\\\\OfficialAccount\\\\Server\\\\Handlers\\\\EchoStrHandler\\:\\:handle\\(\\) should return EasyWeChat\\\\Kernel\\\\Decorators\\\\FinallyResult\\|null but return statement is missing\\.$#"
+			count: 1
+			path: src/OfficialAccount/Server/Handlers/EchoStrHandler.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache not found\\.$#"
+			count: 1
+			path: src/OpenPlatform/Auth/VerifyTicket.php
+
+		-
+			message: "#^Method EasyWeChat\\\\OpenPlatform\\\\Auth\\\\VerifyTicket\\:\\:createDefaultCache\\(\\) should return Psr\\\\SimpleCache\\\\CacheInterface but returns Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache\\.$#"
+			count: 1
+			path: src/OpenPlatform/Auth/VerifyTicket.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$agentId\\)\\: Unexpected token \"\\$agentId\", expected type at offset 93$#"
+			count: 1
+			path: src/OpenWork/Provider/Client.php
+
+		-
+			message: "#^Method EasyWeChat\\\\OpenWork\\\\Server\\\\Handlers\\\\EchoStrHandler\\:\\:handle\\(\\) should return EasyWeChat\\\\Kernel\\\\Decorators\\\\FinallyResult\\|null but return statement is missing\\.$#"
+			count: 1
+			path: src/OpenWork/Server/Handlers/EchoStrHandler.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache not found\\.$#"
+			count: 1
+			path: src/OpenWork/SuiteAuth/SuiteTicket.php
+
+		-
+			message: "#^Method EasyWeChat\\\\OpenWork\\\\SuiteAuth\\\\SuiteTicket\\:\\:createDefaultCache\\(\\) should return Psr\\\\SimpleCache\\\\CacheInterface but returns Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache\\.$#"
+			count: 1
+			path: src/OpenWork/SuiteAuth/SuiteTicket.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache not found\\.$#"
+			count: 1
+			path: src/Payment/Sandbox/Client.php
+
+		-
+			message: "#^Method EasyWeChat\\\\Payment\\\\Sandbox\\\\Client\\:\\:createDefaultCache\\(\\) should return Psr\\\\SimpleCache\\\\CacheInterface but returns Symfony\\\\Component\\\\Cache\\\\Simple\\\\FilesystemCache\\.$#"
+			count: 1
+			path: src/Payment/Sandbox/Client.php
+
+		-
+			message: "#^Property EasyWeChat\\\\Kernel\\\\BaseClient\\:\\:\\$accessToken \\(EasyWeChat\\\\Kernel\\\\Contracts\\\\AccessTokenInterface\\) does not accept null\\.$#"
+			count: 1
+			path: src/Work/GroupRobot/Client.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$agentId\\)\\: Unexpected token \"\\$agentId\", expected type at offset 30$#"
+			count: 1
+			path: src/Work/Jssdk/Client.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$agentId\\)\\: Unexpected token \"\\$agentId\", expected type at offset 62$#"
+			count: 1
+			path: src/Work/Jssdk/Client.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$agentId\\)\\: Unexpected token \"\\$agentId\", expected type at offset 67$#"
+			count: 1
+			path: src/Work/Jssdk/Client.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$roomid$#"
+			count: 2
+			path: src/Work/MsgAudit/Client.php
+
+		-
+			message: "#^Method EasyWeChat\\\\Work\\\\Server\\\\Handlers\\\\EchoStrHandler\\:\\:handle\\(\\) should return EasyWeChat\\\\Kernel\\\\Decorators\\\\FinallyResult\\|null but return statement is missing\\.$#"
+			count: 1
+			path: src/Work/Server/Handlers/EchoStrHandler.php
