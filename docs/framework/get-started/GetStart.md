@@ -56,4 +56,4 @@ php think ztbcms:install -f \
   --manager_pwd admin_password
 ```
 
-> **进阶参考**：关于一键静默安装参数和防重复安装机制，请详细查阅 [系统安装向导](../tp6/app/install/README.md)
+> **进阶参考**：关于一键静默安装参数和防重复安装机制，请详细查阅 [系统安装向导](../../../tp6/app/install/README.md)
