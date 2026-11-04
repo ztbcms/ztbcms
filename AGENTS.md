@@ -19,7 +19,7 @@
 
 - 所有命令在 `tp6/` 目录下执行，格式为 `php think <command>`。
 - 涵盖代码生成（make）、数据库迁移（migrate）、队列（queue）、计划任务（cron）等常用操作。
-- 详细命令速查表见 `docs/ThinkCommand.md`。
+- 详细命令速查表见 `docs/framework/dev-guides/ThinkCommand.md`。
 
 ## 代码风格与命名
 - **PSR 标准**：遵循 PSR-4/PSR-12，**4 空格缩进**，UTF-8，**无 BOM**。
