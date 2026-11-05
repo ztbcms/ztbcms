@@ -57,6 +57,11 @@ VALUES
 	('enable_cron', '1', '是否启用', '1启动 0停止'),
 	('secret_key', '', '私钥', '');
 
+INSERT INTO `cms_cron` (`type`, `subject`, `loop_type`, `loop_daytime`, `cron_file`, `isopen`, `created_time`, `modified_time`, `next_time`, `data`)
+VALUES
+	(0, '队列监控记录清理', 'day', '0-4-0', 'app\\common\\cronscript\\QueueMonitorCleanScript', 1, 0, 0, 0, NULL),
+	(0, '队列监控丢失记录兜底', 'now', '0-0-10', 'app\\common\\cronscript\\QueueMonitorLostScript', 1, 0, 0, 0, NULL);
+
 -- ----------------------------
 -- 上传
 -- ----------------------------
@@ -129,6 +134,37 @@ CREATE TABLE `cms_queue_failed_jobs` (
  `fail_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-失败任务表';
+
+DROP TABLE IF EXISTS `cms_queue_monitor`;
+CREATE TABLE `cms_queue_monitor` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `monitor_uuid` char(36) NOT NULL DEFAULT '' COMMENT '任务链路UUID（同一任务多次重试共用）',
+  `queue_job_id` bigint unsigned NOT NULL DEFAULT '0' COMMENT '队列表任务ID（queue_jobs.id）',
+  `connection` varchar(64) NOT NULL DEFAULT '' COMMENT '队列连接名',
+  `queue` varchar(128) NOT NULL DEFAULT '' COMMENT '队列名称',
+  `job_name` varchar(255) NOT NULL DEFAULT '' COMMENT '任务类名',
+  `attempt` int unsigned NOT NULL DEFAULT '0' COMMENT '第几次尝试执行',
+  `status` varchar(16) NOT NULL DEFAULT '' COMMENT '状态：running/succeeded/released/failed/exception/timeout/interrupted/unacked/lost',
+  `pushed_at` bigint unsigned NOT NULL DEFAULT '0' COMMENT '首次入队毫秒时间戳',
+  `started_at` bigint unsigned NOT NULL DEFAULT '0' COMMENT '开始执行毫秒时间戳',
+  `finished_at` bigint unsigned NOT NULL DEFAULT '0' COMMENT '结束执行毫秒时间戳',
+  `wait_ms` int unsigned NOT NULL DEFAULT '0' COMMENT '本次排队等待时长（毫秒）',
+  `duration_ms` int unsigned NOT NULL DEFAULT '0' COMMENT '执行耗时（毫秒）',
+  `memory_peak` int unsigned NOT NULL DEFAULT '0' COMMENT '进程内存峰值（字节）',
+  `hostname` varchar(128) NOT NULL DEFAULT '' COMMENT 'Worker主机名',
+  `pid` int unsigned NOT NULL DEFAULT '0' COMMENT 'Worker进程PID',
+  `exception_class` varchar(255) NOT NULL DEFAULT '' COMMENT '异常类名',
+  `exception_message` text COMMENT '异常消息与截断堆栈',
+  `payload` text COMMENT '任务Payload（截断）',
+  `create_time` int unsigned NOT NULL DEFAULT '0' COMMENT '创建时间（秒）',
+  PRIMARY KEY (`id`),
+  KEY `idx_started_at` (`started_at`),
+  KEY `idx_queue_started` (`queue`, `started_at`),
+  KEY `idx_job_started` (`job_name`, `started_at`),
+  KEY `idx_status_started` (`status`, `started_at`),
+  KEY `idx_uuid` (`monitor_uuid`),
+  KEY `idx_host_pid` (`hostname`, `pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-执行监控记录表';
 
 -- ----------------------------
 -- 队列 END

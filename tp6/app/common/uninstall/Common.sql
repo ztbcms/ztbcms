@@ -17,3 +17,10 @@ DROP TABLE IF EXISTS `cms_attachment_index`;
 -- 下载中心
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_downloader`;
+
+-- ----------------------------
+-- 队列
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_queue_jobs`;
+DROP TABLE IF EXISTS `cms_queue_failed_jobs`;
+DROP TABLE IF EXISTS `cms_queue_monitor`;
