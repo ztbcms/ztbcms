@@ -56,6 +56,56 @@ return array(
                 ]
             ],
             [
+                "route" => "common/queue.dashboard/index",
+                "type" => 0,
+                "status" => 1,
+                "name" => "队列监控",
+                "child" => [
+                    [
+                        "route" => "common/queue.dashboard/index",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "概况",
+                    ],
+                    [
+                        "route" => "common/queue.dashboard/monitorLog",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "执行记录",
+                    ],
+                    [
+                        "route" => "common/queue.dashboard/monitorDetail",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "执行记录详情",
+                    ],
+                    [
+                        "route" => "common/queue.dashboard/failedJobs",
+                        "type" => 1,
+                        "status" => 1,
+                        "name" => "失败任务",
+                    ],
+                    [
+                        "route" => "common/queue.dashboard/failedJobDetail",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "失败任务详情",
+                    ],
+                    [
+                        "route" => "common/queue.dashboard/retryFailedJob",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "重试失败任务",
+                    ],
+                    [
+                        "route" => "common/queue.dashboard/deleteFailedJob",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除失败任务",
+                    ],
+                ]
+            ],
+            [
                 "route" => "common/upload.upload/setting",
                 "type" => 0,
                 "status" => 1,
