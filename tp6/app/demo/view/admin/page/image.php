@@ -6,15 +6,11 @@
                 <div class="grid-content ">
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="1.单图展示">
-                            <div id="galley">
-                                <ul class="pictures">
-                                    <template v-for="img_url in preview_images">
-                                        <li @click="previewImage(img_url)">
-                                            <img data-original="../images/tibet-1.jpg" :src="img_url">
-                                        </li>
-                                    </template>
-                                </ul>
-                            </div>
+                            <ul class="pictures">
+                                <li v-for="img_url in preview_images" :key="img_url" @click="previewImage(img_url)">
+                                    <img :src="img_url">
+                                </li>
+                            </ul>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -64,14 +60,10 @@
     }
 </style>
 
-
-</block>
-
-<block name="footer">
-    <!--  引入viewer.js  -->
-    <script src="/statics/admin/viewerjs/viewer.min.js"></script>
-    <link rel="stylesheet" href="/statics/admin/viewerjs/viewer.min.css">
-    <!--  引入viewer.js  END -->
+<!--  引入viewer.js  -->
+<script src="/statics/admin/viewerjs/viewer.min.js"></script>
+<link rel="stylesheet" href="/statics/admin/viewerjs/viewer.min.css">
+<!--  引入viewer.js  END -->
 
     <script>
         $(document).ready(function () {
@@ -95,7 +87,6 @@
                      * @param url 图片URL
                      */
                     previewImage: function (url) {
-                        console.log(url)
                         var image = new Image()
                         image.src = url
                         var viewer = new Viewer(image, {
