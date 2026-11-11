@@ -154,15 +154,27 @@
                 },
                 //保存
                 sureSava() {
-                    var img_base64 = this.myCropper.getCroppedCanvas({
+                    var that = this;
+                    var canvas = this.myCropper.getCroppedCanvas({
                         imageSmoothingQuality: 'high'
-                    }).toDataURL('image/png');
-                    this.doUpload(img_base64)
+                    });
+                    if (!canvas) {
+                        layer.msg('请先选择图片')
+                        return
+                    }
+                    try {
+                        canvas.toBlob(function (blob) {
+                            that.doUpload(blob)
+                        }, 'image/png');
+                    } catch (e) {
+                        // 跨域图片且未配置 CORS 时画布会被污染，无法导出
+                        layer.msg('无法导出跨域图片，请确认图片域名已配置 CORS')
+                    }
                 },
                 //关闭窗口
                 closePanel: function () {
                     if (parent.window.layer) {
-                        parent.window.layer.closeAll()
+                        parent.window.layer.close(parent.window.layer.getFrameIndex(window.name))
                     } else {
                         window.close()
                     }
@@ -174,67 +186,65 @@
                     this.input_height = height
                     this.myCropper.setAspectRatio(option)
                 },
-                //创建 URL 对象
-                getObjectURL(file) {
-                    var url = null;
-                    if (window.createObjectURL != undefined) { // basic
-                        url = window.createObjectURL(file)
-                    } else if (window.URL != undefined) { // mozilla(firefox)
-                        url = window.URL.createObjectURL(file)
-                    } else if (window.webkitURL != undefined) { // webkit or chrome
-                        url = window.webkitURL.createObjectURL(file)
-                    }
-                    return url
-                },
-                //上传图片
-                doUpload(img_base64) {
-                    var that = this;
-                    var img_blob = this.dataURItoBlob(img_base64);
-                    var form = new FormData();
-                    let fileOfBlob = new File([img_blob], new Date() + '.png'); // 重命名
-                    form.append("file", fileOfBlob);
-                    $.ajax({
-                        url: "/Upload/UploadAdminApi/uploadImage",
-                        data: form,
-                        dataType: "json",
-                        type: "post",
-                        processData: false,
-                        contentType: false,
-                        success(res) {
-                            if (res.status) {
-                                layer.msg('保存成功')
-                                that.save_img_url = res.data.url;  //返回保存图片地址
-                                //返回裁剪后的图片
-                                var event = document.createEvent('CustomEvent');
-                                event.initCustomEvent('ZTBCMS_IMAGE_CROP_FILE', true, true, {
-                                    name: res.data.savename,
-                                    url: that.save_img_url,
-                                });
-                                window.parent.dispatchEvent(event); //触发
-                                that.closePanel()
-                            } else {
-                                layer.msg(res.msg)
+                //获取上传凭证（后台管理员临时 JWT）
+                getUploadToken() {
+                    return new Promise(function (resolve, reject) {
+                        $.ajax({
+                            url: "{:api_url('common/upload.upload/getUploadToken')}",
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (res) {
+                                if (res.status && res.data && res.data.token) {
+                                    resolve(res.data.token)
+                                } else {
+                                    reject(new Error(res.msg || '获取上传凭证失败'))
+                                }
+                            },
+                            error: function () {
+                                reject(new Error('获取上传凭证请求失败'))
                             }
-                        }
+                        })
                     })
                 },
-                // base64 转 blob
-                dataURItoBlob(base64Data) {
-                    var byteString;
-                    if (base64Data.split(',')[0].indexOf('base64') >= 0)
-                        byteString = atob(base64Data.split(',')[1]);//base64 解码
-                    else {
-                        byteString = unescape(base64Data.split(',')[1]);
-                    }
-                    var mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];//mime类型 -- image/png
-                    var ia = new Uint8Array(byteString.length);//创建视图
-                    for (var i = 0; i < byteString.length; i++) {
-                        ia[i] = byteString.charCodeAt(i);
-                    }
-                    var blob = new Blob([ia], {
-                        type: mimeString
-                    });
-                    return blob
+                //上传图片
+                doUpload(blob) {
+                    var that = this;
+                    var form = new FormData();
+                    form.append("file", new File([blob], 'crop_' + Date.now() + '.png', {type: 'image/png'}));
+                    this.getUploadToken().then(function (token) {
+                        $.ajax({
+                            url: "{:api_url('common/upload.api/upload')}",
+                            data: form,
+                            dataType: "json",
+                            type: "post",
+                            processData: false,
+                            contentType: false,
+                            headers: {
+                                'Authorization': 'Bearer ' + token
+                            },
+                            success(res) {
+                                if (res.status) {
+                                    layer.msg('保存成功')
+                                    that.save_img_url = res.data.fileurl;  //返回保存图片地址
+                                    //返回裁剪后的图片
+                                    window.parent.dispatchEvent(new CustomEvent('ZTBCMS_IMAGE_CROP_FILE', {
+                                        detail: {
+                                            name: res.data.filename,
+                                            url: that.save_img_url,
+                                        }
+                                    }));
+                                    that.closePanel()
+                                } else {
+                                    layer.msg(res.msg)
+                                }
+                            },
+                            error: function () {
+                                layer.msg('上传请求失败')
+                            }
+                        })
+                    }).catch(function (err) {
+                        layer.msg(err.message)
+                    })
                 },
                 // 选择图片
                 gotoUploadImage: function () {

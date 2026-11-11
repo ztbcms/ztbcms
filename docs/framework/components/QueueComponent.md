@@ -60,10 +60,11 @@ return [
         ],
         // 数据库驱动
         'database' => [
-            'type'       => 'database',
-            'queue'      => 'default',
-            'table'      => 'queue_jobs',      // 队列任务表
-            'connection' => null,
+            'type'        => \app\common\libs\queue\connector\MonitorDatabase::class,
+            'queue'       => 'default',
+            'table'       => 'queue_jobs',      // 队列任务表
+            'connection'  => null,
+            'retry_after' => (int)env('queue.retry_after', 180), // 必须大于 worker 的最大 --timeout
         ],
         // Redis 驱动
         'redis'    => [
@@ -93,6 +94,7 @@ return [
 |------|------|
 | `cms_queue_jobs` | 队列任务表 |
 | `cms_queue_failed_jobs` | 失败任务表 |
+| `cms_queue_monitor` | 队列执行监控记录表 |
 
 > 实际表名会叠加数据库前缀（`DB_PREFIX`），例如默认前缀为 `cms_` 时，表名即 `cms_queue_jobs`。
 
@@ -413,7 +415,16 @@ return [
 ];
 ```
 
-> 当前日志默认注释，如需记录可打开注释并按需扩展。
+> `QueueSubscribe` 已接入队列监控（`QueueMonitorService`），在命令行 worker 进程中自动将每次任务执行写入 `cms_queue_monitor` 表，无需在业务任务中编写额外代码。
+
+### 队列监控（管理后台）
+
+管理后台入口：**系统管理 → 队列监控**（`common/queue.dashboard/index`，仅支持 `database` 驱动）：
+
+- **概况**：按队列实时统计待执行、延迟中、执行中、疑似卡死（`reserve_time` 超过 `retry_after`）及最长等待时间；展示区间吞吐量趋势、按任务类的成功率与平均/P95/最大耗时、活跃 Worker。
+- **执行记录**：每次任务尝试一条记录，通过自定义驱动 `MonitorDatabase` 在 payload 注入的 `monitor_uuid` 串联同一任务的多次重试链路。
+- **失败任务**：查看异常堆栈与 payload，支持单个或批量重试、删除。
+- **数据维护**：计划任务 `QueueMonitorCleanScript`（按 `queue.monitor.keep_days` 清理过期记录）与 `QueueMonitorLostScript`（将超时未结束的 `running` 记录标记为 `lost`）。
 
 ## 运维部署
 

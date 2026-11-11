@@ -15,15 +15,15 @@
                 <el-option v-for="item in calendarTypeOptions" :key="item.key"
                            :label="item.display_name+'('+item.key+')'" :value="item.key"></el-option>
             </el-select>
-            <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item">
+            <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
                 <el-option v-for="item in sortOptions" :key="item.key" :label="item.label"
                            :value="item.key"></el-option>
             </el-select>
-            <el-button class="filter-item" type="primary" icon="el-icon-search">
+            <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
                 搜索
             </el-button>
             <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit"
-                       @click="openArticleLink('http://www.baidu.com')">
+                       @click="openEditPage(0)">
                 添加
             </el-button>
         </div>
@@ -50,9 +50,6 @@
             <el-table-column label="标题" min-width="150px">
                 <template slot-scope="{row}">
                     <span>{{ row.title }}</span>
-                    <!--                    <span style="color: #337ab7;cursor: pointer;"-->
-                    <!--                          @click="openArticleLink(row.link)">{{ row.title }}</span>-->
-                    <!--<el-tag>{{ row.type }}</el-tag>-->
                 </template>
             </el-table-column>
             <el-table-column label="作者" width="110px" align="center">
@@ -73,9 +70,7 @@
             </el-table-column>
             <el-table-column label="访问量" align="center" width="95">
                 <template slot-scope="{row}">
-                    <span v-if="row.pageviews" @click="linkToList(row.id)">
-                        <el-link>{{ row.pageviews }}</el-link>
-                    </span>
+                    <span v-if="row.pageviews">{{ row.pageviews }}</span>
                     <span v-else>0</span>
                 </template>
             </el-table-column>
@@ -88,7 +83,7 @@
             </el-table-column>
             <el-table-column fixed="right" label="Actions" align="center" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="{row}">
-                    <el-button type="primary" size="mini" @click="openArticleLink(row.link)">
+                    <el-button type="primary" size="mini" @click="openEditPage(row.id)">
                         编辑
                     </el-button>
                     <el-button v-if="row.status!='published'" size="mini" type="success"
@@ -137,10 +132,9 @@
         new Vue({
             el: '#app',
             data: {
-                is_init_list: true,
-                form: {},
                 tableKey: 0,
                 listQuery: {
+                    page: 1,
                     importance: '',
                     title: '',
                     type: '',
@@ -154,9 +148,11 @@
                     {key: 'EU', display_name: 'Eurozone'}
                 ],
                 sortOptions: [{label: 'ID 升序', key: '+id'}, {label: 'ID 降序', key: '-id'}],
-                statusOptions: ['published', 'draft', 'deleted'],
+                data_list: [],
+                total_num: 0,
+                current_page: 1,
+                per_page: 20,
             },
-            watch: {},
             filters: {
                 parseTime: function (time, format) {
                     return Ztbcms.formatTime(time, format)
@@ -171,91 +167,85 @@
                 },
             },
             methods: {
-                GetList: function () {
-                    //模拟
+                // 获取列表（本地模拟数据，实际项目中替换为 ajax 请求）
+                getList: function () {
+                    var total = 400
+                    var per_page = this.per_page
+                    var page = this.listQuery.page
+                    var desc = this.listQuery.sort === '-id'
                     var new_list = [];
-                    for (var i = 0; i < 20; i++) {
-                        var item = {
-                            id: i,
-                            timestamp: Date.now() + i,
+                    for (var i = 0; i < per_page; i++) {
+                        var offset = (page - 1) * per_page + i
+                        var id = desc ? total - offset : offset + 1
+                        new_list.push({
+                            id: id,
+                            timestamp: Date.now() - id * 3600 * 1000,
                             author: '小明',
                             reviewer: '大明',
-                            title: '这里是文章',
-                            content_short: '这里是内容简洁',
-                            content: '这里是内容内容内容内容内容内容内容内容内容内容',
-                            forecast: '100',
-                            importance: '2',
+                            title: '这里是文章 ' + id,
+                            importance: String(id % 3 + 1),
                             type: 'CN',
-                            status: 'published',//published', 'draft', 'deleted'
-                            display_time: '2019-1-1',
-                            comment_disabled: true,
-                            pageviews: '1000',
-                            image_uri: 'https://picsum.photos/200',
-                            platforms: ['a-platform'],
-                            link: 'https://baidu.com?v=' + i,
-                        }
-                        new_list.push(item);
+                            status: 'published',
+                            pageviews: String(id * 10),
+                        });
                     }
-                    this.handRes({
+                    this.handleRes({
                         data: new_list,
-                        current_page: 1,
-                        last_page: 20,
-                        per_page: 20,
-                        total: 400
+                        current_page: page,
+                        per_page: per_page,
+                        total: total
                     })
+                },
+                handleRes: function (data) {
+                    this.data_list = data.data
+                    this.current_page = data.current_page
+                    this.per_page = data.per_page
+                    this.total_num = data.total
                 },
                 handleFilter: function () {
                     this.listQuery.page = 1
                     this.getList()
                 },
-                sortChange: function (data) {
-                    var order = data.order
-                    var prop = data.prop
-                    if (prop === 'id') {
-                        this.sortByID(order)
-                    }
+                currentChangeEvent: function (page) {
+                    this.listQuery.page = page
+                    this.getList()
                 },
-                sortByID: function (order) {
-                    if (order === 'ascending') {
-                        this.listQuery.sort = '+id'
-                    } else {
-                        this.listQuery.sort = '-id'
+                sortChange: function (data) {
+                    if (data.prop === 'id') {
+                        this.listQuery.sort = data.order === 'ascending' ? '+id' : '-id'
+                        this.handleFilter()
                     }
-                    this.handleFilter()
                 },
                 getSortClass: function (key) {
-                    const sort = this.listQuery.sort
-                    return sort === `+${key}`
-                        ? 'ascending'
-                        : sort === `-${key}`
-                            ? 'descending'
-                            : ''
+                    var sort = this.listQuery.sort
+                    if (sort === '+' + key) return 'ascending'
+                    if (sort === '-' + key) return 'descending'
+                    return ''
                 },
                 handleModifyStatus: function (row, status) {
                     this.$message({
-                        message: '操作Success',
+                        message: '操作成功',
                         type: 'success'
                     })
                     row.status = status
                 },
-                //以窗口形式打开链接
-                openArticleLink: function (url) {
+                // 以弹窗形式打开编辑页
+                openEditPage: function (id) {
+                    var url = '{:api_url("/demo/admin.page/form")}'
+                    if (id) {
+                        url += '?id=' + id
+                    }
                     layer.open({
                         type: 2,
-                        title: '编辑',
+                        title: id ? '编辑' : '添加',
                         content: url,
                         area: ['60%', '70%'],
                     })
                 },
-                // 跳转查看阅读此文章的用户列表
-                linkToList: function (id) {
-                    var url = '{:api_url("/Admin/Logs/loginLogList")}' + '?id=' + id;
-                    Ztbcms.openNewIframeByUrl('用户列表', url)
-                }
             },
             mounted: function () {
+                this.getList()
             },
-
         })
     })
 </script>
