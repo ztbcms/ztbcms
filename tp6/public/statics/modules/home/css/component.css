@@ -1,11 +1,10 @@
-﻿/* Header */
+/* Header */
 .large-header {
 	position: relative;
 	width: 100%;
+	height: 100vh;
 	background: #409eff;
 	overflow: hidden;
-	background-size: cover;
-	background-position: center center;
 	z-index: 1;
 }
 
@@ -17,23 +16,44 @@
 	text-align: center;
 	top: 40%;
 	left: 50%;
-	-webkit-transform: translate3d(-50%,-50%,0);
-	transform: translate3d(-50%,-50%,0);
-}
-
-.demo-1 .main-title {
-	text-transform: uppercase;
+	-webkit-transform: translate3d(-50%, -50%, 0);
+	transform: translate3d(-50%, -50%, 0);
 	font-size: 3em;
-	font-family:Microsoft YaHei light;
+	font-family: "Microsoft YaHei Light", "Microsoft YaHei", sans-serif;
 	letter-spacing: 0.1em;
 }
 
-.main-title .thin {
-	font-weight: 200;
+.main-title .site-name {
+	display: block;
+	margin-bottom: 1em;
 }
 
-@media only screen and (max-width : 768px) {
-	.demo-1 .main-title {
-		font-size: 3em;
-	}
+.main-title .site-info {
+	display: block;
+	font-size: 16px;
+}
+
+.main-title .link {
+	display: inline-block;
+	margin-top: 2em;
+	font-size: 16px;
+}
+
+.link {
+	color: #fff;
+	text-decoration: none;
+}
+
+/* Footer */
+.page-footer {
+	position: fixed;
+	bottom: 20px;
+	width: 100%;
+	color: #fff;
+	text-align: center;
+	z-index: 100;
+}
+
+.page-footer p {
+	margin: 0;
 }

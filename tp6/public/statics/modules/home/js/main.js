@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
 
     var width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
 
@@ -15,7 +15,7 @@
         largeHeader = document.getElementById('large-header');
         largeHeader.style.height = height+'px';
 
-        canvas = document.getElementById('demo-canvas');
+        canvas = document.getElementById('header-canvas');
         canvas.width = width;
         canvas.height = height;
         ctx = canvas.getContext('2d');
@@ -78,7 +78,7 @@
     }
 
     function mouseMove(e) {
-        var posx = posy = 0;
+        var posx = 0, posy = 0;
         if (e.pageX || e.pageY) {
             posx = e.pageX;
             posy = e.pageY;
@@ -106,13 +106,17 @@
 
     // animation
     function initAnimation() {
-        animate();
+        var now = performance.now();
         for(var i in points) {
-            shiftPoint(points[i]);
+            shiftPoint(points[i], now);
         }
+        requestAnimationFrame(animate);
     }
 
-    function animate() {
+    function animate(now) {
+        for(var i in points) {
+            updatePoint(points[i], now);
+        }
         if(animateHeader) {
             ctx.clearRect(0,0,width,height);
             for(var i in points) {
@@ -138,12 +142,34 @@
         requestAnimationFrame(animate);
     }
 
-    function shiftPoint(p) {
-        TweenLite.to(p, 1+1*Math.random(), {x:p.originX-50+Math.random()*100,
-            y: p.originY-50+Math.random()*100, ease:Circ.easeInOut,
-            onComplete: function() {
-                shiftPoint(p);
-            }});
+    // 点位漂移：用 requestAnimationFrame 驱动的补间替代 TweenLite（Circ.easeInOut）
+    function shiftPoint(p, now) {
+        p.tween = {
+            fromX: p.x,
+            fromY: p.y,
+            toX: p.originX - 50 + Math.random() * 100,
+            toY: p.originY - 50 + Math.random() * 100,
+            start: now,
+            duration: 1000 + 1000 * Math.random()
+        };
+    }
+
+    function updatePoint(p, now) {
+        var t = p.tween;
+        var progress = Math.min(Math.max((now - t.start) / t.duration, 0), 1);
+        var e = circEaseInOut(progress);
+        p.x = t.fromX + (t.toX - t.fromX) * e;
+        p.y = t.fromY + (t.toY - t.fromY) * e;
+        if(progress >= 1) {
+            shiftPoint(p, now);
+        }
+    }
+
+    function circEaseInOut(t) {
+        t *= 2;
+        if(t < 1) return -0.5 * (Math.sqrt(1 - t * t) - 1);
+        t -= 2;
+        return 0.5 * (Math.sqrt(1 - t * t) + 1);
     }
 
     // Canvas manipulation
