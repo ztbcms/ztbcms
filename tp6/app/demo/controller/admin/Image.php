@@ -11,7 +11,7 @@ use app\common\controller\AdminController;
 use think\facade\View;
 
 /**
- * 图片上传
+ * 图片裁剪
  * Class Image
  * @package app\demo\controller\admin
  */
@@ -25,6 +25,10 @@ class Image extends AdminController
         return View::fetch();
     }
 
+    /**
+     * 图片裁剪面板（iframe 弹窗内打开）
+     * @return string
+     */
     public function cropImage(){
         return View::fetch();
     }

@@ -26,7 +26,7 @@
                 },
 
                 gotoOutside2: function () {
-                    window.open('https://www.baidu.com/s?wd=ztbcms')
+                    window.open('https://www.baidu.com/s?wd=ztbcms', '_blank', 'noopener,noreferrer')
                 },
             },
             mounted: function () {
