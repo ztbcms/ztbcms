@@ -67,6 +67,12 @@ class Index extends BaseController
                     'is_readable' => strpos($item['current'], '不可读') === false ? '<span class="correct_span">&radic;</span>可读' : '<span class="correct_span error_span">&radic;</span>不可读',
                     'is_writable' => strpos($item['current'], '不可写') === false ? '<span class="correct_span">&radic;</span>可写' : '<span class="correct_span error_span">&radic;</span>不可写',
                 ];
+            } elseif (strpos($item['name'], '核心扩展: ') === 0) {
+                $ext = str_replace('核心扩展: ', '', $item['name']);
+                $function[] = [
+                    'name'  => $ext . ' (扩展)',
+                    'value' => $item['status']
+                ];
             } elseif (strpos($item['name'], '核心函数: ') === 0) {
                 $func = str_replace('核心函数: ', '', $item['name']);
                 $function[] = [
