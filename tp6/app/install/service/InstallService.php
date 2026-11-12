@@ -38,34 +38,43 @@ class InstallService
         $_php_version = phpversion();
         $mini_php_version = self::MIN_PHP_VERSION;
         $isPhpValid = version_compare($_php_version, $mini_php_version, '>=');
-        $items[] = [
+        $phpGroup = [
             'name' => 'PHP版本',
             'require' => '>=' . $mini_php_version,
             'current' => $_php_version,
-            'status' => $isPhpValid
+            'status' => $isPhpValid,
         ];
+        $items[] = $phpGroup;
         if (!$isPhpValid) {
             $err++;
         }
 
-        $isUploadValid = ini_get('file_uploads');
+        $isUploadValid = (bool) ini_get('file_uploads');
+        $uploadMaxFilesize = ini_get('upload_max_filesize');
+        $uploadGroup = [
+            'name' => '文件上传',
+            'require' => '开启',
+            'current' => $isUploadValid ? $uploadMaxFilesize : '禁止上传',
+            'status' => $isUploadValid,
+        ];
         $items[] = [
             'name' => '文件上传',
             'require' => '开启',
-            'current' => $isUploadValid ? ini_get('upload_max_filesize') : '禁止',
-            'status' => (bool) $isUploadValid
+            'current' => $isUploadValid ? $uploadMaxFilesize : '禁止',
+            'status' => $isUploadValid,
         ];
         if (!$isUploadValid) {
             $err++;
         }
 
         $isSessionValid = function_exists('session_start');
-        $items[] = [
+        $sessionGroup = [
             'name' => 'Session',
             'require' => '支持',
             'current' => $isSessionValid ? '支持' : '不支持',
-            'status' => $isSessionValid
+            'status' => $isSessionValid,
         ];
+        $items[] = $sessionGroup;
         if (!$isSessionValid) {
             $err++;
         }
@@ -77,6 +86,7 @@ class InstallService
             'runtime/',
             'app/install/',
         ];
+        $folderGroups = [];
         foreach ($folders as $dir) {
             if ($dir === '.env') {
                 $path = $envFile;
@@ -91,11 +101,17 @@ class InstallService
             $isReadable = is_readable($path);
             $isWritable = is_writable($path);
             $isValid = $isReadable && $isWritable;
+            $folderGroups[] = [
+                'dir' => $dir,
+                'is_readable' => $isReadable,
+                'is_writable' => $isWritable,
+                'status' => $isValid,
+            ];
             $items[] = [
                 'name' => '目录权限: ' . $dir,
                 'require' => '可读写',
                 'current' => ($isReadable ? '可读 ' : '不可读 ') . ($isWritable ? '可写' : '不可写'),
-                'status' => $isValid
+                'status' => $isValid,
             ];
             if (!$isValid) {
                 $err++;
@@ -103,13 +119,18 @@ class InstallService
         }
 
         $extensions = ['pdo', 'pdo_mysql'];
+        $extensionGroups = [];
         foreach ($extensions as $ext) {
             $isValid = extension_loaded($ext);
+            $extensionGroups[] = [
+                'name' => $ext,
+                'status' => $isValid,
+            ];
             $items[] = [
                 'name' => '核心扩展: ' . $ext,
                 'require' => '开启',
                 'current' => $isValid ? '已开启' : '未开启',
-                'status' => $isValid
+                'status' => $isValid,
             ];
             if (!$isValid) {
                 $err++;
@@ -117,13 +138,18 @@ class InstallService
         }
 
         $functions = ['mb_strlen', 'curl_init'];
+        $functionGroups = [];
         foreach ($functions as $func) {
             $isValid = function_exists($func);
+            $functionGroups[] = [
+                'name' => $func,
+                'status' => $isValid,
+            ];
             $items[] = [
                 'name' => '核心函数: ' . $func,
                 'require' => '支持',
                 'current' => $isValid ? '支持' : '不支持',
-                'status' => $isValid
+                'status' => $isValid,
             ];
             if (!$isValid) {
                 $err++;
@@ -133,7 +159,15 @@ class InstallService
         return [
             'status' => $err === 0,
             'err_count' => $err,
-            'items' => $items
+            'items' => $items,
+            'groups' => [
+                'php' => $phpGroup,
+                'upload' => $uploadGroup,
+                'session' => $sessionGroup,
+                'folders' => $folderGroups,
+                'extensions' => $extensionGroups,
+                'functions' => $functionGroups,
+            ],
         ];
     }
 

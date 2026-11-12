@@ -37,61 +37,32 @@ class Index extends BaseController
     {
         $installService = new InstallService();
         $envRes = $installService->checkEnvironment();
+        $groups = $envRes['groups'];
 
-        $err = $envRes['err_count'];
-        $items = $envRes['items'];
-
-        // mysql检测
-        $mysql = '请自行检查';
-        $mini_php_version = InstallService::MIN_PHP_VERSION;
-
-        $php_version_info = '';
-        $uploadSize = '';
-        $session = '';
-        $folderInfo = [];
         $function = [];
-
-        foreach ($items as $item) {
-            $spanClass = $item['status'] ? '<span class="correct_span">&radic;</span> ' : '<span class="correct_span error_span">&radic;</span> ';
-
-            if ($item['name'] === 'PHP版本') {
-                $php_version_info = $spanClass . $item['current'];
-            } elseif ($item['name'] === '文件上传') {
-                $uploadSize = $spanClass . ($item['current'] === '禁止' ? '禁止上传' : $item['current']);
-            } elseif ($item['name'] === 'Session') {
-                $session = $spanClass . $item['current'];
-            } elseif (strpos($item['name'], '目录权限: ') === 0) {
-                $dir = str_replace('目录权限: ', '', $item['name']);
-                $folderInfo[] = [
-                    'dir'         => $dir,
-                    'is_readable' => strpos($item['current'], '不可读') === false ? '<span class="correct_span">&radic;</span>可读' : '<span class="correct_span error_span">&radic;</span>不可读',
-                    'is_writable' => strpos($item['current'], '不可写') === false ? '<span class="correct_span">&radic;</span>可写' : '<span class="correct_span error_span">&radic;</span>不可写',
-                ];
-            } elseif (strpos($item['name'], '核心扩展: ') === 0) {
-                $ext = str_replace('核心扩展: ', '', $item['name']);
-                $function[] = [
-                    'name'  => $ext . ' (扩展)',
-                    'value' => $item['status']
-                ];
-            } elseif (strpos($item['name'], '核心函数: ') === 0) {
-                $func = str_replace('核心函数: ', '', $item['name']);
-                $function[] = [
-                    'name'  => $func,
-                    'value' => $item['status']
-                ];
-            }
+        foreach ($groups['extensions'] as $ext) {
+            $function[] = [
+                'name'  => $ext['name'] . ' (扩展)',
+                'value' => $ext['status']
+            ];
+        }
+        foreach ($groups['functions'] as $func) {
+            $function[] = [
+                'name'  => $func['name'],
+                'value' => $func['status']
+            ];
         }
 
         return view('step2', [
             'os'               => PHP_OS,
             'function'         => $function,
-            'err'              => $err,
-            'phpv'             => $php_version_info,
-            'mini_php_version' => $mini_php_version,
-            'mysql'            => $mysql,
-            'uploadSize'       => $uploadSize,
-            'session'          => $session,
-            'folderInfo'       => $folderInfo
+            'err'              => $envRes['err_count'],
+            'php_info'         => $groups['php'],
+            'mini_php_version' => InstallService::MIN_PHP_VERSION,
+            'mysql'            => '请自行检查',
+            'upload_info'      => $groups['upload'],
+            'session_info'     => $groups['session'],
+            'folderInfo'       => $groups['folders']
         ]);
     }
 
