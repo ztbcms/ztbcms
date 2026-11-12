@@ -96,10 +96,14 @@ class Index extends BaseController
 
     function step4()
     {
-        //检测数据
-        $data = input('post.');
-        $data = is_array($data) ? $data : [];
-        session(InstallService::INSTALL_CONFIG_KEY, $data);
+        if ($this->request->isPost()) {
+            $data = input('post.');
+            $data = is_array($data) ? $data : [];
+            session(InstallService::INSTALL_CONFIG_KEY, $data);
+        } else {
+            $data = session(InstallService::INSTALL_CONFIG_KEY);
+            $data = is_array($data) ? $data : [];
+        }
 
         $safeViewData = $data;
         unset($safeViewData['db_pwd'], $safeViewData['manager_pwd'], $safeViewData['manager_ckpwd']);
@@ -138,17 +142,19 @@ class Index extends BaseController
     //数据库安装
     function doInstall()
     {
+        if (!$this->request->isPost()) {
+            return self::makeJsonReturn(false, null, '请求方式不正确');
+        }
+
         $n = input('get.n', 0, 'intval');
         $sessionConfig = session(InstallService::INSTALL_CONFIG_KEY);
-        $sessionConfig = is_array($sessionConfig) ? $sessionConfig : [];
+        if (!is_array($sessionConfig) || empty($sessionConfig)) {
+            return self::makeJsonReturn(false, null, '安装配置已失效，请返回上一步重新填写');
+        }
 
         $getParam = function (string $key, bool $trim = true) use ($sessionConfig) {
-            if ($this->request->has($key, 'post') || $this->request->has($key, 'get')) {
-                $val = input($key, '');
-            } else {
-                $val = $sessionConfig[$key] ?? '';
-            }
-            return $trim ? trim((string) $val) : $val;
+            $val = $sessionConfig[$key] ?? '';
+            return $trim ? trim((string) $val) : (string) $val;
         };
 
         $config = [

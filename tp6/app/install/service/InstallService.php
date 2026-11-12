@@ -69,23 +69,26 @@ class InstallService
             $err++;
         }
 
+        $envFile = root_path() . '.env';
+        $hasEnvFile = file_exists($envFile);
         $folders = [
-            './',
+            $hasEnvFile ? '.env' : './',
             'runtime/',
             'app/install/',
         ];
         foreach ($folders as $dir) {
-            $path = $dir === './' ? root_path() : root_path() . $dir;
+            if ($dir === '.env') {
+                $path = $envFile;
+            } elseif ($dir === './') {
+                $path = root_path();
+            } else {
+                $path = root_path() . $dir;
+            }
             if ($dir === 'runtime/' && !is_dir($path)) {
                 @mkdir($path, 0755, true);
             }
             $isReadable = is_readable($path);
             $isWritable = is_writable($path);
-            if ($dir === './' && file_exists(root_path() . '.env')) {
-                $envFile = root_path() . '.env';
-                $isReadable = $isReadable && is_readable($envFile);
-                $isWritable = $isWritable && is_writable($envFile);
-            }
             $isValid = $isReadable && $isWritable;
             $items[] = [
                 'name' => '目录权限: ' . $dir,
@@ -402,11 +405,17 @@ class InstallService
                 '#CACHE_PREFIX#'  => $this->formatEnvValue(bin2hex(random_bytes(3)) . '_', 'CACHE_PREFIX'),
             ]);
 
-            $this->snapshotEnvIfNeeded();
-
             $envTarget = root_path() . '.env';
-            if (file_exists($envTarget)) {
-                $existingEnv = file_get_contents($envTarget);
+            $envExistedBeforeWrite = file_exists($envTarget);
+            $previousEnvContent = $envExistedBeforeWrite ? file_get_contents($envTarget) : false;
+            if ($envExistedBeforeWrite && $previousEnvContent === false) {
+                throw new \RuntimeException('读取现有配置文件失败');
+            }
+
+            $this->snapshotEnvIfNeeded($envExistedBeforeWrite, is_string($previousEnvContent) ? $previousEnvContent : '');
+
+            if ($envExistedBeforeWrite) {
+                $existingEnv = (string) $previousEnvContent;
                 $pattern = '/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s';
                 if (preg_match($pattern, $existingEnv)) {
                     $newEnv = preg_replace_callback($pattern, function () use ($strEnv) {
@@ -425,6 +434,7 @@ class InstallService
             }
 
             if (!touch(install_lock_path())) {
+                $this->rollbackEnvOnImmediateFailure($envTarget, $envExistedBeforeWrite, $previousEnvContent);
                 throw new \RuntimeException('写入安装锁文件失败');
             }
 
@@ -557,7 +567,10 @@ class InstallService
         if (!empty($envSnapshot['captured'])) {
             $envTarget = root_path() . '.env';
             if (!empty($envSnapshot['exists'])) {
-                if (empty($envSnapshot['had_install_block']) && file_exists($envTarget)) {
+                if (!empty($envSnapshot['had_install_block'])) {
+                    $hasError = true;
+                    $messages .= $this->buildLogItem(false, '配置文件 .env 包含已有安装区块且被上次中断的安装覆盖，无法自动还原，请先手动恢复 .env 后重试');
+                } elseif (file_exists($envTarget)) {
                     $existingEnv = (string) file_get_contents($envTarget);
                     $cleanedEnv = preg_replace('/(?:\r?\n)*### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###\r?\n?/s', '', $existingEnv);
                     $res = file_put_contents($envTarget, (string) $cleanedEnv);
@@ -686,11 +699,13 @@ class InstallService
     }
 
     /**
-     * 记录 .env 初始状态
+     * 记录 .env 初始状态（不保存文件内容，避免残留明文密码）
      *
+     * @param bool|null $exists
+     * @param string $existingContent
      * @return void
      */
-    protected function snapshotEnvIfNeeded()
+    protected function snapshotEnvIfNeeded(?bool $exists = null, string $existingContent = '')
     {
         $state = $this->getInstallState();
         if (empty($state)) {
@@ -703,12 +718,11 @@ class InstallService
         }
 
         $envTarget = root_path() . '.env';
-        $exists = file_exists($envTarget);
-        $hadInstallBlock = false;
-        if ($exists) {
-            $existingContent = (string) file_get_contents($envTarget);
-            $hadInstallBlock = (bool) preg_match('/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s', $existingContent);
+        if ($exists === null) {
+            $exists = file_exists($envTarget);
+            $existingContent = $exists ? (string) file_get_contents($envTarget) : '';
         }
+        $hadInstallBlock = $exists && (bool) preg_match('/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s', $existingContent);
 
         $state['env_snapshot'] = [
             'captured' => true,
@@ -717,6 +731,32 @@ class InstallService
         ];
 
         $this->saveInstallState($state);
+    }
+
+    /**
+     * 当 finishInstall 写入 .env 后紧邻步骤（如写锁）失败时，使用内存中的原始内容立即回滚
+     *
+     * @param string $envTarget
+     * @param bool $envExistedBeforeWrite
+     * @param string|false $previousEnvContent
+     * @return void
+     */
+    protected function rollbackEnvOnImmediateFailure(string $envTarget, bool $envExistedBeforeWrite, $previousEnvContent)
+    {
+        $restored = false;
+        if ($envExistedBeforeWrite && is_string($previousEnvContent)) {
+            $restored = file_put_contents($envTarget, $previousEnvContent) !== false;
+        } elseif (!$envExistedBeforeWrite) {
+            $restored = !file_exists($envTarget) || @unlink($envTarget);
+        }
+
+        if ($restored) {
+            $state = $this->getInstallState();
+            if (!empty($state) && isset($state['env_snapshot'])) {
+                $state['env_snapshot']['captured'] = false;
+                $this->saveInstallState($state);
+            }
+        }
     }
 
     /**
