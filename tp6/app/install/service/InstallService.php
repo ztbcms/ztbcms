@@ -12,6 +12,7 @@ use app\common\libs\helper\StringHelper;
 class InstallService
 {
     const INSTALL_STATE_KEY = 'ztbcms_install_state';
+    const MIN_MANAGER_PWD_LENGTH = 6;
 
     /**
      * 命令行安装状态缓存
@@ -108,6 +109,99 @@ class InstallService
     }
 
     /**
+     * 校验数据库连接配置
+     *
+     * @param array $config
+     * @param bool $requirePrefix
+     * @return array
+     */
+    public function validateDbConfig(array $config, bool $requirePrefix = false): array
+    {
+        $dbHost = trim((string) ($config['db_host'] ?? ''));
+        if ($dbHost === '') {
+            return ['status' => false, 'msg' => '数据库服务器地址不能为空'];
+        }
+
+        $dbPort = trim((string) ($config['db_port'] ?? ''));
+        if ($dbPort === '') {
+            return ['status' => false, 'msg' => '数据库服务器端口不能为空'];
+        }
+        if (!ctype_digit($dbPort) || (int) $dbPort < 1 || (int) $dbPort > 65535) {
+            return ['status' => false, 'msg' => '数据库服务器端口格式不正确'];
+        }
+
+        $dbUser = trim((string) ($config['db_user'] ?? ''));
+        if ($dbUser === '') {
+            return ['status' => false, 'msg' => '数据库用户名不能为空'];
+        }
+
+        $dbName = trim((string) ($config['db_name'] ?? ''));
+        if ($dbName === '') {
+            return ['status' => false, 'msg' => '数据库名不能为空'];
+        }
+        if (!preg_match('/^[a-z0-9_]+$/i', $dbName)) {
+            return ['status' => false, 'msg' => '数据库名格式不正确，仅支持字母、数字和下划线'];
+        }
+
+        $dbPrefix = trim((string) ($config['db_prefix'] ?? ''));
+        if ($requirePrefix && $dbPrefix === '') {
+            return ['status' => false, 'msg' => '数据库表前缀不能为空'];
+        }
+        if ($dbPrefix !== '' && !preg_match('/^[a-z0-9_]+$/i', $dbPrefix)) {
+            return ['status' => false, 'msg' => '数据库表前缀格式不正确，仅支持字母、数字和下划线'];
+        }
+
+        return ['status' => true, 'msg' => ''];
+    }
+
+    /**
+     * 校验完整安装参数
+     *
+     * @param array $config
+     * @return array
+     */
+    public function validateInstallConfig(array $config): array
+    {
+        $dbValidateRes = $this->validateDbConfig($config, true);
+        if (!$dbValidateRes['status']) {
+            return $dbValidateRes;
+        }
+
+        $manager = trim((string) ($config['manager'] ?? ''));
+        if ($manager === '') {
+            return ['status' => false, 'msg' => '管理员帐号不能为空'];
+        }
+
+        $managerPwd = (string) ($config['manager_pwd'] ?? '');
+        if ($managerPwd === '') {
+            return ['status' => false, 'msg' => '管理员密码不能为空'];
+        }
+        if (mb_strlen($managerPwd, 'UTF-8') < self::MIN_MANAGER_PWD_LENGTH) {
+            return ['status' => false, 'msg' => '管理员密码长度不能少于' . self::MIN_MANAGER_PWD_LENGTH . '位'];
+        }
+
+        if (array_key_exists('manager_ckpwd', $config)) {
+            $managerCkpwd = (string) ($config['manager_ckpwd'] ?? '');
+            if ($managerCkpwd === '') {
+                return ['status' => false, 'msg' => '重复密码不能为空'];
+            }
+            if ($managerCkpwd !== $managerPwd) {
+                return ['status' => false, 'msg' => '两次输入的密码不一致'];
+            }
+        }
+
+        $managerEmail = trim((string) ($config['manager_email'] ?? ''));
+        if ($managerEmail === '') {
+            return ['status' => false, 'msg' => '管理员邮箱不能为空'];
+        }
+        if (filter_var($managerEmail, FILTER_VALIDATE_EMAIL) === false) {
+            return ['status' => false, 'msg' => '管理员邮箱格式不正确'];
+        }
+
+        return ['status' => true, 'msg' => ''];
+    }
+
+    /**
      * 测试链接数据库
      *
      * @param array $config
@@ -115,6 +209,11 @@ class InstallService
      */
     public function testDbConnection($config)
     {
+        $validateRes = $this->validateDbConfig(is_array($config) ? $config : [], false);
+        if (!$validateRes['status']) {
+            return ['status' => false, 'data' => null, 'msg' => $validateRes['msg']];
+        }
+
         $db_config = config('database');
         $db_config['connections']['install'] = [
             'type'     => 'mysql',
@@ -152,6 +251,14 @@ class InstallService
     {
         $n = (int) $n;
         $prefixMessage = '';
+
+        $validateRes = $this->validateInstallConfig(is_array($config) ? $config : []);
+        if (!$validateRes['status']) {
+            if ($n > 0) {
+                $this->markInstallFailed();
+            }
+            return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($validateRes['msg'])), $validateRes['msg']);
+        }
 
         if ($n > 0) {
             $stateRes = $this->validateRunningState($config);

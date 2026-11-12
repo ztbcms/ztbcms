@@ -144,6 +144,7 @@ class Index extends BaseController
 
             'manager'       => input('manager', '', 'trim'),
             'manager_pwd'   => input('manager_pwd', '', 'trim'),
+            'manager_ckpwd' => input('manager_ckpwd', '', 'trim'),
             'manager_email' => input('manager_email', '', 'trim'),
 
             'sitename'     => input('sitename'),
