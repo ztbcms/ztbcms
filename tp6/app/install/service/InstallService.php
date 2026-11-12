@@ -12,7 +12,9 @@ use app\common\libs\helper\StringHelper;
 class InstallService
 {
     const INSTALL_STATE_KEY = 'ztbcms_install_state';
+    const MIN_PHP_VERSION = '7.2';
     const MIN_MANAGER_PWD_LENGTH = 6;
+    const INSTALL_FINISHED_STEP = 999999;
 
     /**
      * 命令行安装状态缓存
@@ -32,7 +34,7 @@ class InstallService
         $items = [];
 
         $_php_version = phpversion();
-        $mini_php_version = '7.2';
+        $mini_php_version = self::MIN_PHP_VERSION;
         $isPhpValid = version_compare($_php_version, $mini_php_version, '>=');
         $items[] = [
             'name' => 'PHP版本',
@@ -225,7 +227,6 @@ class InstallService
             'prefix'   => $config['db_prefix'] ?? '',
             'params'   => [],
         ];
-        $db_config['connections']['default'] = 'install';
         config($db_config, 'database');
 
         try {
@@ -302,20 +303,14 @@ class InstallService
                 try {
                     Db::execute($sql);
                     $this->appendCreatedTable($tableName);
-                    $message = $this->prependMessage(
-                        $prefixMessage,
-                        $this->buildLogItem(true, '创建数据表 ' . $tableName . '，完成')
-                    );
+                    $message = $prefixMessage . $this->buildLogItem(true, '创建数据表 ' . $tableName . '，完成');
 
                     return $this->createResponse(true, $i + 1, $message, '创建数据表 ' . $tableName . '，完成');
                 } catch (\Throwable $e) {
                     $this->markInstallFailed();
                     $this->writeInstallLog('创建数据表失败', $e, $sql);
 
-                    $message = $this->prependMessage(
-                        $prefixMessage,
-                        $this->buildLogItem(false, '创建数据表 ' . $tableName . '，失败: ' . $this->escapeMessage($e->getMessage()))
-                    );
+                    $message = $prefixMessage . $this->buildLogItem(false, '创建数据表 ' . $tableName . '，失败: ' . $this->escapeMessage($e->getMessage()));
 
                     return $this->createResponse(false, null, $message, '创建数据表 ' . $tableName . ' 失败: ' . $e->getMessage());
                 }
@@ -328,10 +323,7 @@ class InstallService
                 $this->writeInstallLog('SQL执行失败', $e, $sql);
 
                 $shortSql = mb_substr(trim(preg_replace('/\s+/', ' ', strip_tags($sql))), 0, 60);
-                $message = $this->prependMessage(
-                    $prefixMessage,
-                    $this->buildLogItem(false, '执行异常: ' . $this->escapeMessage($shortSql) . ' (' . $this->escapeMessage($e->getMessage()) . ')')
-                );
+                $message = $prefixMessage . $this->buildLogItem(false, '执行异常: ' . $this->escapeMessage($shortSql) . ' (' . $this->escapeMessage($e->getMessage()) . ')');
 
                 return $this->createResponse(false, null, $message, '安装 SQL 执行失败: ' . $e->getMessage());
             }
@@ -432,16 +424,13 @@ class InstallService
 
             $this->clearInstallState();
 
-            $message = $this->prependMessage($prefixMessage, $this->buildLogItem(true, '安装完成'));
-            return $this->createResponse(true, 999999, $message, '安装完成');
+            $message = $prefixMessage . $this->buildLogItem(true, '安装完成');
+            return $this->createResponse(true, self::INSTALL_FINISHED_STEP, $message, '安装完成');
         } catch (\Throwable $e) {
             $this->markInstallFailed();
             $this->writeInstallLog('安装收尾失败', $e);
 
-            $message = $this->prependMessage(
-                $prefixMessage,
-                $this->buildLogItem(false, '安装收尾失败: ' . $this->escapeMessage($e->getMessage()))
-            );
+            $message = $prefixMessage . $this->buildLogItem(false, '安装收尾失败: ' . $this->escapeMessage($e->getMessage()));
 
             return $this->createResponse(false, null, $message, '安装失败: ' . $e->getMessage());
         }
@@ -840,18 +829,6 @@ class InstallService
         $class = $status ? 'correct_span' : 'correct_span error_span';
         $icon = $status ? '&radic;' : '&times;';
         return '<li><span class="' . $class . '">' . $icon . '</span>' . $message . '</li>';
-    }
-
-    /**
-     * 合并前置日志
-     *
-     * @param string $prefix
-     * @param string $message
-     * @return string
-     */
-    protected function prependMessage($prefix, $message)
-    {
-        return (string) $prefix . (string) $message;
     }
 
     /**

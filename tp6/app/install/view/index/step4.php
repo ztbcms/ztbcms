@@ -8,13 +8,7 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="header">
-        <h1 class="logo">ZTBCMS</h1>
-        <div class="icon_install">安装向导</div>
-        <div class="version">
-            <?php echo \think\facade\Config::get('admin.cms_version'); ?>
-        </div>
-    </div>
+    {include file="index/header" /}
     <section class="section">
         <div class="step">
             <ul>
@@ -35,7 +29,6 @@
 
         function reloads(n) {
             var url = "{:api_url('/install/index/doInstall')}?n=" + n;
-            console.log(url)
             $.ajax({
                 type: "POST",
                 url: url,
@@ -54,7 +47,7 @@
                         return;
                     }
 
-                    if (resultData.n == '999999') {
+                    if (resultData.n == '{$finished_step}') {
                         $('.btn_old').text('安装完成，正在跳转...');
                         setTimeout('gonext()', 1500);
                         return;

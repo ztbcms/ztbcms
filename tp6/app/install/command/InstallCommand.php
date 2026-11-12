@@ -94,7 +94,6 @@ class InstallCommand extends Command
 
             $output->info('配置收集完毕，开始测试数据库链接...');
 
-            $installService = new InstallService();
             $testRes = $installService->testDbConnection($config);
             if (!$testRes['status']) {
                 $output->error($testRes['msg']);
@@ -117,7 +116,7 @@ class InstallCommand extends Command
 
                 if (isset($res['data']['n'])) {
                     $n = $res['data']['n'];
-                    if ($n >= 999999) {
+                    if ($n >= InstallService::INSTALL_FINISHED_STEP) {
                         $output->info('安装全部完成！锁定安装程序。');
                         return 0;
                     }

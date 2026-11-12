@@ -6,8 +6,8 @@
 
 namespace app\install\controller;
 
-
 use app\BaseController;
+use app\install\service\InstallService;
 
 class Index extends BaseController
 {
@@ -34,7 +34,7 @@ class Index extends BaseController
 
     function step2()
     {
-        $installService = new \app\install\service\InstallService();
+        $installService = new InstallService();
         $envRes = $installService->checkEnvironment();
 
         $err = $envRes['err_count'];
@@ -42,7 +42,7 @@ class Index extends BaseController
 
         // mysql检测
         $mysql = '请自行检查';
-        $mini_php_version = '7.2';
+        $mini_php_version = InstallService::MIN_PHP_VERSION;
 
         $php_version_info = '';
         $uploadSize = '';
@@ -100,7 +100,8 @@ class Index extends BaseController
         $data = input('post.');
 
         return view('step4', [
-            'data' => json_encode($data)
+            'data'          => json_encode($data),
+            'finished_step' => InstallService::INSTALL_FINISHED_STEP,
         ]);
     }
 
@@ -124,7 +125,7 @@ class Index extends BaseController
             'db_port'   => input('db_port', '', 'trim'),
             'db_prefix' => input('db_prefix', '', 'trim'),
         ];
-        $installService = new \app\install\service\InstallService();
+        $installService = new InstallService();
         $res = $installService->testDbConnection($config);
         return self::makeJsonReturn($res['status'], null, $res['msg']);
     }
@@ -155,7 +156,7 @@ class Index extends BaseController
             'ip' => request()->ip()
         ];
 
-        $installService = new \app\install\service\InstallService();
+        $installService = new InstallService();
         $res = $installService->executeInstallStep($config, $n);
 
         return self::makeJsonReturn($res['status'], $res['data'], $res['msg']);
