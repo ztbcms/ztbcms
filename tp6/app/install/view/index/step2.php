@@ -33,7 +33,7 @@
         </tr>
         <tr>
           <td>PHP版本</td>
-          <td>>7.4</td>
+          <td>8.3</td>
           <td>
             {if ($php_info['status'])}
               <span class="correct_span">&radic;</span>
@@ -42,13 +42,13 @@
             {/if}
             {$php_info['current']}
           </td>
-          <td>{$mini_php_version}</td>
+          <td>{$php_info['require']}</td>
         </tr>
         <tr>
           <td>MySQL版本</td>
-          <td>>5.6</td>
+          <td>&gt;=5.7</td>
           <td>{$mysql|raw}</td>
-          <td>5.5</td>
+          <td>5.6</td>
         </tr>
         <tr>
           <td>附件上传</td>

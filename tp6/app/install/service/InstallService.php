@@ -13,7 +13,8 @@ class InstallService
 {
     const INSTALL_STATE_KEY = 'ztbcms_install_state';
     const INSTALL_CONFIG_KEY = 'ztbcms_install_config';
-    const MIN_PHP_VERSION = '7.2';
+    const MIN_PHP_VERSION = '7.4';
+    const MAX_PHP_VERSION = '8.4';
     const MIN_MANAGER_PWD_LENGTH = 6;
     const INSTALL_FINISHED_STEP = 999999;
     const ENV_INSTALL_MARKER = '### ZTBCMS_INSTALL_START ###';
@@ -37,10 +38,12 @@ class InstallService
 
         $_php_version = phpversion();
         $mini_php_version = self::MIN_PHP_VERSION;
-        $isPhpValid = version_compare($_php_version, $mini_php_version, '>=');
+        $max_php_version = self::MAX_PHP_VERSION;
+        $isPhpValid = version_compare($_php_version, $mini_php_version, '>=')
+            && version_compare($_php_version, $max_php_version, '<');
         $phpGroup = [
             'name' => 'PHP版本',
-            'require' => '>=' . $mini_php_version,
+            'require' => '>=' . $mini_php_version . ' <' . $max_php_version,
             'current' => $_php_version,
             'status' => $isPhpValid,
         ];

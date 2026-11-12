@@ -10,7 +10,7 @@
 
 
 ## 环境与运行
-- **PHP >=7.2.5** 与 **MySQL 5.6+**，首次运行执行 `cd tp6 && composer install`（已配置阿里云镜像）。
+- **PHP >=7.4 <8.4** 与 **MySQL 5.6+**，首次运行执行 `cd tp6 && composer install`（已配置阿里云镜像）。
 - **本地启动**：在仓库根目录运行 `make serve`，或直接 `php -S 127.0.0.1:8081 -t ./tp6/public/`，访问 `http://localhost:8081/`。
 - **清理**：`make clean` 清除 runtime 缓存，`make clean-install` 删除安装目录；变更配置后重启内置服务器。
 - **依赖安装**：`cd tp6 && composer install`,为了方便起见，我们已经默认安装好了vendor
