@@ -54,15 +54,14 @@ class Index extends BaseController
         }
 
         return view('step2', [
-            'os'               => PHP_OS,
-            'function'         => $function,
-            'err'              => $envRes['err_count'],
-            'php_info'         => $groups['php'],
-            'mini_php_version' => InstallService::MIN_PHP_VERSION,
-            'mysql'            => '请自行检查',
-            'upload_info'      => $groups['upload'],
-            'session_info'     => $groups['session'],
-            'folderInfo'       => $groups['folders']
+            'os'           => PHP_OS,
+            'function'     => $function,
+            'err'          => $envRes['err_count'],
+            'php_info'     => $groups['php'],
+            'mysql'        => '请自行检查',
+            'upload_info'  => $groups['upload'],
+            'session_info' => $groups['session'],
+            'folderInfo'   => $groups['folders']
         ]);
     }
 
