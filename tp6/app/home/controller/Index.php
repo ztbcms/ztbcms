@@ -4,6 +4,7 @@ namespace app\home\controller;
 
 use app\BaseController;
 use app\common\model\ConfigModel;
+use app\install\service\InstallService;
 use think\facade\Log;
 
 class Index extends BaseController
@@ -16,7 +17,7 @@ class Index extends BaseController
     public function index()
     {
         $install_path = root_path('app/install');
-        $installed = file_exists(install_lock_path());
+        $installed = (new InstallService())->isInstalled();
         $enable_install = file_exists($install_path) && !$installed;
 
         $config = [];
