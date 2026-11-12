@@ -58,7 +58,7 @@
       </table>
       <table width="100%">
         <tr>
-          <td class="td1">函数支持检测</td>
+          <td class="td1">扩展与函数支持检测</td>
           <td class="td1" width="25%">当前环境</td>
           <td class="td1" width="25%">程序要求</td>
         </tr>

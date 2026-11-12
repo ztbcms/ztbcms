@@ -102,6 +102,20 @@ class InstallService
             }
         }
 
+        $extensions = ['pdo', 'pdo_mysql'];
+        foreach ($extensions as $ext) {
+            $isValid = extension_loaded($ext);
+            $items[] = [
+                'name' => '核心扩展: ' . $ext,
+                'require' => '开启',
+                'current' => $isValid ? '已开启' : '未开启',
+                'status' => $isValid
+            ];
+            if (!$isValid) {
+                $err++;
+            }
+        }
+
         $functions = ['mb_strlen', 'curl_init'];
         foreach ($functions as $func) {
             $isValid = function_exists($func);
