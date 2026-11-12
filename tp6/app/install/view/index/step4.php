@@ -37,13 +37,21 @@
                 success: function (res) {
                     var resultData = res.data || {};
 
-                    if (resultData.msg) {
-                        $('#loginner').append(resultData.msg);
+                    if (Array.isArray(resultData.logs)) {
+                        $.each(resultData.logs, function (_, item) {
+                            var $icon = $('<span>')
+                                .addClass(item.status ? 'correct_span' : 'correct_span error_span')
+                                .html(item.status ? '&radic;' : '&times;');
+                            var $li = $('<li>')
+                                .append($icon)
+                                .append(document.createTextNode(item.msg || ''));
+                            $('#loginner').append($li);
+                        });
                     }
 
                     if (!res.status) {
                         $('.btn_old').text('安装失败，请处理后重试');
-                        alert(res.msg || resultData.msg || '安装失败');
+                        alert(res.msg || '安装失败');
                         return;
                     }
 
@@ -55,7 +63,7 @@
                     if (resultData.n && resultData.n >= 0) {
                         reloads(resultData.n);
                     } else {
-                        alert(resultData.msg || res.msg || '安装失败');
+                        alert(res.msg || '安装失败');
                     }
                 }
             });

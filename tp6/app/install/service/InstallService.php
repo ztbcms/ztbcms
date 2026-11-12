@@ -363,16 +363,16 @@ class InstallService
     public function executeInstallStep($config, $n = 0, bool $allowOverwrite = false)
     {
         $n = (int) $n;
-        $prefixMessage = '';
+        $prefixLogs = [];
 
         if ($n < 0) {
             $errMsg = '非法安装步骤参数';
-            return $this->createResponse(false, null, $this->buildLogItem(false, $errMsg), $errMsg);
+            return $this->createResponse(false, null, [$this->buildLogItem(false, $errMsg)], $errMsg);
         }
 
         if (!$allowOverwrite && $this->isInstalled()) {
             $errMsg = '系统已安装（检测到 install.lock 或 .env 安装配置），禁止在非覆盖模式下重新安装';
-            return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($errMsg)), $errMsg);
+            return $this->createResponse(false, null, [$this->buildLogItem(false, $errMsg)], $errMsg);
         }
 
         $validateRes = $this->validateInstallConfig(is_array($config) ? $config : []);
@@ -380,7 +380,7 @@ class InstallService
             if ($n > 0) {
                 $this->markInstallFailed();
             }
-            return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($validateRes['msg'])), $validateRes['msg']);
+            return $this->createResponse(false, null, [$this->buildLogItem(false, $validateRes['msg'])], $validateRes['msg']);
         }
 
         if ($n > 0) {
@@ -395,7 +395,7 @@ class InstallService
             if ($n > 0) {
                 $this->markInstallFailed();
             }
-            return $this->createResponse(false, null, $this->buildLogItem(false, $res['msg']), $res['msg']);
+            return $this->createResponse(false, null, [$this->buildLogItem(false, $res['msg'])], $res['msg']);
         }
 
         $db_config = config('database');
@@ -407,14 +407,14 @@ class InstallService
             if (!$startRes['status']) {
                 return $startRes;
             }
-            $prefixMessage = $startRes['data']['msg'] ?? '';
+            $prefixLogs = $startRes['data']['logs'] ?? [];
 
             $dbName = (string) ($config['db_name'] ?? '');
             $dbPrefix = (string) ($config['db_prefix'] ?? '');
             if (!$allowOverwrite && $this->hasExistingUserTable($dbName, $dbPrefix)) {
                 $this->clearInstallState();
                 $errMsg = "目标数据库已存在 {$dbPrefix}user 表，为防止现有数据被清空，禁止覆盖安装；请更换空库/表前缀，或通过命令行使用 --overwrite 参数重装";
-                return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($errMsg)), $errMsg);
+                return $this->createResponse(false, null, [$this->buildLogItem(false, $errMsg)], $errMsg);
             }
         }
 
@@ -422,7 +422,7 @@ class InstallService
         $counts = count($sqlFormat);
         if ($n > $counts) {
             $errMsg = '安装步骤参数超出范围';
-            return $this->createResponse(false, null, $this->buildLogItem(false, $errMsg), $errMsg);
+            return $this->createResponse(false, null, [$this->buildLogItem(false, $errMsg)], $errMsg);
         }
 
         for ($i = $n; $i < $counts; $i++) {
@@ -437,16 +437,18 @@ class InstallService
                 try {
                     Db::execute($sql);
                     $this->appendCreatedTable($tableName);
-                    $message = $prefixMessage . $this->buildLogItem(true, '创建数据表 ' . $tableName . '，完成');
+                    $logs = $prefixLogs;
+                    $logs[] = $this->buildLogItem(true, '创建数据表 ' . $tableName . '，完成');
 
-                    return $this->createResponse(true, $i + 1, $message, '创建数据表 ' . $tableName . '，完成');
+                    return $this->createResponse(true, $i + 1, $logs, '创建数据表 ' . $tableName . '，完成');
                 } catch (\Throwable $e) {
                     $this->markInstallFailed();
                     $this->writeInstallLog('创建数据表失败', $e, $sql);
 
-                    $message = $prefixMessage . $this->buildLogItem(false, '创建数据表 ' . $tableName . '，失败: ' . $this->escapeMessage($e->getMessage()));
+                    $logs = $prefixLogs;
+                    $logs[] = $this->buildLogItem(false, '创建数据表 ' . $tableName . '，失败: ' . $e->getMessage());
 
-                    return $this->createResponse(false, null, $message, '创建数据表 ' . $tableName . ' 失败: ' . $e->getMessage());
+                    return $this->createResponse(false, null, $logs, '创建数据表 ' . $tableName . ' 失败: ' . $e->getMessage());
                 }
             }
 
@@ -457,23 +459,24 @@ class InstallService
                 $this->writeInstallLog('SQL执行失败', $e, $sql);
 
                 $shortSql = mb_substr(trim(preg_replace('/\s+/', ' ', strip_tags($sql))), 0, 60);
-                $message = $prefixMessage . $this->buildLogItem(false, '执行异常: ' . $this->escapeMessage($shortSql) . ' (' . $this->escapeMessage($e->getMessage()) . ')');
+                $logs = $prefixLogs;
+                $logs[] = $this->buildLogItem(false, '执行异常: ' . $shortSql . ' (' . $e->getMessage() . ')');
 
-                return $this->createResponse(false, null, $message, '安装 SQL 执行失败: ' . $e->getMessage());
+                return $this->createResponse(false, null, $logs, '安装 SQL 执行失败: ' . $e->getMessage());
             }
         }
 
-        return $this->finishInstall($config, $prefixMessage);
+        return $this->finishInstall($config, $prefixLogs);
     }
 
     /**
      * 完成安装剩余操作
      *
      * @param array $config
-     * @param string $prefixMessage
+     * @param array $prefixLogs
      * @return array
      */
-    protected function finishInstall(array $config, string $prefixMessage = '')
+    protected function finishInstall(array $config, array $prefixLogs = [])
     {
         try {
             Db::name('config')->where('varname', 'sitename')->update(['value' => $config['sitename'] ?? '']);
@@ -565,15 +568,17 @@ class InstallService
 
             $this->clearInstallState();
 
-            $message = $prefixMessage . $this->buildLogItem(true, '安装完成');
-            return $this->createResponse(true, self::INSTALL_FINISHED_STEP, $message, '安装完成');
+            $logs = $prefixLogs;
+            $logs[] = $this->buildLogItem(true, '安装完成');
+            return $this->createResponse(true, self::INSTALL_FINISHED_STEP, $logs, '安装完成');
         } catch (\Throwable $e) {
             $this->markInstallFailed();
             $this->writeInstallLog('安装收尾失败', $e);
 
-            $message = $prefixMessage . $this->buildLogItem(false, '安装收尾失败: ' . $this->escapeMessage($e->getMessage()));
+            $logs = $prefixLogs;
+            $logs[] = $this->buildLogItem(false, '安装收尾失败: ' . $e->getMessage());
 
-            return $this->createResponse(false, null, $message, '安装失败: ' . $e->getMessage());
+            return $this->createResponse(false, null, $logs, '安装失败: ' . $e->getMessage());
         }
     }
 
@@ -603,7 +608,7 @@ class InstallService
     protected function prepareInstallStart(array $config)
     {
         $state = $this->getInstallState();
-        $message = '';
+        $logs = [];
 
         if (!empty($state) && in_array($state['status'] ?? '', ['running', 'failed'], true)) {
             $currentSignature = $this->createDbSignature($config);
@@ -611,13 +616,13 @@ class InstallService
 
             if ($savedSignature === $currentSignature) {
                 $cleanupRes = $this->cleanupFailedInstall($state);
-                $message .= $cleanupRes['msg'];
+                $logs = array_merge($logs, $cleanupRes['logs'] ?? []);
                 if (!$cleanupRes['status']) {
-                    return $this->createResponse(false, null, $message, '清理上一次未完成安装残留失败，请先手动处理后重试');
+                    return $this->createResponse(false, null, $logs, '清理上一次未完成安装残留失败，请先手动处理后重试');
                 }
             } else {
                 $this->clearInstallState();
-                $message .= $this->buildLogItem(true, '检测到旧的未完成安装记录，但数据库配置已变化，已按全新安装处理');
+                $logs[] = $this->buildLogItem(true, '检测到旧的未完成安装记录，但数据库配置已变化，已按全新安装处理');
             }
         } elseif (!empty($state)) {
             $this->clearInstallState();
@@ -625,11 +630,7 @@ class InstallService
 
         $this->saveInstallState($this->createEmptyInstallState($config));
 
-        return [
-            'status' => true,
-            'data' => ['msg' => $message],
-            'msg' => $this->plainMessage($message)
-        ];
+        return $this->createResponse(true, null, $logs);
     }
 
     /**
@@ -642,16 +643,16 @@ class InstallService
     {
         $state = $this->getInstallState();
         if (empty($state)) {
-            return $this->createResponse(false, null, $this->buildLogItem(false, '安装状态已失效，请返回上一步重新开始安装'), '安装状态已失效，请重新开始安装');
+            return $this->createResponse(false, null, [$this->buildLogItem(false, '安装状态已失效，请返回上一步重新开始安装')], '安装状态已失效，请重新开始安装');
         }
 
         if (($state['db_signature'] ?? '') !== $this->createDbSignature($config)) {
             $this->clearInstallState();
-            return $this->createResponse(false, null, $this->buildLogItem(false, '数据库配置已变化，请重新开始安装'), '数据库配置已变化，请重新开始安装');
+            return $this->createResponse(false, null, [$this->buildLogItem(false, '数据库配置已变化，请重新开始安装')], '数据库配置已变化，请重新开始安装');
         }
 
         if (($state['status'] ?? '') !== 'running') {
-            return $this->createResponse(false, null, $this->buildLogItem(false, '安装已中断，请重新开始安装'), '安装已中断，请重新开始安装');
+            return $this->createResponse(false, null, [$this->buildLogItem(false, '安装已中断，请重新开始安装')], '安装已中断，请重新开始安装');
         }
 
         return ['status' => true, 'data' => null, 'msg' => ''];
@@ -665,11 +666,11 @@ class InstallService
      */
     protected function cleanupFailedInstall(array $state)
     {
-        $messages = '';
+        $logs = [];
         $hasError = false;
         $moduleService = new ModuleService();
 
-        $messages .= $this->buildLogItem(true, '检测到上一次未完成安装，开始清理残留');
+        $logs[] = $this->buildLogItem(true, '检测到上一次未完成安装，开始清理残留');
 
         $modules = array_reverse($state['installed_modules'] ?? []);
         foreach ($modules as $module) {
@@ -677,13 +678,13 @@ class InstallService
                 $res = $moduleService->uninstall($module);
                 if (!($res['status'] ?? false)) {
                     $hasError = true;
-                    $messages .= $this->buildLogItem(false, '清理模块 ' . $module . ' 失败: ' . $this->escapeMessage($res['msg'] ?? '未知错误'));
+                    $logs[] = $this->buildLogItem(false, '清理模块 ' . $module . ' 失败: ' . ($res['msg'] ?? '未知错误'));
                     continue;
                 }
-                $messages .= $this->buildLogItem(true, '清理模块 ' . $module . '，完成');
+                $logs[] = $this->buildLogItem(true, '清理模块 ' . $module . '，完成');
             } catch (\Throwable $e) {
                 $hasError = true;
-                $messages .= $this->buildLogItem(false, '清理模块 ' . $module . ' 失败: ' . $this->escapeMessage($e->getMessage()));
+                $logs[] = $this->buildLogItem(false, '清理模块 ' . $module . ' 失败: ' . $e->getMessage());
                 $this->writeInstallLog('清理模块失败', $e);
             }
         }
@@ -694,24 +695,24 @@ class InstallService
             if (!empty($envSnapshot['exists'])) {
                 if (!empty($envSnapshot['had_install_block'])) {
                     $hasError = true;
-                    $messages .= $this->buildLogItem(false, '配置文件 .env 包含已有安装区块且被上次中断的安装覆盖，无法自动还原，请先手动恢复 .env 后重试');
+                    $logs[] = $this->buildLogItem(false, '配置文件 .env 包含已有安装区块且被上次中断的安装覆盖，无法自动还原，请先手动恢复 .env 后重试');
                 } elseif (file_exists($envTarget)) {
                     $existingEnv = (string) file_get_contents($envTarget);
                     $cleanedEnv = preg_replace('/(?:\r?\n)*### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###\r?\n?/s', '', $existingEnv);
                     $res = file_put_contents($envTarget, (string) $cleanedEnv);
                     if ($res === false) {
                         $hasError = true;
-                        $messages .= $this->buildLogItem(false, '恢复配置文件失败');
+                        $logs[] = $this->buildLogItem(false, '恢复配置文件失败');
                     } else {
-                        $messages .= $this->buildLogItem(true, '恢复配置文件，完成');
+                        $logs[] = $this->buildLogItem(true, '恢复配置文件，完成');
                     }
                 }
             } elseif (file_exists($envTarget)) {
                 if (!@unlink($envTarget)) {
                     $hasError = true;
-                    $messages .= $this->buildLogItem(false, '删除上次生成的配置文件失败');
+                    $logs[] = $this->buildLogItem(false, '删除上次生成的配置文件失败');
                 } else {
-                    $messages .= $this->buildLogItem(true, '删除上次生成的配置文件，完成');
+                    $logs[] = $this->buildLogItem(true, '删除上次生成的配置文件，完成');
                 }
             }
         }
@@ -720,10 +721,10 @@ class InstallService
         foreach ($tables as $tableName) {
             try {
                 Db::execute('DROP TABLE IF EXISTS `' . str_replace('`', '', (string) $tableName) . '`');
-                $messages .= $this->buildLogItem(true, '清理数据表 ' . $tableName . '，完成');
+                $logs[] = $this->buildLogItem(true, '清理数据表 ' . $tableName . '，完成');
             } catch (\Throwable $e) {
                 $hasError = true;
-                $messages .= $this->buildLogItem(false, '清理数据表 ' . $tableName . ' 失败: ' . $this->escapeMessage($e->getMessage()));
+                $logs[] = $this->buildLogItem(false, '清理数据表 ' . $tableName . ' 失败: ' . $e->getMessage());
                 $this->writeInstallLog('清理数据表失败', $e);
             }
         }
@@ -731,12 +732,12 @@ class InstallService
         $this->clearInstallState();
 
         if ($hasError) {
-            $messages .= $this->buildLogItem(false, '上一次安装残留清理未完全成功，请先手动处理后再重试');
-            return ['status' => false, 'msg' => $messages];
+            $logs[] = $this->buildLogItem(false, '上一次安装残留清理未完全成功，请先手动处理后再重试');
+            return ['status' => false, 'logs' => $logs];
         }
 
-        $messages .= $this->buildLogItem(true, '上一次安装残留已清理完成，开始重新安装');
-        return ['status' => true, 'msg' => $messages];
+        $logs[] = $this->buildLogItem(true, '上一次安装残留已清理完成，开始重新安装');
+        return ['status' => true, 'logs' => $logs];
     }
 
     /**
@@ -1001,17 +1002,18 @@ class InstallService
     }
 
     /**
-     * 生成前端日志项
+     * 生成结构化日志项
      *
      * @param bool $status
      * @param string $message
-     * @return string
+     * @return array
      */
     protected function buildLogItem($status, $message)
     {
-        $class = $status ? 'correct_span' : 'correct_span error_span';
-        $icon = $status ? '&radic;' : '&times;';
-        return '<li><span class="' . $class . '">' . $icon . '</span>' . $message . '</li>';
+        return [
+            'status' => (bool) $status,
+            'msg' => (string) $message,
+        ];
     }
 
     /**
@@ -1019,13 +1021,13 @@ class InstallService
      *
      * @param bool $status
      * @param int|null $n
-     * @param string $htmlMessage
+     * @param array $logs
      * @param string $plainMessage
      * @return array
      */
-    protected function createResponse($status, $n, $htmlMessage, $plainMessage = '')
+    protected function createResponse($status, $n, array $logs, $plainMessage = '')
     {
-        $data = ['msg' => $htmlMessage];
+        $data = ['logs' => $logs];
         if ($n !== null) {
             $data['n'] = $n;
         }
@@ -1033,33 +1035,26 @@ class InstallService
         return [
             'status' => (bool) $status,
             'data' => $data,
-            'msg' => $plainMessage !== '' ? $plainMessage : $this->plainMessage($htmlMessage),
+            'msg' => $plainMessage !== '' ? $plainMessage : $this->joinLogMessages($logs),
         ];
     }
 
     /**
-     * HTML 日志转纯文本
+     * 拼接结构化日志纯文本
      *
-     * @param string $message
+     * @param array $logs
      * @return string
      */
-    protected function plainMessage($message)
+    protected function joinLogMessages(array $logs)
     {
-        $message = str_replace('&radic;', '√', (string) $message);
-        $message = str_replace('&times;', '×', $message);
-        $message = preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($message), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-        return trim((string) $message);
-    }
+        $messages = [];
+        foreach ($logs as $log) {
+            if (!empty($log['msg'])) {
+                $messages[] = $log['msg'];
+            }
+        }
 
-    /**
-     * 转义日志内容
-     *
-     * @param string $message
-     * @return string
-     */
-    protected function escapeMessage($message)
-    {
-        return htmlspecialchars((string) $message, ENT_QUOTES, 'UTF-8');
+        return implode("\n", $messages);
     }
 
     /**
