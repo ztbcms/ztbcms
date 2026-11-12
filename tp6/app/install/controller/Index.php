@@ -98,9 +98,14 @@ class Index extends BaseController
     {
         //检测数据
         $data = input('post.');
+        $data = is_array($data) ? $data : [];
+        session(InstallService::INSTALL_CONFIG_KEY, $data);
+
+        $safeViewData = $data;
+        unset($safeViewData['db_pwd'], $safeViewData['manager_pwd'], $safeViewData['manager_ckpwd']);
 
         return view('step4', [
-            'data'          => json_encode($data),
+            'data'          => json_encode($safeViewData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
             'finished_step' => InstallService::INSTALL_FINISHED_STEP,
         ]);
     }
@@ -134,24 +139,35 @@ class Index extends BaseController
     function doInstall()
     {
         $n = input('get.n', 0, 'intval');
+        $sessionConfig = session(InstallService::INSTALL_CONFIG_KEY);
+        $sessionConfig = is_array($sessionConfig) ? $sessionConfig : [];
+
+        $getParam = function (string $key, bool $trim = true) use ($sessionConfig) {
+            if ($this->request->has($key, 'post') || $this->request->has($key, 'get')) {
+                $val = input($key, '');
+            } else {
+                $val = $sessionConfig[$key] ?? '';
+            }
+            return $trim ? trim((string) $val) : $val;
+        };
 
         $config = [
-            'db_host'   => input('db_host', '', 'trim'),
-            'db_port'   => input('db_port', '', 'trim'),
-            'db_name'   => input('db_name', '', 'trim'),
-            'db_user'   => input('db_user', '', 'trim'),
-            'db_pwd'    => input('db_pwd', '', 'trim'),
-            'db_prefix' => input('db_prefix', '', 'trim'),
+            'db_host'   => $getParam('db_host'),
+            'db_port'   => $getParam('db_port'),
+            'db_name'   => $getParam('db_name'),
+            'db_user'   => $getParam('db_user'),
+            'db_pwd'    => $getParam('db_pwd'),
+            'db_prefix' => $getParam('db_prefix'),
 
-            'manager'       => input('manager', '', 'trim'),
-            'manager_pwd'   => input('manager_pwd', '', 'trim'),
-            'manager_ckpwd' => input('manager_ckpwd', '', 'trim'),
-            'manager_email' => input('manager_email', '', 'trim'),
+            'manager'       => $getParam('manager'),
+            'manager_pwd'   => $getParam('manager_pwd'),
+            'manager_ckpwd' => $getParam('manager_ckpwd'),
+            'manager_email' => $getParam('manager_email'),
 
-            'sitename'     => input('sitename'),
-            'siteurl'      => input('siteurl'),
-            'siteinfo'     => input('siteinfo', '', 'trim'),
-            'sitekeywords' => input('sitekeywords', '', 'trim'),
+            'sitename'     => $getParam('sitename', false),
+            'siteurl'      => $getParam('siteurl', false),
+            'siteinfo'     => $getParam('siteinfo'),
+            'sitekeywords' => $getParam('sitekeywords'),
 
             'ip' => request()->ip()
         ];

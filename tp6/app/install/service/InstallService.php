@@ -12,6 +12,7 @@ use app\common\libs\helper\StringHelper;
 class InstallService
 {
     const INSTALL_STATE_KEY = 'ztbcms_install_state';
+    const INSTALL_CONFIG_KEY = 'ztbcms_install_config';
     const MIN_PHP_VERSION = '7.2';
     const MIN_MANAGER_PWD_LENGTH = 6;
     const INSTALL_FINISHED_STEP = 999999;
@@ -69,14 +70,22 @@ class InstallService
         }
 
         $folders = [
-            'public/',
+            './',
+            'runtime/',
             'app/install/',
-            'config/',
         ];
         foreach ($folders as $dir) {
-            $path = root_path() . $dir;
+            $path = $dir === './' ? root_path() : root_path() . $dir;
+            if ($dir === 'runtime/' && !is_dir($path)) {
+                @mkdir($path, 0755, true);
+            }
             $isReadable = is_readable($path);
             $isWritable = is_writable($path);
+            if ($dir === './' && file_exists(root_path() . '.env')) {
+                $envFile = root_path() . '.env';
+                $isReadable = $isReadable && is_readable($envFile);
+                $isWritable = $isWritable && is_writable($envFile);
+            }
             $isValid = $isReadable && $isWritable;
             $items[] = [
                 'name' => '目录权限: ' . $dir,
@@ -230,10 +239,7 @@ class InstallService
         config($db_config, 'database');
 
         try {
-            $res = Db::connect('install', true)->execute('show databases like \'' . ($config['db_name'] ?? '') . '\'');
-            if ($res == 0) {
-                return ['status' => false, 'data' => null, 'msg' => '请先创建数据库' . ($config['db_name'] ?? '')];
-            }
+            Db::connect('install', true)->query('SELECT 1');
 
             return ['status' => true, 'data' => $db_config['connections']['install'], 'msg' => '数据库链接成功'];
         } catch (\Throwable $exception) {
@@ -348,42 +354,6 @@ class InstallService
             Db::name('config')->where('varname', 'sitekeywords')->update(['value' => $config['sitekeywords'] ?? '']);
             Db::name('config')->where('varname', 'siteemail')->update(['value' => $config['manager_email'] ?? '']);
 
-            $this->snapshotEnvIfNeeded();
-
-            $envTemplatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'env.example';
-            $strEnv = file_get_contents($envTemplatePath);
-            $strEnv = strtr($strEnv, [
-                '#DB_HOST#'       => $this->formatEnvValue($config['db_host'] ?? '127.0.0.1', '数据库地址'),
-                '#DB_NAME#'       => $this->formatEnvValue($config['db_name'] ?? '', '数据库名称'),
-                '#DB_USER#'       => $this->formatEnvValue($config['db_user'] ?? 'root', '数据库用户名'),
-                '#DB_PWD#'        => $this->formatEnvValue($config['db_pwd'] ?? '', '数据库密码'),
-                '#DB_PORT#'       => $this->formatEnvValue($config['db_port'] ?? '3306', '数据库端口'),
-                '#DB_PREFIX#'     => $this->formatEnvValue($config['db_prefix'] ?? 'ztb_', '数据表前缀'),
-                '#AUTHCODE#'      => $this->formatEnvValue(StringHelper::genRandomString(18), 'AUTHCODE'),
-                '#COOKIE_PREFIX#' => $this->formatEnvValue(StringHelper::genRandomString(3) . '_', 'COOKIE_PREFIX'),
-                '#CACHE_PREFIX#'  => $this->formatEnvValue(StringHelper::genRandomString(3) . '_', 'CACHE_PREFIX'),
-            ]);
-
-            $envTarget = root_path() . '.env';
-            if (file_exists($envTarget)) {
-                $existingEnv = file_get_contents($envTarget);
-                $pattern = '/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s';
-                if (preg_match($pattern, $existingEnv)) {
-                    $newEnv = preg_replace_callback($pattern, function () use ($strEnv) {
-                        return $strEnv;
-                    }, $existingEnv);
-                } else {
-                    $newEnv = rtrim($existingEnv) . PHP_EOL . PHP_EOL . $strEnv;
-                }
-                $envWriteResult = file_put_contents($envTarget, $newEnv);
-            } else {
-                $envWriteResult = file_put_contents($envTarget, $strEnv);
-            }
-
-            if ($envWriteResult === false) {
-                throw new \RuntimeException('写入配置文件失败');
-            }
-
             $verify = StringHelper::genRandomString(6);
             $time = time();
             $password = $config['manager_pwd'] ?? '';
@@ -416,6 +386,42 @@ class InstallService
                     throw new \RuntimeException('安装模块 ' . $module . ' 失败: ' . ($moduleRes['msg'] ?? '未知错误'));
                 }
                 $this->appendInstalledModule($module);
+            }
+
+            $envTemplatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'env.example';
+            $strEnv = file_get_contents($envTemplatePath);
+            $strEnv = strtr($strEnv, [
+                '#DB_HOST#'       => $this->formatEnvValue($config['db_host'] ?? '127.0.0.1', '数据库地址'),
+                '#DB_NAME#'       => $this->formatEnvValue($config['db_name'] ?? '', '数据库名称'),
+                '#DB_USER#'       => $this->formatEnvValue($config['db_user'] ?? 'root', '数据库用户名'),
+                '#DB_PWD#'        => $this->formatEnvValue($config['db_pwd'] ?? '', '数据库密码'),
+                '#DB_PORT#'       => $this->formatEnvValue($config['db_port'] ?? '3306', '数据库端口'),
+                '#DB_PREFIX#'     => $this->formatEnvValue($config['db_prefix'] ?? 'ztb_', '数据表前缀'),
+                '#AUTHCODE#'      => $this->formatEnvValue(bin2hex(random_bytes(16)), 'AUTHCODE'),
+                '#COOKIE_PREFIX#' => $this->formatEnvValue(bin2hex(random_bytes(3)) . '_', 'COOKIE_PREFIX'),
+                '#CACHE_PREFIX#'  => $this->formatEnvValue(bin2hex(random_bytes(3)) . '_', 'CACHE_PREFIX'),
+            ]);
+
+            $this->snapshotEnvIfNeeded();
+
+            $envTarget = root_path() . '.env';
+            if (file_exists($envTarget)) {
+                $existingEnv = file_get_contents($envTarget);
+                $pattern = '/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s';
+                if (preg_match($pattern, $existingEnv)) {
+                    $newEnv = preg_replace_callback($pattern, function () use ($strEnv) {
+                        return $strEnv;
+                    }, $existingEnv);
+                } else {
+                    $newEnv = rtrim($existingEnv) . PHP_EOL . PHP_EOL . $strEnv;
+                }
+                $envWriteResult = file_put_contents($envTarget, $newEnv);
+            } else {
+                $envWriteResult = file_put_contents($envTarget, $strEnv);
+            }
+
+            if ($envWriteResult === false) {
+                throw new \RuntimeException('写入配置文件失败');
             }
 
             if (!touch(install_lock_path())) {
@@ -551,12 +557,16 @@ class InstallService
         if (!empty($envSnapshot['captured'])) {
             $envTarget = root_path() . '.env';
             if (!empty($envSnapshot['exists'])) {
-                $res = file_put_contents($envTarget, (string) ($envSnapshot['content'] ?? ''));
-                if ($res === false) {
-                    $hasError = true;
-                    $messages .= $this->buildLogItem(false, '恢复配置文件失败');
-                } else {
-                    $messages .= $this->buildLogItem(true, '恢复配置文件，完成');
+                if (empty($envSnapshot['had_install_block']) && file_exists($envTarget)) {
+                    $existingEnv = (string) file_get_contents($envTarget);
+                    $cleanedEnv = preg_replace('/(?:\r?\n)*### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###\r?\n?/s', '', $existingEnv);
+                    $res = file_put_contents($envTarget, (string) $cleanedEnv);
+                    if ($res === false) {
+                        $hasError = true;
+                        $messages .= $this->buildLogItem(false, '恢复配置文件失败');
+                    } else {
+                        $messages .= $this->buildLogItem(true, '恢复配置文件，完成');
+                    }
                 }
             } elseif (file_exists($envTarget)) {
                 if (!@unlink($envTarget)) {
@@ -618,7 +628,7 @@ class InstallService
             'env_snapshot' => [
                 'captured' => false,
                 'exists' => false,
-                'content' => '',
+                'had_install_block' => false,
             ],
             'installed_modules' => [],
             'started_at' => time(),
@@ -693,10 +703,17 @@ class InstallService
         }
 
         $envTarget = root_path() . '.env';
+        $exists = file_exists($envTarget);
+        $hadInstallBlock = false;
+        if ($exists) {
+            $existingContent = (string) file_get_contents($envTarget);
+            $hadInstallBlock = (bool) preg_match('/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s', $existingContent);
+        }
+
         $state['env_snapshot'] = [
             'captured' => true,
-            'exists' => file_exists($envTarget),
-            'content' => file_exists($envTarget) ? (string) file_get_contents($envTarget) : '',
+            'exists' => $exists,
+            'had_install_block' => $hadInstallBlock,
         ];
 
         $this->saveInstallState($state);
@@ -785,6 +802,7 @@ class InstallService
         }
 
         session(self::INSTALL_STATE_KEY, null);
+        session(self::INSTALL_CONFIG_KEY, null);
     }
 
     /**
