@@ -253,22 +253,26 @@ class InstallService
 
             $envTemplatePath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'env.example';
             $strEnv = file_get_contents($envTemplatePath);
-            $strEnv = str_replace('#DB_HOST#', $config['db_host'] ?? '127.0.0.1', $strEnv);
-            $strEnv = str_replace('#DB_NAME#', $config['db_name'] ?? '', $strEnv);
-            $strEnv = str_replace('#DB_USER#', $config['db_user'] ?? 'root', $strEnv);
-            $strEnv = str_replace('#DB_PWD#', $config['db_pwd'] ?? '', $strEnv);
-            $strEnv = str_replace('#DB_PORT#', $config['db_port'] ?? '3306', $strEnv);
-            $strEnv = str_replace('#DB_PREFIX#', $config['db_prefix'] ?? 'ztb_', $strEnv);
-            $strEnv = str_replace('#AUTHCODE#', StringHelper::genRandomString(18), $strEnv);
-            $strEnv = str_replace('#COOKIE_PREFIX#', StringHelper::genRandomString(3) . '_', $strEnv);
-            $strEnv = str_replace('#CACHE_PREFIX#', StringHelper::genRandomString(3) . '_', $strEnv);
+            $strEnv = strtr($strEnv, [
+                '#DB_HOST#'       => $this->formatEnvValue($config['db_host'] ?? '127.0.0.1', '数据库地址'),
+                '#DB_NAME#'       => $this->formatEnvValue($config['db_name'] ?? '', '数据库名称'),
+                '#DB_USER#'       => $this->formatEnvValue($config['db_user'] ?? 'root', '数据库用户名'),
+                '#DB_PWD#'        => $this->formatEnvValue($config['db_pwd'] ?? '', '数据库密码'),
+                '#DB_PORT#'       => $this->formatEnvValue($config['db_port'] ?? '3306', '数据库端口'),
+                '#DB_PREFIX#'     => $this->formatEnvValue($config['db_prefix'] ?? 'ztb_', '数据表前缀'),
+                '#AUTHCODE#'      => $this->formatEnvValue(StringHelper::genRandomString(18), 'AUTHCODE'),
+                '#COOKIE_PREFIX#' => $this->formatEnvValue(StringHelper::genRandomString(3) . '_', 'COOKIE_PREFIX'),
+                '#CACHE_PREFIX#'  => $this->formatEnvValue(StringHelper::genRandomString(3) . '_', 'CACHE_PREFIX'),
+            ]);
 
             $envTarget = root_path() . '.env';
             if (file_exists($envTarget)) {
                 $existingEnv = file_get_contents($envTarget);
                 $pattern = '/### ZTBCMS_INSTALL_START ###.*?### ZTBCMS_INSTALL_END ###/s';
                 if (preg_match($pattern, $existingEnv)) {
-                    $newEnv = preg_replace($pattern, $strEnv, $existingEnv);
+                    $newEnv = preg_replace_callback($pattern, function () use ($strEnv) {
+                        return $strEnv;
+                    }, $existingEnv);
                 } else {
                     $newEnv = rtrim($existingEnv) . PHP_EOL . PHP_EOL . $strEnv;
                 }
@@ -315,6 +319,10 @@ class InstallService
                 $this->appendInstalledModule($module);
             }
 
+            if (!touch(install_lock_path())) {
+                throw new \RuntimeException('写入安装锁文件失败');
+            }
+
             $this->clearInstallState();
 
             $message = $this->prependMessage($prefixMessage, $this->buildLogItem(true, '安装完成'));
@@ -330,6 +338,23 @@ class InstallService
 
             return $this->createResponse(false, null, $message, '安装失败: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * 格式化写入 .env 的配置值（拒绝双引号与换行符，并使用双引号包裹）
+     *
+     * @param mixed $value
+     * @param string $fieldName
+     * @return string
+     */
+    protected function formatEnvValue($value, string $fieldName = '配置项'): string
+    {
+        $str = (string) $value;
+        if (preg_match('/["\r\n\0]/', $str)) {
+            throw new \RuntimeException($fieldName . '不能包含双引号或换行符');
+        }
+
+        return '"' . $str . '"';
     }
 
     /**
