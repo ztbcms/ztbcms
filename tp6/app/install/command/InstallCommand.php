@@ -28,15 +28,18 @@ class InstallCommand extends Command
             ->addOption('siteinfo', null, Option::VALUE_OPTIONAL, '网站简介', '全新的管理系统')
             ->addOption('sitekeywords', null, Option::VALUE_OPTIONAL, '网站关键词', 'ztbcms')
             ->addOption('force', 'f', Option::VALUE_NONE, '静默无交互安装')
+            ->addOption('overwrite', null, Option::VALUE_NONE, '允许覆盖已存在的安装配置与数据表（危险操作，会清空现有数据）')
             ->addOption('checkEnv', null, Option::VALUE_NONE, '仅检测环境依赖并输出报告，不执行后续安装');
     }
 
     protected function execute(Input $input, Output $output)
     {
         $isCheckEnv = $input->getOption('checkEnv');
+        $isOverwrite = (bool) $input->getOption('overwrite');
+        $installService = new InstallService();
 
-        if (!$isCheckEnv && is_file(install_lock_path())) {
-            $output->error('系统已安装！如需重新安装，请先删除 tp6/app/install/install.lock 文件。');
+        if (!$isCheckEnv && !$isOverwrite && $installService->isInstalled()) {
+            $output->error('系统已安装（检测到 install.lock 或 .env 安装配置）！如需重新安装并覆盖现有数据，请显式传入 --overwrite 参数。');
             return 1;
         }
 
@@ -47,7 +50,6 @@ class InstallCommand extends Command
 
             // 环境检测
             $output->writeln('正在进行环境检测...');
-            $installService = new InstallService();
             $envRes = $installService->checkEnvironment();
 
             foreach ($envRes['items'] as $item) {
@@ -103,7 +105,7 @@ class InstallCommand extends Command
 
             $n = 0;
             while (true) {
-                $res = $installService->executeInstallStep($config, $n);
+                $res = $installService->executeInstallStep($config, $n, $isOverwrite);
                 if (!$res['status']) {
                     $output->error('安装中断: ' . $this->formatMessage($res['msg']));
                     return 1;

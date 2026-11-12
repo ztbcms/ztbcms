@@ -16,6 +16,7 @@ class InstallService
     const MIN_PHP_VERSION = '7.2';
     const MIN_MANAGER_PWD_LENGTH = 6;
     const INSTALL_FINISHED_STEP = 999999;
+    const ENV_INSTALL_MARKER = '### ZTBCMS_INSTALL_START ###';
 
     /**
      * 命令行安装状态缓存
@@ -251,16 +252,80 @@ class InstallService
     }
 
     /**
+     * 检查是否存在安装锁文件
+     *
+     * @return bool
+     */
+    public function hasInstallLock(): bool
+    {
+        return is_file(install_lock_path());
+    }
+
+    /**
+     * 检查 .env 中是否已包含安装器生成的配置区块
+     *
+     * @return bool
+     */
+    public function hasInstallEnvBlock(): bool
+    {
+        $envPath = root_path() . '.env';
+        if (!is_file($envPath) || !is_readable($envPath)) {
+            return false;
+        }
+
+        $content = file_get_contents($envPath);
+        return is_string($content) && strpos($content, self::ENV_INSTALL_MARKER) !== false;
+    }
+
+    /**
+     * 判断系统是否已安装（锁文件或 .env 安装配置任一存在即视为已安装）
+     *
+     * @return bool
+     */
+    public function isInstalled(): bool
+    {
+        return $this->hasInstallLock() || $this->hasInstallEnvBlock();
+    }
+
+    /**
+     * 检测目标数据库中是否已存在核心 user 表
+     *
+     * @param string $dbName
+     * @param string $dbPrefix
+     * @return bool
+     */
+    public function hasExistingUserTable(string $dbName, string $dbPrefix): bool
+    {
+        $rows = Db::connect('install')->query(
+            'SELECT 1 FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1',
+            [$dbName, $dbPrefix . 'user']
+        );
+
+        return !empty($rows);
+    }
+
+    /**
      * 执行分步安装
      *
      * @param array $config
      * @param int $n
+     * @param bool $allowOverwrite 是否允许覆盖已存在的安装配置与数据表（仅 CLI 显式指定时开启）
      * @return array
      */
-    public function executeInstallStep($config, $n = 0)
+    public function executeInstallStep($config, $n = 0, bool $allowOverwrite = false)
     {
         $n = (int) $n;
         $prefixMessage = '';
+
+        if ($n < 0) {
+            $errMsg = '非法安装步骤参数';
+            return $this->createResponse(false, null, $this->buildLogItem(false, $errMsg), $errMsg);
+        }
+
+        if (!$allowOverwrite && $this->isInstalled()) {
+            $errMsg = '系统已安装（检测到 install.lock 或 .env 安装配置），禁止在非覆盖模式下重新安装';
+            return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($errMsg)), $errMsg);
+        }
 
         $validateRes = $this->validateInstallConfig(is_array($config) ? $config : []);
         if (!$validateRes['status']) {
@@ -295,10 +360,22 @@ class InstallService
                 return $startRes;
             }
             $prefixMessage = $startRes['data']['msg'] ?? '';
+
+            $dbName = (string) ($config['db_name'] ?? '');
+            $dbPrefix = (string) ($config['db_prefix'] ?? '');
+            if (!$allowOverwrite && $this->hasExistingUserTable($dbName, $dbPrefix)) {
+                $this->clearInstallState();
+                $errMsg = "目标数据库已存在 {$dbPrefix}user 表，为防止现有数据被清空，禁止覆盖安装；请更换空库/表前缀，或通过命令行使用 --overwrite 参数重装";
+                return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($errMsg)), $errMsg);
+            }
         }
 
         $sqlFormat = $this->loadInstallSqlStatements($config['db_prefix'] ?? '');
         $counts = count($sqlFormat);
+        if ($n > $counts) {
+            $errMsg = '安装步骤参数超出范围';
+            return $this->createResponse(false, null, $this->buildLogItem(false, $errMsg), $errMsg);
+        }
 
         for ($i = $n; $i < $counts; $i++) {
             $sql = trim($sqlFormat[$i]);

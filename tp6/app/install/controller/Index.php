@@ -20,8 +20,9 @@ class Index extends BaseController
         parent::initialize();
 
         //检查是否已经安装过
-        if (strtolower((string) $this->request->action()) !== 'step5' && is_file(install_lock_path())) {
-            response('你已经安装过该系统，如果想重新安装，请先删除站点 install.lock 文件，然后再安装。')->send();
+        $installService = new InstallService();
+        if (strtolower((string) $this->request->action()) !== 'step5' && $installService->isInstalled()) {
+            response('系统已安装（存在 install.lock 或 .env 安装配置），为保障数据安全，禁止通过 Web 端重新安装。如需重装，请在服务器使用命令行执行 php think ztbcms:install --overwrite。')->send();
             exit;
         }
     }
@@ -179,7 +180,7 @@ class Index extends BaseController
         ];
 
         $installService = new InstallService();
-        $res = $installService->executeInstallStep($config, $n);
+        $res = $installService->executeInstallStep($config, $n, false);
 
         return self::makeJsonReturn($res['status'], $res['data'], $res['msg']);
     }
