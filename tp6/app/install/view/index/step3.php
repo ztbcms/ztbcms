@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="/statics/modules/install/css/install.css"/>
     <script src="/statics/modules/install/js/jquery.js"></script>
     <script src="/statics/modules/install/js/validate.js"></script>
-    <script src="/statics/modules/install/js/ajaxForm.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -20,7 +19,6 @@
             </ul>
         </div>
         <form id="J_install_form" action="{:api_url('/install/index/step4')}" method="post">
-            <input type="hidden" name="force" value="0"/>
             <div class="server">
                 <table width="100%">
                     <tr>
