@@ -107,13 +107,15 @@ class InstallCommand extends Command
             while (true) {
                 $res = $installService->executeInstallStep($config, $n, $isOverwrite);
                 if (!$res['status']) {
-                    $output->error('安装中断: ' . $this->formatMessage($res['msg']));
+                    $output->error('安装中断: ' . $res['msg']);
                     return 1;
                 }
 
-                if (isset($res['data']['msg'])) {
-                    $cleanMsg = $this->formatMessage($res['data']['msg']);
-                    $output->writeln($cleanMsg);
+                if (!empty($res['data']['logs'])) {
+                    foreach ($res['data']['logs'] as $log) {
+                        $prefix = !empty($log['status']) ? '<info>√</info> ' : '<error>×</error> ';
+                        $output->writeln($prefix . ($log['msg'] ?? ''));
+                    }
                 }
 
                 if (isset($res['data']['n'])) {
@@ -160,16 +162,5 @@ class InstallCommand extends Command
                 return $answer;
             }
         }
-    }
-
-    protected function formatMessage($message)
-    {
-        $message = str_replace(['</li><li', '</li> <li'], ["</li>\n<li", "</li>\n<li"], (string) $message);
-        $message = str_replace(['<li>', '</li>'], ['', "\n"], $message);
-        $message = str_replace('&radic;', '√', $message);
-        $message = str_replace('&times;', '×', $message);
-        $message = html_entity_decode(strip_tags($message), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $message = preg_replace("/\n{2,}/", "\n", $message);
-        return trim((string) $message);
     }
 }
