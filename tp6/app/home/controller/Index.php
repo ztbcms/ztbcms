@@ -17,8 +17,9 @@ class Index extends BaseController
     public function index()
     {
         $install_path = root_path('app/install');
-        $installed = (new InstallService())->isInstalled();
-        $enable_install = file_exists($install_path) && !$installed;
+        $has_install_dir = is_dir($install_path);
+        $installed = !$has_install_dir || (class_exists(InstallService::class) && (new InstallService())->isInstalled());
+        $enable_install = $has_install_dir && !$installed;
 
         $config = [];
         try {

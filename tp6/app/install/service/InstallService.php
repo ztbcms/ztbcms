@@ -317,7 +317,12 @@ class InstallService
         $n = (int) $n;
         $prefixMessage = '';
 
-        if ($n === 0 && !$allowOverwrite && $this->isInstalled()) {
+        if ($n < 0) {
+            $errMsg = '非法安装步骤参数';
+            return $this->createResponse(false, null, $this->buildLogItem(false, $errMsg), $errMsg);
+        }
+
+        if (!$allowOverwrite && $this->isInstalled()) {
             $errMsg = '系统已安装（检测到 install.lock 或 .env 安装配置），禁止在非覆盖模式下重新安装';
             return $this->createResponse(false, null, $this->buildLogItem(false, $this->escapeMessage($errMsg)), $errMsg);
         }
@@ -367,6 +372,10 @@ class InstallService
 
         $sqlFormat = $this->loadInstallSqlStatements($config['db_prefix'] ?? '');
         $counts = count($sqlFormat);
+        if ($n > $counts) {
+            $errMsg = '安装步骤参数超出范围';
+            return $this->createResponse(false, null, $this->buildLogItem(false, $errMsg), $errMsg);
+        }
 
         for ($i = $n; $i < $counts; $i++) {
             $sql = trim($sqlFormat[$i]);
