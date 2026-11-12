@@ -119,7 +119,6 @@ class InstallCommand extends Command
                     $n = $res['data']['n'];
                     if ($n >= 999999) {
                         $output->info('安装全部完成！锁定安装程序。');
-                        touch(install_lock_path());
                         return 0;
                     }
                 } else {

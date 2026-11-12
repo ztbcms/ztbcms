@@ -20,7 +20,7 @@ class Index extends BaseController
         parent::initialize();
 
         //检查是否已经安装过
-        if (is_file(install_lock_path())) {
+        if (strtolower((string) $this->request->action()) !== 'step5' && is_file(install_lock_path())) {
             response('你已经安装过该系统，如果想重新安装，请先删除站点 install.lock 文件，然后再安装。')->send();
             exit;
         }
@@ -106,7 +106,6 @@ class Index extends BaseController
 
     function step5()
     {
-        touch(install_lock_path());
         return view('step5');
     }
 
