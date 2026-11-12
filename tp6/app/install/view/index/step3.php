@@ -231,16 +231,19 @@
                         required: true
                     },
                     db_name: {
-                        required: true
+                        required: true,
+                        regularExpression: "^[a-zA-Z0-9_]+$"
                     },
                     db_prefix: {
-                        required: true
+                        required: true,
+                        regularExpression: "^[a-zA-Z0-9_]+$"
                     },
                     manager: {
                         required: true
                     },
                     manager_pwd: {
-                        required: true
+                        required: true,
+                        minlength: 6
                     },
                     manager_ckpwd: {
                         required: true,
@@ -293,16 +296,19 @@
                         required: '数据库密码不能为空'
                     },
                     db_name: {
-                        required: '数据库名不能为空'
+                        required: '数据库名不能为空',
+                        regularExpression: '数据库名仅支持字母、数字和下划线'
                     },
                     db_prefix: {
-                        required: '数据库表前缀不能为空'
+                        required: '数据库表前缀不能为空',
+                        regularExpression: '数据库表前缀仅支持字母、数字和下划线'
                     },
                     manager: {
                         required: '管理员帐号不能为空'
                     },
                     manager_pwd: {
-                        required: '密码不能为空'
+                        required: '密码不能为空',
+                        minlength: '密码长度不能少于6位'
                     },
                     manager_ckpwd: {
                         required: '重复密码不能为空',
