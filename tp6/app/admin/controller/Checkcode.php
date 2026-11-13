@@ -28,7 +28,7 @@ class Checkcode extends AdminController
         $checkcode->type = strtolower(Request::param('type', 'verify'));
 
         //设置长度
-        $codelen = intval(Request::param('type', 0));
+        $codelen = intval(Request::param('code_len', 0));
         if ($codelen) {
             if ($codelen > 8 || $codelen < 2) {
                 $codelen = 4;
