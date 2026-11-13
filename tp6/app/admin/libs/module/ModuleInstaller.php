@@ -13,7 +13,6 @@ use app\admin\service\ModuleService;
 use app\common\service\BaseService;
 use think\facade\Config;
 use think\facade\Db;
-use think\File;
 
 /**
  * 模块安装器
@@ -226,12 +225,9 @@ class ModuleInstaller extends BaseService
             return self::createReturn(false, null, '模块名称不能为空');
         }
         $resource_dir = base_path()."{$moduleName}/install/extra/";
-        if (file_exists($resource_dir)) {
-            $dir = new File($resource_dir, false);
-            if ($dir->isDir()) {
-                $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
-                $this->_copyDir($resource_dir, $des_dir);
-            }
+        if (is_dir($resource_dir)) {
+            $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
+            $this->_copyDir($resource_dir, $des_dir);
         }
         return self::createReturn(true, null, '资源安装完成');
     }

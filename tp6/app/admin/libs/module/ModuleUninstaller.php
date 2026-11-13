@@ -8,7 +8,6 @@ namespace app\admin\libs\module;
 
 
 use app\admin\service\ModuleService;
-use think\exception\ErrorException;
 use think\facade\Db;
 
 /**
