@@ -22,22 +22,33 @@ class AdminMessage extends AdminController
     public $noNeedPermission = ['getAdminMsgList', 'readMsg', 'readMsgAll'];
 
     /**
+     * 处理消息页面请求与动作分发
+     *
+     * @param string $template 视图模板名称
+     * @return mixed
+     */
+    private function handleMessagePage(string $template)
+    {
+        $_action = input('_action', '', 'trim');
+        if ($_action == 'getAdminMsgList') {
+            // 获取消息列表
+            return $this->getAdminMsgList();
+        } else if ($_action == 'readMsg') {
+            // 阅读通知
+            return $this->readMsg();
+        } else if ($_action == 'readMsgAll') {
+            // 阅读所有消息
+            return $this->readMsgAll();
+        }
+        return View::fetch($template);
+    }
+
+    /**
      * 所有通知
      */
     public function index()
     {
-        $_action = input('_action','','trim');
-        if($_action == 'getAdminMsgList') {
-            //获取消息列表
-            return $this->getAdminMsgList();
-        } else if($_action == 'readMsg') {
-            //阅读通知
-            return $this->readMsg();
-        } else if($_action == 'readMsgAll') {
-            //阅读所有消息
-            return $this->readMsgAll();
-        }
-        return View::fetch('index');
+        return $this->handleMessagePage('index');
     }
 
     /**
@@ -45,18 +56,7 @@ class AdminMessage extends AdminController
      */
     public function noRead()
     {
-        $_action = input('_action','','trim');
-        if($_action == 'getAdminMsgList') {
-            //获取消息列表
-            return $this->getAdminMsgList();
-        } else if($_action == 'readMsg') {
-            //阅读通知
-            return $this->readMsg();
-        } else if($_action == 'readMsgAll') {
-            //阅读所有消息
-            return $this->readMsgAll();
-        }
-        return View::fetch('noRead');
+        return $this->handleMessagePage('noRead');
     }
 
     /**
@@ -64,18 +64,7 @@ class AdminMessage extends AdminController
      */
     public function system()
     {
-        $_action = input('_action','','trim');
-        if($_action == 'getAdminMsgList') {
-            //获取消息列表
-            return $this->getAdminMsgList();
-        } else if($_action == 'readMsg') {
-            //阅读通知
-            return $this->readMsg();
-        } else if($_action == 'readMsgAll') {
-            //阅读所有消息
-            return $this->readMsgAll();
-        }
-        return View::fetch('system');
+        return $this->handleMessagePage('system');
     }
 
 
