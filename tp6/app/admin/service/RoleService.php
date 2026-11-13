@@ -83,7 +83,7 @@ class RoleService extends BaseService
             throw new InvalidArgumentException('请指定角色');
         }
 
-        if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if ((int) $role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return self::createReturn(false, null, '超级管理员角色不能被删除');
         }
 
@@ -142,19 +142,19 @@ class RoleService extends BaseService
      */
     function compareRoleLevel($role_id1, $role_id2)
     {
-        if ($role_id1 === $role_id2) {
+        if ((int) $role_id1 === (int) $role_id2) {
             return self::createReturn(true, self::LEVEL_COMPARE_SAME);
         }
         $roleList = $this->getRoleList()['data'];
         $son_list1 = TreeHelper::getSonNodeFromArray($roleList, $role_id1, ['parentKey' => 'parentid']);
         foreach ($son_list1 as $item) {
-            if ($item['id'] == $role_id2) {
+            if ((int) $item['id'] === (int) $role_id2) {
                 return self::createReturn(false, self::LEVEL_COMPARE_HIGHER);
             }
         }
         $son_list2 = TreeHelper::getSonNodeFromArray($roleList, $role_id2, ['parentKey' => 'parentid']);
         foreach ($son_list2 as $item) {
-            if ($item['id'] == $role_id1) {
+            if ((int) $item['id'] === (int) $role_id1) {
                 return self::createReturn(false, self::LEVEL_COMPARE_LOWER);
             }
         }

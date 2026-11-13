@@ -113,7 +113,7 @@ class RbacService extends BaseService
     function enableRoleAccess($role_id, $app, $controller, $action, $ignore_unlimit_check = false)
     {
         // 超级管理员
-        if ($role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if ((int) $role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return self::createReturn(true, null, '权限检验通过');
         }
         $accessList = $this->getRoleAccessList($role_id)['data'];

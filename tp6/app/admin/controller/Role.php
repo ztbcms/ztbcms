@@ -73,7 +73,7 @@ class Role extends AdminController
             return self::makeJsonReturn(true, $info);
         }
         $userInfo = AdminUserService::getInstance()->getInfo();
-        $is_superior = $userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID;
+        $is_superior = (int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID;
 
         return view('roleAddOrEdit', [
             'id' => $id,
@@ -102,7 +102,7 @@ class Role extends AdminController
         $list = $RoleModel->where($where)->select()->toArray();
         $userInfo = AdminUserService::getInstance()->getInfo();
         //如果是超级管理员，显示所有角色。如果非超级管理员，只显示下级角色
-        if ($userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if ((int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
             $list =TreeHelper::arrayToTreeList($list,  0, [
                 'parentKey' => 'parentid'
             ]);
@@ -125,7 +125,7 @@ class Role extends AdminController
         $status = Request::param('status', '1', 'trim');
         $parentid = Request::param('parentid', '0', 'trim');
 
-        if (RoleModel::SUPER_ADMIN_ROLE_ID == $id) {
+        if ((int) $id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return json(self::createReturn(false, [], '超级管理员角色不能被修改'));
         }
         if (empty($name)) {
@@ -134,7 +134,7 @@ class Role extends AdminController
         $userInfo = AdminUserService::getInstance()->getInfo();
         if (empty($parentid)) {
             // 非超管时，上级角色默认是当前登录角色
-            if (RoleModel::SUPER_ADMIN_ROLE_ID !== $userInfo['role_id']) {
+            if ((int) $userInfo['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
                 $parentid = $userInfo['role_id'];
             }
         }
@@ -157,7 +157,7 @@ class Role extends AdminController
     {
         $id = Request::param('id', '', 'trim');
         $userInfo = AdminUserService::getInstance()->getInfo();
-        if ($id == $userInfo['role_id']) {
+        if ((int) $id === (int) $userInfo['role_id']) {
             return json(self::createReturn(false, null, '您不能删除自己使用的角色'));
         }
         $roleService = new RoleService();
