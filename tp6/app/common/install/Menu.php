@@ -128,6 +128,18 @@ return array(
                         "type" => 1,
                         "status" => 1,
                         "name" => "附件管理",
+                    ],
+                    [
+                        "route" => "common/upload.upload/getUploadToken",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "获取上传凭证",
+                    ],
+                    [
+                        "route" => "common/upload.upload/directUploadDemo",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "直传示例",
                     ]
                 ]
             ],
