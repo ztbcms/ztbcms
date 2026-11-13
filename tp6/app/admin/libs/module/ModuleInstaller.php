@@ -47,11 +47,6 @@ class ModuleInstaller extends BaseService
         //设置脚本最大执行时间
         set_time_limit(0);
         $moduleService = new ModuleService();
-        // 检测目录权限
-        $res = $this->_checkPermission($moduleName);
-        if (!$res['status']) {
-            return $res;
-        }
         //加载模块基本配置
         $res = $moduleService->getModuleInfo($moduleName);
         if (!$res['status']) {
@@ -128,40 +123,6 @@ class ModuleInstaller extends BaseService
         $this->_copyResource($moduleName);
 
         return self::createReturn(true, null, '安装完成');
-    }
-
-    /**
-     * 目录权限检查
-     *
-     * @param  string  $moduleName  模块名称
-     */
-    function _checkPermission($moduleName = '')
-    {
-        //模板目录权限检测
-//        if ($this->chechmod($this->templatePath) == false) {
-//            $this->error = '目录 ' . $this->templatePath . ' 没有可写权限！';
-//            return false;
-//        }
-//        if ($moduleName && file_exists($this->extresPath . $moduleName)) {
-//            if ($this->chechmod($this->extresPath . $moduleName) == false) {
-//                $this->error = '目录 ' . $this->extresPath . $moduleName . ' 没有可写权限！';
-//                return false;
-//            }
-//        }
-//        //静态资源目录权限检测
-//        if (!file_exists($this->extresPath)) {
-//            //创建目录
-//            if (mkdir($this->extresPath, 0777, true) == false) {
-//                $this->error = '目录 ' . $this->extresPath . ' 创建失败，请检查是否有可写权限！';
-//                return false;
-//            }
-//        }
-//        //权限检测
-//        if ($this->chechmod($this->extresPath) == false) {
-//            $this->error = '目录 ' . $this->extresPath . ' 没有可写权限！';
-//            return false;
-//        }
-        return self::createReturn(true, null, '校验通过');
     }
 
     /**

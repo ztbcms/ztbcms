@@ -30,11 +30,6 @@ class ModuleUninstaller extends ModuleInstaller
         $moduleName = $this->module;
         //设置脚本最大执行时间
         set_time_limit(0);
-        // 检测目录权限
-        $res = $this->_checkPermission($moduleName);
-        if (!$res['status']) {
-            return $res;
-        }
         $moduleService = new ModuleService();
         //取得该模块数据库中记录的安装信息
         $moduleInfo = $moduleService->getModuleInfo($moduleName)['data'];
