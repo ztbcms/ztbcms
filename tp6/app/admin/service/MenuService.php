@@ -6,7 +6,6 @@
 namespace app\admin\service;
 
 use app\admin\model\MenuModel;
-use app\admin\model\RoleModel;
 use app\admin\validate\Menu;
 use app\common\libs\helper\TreeHelper;
 use app\common\service\BaseService;
@@ -99,32 +98,6 @@ class MenuService extends BaseService
             // 验证失败 输出错误信息
             return self::createReturn(false,'',$e->getError());
         }
-    }
-
-
-    /**
-     * 获取含有层次(level)树状
-     * @param  int  $parentid
-     * @param  int  $level
-     * @param  array  $ret
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    static function getMenuTreeArray($parentid = 0, $level = 0, $ret = []){
-        $MenuModel = new MenuModel();
-        $menus = $MenuModel->where(['parentid' => $parentid])->order('listorder ASC')->select();
-        foreach ($menus as $index => $menu){
-            $menu['level'] = $level;
-
-            $ret[] = $menu;
-            $children = $MenuModel->where(['parentid' => $menu['id']])->select();
-            if($children){
-                $ret = self::getMenuTreeArray($menu['id'], $level + 1, $ret);
-            }
-        }
-        return $ret;
     }
 
     /**
