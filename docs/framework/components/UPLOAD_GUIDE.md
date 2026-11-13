@@ -171,8 +171,13 @@ window.addEventListener('ZTBCMS_UPLOAD_FILE', function(event) {
 后台页面可通过以下接口获取临时 JWT：
 
 - 路径：`GET /common/upload.upload/getUploadToken`
-- 默认 `user_type=admin`，默认 `user_id=当前登录管理员`。
-- 返回 token 默认 1 小时有效。
+- 身份约束：仅从服务端后台登录态读取当前登录管理员 `id`，固定 `user_type=admin`，忽略请求参数中的 `user_id`、`user_type`。
+- 场景与用途隔离：使用独立的 `upload` JWT 场景（优先读取环境变量 `jwt.secret_key_upload`，未配置时回退默认密钥 `jwt.secret_key`）签发，并在载荷中声明 `purpose=upload`，仅可用于 `common/upload.api/*` 上传接口，无法通过前台 `BaseApi` 接口鉴权。
+- 有效期：默认 5 分钟（300 秒），接口返回 `token`、`expire_time` 与 `ttl`，供前端在即将过期时自动刷新。
+- 权限说明：`Upload::getUploadToken` 已配置 `$noNeedPermission = ['getUploadToken']`，任意已登录后台角色均可获取自己的上传凭证。
+
+> [!IMPORTANT]
+> 升级安全提醒：若项目曾运行于存在该缺陷的版本，建议在升级后立即轮换 `.env` 中的 `jwt.secret_key`，并按需为上传场景配置独立的 `jwt.secret_key_upload`（见 `tp6/.env.example`）。
 
 ## 5. 存储驱动与配置
 

@@ -3,19 +3,30 @@
 namespace app\common\controller\upload;
 
 
-use app\admin\service\AdminConfigService;
+use think\facade\View;
+use think\Request;
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
 use app\common\service\ConfigService;
+use app\common\service\jwt\JwtService;
 use app\common\service\upload\UploadService;
-use think\facade\Db;
-use think\facade\View;
-use think\Request;
 
 class Upload extends AdminController
 {
+    /**
+     * 上传凭证默认有效期（秒）
+     */
+    const UPLOAD_TOKEN_TTL = 300;
+
+    /**
+     * 无需菜单鉴权的方法（需后台登录，供上传面板获取当前管理员上传凭证）
+     * @var array
+     */
+    public $noNeedPermission = ['getUploadToken'];
+
     /**
      * 上传示例
      *
@@ -44,34 +55,37 @@ class Upload extends AdminController
      */
     function getUploadToken()
     {
-        // 获取当前登录的管理员信息
-        $adminUserService = \app\admin\service\AdminUserService::getInstance();
+        // 仅从服务端登录态获取当前管理员身份，忽略任何请求参数输入
+        $adminUserService = AdminUserService::getInstance();
         $adminInfo = $adminUserService->getInfo();
+        $userId = intval($adminInfo['id'] ?? 0);
 
-        if (empty($adminInfo)) {
+        if (empty($adminInfo) || $userId <= 0) {
             return self::returnErrorJson('未登录');
         }
 
-        // 支持自定义 user_type 和 user_id
-        $userType = request()->param('user_type', 'admin');
-        $userId = request()->param('user_id');
-
-        // 如果未传入 user_id,使用当前登录管理员的 ID
-        if (empty($userId)) {
-            $userId = $adminInfo['id'] ?? 0;
+        $ttl = intval(config('jwt.scene.upload.ttl', self::UPLOAD_TOKEN_TTL));
+        if ($ttl <= 0) {
+            $ttl = self::UPLOAD_TOKEN_TTL;
         }
+        $expireTime = time() + $ttl;
 
-        // 生成临时 JWT Token (有效期 1 小时)
-        $jwtService = new \app\common\service\jwt\JwtService();
+        // 使用独立 upload 场景签发短期上传专用 JWT Token
+        $jwtService = new JwtService('upload');
         $payload = [
-            'uid' => intval($userId),
-            'user_type' => $userType,
-            'exp' => time() + 3600, // 1小时后过期
+            'uid' => $userId,
+            'user_type' => AttachmentModel::USER_TYPE_ADMIN,
+            'purpose' => 'upload',
+            'exp' => $expireTime,
         ];
 
         $token = $jwtService->createToken($payload);
 
-        return self::returnSuccessJson(['token' => $token]);
+        return self::returnSuccessJson([
+            'token' => $token,
+            'expire_time' => $expireTime,
+            'ttl' => $ttl,
+        ]);
     }
 
     /**
