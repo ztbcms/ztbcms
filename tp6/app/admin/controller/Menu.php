@@ -45,14 +45,6 @@ class Menu extends AdminController
     }
 
     /**
-     * 获取菜单列表
-     */
-    function getMenuList()
-    {
-        return json(MenuService::getMenuList());
-    }
-
-    /**
      * 添加菜单
      *
      * @return \think\response\Json|\think\response\View
