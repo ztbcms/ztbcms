@@ -121,9 +121,6 @@ class AdminMessage extends AdminController
     {
         // 消息类型
         $type = Request::param('type', '');
-        if ($type) {
-            $where['type'] = $type;
-        }
         $userInfo = AdminUserService::getInstance()->getInfo();
         $res = AdminMessageService::readAllAdminMessage($userInfo['id'], $type);
         return json($res);
