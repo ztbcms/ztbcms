@@ -220,8 +220,8 @@ class AdminManager extends AdminController
         $id = Request::param('id');
         $where['id'] = $id;
         $res = $AdminUserModel->where($where)->withoutField('create_time,update_time,verify,password')->find();
-        $res['status'] = (string)$res['status'];
         if ($res) {
+            $res['status'] = (string)$res['status'];
             return json(self::createReturn(true, $res));
         } else {
             return json(self::createReturn(false, null, '该管理员不存在'));
