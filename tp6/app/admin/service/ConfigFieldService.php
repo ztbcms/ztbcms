@@ -59,6 +59,9 @@ class ConfigFieldService extends BaseService
             if (empty($originConfig)) {
                 return self::createReturn(false, null, '找不到信息');
             }
+            if ($configField['fieldname'] !== $originConfig['fieldname'] && $this->isFieldnameOccupied((string) $configField['fieldname'])) {
+                return self::createReturn(false, null, '键名已被占用');
+            }
             Db::name('config_field')->where('fid', $fid)->update([
                 'fieldname' => $configField['fieldname'],
                 'type'      => $configField['type'],
@@ -78,12 +81,7 @@ class ConfigFieldService extends BaseService
         // 新增
 
         // 检测是否存在
-        $res = Db::name('config_field')->where('fieldname', $configField['fieldname'])->findOrEmpty();
-        if($res){
-            return self::createReturn(false, null, '键名已被占用');
-        }
-        $res = Db::name('config')->where('varname', $configField['fieldname'])->findOrEmpty();
-        if($res){
+        if ($this->isFieldnameOccupied((string) $configField['fieldname'])) {
             return self::createReturn(false, null, '键名已被占用');
         }
 
@@ -105,12 +103,29 @@ class ConfigFieldService extends BaseService
         ]);
         if (!$res1 || !$res2) {
             Db::rollback();
+            return self::createReturn(false, null, '操作失败');
         }
 
         Db::commit();
         //更新缓存的Config清理
         AdminConfigService::getInstance()->clearConfigCache();
         return self::createReturn(true, null, '操作完成');
+    }
+
+    /**
+     * 检查配置键名是否已被占用
+     *
+     * @param string $fieldname 配置键名
+     * @return bool
+     */
+    private function isFieldnameOccupied(string $fieldname): bool
+    {
+        $res = Db::name('config_field')->where('fieldname', $fieldname)->findOrEmpty();
+        if ($res) {
+            return true;
+        }
+        $res = Db::name('config')->where('varname', $fieldname)->findOrEmpty();
+        return !empty($res);
     }
 
     /**
