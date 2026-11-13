@@ -7,11 +7,12 @@
 namespace app\admin\controller;
 
 
+use app\admin\model\AdminUserModel;
 use app\admin\model\MenuModel;
+use app\admin\model\RoleModel;
 use app\admin\service\AccessService;
 use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
-use think\facade\Db;
 
 class AdminApi extends AdminController
 {
@@ -43,13 +44,13 @@ class AdminApi extends AdminController
     public function getAdminUserInfo()
     {
         $userInfo = AdminUserService::getInstance()->getInfo();
-        $adminUser = Db::name('user')->where(['id' => $userInfo['id']])->withoutField('password,verify')->findOrEmpty();
-        if ($adminUser) {
-            $role = Db::name('role')->where(['id' => $adminUser['role_id']])->find();
-            $adminUser['role_name'] = $role['name'];
+        $adminUser = AdminUserModel::where(['id' => $userInfo['id']])->withoutField('password,verify')->findOrEmpty();
+        if (!$adminUser->isEmpty()) {
+            $role = RoleModel::where(['id' => $adminUser['role_id']])->find();
+            $adminUser['role_name'] = $role['name'] ?? '';
         }
 
-        return self::makeJsonReturn(true, $adminUser);
+        return self::makeJsonReturn(true, $adminUser->toArray());
     }
 
 
