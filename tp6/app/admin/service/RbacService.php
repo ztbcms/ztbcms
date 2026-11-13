@@ -11,9 +11,7 @@ use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\service\BaseService;
 use think\exception\InvalidArgumentException;
-use think\exception\ValidateException;
 use think\facade\Cache;
-use think\facade\Db;
 
 /**
  * 角色权限服务
@@ -26,27 +24,6 @@ class RbacService extends BaseService
      * 缓存Tag名称
      */
     const CacheTagName = 'Rbac';
-
-    /**
-     * 获取用户的访问列表
-     *
-     * @param $user_id
-     *
-     * @return array|false|null
-     */
-    function getUserAccessList($user_id)
-    {
-        if (empty($user_id)) {
-            throw new ValidateException('请指定用户');
-        }
-        //用户信息
-        $userInfo = Db::name('user')->where('id', $user_id)->findOrEmpty();
-        if (empty($userInfo)) {
-            return self::createReturn(false, null, '找不到用户');
-        }
-
-        return $this->getRoleAccessList($userInfo['role_id']);
-    }
 
     /**
      * 获取角色的访问列表
