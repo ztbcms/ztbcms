@@ -101,7 +101,7 @@ try {
 
     Config::set([
         'default' => 'admin_api_get_admin_user_info_test',
-        'auto_timestamp' => false,
+        'auto_timestamp' => true,
         'datetime_format' => 'Y-m-d H:i:s',
         'connections' => [
             'admin_api_get_admin_user_info_test' => [
@@ -109,6 +109,8 @@ try {
                 'database' => ':memory:',
                 'prefix' => '',
                 'fields_strict' => true,
+                'auto_timestamp' => true,
+                'datetime_format' => 'Y-m-d H:i:s',
             ],
         ],
     ], 'database');
@@ -163,6 +165,8 @@ try {
             'password' => 'secret_hash_101',
             'verify' => 'verify_101',
             'email' => 'alice@example.com',
+            'create_time' => 1700000100,
+            'update_time' => 1700000200,
             'status' => 1,
             'role_id' => 2,
             'info' => '',
@@ -174,6 +178,8 @@ try {
             'password' => 'secret_hash_102',
             'verify' => 'verify_102',
             'email' => 'bob@example.com',
+            'create_time' => 1700000300,
+            'update_time' => 1700000400,
             'status' => 1,
             'role_id' => 999,
             'info' => '',
@@ -190,6 +196,7 @@ try {
         'username' => 'alice',
         'role_id' => 2,
     ]);
+    $raw101 = Db::name('user')->where(['id' => 101])->withoutField('password,verify')->findOrEmpty();
     $resNormal = $controller->getAdminUserInfo()->getData();
     assertAdminApiUserInfo(
         ($resNormal['status'] ?? false) === true && is_array($resNormal['data'] ?? null),
@@ -199,6 +206,13 @@ try {
         ($resNormal['data']['username'] ?? '') === 'alice'
         && ($resNormal['data']['role_name'] ?? '') === '站点管理员',
         '场景 A 应返回正确的 username 与 role_name'
+    );
+    assertAdminApiUserInfo(
+        ($resNormal['data']['create_time'] ?? null) === $raw101['create_time']
+        && ($resNormal['data']['update_time'] ?? null) === $raw101['update_time']
+        && (string) ($resNormal['data']['create_time'] ?? '') === '1700000100'
+        && (string) ($resNormal['data']['update_time'] ?? '') === '1700000200',
+        '场景 A 在开启 auto_timestamp 时 create_time 与 update_time 应与原 Db 查询一致，保持原始时间戳而非格式化日期字符串'
     );
     assertAdminApiUserInfo(
         !array_key_exists('password', $resNormal['data']) && !array_key_exists('verify', $resNormal['data']),
@@ -211,14 +225,19 @@ try {
         'username' => 'bob_orphan_role',
         'role_id' => 999,
     ]);
+    $raw102 = Db::name('user')->where(['id' => 102])->withoutField('password,verify')->findOrEmpty();
     $resMissingRole = $controller->getAdminUserInfo()->getData();
     assertAdminApiUserInfo(
         ($resMissingRole['status'] ?? false) === true
         && is_array($resMissingRole['data'] ?? null)
         && ($resMissingRole['data']['username'] ?? '') === 'bob_orphan_role'
         && array_key_exists('role_name', $resMissingRole['data'])
-        && $resMissingRole['data']['role_name'] === '',
-        '场景 B 角色缺失时应返回 role_name 为空字符串且不报错'
+        && $resMissingRole['data']['role_name'] === ''
+        && ($resMissingRole['data']['create_time'] ?? null) === $raw102['create_time']
+        && ($resMissingRole['data']['update_time'] ?? null) === $raw102['update_time']
+        && (string) ($resMissingRole['data']['create_time'] ?? '') === '1700000300'
+        && (string) ($resMissingRole['data']['update_time'] ?? '') === '1700000400',
+        '场景 B 角色缺失时应返回 role_name 为空字符串、保持原始时间戳且不报错'
     );
     assertAdminApiUserInfo(
         !array_key_exists('password', $resMissingRole['data']) && !array_key_exists('verify', $resMissingRole['data']),

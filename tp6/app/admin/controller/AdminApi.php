@@ -46,6 +46,8 @@ class AdminApi extends AdminController
         $userInfo = AdminUserService::getInstance()->getInfo();
         $adminUser = AdminUserModel::where(['id' => $userInfo['id']])->withoutField('password,verify')->findOrEmpty();
         if (!$adminUser->isEmpty()) {
+            // 保持与原数据库直接查询一致，不将 create_time/update_time 格式化为日期字符串
+            $adminUser->setDateFormat(false);
             $role = RoleModel::where(['id' => $adminUser['role_id']])->find();
             $adminUser['role_name'] = $role['name'] ?? '';
         }
