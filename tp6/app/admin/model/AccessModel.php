@@ -31,7 +31,7 @@ class AccessModel extends Model
         }
         //子角色列表
         $roleModel = new RoleModel();
-        $child = explode(',', $roleModel->getArrchildid($role_id));
+        $child = $roleModel->getChildrenRoleIdList($role_id, true);
         if (empty($child)) {
             return [];
         }
