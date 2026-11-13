@@ -111,7 +111,7 @@ class AdminUserService extends BaseService
         }
         $adminUserModel = new AdminUserModel();
         $userInfo = $adminUserModel->where('username', '=', $username)->findOrEmpty();
-        if (empty($userInfo)) {
+        if ($userInfo->isEmpty()) {
             return self::createReturn(false, null, '用户未注册');
         }
         //密码验证
@@ -213,7 +213,7 @@ class AdminUserService extends BaseService
         }
         $adminUserModel = new AdminUserModel();
         $res = $adminUserModel->where('id', $user_id)->findOrEmpty();
-        if($res){
+        if (!$res->isEmpty()) {
             return self::createReturn(true, $res->toArray());
         }
 
