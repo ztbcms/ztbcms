@@ -1,5 +1,6 @@
 <?php
 
+use app\admin\model\AccessModel;
 use app\admin\model\RoleModel;
 use think\App;
 use think\facade\Config;
@@ -144,6 +145,33 @@ try {
         $leafChildrenWithSelf === [5],
         '叶子角色 5 的子角色列表（含自身）应为 [5]'
     );
+
+    // 3. 验证 AccessModel 不再引用已移除的 RoleModel 方法
+    $accessModelSource = file_get_contents(dirname(__DIR__) . '/app/admin/model/AccessModel.php');
+    assertRoleModelCleanup(
+        $accessModelSource !== false && strpos($accessModelSource, 'getArrchildid') === false,
+        'AccessModel.php 不应再调用已移除的 RoleModel::getArrchildid'
+    );
+
+    if (method_exists(AccessModel::class, 'getAccessList')) {
+        Db::execute('CREATE TABLE access (
+            role_id INTEGER NOT NULL,
+            app VARCHAR(64) NOT NULL,
+            controller VARCHAR(64) NOT NULL,
+            action VARCHAR(64) NOT NULL,
+            status INTEGER NOT NULL DEFAULT 1
+        )');
+        Db::name('access')->insertAll([
+            ['role_id' => 2, 'app' => 'Admin', 'controller' => 'Role', 'action' => 'index', 'status' => 1],
+            ['role_id' => 3, 'app' => 'Admin', 'controller' => 'Menu', 'action' => 'index', 'status' => 1],
+        ]);
+        $accessModel = new AccessModel();
+        $accessRows = $accessModel->getAccessList(2);
+        assertRoleModelCleanup(
+            is_array($accessRows) && count($accessRows) === 2,
+            'AccessModel::getAccessList(2) 应正常返回本角色及子角色的 2 条权限记录'
+        );
+    }
 } finally {
     restore_error_handler();
 }
