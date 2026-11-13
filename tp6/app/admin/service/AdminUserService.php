@@ -141,7 +141,7 @@ class AdminUserService extends BaseService
     public function isAdministrator()
     {
         $userInfo = $this->getInfo();
-        if (!empty($userInfo) && $userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if (!empty($userInfo) && (int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return true;
         }
         return false;

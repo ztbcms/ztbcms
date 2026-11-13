@@ -33,7 +33,7 @@ class AccessService extends BaseService
         if (empty($roleinfo)) {
             throw new InvalidArgumentException('找不到角色');
         }
-        if ($role_id == RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if ((int) $role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             //超级管理员返回全部
             $accessList = [
                 [
