@@ -27,6 +27,20 @@ class InstallService
     protected $runtimeInstallState;
 
     /**
+     * 已通过连接测试的数据库配置签名
+     *
+     * @var string|null
+     */
+    protected $verifiedDbConnectionKey;
+
+    /**
+     * 安装 SQL 语句切分缓存（按表前缀缓存）
+     *
+     * @var array
+     */
+    protected $sqlStatementsCache = [];
+
+    /**
      * 检查系统环境
      *
      * @return array
@@ -277,6 +291,7 @@ class InstallService
     {
         $validateRes = $this->validateDbConfig(is_array($config) ? $config : [], false);
         if (!$validateRes['status']) {
+            $this->verifiedDbConnectionKey = null;
             return ['status' => false, 'data' => null, 'msg' => $validateRes['msg']];
         }
 
@@ -295,9 +310,11 @@ class InstallService
 
         try {
             Db::connect('install', true)->query('SELECT 1');
+            $this->verifiedDbConnectionKey = $this->createDbConnectionKey($config);
 
             return ['status' => true, 'data' => $db_config['connections']['install'], 'msg' => '数据库链接成功'];
         } catch (\Throwable $exception) {
+            $this->verifiedDbConnectionKey = null;
             return ['status' => false, 'data' => null, 'msg' => '数据库链接配置失败:' . $exception->getMessage()];
         }
     }
@@ -393,12 +410,14 @@ class InstallService
             }
         }
 
-        $res = $this->testDbConnection($config);
-        if (!$res['status']) {
-            if ($n > 0) {
-                $this->markInstallFailed();
+        if ($this->verifiedDbConnectionKey !== $this->createDbConnectionKey($config)) {
+            $res = $this->testDbConnection($config);
+            if (!$res['status']) {
+                if ($n > 0) {
+                    $this->markInstallFailed();
+                }
+                return $this->createResponse(false, null, [$this->buildLogItem(false, $res['msg'])], $res['msg']);
             }
-            return $this->createResponse(false, null, [$this->buildLogItem(false, $res['msg'])], $res['msg']);
         }
 
         $db_config = config('database');
@@ -751,8 +770,13 @@ class InstallService
      */
     protected function loadInstallSqlStatements($dbPrefix)
     {
-        $sqldata = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cms.sql');
-        return SqlHelper::splitSQL($sqldata, $dbPrefix);
+        $prefixKey = (string) $dbPrefix;
+        if (!isset($this->sqlStatementsCache[$prefixKey])) {
+            $sqldata = file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cms.sql');
+            $this->sqlStatementsCache[$prefixKey] = SqlHelper::splitSQL($sqldata, $dbPrefix);
+        }
+
+        return $this->sqlStatementsCache[$prefixKey];
     }
 
     /**
@@ -990,6 +1014,24 @@ class InstallService
         ];
 
         return md5(implode('|', $parts));
+    }
+
+    /**
+     * 生成数据库连接配置签名（包含认证信息，用于同一实例内复用已验证连接）
+     *
+     * @param array $config
+     * @return string
+     */
+    protected function createDbConnectionKey(array $config): string
+    {
+        return md5((string) json_encode([
+            (string) ($config['db_host'] ?? ''),
+            (string) ($config['db_port'] ?? ''),
+            (string) ($config['db_name'] ?? ''),
+            (string) ($config['db_user'] ?? ''),
+            (string) ($config['db_pwd'] ?? ''),
+            (string) ($config['db_prefix'] ?? ''),
+        ]));
     }
 
     /**
