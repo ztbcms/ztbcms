@@ -6,8 +6,8 @@
 
 namespace app\install\controller;
 
-
 use app\BaseController;
+use app\install\service\InstallService;
 
 class Index extends BaseController
 {
@@ -20,8 +20,9 @@ class Index extends BaseController
         parent::initialize();
 
         //检查是否已经安装过
-        if (is_file(install_lock_path())) {
-            response('你已经安装过该系统，如果想重新安装，请先删除站点 install.lock 文件，然后再安装。')->send();
+        $installService = new InstallService();
+        if (strtolower((string) $this->request->action()) !== 'step5' && $installService->isInstalled()) {
+            response('系统已安装（存在 install.lock 或 .env 安装配置），为保障数据安全，禁止通过 Web 端重新安装。如需重装，请在服务器使用命令行执行 php think ztbcms:install --overwrite。')->send();
             exit;
         }
     }
@@ -34,57 +35,33 @@ class Index extends BaseController
 
     function step2()
     {
-        $installService = new \app\install\service\InstallService();
+        $installService = new InstallService();
         $envRes = $installService->checkEnvironment();
+        $groups = $envRes['groups'];
 
-        $err = $envRes['err_count'];
-        $items = $envRes['items'];
-
-        // mysql检测
-        $mysql = '请自行检查';
-        $mini_php_version = '7.2';
-
-        $php_version_info = '';
-        $uploadSize = '';
-        $session = '';
-        $folderInfo = [];
         $function = [];
-
-        foreach ($items as $item) {
-            $spanClass = $item['status'] ? '<span class="correct_span">&radic;</span> ' : '<span class="correct_span error_span">&radic;</span> ';
-
-            if ($item['name'] === 'PHP版本') {
-                $php_version_info = $spanClass . $item['current'];
-            } elseif ($item['name'] === '文件上传') {
-                $uploadSize = $spanClass . ($item['current'] === '禁止' ? '禁止上传' : $item['current']);
-            } elseif ($item['name'] === 'Session') {
-                $session = $spanClass . $item['current'];
-            } elseif (strpos($item['name'], '目录权限: ') === 0) {
-                $dir = str_replace('目录权限: ', '', $item['name']);
-                $folderInfo[] = [
-                    'dir'         => $dir,
-                    'is_readable' => strpos($item['current'], '不可读') === false ? '<span class="correct_span">&radic;</span>可读' : '<span class="correct_span error_span">&radic;</span>不可读',
-                    'is_writable' => strpos($item['current'], '不可写') === false ? '<span class="correct_span">&radic;</span>可写' : '<span class="correct_span error_span">&radic;</span>不可写',
-                ];
-            } elseif (strpos($item['name'], '核心函数: ') === 0) {
-                $func = str_replace('核心函数: ', '', $item['name']);
-                $function[] = [
-                    'name'  => $func,
-                    'value' => $item['status']
-                ];
-            }
+        foreach ($groups['extensions'] as $ext) {
+            $function[] = [
+                'name'  => $ext['name'] . ' (扩展)',
+                'value' => $ext['status']
+            ];
+        }
+        foreach ($groups['functions'] as $func) {
+            $function[] = [
+                'name'  => $func['name'],
+                'value' => $func['status']
+            ];
         }
 
         return view('step2', [
-            'os'               => PHP_OS,
-            'function'         => $function,
-            'err'              => $err,
-            'phpv'             => $php_version_info,
-            'mini_php_version' => $mini_php_version,
-            'mysql'            => $mysql,
-            'uploadSize'       => $uploadSize,
-            'session'          => $session,
-            'folderInfo'       => $folderInfo
+            'os'           => PHP_OS,
+            'function'     => $function,
+            'err'          => $envRes['err_count'],
+            'php_info'     => $groups['php'],
+            'mysql'        => '请自行检查',
+            'upload_info'  => $groups['upload'],
+            'session_info' => $groups['session'],
+            'folderInfo'   => $groups['folders']
         ]);
     }
 
@@ -96,17 +73,26 @@ class Index extends BaseController
 
     function step4()
     {
-        //检测数据
-        $data = input('post.');
+        if ($this->request->isPost()) {
+            $data = input('post.');
+            $data = is_array($data) ? $data : [];
+            session(InstallService::INSTALL_CONFIG_KEY, $data);
+        } else {
+            $data = session(InstallService::INSTALL_CONFIG_KEY);
+            $data = is_array($data) ? $data : [];
+        }
+
+        $safeViewData = $data;
+        unset($safeViewData['db_pwd'], $safeViewData['manager_pwd'], $safeViewData['manager_ckpwd']);
 
         return view('step4', [
-            'data' => json_encode($data)
+            'data'          => json_encode($safeViewData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'finished_step' => InstallService::INSTALL_FINISHED_STEP,
         ]);
     }
 
     function step5()
     {
-        touch(install_lock_path());
         return view('step5');
     }
 
@@ -125,7 +111,7 @@ class Index extends BaseController
             'db_port'   => input('db_port', '', 'trim'),
             'db_prefix' => input('db_prefix', '', 'trim'),
         ];
-        $installService = new \app\install\service\InstallService();
+        $installService = new InstallService();
         $res = $installService->testDbConnection($config);
         return self::makeJsonReturn($res['status'], null, $res['msg']);
     }
@@ -133,30 +119,44 @@ class Index extends BaseController
     //数据库安装
     function doInstall()
     {
+        if (!$this->request->isPost()) {
+            return self::makeJsonReturn(false, null, '请求方式不正确');
+        }
+
         $n = input('get.n', 0, 'intval');
+        $sessionConfig = session(InstallService::INSTALL_CONFIG_KEY);
+        if (!is_array($sessionConfig) || empty($sessionConfig)) {
+            return self::makeJsonReturn(false, null, '安装配置已失效，请返回上一步重新填写');
+        }
+
+        $getParam = function (string $key, bool $trim = true) use ($sessionConfig) {
+            $val = $sessionConfig[$key] ?? '';
+            return $trim ? trim((string) $val) : (string) $val;
+        };
 
         $config = [
-            'db_host'   => input('db_host', '', 'trim'),
-            'db_port'   => input('db_port', '', 'trim'),
-            'db_name'   => input('db_name', '', 'trim'),
-            'db_user'   => input('db_user', '', 'trim'),
-            'db_pwd'    => input('db_pwd', '', 'trim'),
-            'db_prefix' => input('db_prefix', '', 'trim'),
+            'db_host'   => $getParam('db_host'),
+            'db_port'   => $getParam('db_port'),
+            'db_name'   => $getParam('db_name'),
+            'db_user'   => $getParam('db_user'),
+            'db_pwd'    => $getParam('db_pwd'),
+            'db_prefix' => $getParam('db_prefix'),
 
-            'manager'       => input('manager', '', 'trim'),
-            'manager_pwd'   => input('manager_pwd', '', 'trim'),
-            'manager_email' => input('manager_email', '', 'trim'),
+            'manager'       => $getParam('manager'),
+            'manager_pwd'   => $getParam('manager_pwd'),
+            'manager_ckpwd' => $getParam('manager_ckpwd'),
+            'manager_email' => $getParam('manager_email'),
 
-            'sitename'     => input('sitename'),
-            'siteurl'      => input('siteurl'),
-            'siteinfo'     => input('siteinfo', '', 'trim'),
-            'sitekeywords' => input('sitekeywords', '', 'trim'),
+            'sitename'     => $getParam('sitename', false),
+            'siteurl'      => $getParam('siteurl', false),
+            'siteinfo'     => $getParam('siteinfo'),
+            'sitekeywords' => $getParam('sitekeywords'),
 
             'ip' => request()->ip()
         ];
 
-        $installService = new \app\install\service\InstallService();
-        $res = $installService->executeInstallStep($config, $n);
+        $installService = new InstallService();
+        $res = $installService->executeInstallStep($config, $n, false);
 
         return self::makeJsonReturn($res['status'], $res['data'], $res['msg']);
     }

@@ -22,7 +22,7 @@
 
 ## 环境要求
 
-* PHP版本 7.2+
+* PHP版本 >= 7.4 < 8.4（推荐 PHP 8.3）
 * Mysql 5.6+
 * Apache 2.4 、Nginx 1.18
 * 可选的配置URL重写，参考[ThinkPHP - URL重写](http://document.thinkphp.cn/manual_3_2.html#url_rewrite)

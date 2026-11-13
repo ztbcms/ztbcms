@@ -13,16 +13,16 @@
 
 为确保安装能顺利执行，请在启动安装向导前复核服务器或本地环境配置：
 
-1. **PHP环境**：PHP 版本 `>= 7.2`。
+1. **PHP环境**：PHP 版本 `>= 7.4 < 8.4`（推荐 PHP 8.3）。
 2. **开启的 PHP 函数/扩展**：
    - `session_start`
    - `file_uploads` (允许文件上传)
    - `mb_strlen` (MBString 扩展)
    - `curl_init` (CURL 扩展)
 3. **必需的目录读写权限**（进程具有对应路径的读写权限）：
-   - `public/`
+   - `./`（项目根目录及 `.env` 配置文件）
+   - `runtime/`
    - `app/install/`
-   - `config/`
 
 ## 安装模式一：通过页面向导安装
 
@@ -83,6 +83,8 @@ php think ztbcms:install -f \
   --manager admin \
   --manager_pwd admin_password
 ```
+
+> **安全提醒**：在命令行直接使用 `--db_pwd` 或 `--manager_pwd` 传递明文密码，可能会被记录在服务器的 Shell 历史文件（如 `~/.bash_history`、`~/.zsh_history`）或进程列表中。在生产环境中，建议优先使用上方的**交互式安装**，或在执行完毕后及时清理当前会话的 Shell 历史记录。
 
 ### 仅检测环境 (Pre-flight check)
 

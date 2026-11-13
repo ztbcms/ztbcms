@@ -33,32 +33,53 @@
         </tr>
         <tr>
           <td>PHP版本</td>
-          <td>>7.4</td>
-          <td>{$phpv|raw}</td>
-          <td>{$mini_php_version}</td>
+          <td>8.3</td>
+          <td>
+            {if ($php_info['status'])}
+              <span class="correct_span">&radic;</span>
+            {else /}
+              <span class="correct_span error_span">&radic;</span>
+            {/if}
+            {$php_info['current']}
+          </td>
+          <td>{$php_info['require']}</td>
         </tr>
         <tr>
           <td>MySQL版本</td>
-          <td>>5.6</td>
+          <td>&gt;=5.7</td>
           <td>{$mysql|raw}</td>
-          <td>5.5</td>
+          <td>5.6</td>
         </tr>
         <tr>
           <td>附件上传</td>
           <td>>2M</td>
-          <td>{$uploadSize|raw}</td>
+          <td>
+            {if ($upload_info['status'])}
+              <span class="correct_span">&radic;</span>
+            {else /}
+              <span class="correct_span error_span">&radic;</span>
+            {/if}
+            {$upload_info['current']}
+          </td>
           <td>不限制</td>
         </tr>
         <tr>
           <td>SESSION</td>
           <td>开启</td>
-          <td>{$session|raw}</td>
+          <td>
+            {if ($session_info['status'])}
+              <span class="correct_span">&radic;</span>
+            {else /}
+              <span class="correct_span error_span">&radic;</span>
+            {/if}
+            {$session_info['current']}
+          </td>
           <td>开启</td>
         </tr>
       </table>
       <table width="100%">
         <tr>
-          <td class="td1">函数支持检测</td>
+          <td class="td1">扩展与函数支持检测</td>
           <td class="td1" width="25%">当前环境</td>
           <td class="td1" width="25%">程序要求</td>
         </tr>
@@ -85,9 +106,21 @@
         </tr>
         {volist name="folderInfo" id="rs" }
             <tr>
-              <td>{$rs.dir|raw}</td>
-              <td>{$rs.is_writable|raw}</td>
-              <td>{$rs.is_readable|raw}</td>
+              <td>{$rs.dir}</td>
+              <td>
+                {if ($rs.is_writable)}
+                  <span class="correct_span">&radic;</span>可写
+                {else /}
+                  <span class="correct_span error_span">&radic;</span>不可写
+                {/if}
+              </td>
+              <td>
+                {if ($rs.is_readable)}
+                  <span class="correct_span">&radic;</span>可读
+                {else /}
+                  <span class="correct_span error_span">&radic;</span>不可读
+                {/if}
+              </td>
             </tr>
         {/volist}
       </table>

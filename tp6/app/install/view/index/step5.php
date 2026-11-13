@@ -10,7 +10,7 @@
     {include file="index/header" /}
     <section class="section">
         <div class="">
-            <div class="success_tip cc"><a href="{:api_url('/admin/login/index')}" class="f16 b">安装完成，进入后台管理</a></a>
+            <div class="success_tip cc"><a href="{:api_url('/admin/login/index')}" class="f16 b">安装完成，进入后台管理</a>
             </div>
             <div class=""></div>
         </div>
