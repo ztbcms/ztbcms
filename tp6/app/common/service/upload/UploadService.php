@@ -14,7 +14,6 @@ use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
 use think\exception\ValidateException;
-use function EasyWeChat\Kernel\Support\get_client_ip;
 
 class UploadService extends BaseService
 {
@@ -205,7 +204,7 @@ class UploadService extends BaseService
         $attachmentModel->fileext = self::normalizeFileExt($file->getOriginalExtension());
         $attachmentModel->create_time = time();
         $attachmentModel->update_time = time();
-        $attachmentModel->upload_ip = get_client_ip();
+        $attachmentModel->upload_ip = request()->ip();
         $attachmentModel->is_private = $this->isPrivate;
         $attachmentModel->hash = $file->hash('md5');
 
