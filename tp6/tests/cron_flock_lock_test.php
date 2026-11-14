@@ -3,7 +3,9 @@
 use app\common\command\cron\Run;
 use app\common\controller\cron\Index;
 use app\common\model\cron\CronConfigModel;
+use app\common\model\cron\CronModel;
 use app\common\model\cron\CronSchedulingLogModel;
+use app\common\service\cron\CronService;
 use think\App;
 use think\console\Input;
 use think\console\Output;
@@ -11,6 +13,29 @@ use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Db;
 use think\response\Json;
+
+/**
+ * 计划任务调度测试脚本类
+ */
+class CronServiceTestDummyTask
+{
+    /**
+     * @var array 已执行的任务 ID 顺序
+     */
+    public static array $executedCronIds = [];
+
+    /**
+     * 执行测试任务
+     *
+     * @param int $cronId 任务 ID
+     * @return array
+     */
+    public function run($cronId): array
+    {
+        self::$executedCronIds[] = (int) $cronId;
+        return ['status' => true, 'cron_id' => $cronId];
+    }
+}
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -123,27 +148,46 @@ try {
         error_count INTEGER NOT NULL,
         cron_count INTEGER NOT NULL
     )');
+    Db::execute('CREATE TABLE cron_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cron_id INTEGER NOT NULL DEFAULT 0,
+        start_time INTEGER NOT NULL DEFAULT 0,
+        end_time INTEGER NOT NULL DEFAULT 0,
+        result INTEGER NOT NULL DEFAULT 0,
+        use_time INTEGER NOT NULL DEFAULT 0,
+        result_msg TEXT
+    )');
 
     Db::name('cron_config')->insertAll([
         ['key' => CronConfigModel::KEY_ENABLE_CRON, 'value' => (string) CronConfigModel::ENABLE_YES, 'title' => '是否启用', 'descrption' => ''],
         ['key' => CronConfigModel::KEY_ENABLE_SECRET_KEY, 'value' => 'test_secret', 'title' => '私钥', 'descrption' => ''],
     ]);
 
-    // 2. 源码检查：确保调度入口和命令行均改用 flock 且不再使用 unlink 锁文件
+    // 2. 源码检查：确保调度与 flock 锁机制统一收口在 CronService，且 Index/Run 委托给 CronService
+    $serviceSource = file_get_contents(dirname(__DIR__) . '/app/common/service/cron/CronService.php');
     $indexSource = file_get_contents(dirname(__DIR__) . '/app/common/controller/cron/Index.php');
     $runSource = file_get_contents(dirname(__DIR__) . '/app/common/command/cron/Run.php');
+
+    assertCronFlockLock(
+        is_string($serviceSource) && strpos($serviceSource, 'flock($lockHandle, LOCK_EX | LOCK_NB)') !== false,
+        'CronService.php 必须使用 flock($lockHandle, LOCK_EX | LOCK_NB)'
+    );
+    assertCronFlockLock(
+        strpos($serviceSource, 'flock($lockHandle, LOCK_UN)') !== false,
+        'CronService.php 必须在 finally 中调用 flock($lockHandle, LOCK_UN)'
+    );
+    assertCronFlockLock(
+        strpos($serviceSource, 'unlink($lockfile)') === false,
+        'CronService.php 不应 unlink 锁文件以免造成 inode 竞态'
+    );
     foreach (['Index.php' => $indexSource, 'Run.php' => $runSource] as $filename => $source) {
         assertCronFlockLock(
-            is_string($source) && strpos($source, 'flock($lockHandle, LOCK_EX | LOCK_NB)') !== false,
-            "{$filename} 必须使用 flock(\$lockHandle, LOCK_EX | LOCK_NB)"
+            is_string($source) && strpos($source, 'CronService::runScheduler(') !== false,
+            "{$filename} 必须复用 CronService::runScheduler"
         );
         assertCronFlockLock(
-            strpos($source, 'flock($lockHandle, LOCK_UN)') !== false,
-            "{$filename} 必须在 finally 中调用 flock(\$lockHandle, LOCK_UN)"
-        );
-        assertCronFlockLock(
-            strpos($source, 'unlink($lockfile)') === false,
-            "{$filename} 不应 unlink 锁文件以免造成 inode 竞态"
+            strpos($source, 'flock(') === false && strpos($source, 'CronSchedulingLogModel') === false,
+            "{$filename} 不应保留重复的锁处理或调度日志写入逻辑"
         );
     }
 
@@ -234,6 +278,96 @@ try {
         '锁释放后 cron:run 应恢复正常，实际: ' . $cmdOutAfter
     );
     assertCronFlockLock(CronSchedulingLogModel::count() === 4, '锁释放后两次调度应累计写入 4 条调度日志');
+
+    // 6. 验证 Web 私钥拦截与计划任务停用状态
+    $respBadSecret = $controller->index('wrong_secret');
+    $badSecretData = $respBadSecret->getData();
+    assertCronFlockLock(
+        ($badSecretData['used_time'] ?? -1) === 0 && ($badSecretData['msg'] ?? '') === 'Secret key invalidated',
+        'Web 私钥错误应返回 Secret key invalidated，实际: ' . json_encode($badSecretData, JSON_UNESCAPED_UNICODE)
+    );
+
+    Db::name('cron_config')
+        ->where('key', CronConfigModel::KEY_ENABLE_CRON)
+        ->update(['value' => '0']);
+
+    $respDisabled = $controller->index('test_secret');
+    $disabledData = $respDisabled->getData();
+    assertCronFlockLock(
+        ($disabledData['msg'] ?? '') === 'Cron status: stop',
+        '停用后 Web 调度应返回 Cron status: stop，实际: ' . ($disabledData['msg'] ?? '')
+    );
+
+    $outputDisabled = new Output('buffer');
+    $command->run(new Input([]), $outputDisabled);
+    $cmdOutDisabled = $outputDisabled->fetch();
+    assertCronFlockLock(
+        strpos($cmdOutDisabled, '计划任务功能已关闭') !== false,
+        '停用后 cron:run 应提示功能已关闭，实际: ' . $cmdOutDisabled
+    );
+
+    // 7. 恢复启用并验证到期任务实际调度、进度输出与不遗漏小 ID 任务
+    Db::name('cron_config')
+        ->where('key', CronConfigModel::KEY_ENABLE_CRON)
+        ->update(['value' => (string) CronConfigModel::ENABLE_YES]);
+
+    $now = time();
+    Db::name('cron')->insertAll([
+        [
+            'cron_id' => 1,
+            'type' => 0,
+            'subject' => '小ID晚到期任务',
+            'loop_type' => 'now',
+            'loop_daytime' => '0-0-5',
+            'cron_file' => CronServiceTestDummyTask::class,
+            'isopen' => CronModel::OPEN_STATUS_ON,
+            'created_time' => $now - 100,
+            'modified_time' => $now - 100,
+            'next_time' => $now - 10,
+            'data' => '',
+        ],
+        [
+            'cron_id' => 2,
+            'type' => 0,
+            'subject' => '大ID早到期任务',
+            'loop_type' => 'now',
+            'loop_daytime' => '0-0-5',
+            'cron_file' => CronServiceTestDummyTask::class,
+            'isopen' => CronModel::OPEN_STATUS_ON,
+            'created_time' => $now - 100,
+            'modified_time' => $now - 100,
+            'next_time' => $now - 60,
+            'data' => '',
+        ],
+    ]);
+
+    CronServiceTestDummyTask::$executedCronIds = [];
+    $outputProgress = new Output('buffer');
+    $command->run(new Input(['-p', '1']), $outputProgress);
+    $cmdOutProgress = $outputProgress->fetch();
+
+    assertCronFlockLock(
+        CronServiceTestDummyTask::$executedCronIds === [2, 1],
+        '调度应按 next_time ASC 顺序执行全部到期任务且不遗漏小 ID 任务，实际顺序: ' . json_encode(CronServiceTestDummyTask::$executedCronIds)
+    );
+    assertCronFlockLock(
+        strpos($cmdOutProgress, 'Processing:' . CronServiceTestDummyTask::class) !== false
+        && strpos($cmdOutProgress, 'Processed :' . CronServiceTestDummyTask::class) !== false,
+        '传 -p 1 时 cron:run 应输出进度信息，实际: ' . $cmdOutProgress
+    );
+    assertCronFlockLock(
+        strpos($cmdOutProgress, '"total_amount":2') !== false && strpos($cmdOutProgress, '"error_amount":0') !== false,
+        'cron:run 输出 JSON 应统计 total_amount=2 与 error_amount=0，实际: ' . $cmdOutProgress
+    );
+    assertCronFlockLock(
+        (int) Db::name('cron')->where('cron_id', 1)->value('next_time') > $now
+        && (int) Db::name('cron')->where('cron_id', 2)->value('next_time') > $now,
+        '两个到期任务执行后 next_time 应被推进至未来时间'
+    );
+    assertCronFlockLock(
+        (int) Db::name('cron_log')->count() === 2,
+        '两个到期任务应写入 2 条 cron_log 执行日志'
+    );
 
     echo "cron_flock_lock_test passed\n";
 } finally {
