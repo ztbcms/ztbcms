@@ -22,7 +22,7 @@
 
 - 服务层：`tp6/app/common/service/downloader/DownloaderService.php`
 - 下载工具：`tp6/app/common/libs/downloader/DownloaderTool.php`
-- 队列任务：`tp6/app/common/job/downloader/ImplementDownloaderTaskJop.php`
+- 队列任务：`tp6/app/common/job/downloader/ImplementDownloaderTaskJob.php`
 - 计划任务脚本：`tp6/app/common/cronscript/Downloader*.php`
 
 ## 组件能力

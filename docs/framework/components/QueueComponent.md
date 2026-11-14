@@ -310,7 +310,7 @@ php think queue:listen --timeout 60 --delay 1 --tries 1 --sleep 10 --queue Offic
 
 | 属性 | 值 |
 |------|------|
-| 任务类 | `tp6/app/common/job/downloader/ImplementDownloaderTaskJop.php` |
+| 任务类 | `tp6/app/common/job/downloader/ImplementDownloaderTaskJob.php` |
 | 队列名 | `downloader` |
 | 触发入口 | `tp6/app/common/service/downloader/DownloaderService.php` |
 | 重试策略 | 执行完成或异常都会删除任务 |

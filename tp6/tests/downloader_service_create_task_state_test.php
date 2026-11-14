@@ -208,9 +208,16 @@ try {
         intval($retriedRow['downloader_state']) === DownloaderModel::STATE_WAIT,
         '失败重试后状态应重置为 STATE_WAIT'
     );
+    $queueJobRow = Db::name('queue_jobs')->where('queue', 'downloader')->find();
     assertDownloaderServiceCreateTaskState(
-        Db::name('queue_jobs')->where('queue', 'downloader')->count() === 1,
+        Db::name('queue_jobs')->where('queue', 'downloader')->count() === 1 && is_array($queueJobRow),
         '失败重试后应向 downloader 队列推入 1 条任务'
+    );
+    $queuePayload = (string) ($queueJobRow['payload'] ?? '');
+    assertDownloaderServiceCreateTaskState(
+        strpos($queuePayload, 'ImplementDownloaderTaskJob') !== false
+        && strpos($queuePayload, 'ImplementDownloaderTaskJop') === false,
+        '队列任务 payload 应使用正确的任务类名 ImplementDownloaderTaskJob'
     );
 
     // 5. 未知异常状态应落入状态异常分支

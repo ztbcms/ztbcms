@@ -661,7 +661,7 @@
                             files.push(this.selectdFileList[i])
                         }
                         $.ajax({
-                            url: "{:api_url('common/upload.panel/moveGralleryGroup')}",
+                            url: "{:api_url('common/upload.panel/moveGalleryGroup')}",
                             data: {
                                 files: files,
                                 group_id: this.move_group_id

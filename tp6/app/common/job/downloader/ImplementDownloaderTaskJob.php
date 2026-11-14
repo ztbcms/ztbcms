@@ -10,7 +10,7 @@ use app\common\service\downloader\DownloaderService;
 use think\facade\Log;
 use think\queue\Job;
 
-class ImplementDownloaderTaskJop extends BaseQueueJob
+class ImplementDownloaderTaskJob extends BaseQueueJob
 {
 
     function fire(Job $job, $data): bool
@@ -31,7 +31,7 @@ class ImplementDownloaderTaskJop extends BaseQueueJob
     function failed($data)
     {
         $downloader_id = $data['downloader_id'] ?? '';
-        Log::debug('ImplementDownloaderTaskJop::下载失败(downloader_id : ' . $downloader_id . ')');
+        Log::debug('ImplementDownloaderTaskJob::下载失败(downloader_id : ' . $downloader_id . ')');
     }
 
 }

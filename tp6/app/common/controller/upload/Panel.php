@@ -114,7 +114,7 @@ class Panel extends AdminController
      * @return array
      * @throws \Exception
      */
-    function moveGralleryGroup(Request $request)
+    function moveGalleryGroup(Request $request)
     {
         $files = $request->post('files');
         $groupId = $request->post('group_id');
