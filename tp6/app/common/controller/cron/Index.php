@@ -31,13 +31,18 @@ class Index extends BaseController
             return json(['used_time' => 0, 'msg' => 'Secret key invalidated']);
         }
         $start_at = $end_at = time();
-        // 锁定自动执行
+        // 锁定自动执行（使用 flock 非阻塞排他锁，避免进程异常退出后残留锁文件导致永久停摆）
         $lockfile = runtime_path().'cron.lock';
-        if (file_exists($lockfile)) {
+        $lockDir = dirname($lockfile);
+        if (!is_dir($lockDir)) {
+            mkdir($lockDir, 0777, true);
+        }
+        $lockHandle = fopen($lockfile, 'c+');
+        if ($lockHandle === false || !flock($lockHandle, LOCK_EX | LOCK_NB)) {
+            if (is_resource($lockHandle)) {
+                fclose($lockHandle);
+            }
             return json(['used_time' => 0, 'msg' => 'Cron is Locked']);
-        } else {
-            //设置指定文件的访问和修改时间
-            touch($lockfile);
         }
 
         try {
@@ -64,9 +69,10 @@ class Index extends BaseController
             $used_time = $end_at - $start_at;
             return json(['used_time' => $used_time, 'msg' => 'Cron status: finish']);
         } finally {
-            // 确保解除锁定
-            if (file_exists($lockfile)) {
-                unlink($lockfile);
+            // 释放文件锁并关闭句柄
+            if (is_resource($lockHandle)) {
+                flock($lockHandle, LOCK_UN);
+                fclose($lockHandle);
             }
         }
     }
