@@ -111,6 +111,29 @@ try {
         create_time INTEGER NOT NULL
     )');
 
+    // 0. 验证 DownloaderService 已移除不存在的 FileTool/ImgTool/VideoTool 导入，且所有 use 导入类均真实存在
+    $downloaderServiceSource = file_get_contents(
+        dirname(__DIR__) . '/app/common/service/downloader/DownloaderService.php'
+    );
+    assertDownloaderServiceCreateTaskState(
+        is_string($downloaderServiceSource),
+        '读取 DownloaderService.php 失败'
+    );
+    foreach (['FileTool', 'ImgTool', 'VideoTool'] as $nonexistentTool) {
+        assertDownloaderServiceCreateTaskState(
+            strpos($downloaderServiceSource, $nonexistentTool) === false,
+            "DownloaderService.php 不应再引用不存在的类 {$nonexistentTool}"
+        );
+    }
+    if (preg_match_all('/^use\s+([a-zA-Z0-9_\\\\]+)\s*;/m', $downloaderServiceSource, $useMatches)) {
+        foreach ($useMatches[1] as $importedClass) {
+            assertDownloaderServiceCreateTaskState(
+                class_exists($importedClass),
+                "DownloaderService.php 导入的类不存在: {$importedClass}"
+            );
+        }
+    }
+
     // 1. STATE_PROCESSING（下载中）：修复后应返回下载中，不能落入状态异常分支
     $processingUrl = 'https://example.com/processing.zip';
     $processingId = Db::name('downloader')->insertGetId([

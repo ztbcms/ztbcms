@@ -6,9 +6,6 @@
 namespace app\common\service\downloader;
 
 use app\common\libs\downloader\DownloaderTool;
-use app\common\libs\downloader\FileTool;
-use app\common\libs\downloader\ImgTool;
-use app\common\libs\downloader\VideoTool;
 use app\common\model\downloader\DownloaderModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
