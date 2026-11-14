@@ -112,15 +112,17 @@ try {
 
     $validateTree($menuTree, 'root');
 
-    // 1. 失效路由不得再出现
+    // 1. 失效与已迁出路由不得再出现
     foreach ([
         'common/index/index',
         'common/cron.dashboard/createCron',
         'common/email.Email/index',
+        'common/upload.upload/demo',
+        'common/upload.upload/directUploadDemo',
     ] as $invalidRoute) {
         assertCommonMenuConsistency(
             !in_array($invalidRoute, $allRoutes, true),
-            'common/install/Menu.php 不应再包含不存在的路由: ' . $invalidRoute
+            'common/install/Menu.php 不应再包含不存在或已迁出的路由: ' . $invalidRoute
         );
     }
 
@@ -130,7 +132,6 @@ try {
         'common/cron.dashboard/runAction',
         'common/cron.dashboard/deleteCron',
         'common/upload.upload/getUploadToken',
-        'common/upload.upload/directUploadDemo',
         'common/email.Email/config',
     ] as $requiredRoute) {
         assertCommonMenuConsistency(
@@ -138,6 +139,50 @@ try {
             'common/install/Menu.php 必须包含路由: ' . $requiredRoute
         );
     }
+
+    // 2.1 验证 demo 模块菜单包含迁移后的上传示例路由且控制器与视图均就位
+    $demoMenuTree = require dirname(__DIR__) . '/app/demo/install/Menu.php';
+    $validateTree($demoMenuTree, 'demo-root');
+    $demoAllRoutes = [];
+    $collectDemoRoutes = function (array $items) use (&$collectDemoRoutes, &$demoAllRoutes): void {
+        foreach ($items as $item) {
+            if (!empty($item['route'])) {
+                $demoAllRoutes[] = $item['route'];
+            }
+            if (!empty($item['child']) && is_array($item['child'])) {
+                $collectDemoRoutes($item['child']);
+            }
+        }
+    };
+    $collectDemoRoutes($demoMenuTree);
+    foreach (['demo/admin.upload/demo', 'demo/admin.upload/directUploadDemo'] as $demoUploadRoute) {
+        assertCommonMenuConsistency(
+            in_array($demoUploadRoute, $demoAllRoutes, true),
+            'demo/install/Menu.php 必须包含上传示例路由: ' . $demoUploadRoute
+        );
+    }
+    assertCommonMenuConsistency(
+        class_exists('app\\demo\\controller\\admin\\Upload')
+        && method_exists('app\\demo\\controller\\admin\\Upload', 'demo')
+        && method_exists('app\\demo\\controller\\admin\\Upload', 'directUploadDemo'),
+        'demo 模块应提供 Upload::demo 与 Upload::directUploadDemo 方法'
+    );
+    $migratedDemoViewPath = dirname(__DIR__) . '/app/demo/view/admin/upload/demo.php';
+    $migratedDirectViewPath = dirname(__DIR__) . '/app/demo/view/admin/upload/direct_upload_demo.php';
+    assertCommonMenuConsistency(
+        file_exists($migratedDemoViewPath)
+        && file_exists($migratedDirectViewPath)
+        && !file_exists(dirname(__DIR__) . '/app/common/view/upload/upload/demo.php')
+        && !file_exists(dirname(__DIR__) . '/app/common/view/upload/upload/direct_upload_demo.php'),
+        '上传示例视图应已完整迁移至 demo 模块'
+    );
+    $migratedDemoViewSource = file_get_contents($migratedDemoViewPath);
+    assertCommonMenuConsistency(
+        is_string($migratedDemoViewSource)
+        && strpos($migratedDemoViewSource, "demo/admin.upload/directUploadDemo") !== false
+        && strpos($migratedDemoViewSource, "common/upload.upload/directUploadDemo") === false,
+        'demo.php 中直传示例入口应已切换为 demo/admin.upload/directUploadDemo'
+    );
 
     // 3. 验证 MenuModel::installModuleMenu 与队列迁移脚本兼容性
     Config::set([

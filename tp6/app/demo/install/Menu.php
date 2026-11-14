@@ -107,6 +107,31 @@ return [
                     ],
                 ]
             ],
+            [
+                "route"  => "demo/admin.upload/demo",
+                "type"   => 0,
+                "status" => 1,
+                "name"   => "上传示例",
+                "remark" => "",
+                "child"  => [
+                    [
+                        "route"  => "demo/admin.upload/demo",
+                        "type"   => 1,
+                        "status" => 1,
+                        "name"   => "上传面板示例",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                    [
+                        "route"  => "demo/admin.upload/directUploadDemo",
+                        "type"   => 1,
+                        "status" => 0,
+                        "name"   => "直传示例",
+                        "remark" => "",
+                        "child"  => []
+                    ],
+                ]
+            ],
         ],
     ]
 ];

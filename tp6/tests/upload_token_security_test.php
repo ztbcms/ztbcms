@@ -310,6 +310,24 @@ $collectRoutes = function (array $items) use (&$collectRoutes, &$routes) {
 };
 $collectRoutes($menuTree);
 assertUploadSecurity(in_array('common/upload.upload/getUploadToken', $routes, true), 'common/install/Menu.php 应包含 getUploadToken 路由');
-assertUploadSecurity(in_array('common/upload.upload/directUploadDemo', $routes, true), 'common/install/Menu.php 应包含 directUploadDemo 路由');
+assertUploadSecurity(!in_array('common/upload.upload/demo', $routes, true), 'common/install/Menu.php 不应再包含已迁移的 demo 路由');
+assertUploadSecurity(!in_array('common/upload.upload/directUploadDemo', $routes, true), 'common/install/Menu.php 不应再包含已迁移的 directUploadDemo 路由');
+assertUploadSecurity(!$uploadRef->hasMethod('demo') && !$uploadRef->hasMethod('directUploadDemo'), 'common Upload 控制器应移除已迁移的示例方法');
+
+$demoMenuTree = require dirname(__DIR__) . '/app/demo/install/Menu.php';
+$demoRoutesList = [];
+$collectDemoRoutes = function (array $items) use (&$collectDemoRoutes, &$demoRoutesList): void {
+    foreach ($items as $item) {
+        if (!empty($item['route'])) {
+            $demoRoutesList[] = $item['route'];
+        }
+        if (!empty($item['child']) && is_array($item['child'])) {
+            $collectDemoRoutes($item['child']);
+        }
+    }
+};
+$collectDemoRoutes($demoMenuTree);
+assertUploadSecurity(in_array('demo/admin.upload/demo', $demoRoutesList, true), 'demo/install/Menu.php 应包含 demo/admin.upload/demo 路由');
+assertUploadSecurity(in_array('demo/admin.upload/directUploadDemo', $demoRoutesList, true), 'demo/install/Menu.php 应包含 demo/admin.upload/directUploadDemo 路由');
 
 echo "upload_token_security_test passed\n";

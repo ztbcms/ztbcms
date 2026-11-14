@@ -28,26 +28,6 @@ class Upload extends AdminController
     public $noNeedPermission = ['getUploadToken'];
 
     /**
-     * 上传示例
-     *
-     * @return string
-     */
-    function demo()
-    {
-        return View::fetch('demo');
-    }
-
-    /**
-     * 直传示例
-     *
-     * @return string
-     */
-    function directUploadDemo()
-    {
-        return View::fetch('direct_upload_demo');
-    }
-
-    /**
      * 获取上传用的临时 JWT Token
      * 用于后台管理员上传文件时的身份识别
      *

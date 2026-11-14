@@ -130,12 +130,6 @@ return array(
                         "name" => "上传配置",
                     ],
                     [
-                        "route" => "common/upload.upload/demo",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "上传示例",
-                    ],
-                    [
                         "route" => "common/upload.upload/attachments",
                         "type" => 1,
                         "status" => 1,
@@ -147,12 +141,6 @@ return array(
                         "status" => 0,
                         "name" => "获取上传凭证",
                     ],
-                    [
-                        "route" => "common/upload.upload/directUploadDemo",
-                        "type" => 1,
-                        "status" => 0,
-                        "name" => "直传示例",
-                    ]
                 ]
             ],
             [

@@ -119,7 +119,7 @@
                 methods: {
                     gotoDirectUploadDemo: function() {
                         var title = '直传上传示例';
-                        var url = "{:api_url('common/upload.upload/directUploadDemo')}";
+                        var url = "{:api_url('demo/admin.upload/directUploadDemo')}";
                         var ztbcms = window.Ztbcms || (window.parent && window.parent.Ztbcms) || (window.top && window.top.Ztbcms);
                         if (ztbcms && typeof ztbcms.openNewIframeByUrl === 'function') {
                             ztbcms.openNewIframeByUrl(title, url);
