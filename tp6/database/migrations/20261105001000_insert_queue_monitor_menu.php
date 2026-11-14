@@ -21,6 +21,14 @@ class InsertQueueMonitorMenu extends Migrator
             ->where('action', 'index')
             ->value('id'));
         if ($rootId <= 0) {
+            $rootId = intval(Db::name('menu')
+                ->where('parentid', 0)
+                ->where('app', 'common')
+                ->where('name', '系统管理')
+                ->order('id', 'ASC')
+                ->value('id'));
+        }
+        if ($rootId <= 0) {
             throw new RuntimeException('系统管理父级菜单不存在');
         }
 
