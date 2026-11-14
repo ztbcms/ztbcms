@@ -193,33 +193,6 @@ class UploadService extends BaseService
     }
 
     /**
-     * 上传UEditor图片
-     * @return AttachmentModel|false
-     */
-    public function uploadUEImage(int $groupId = 0, int $userId = 0, string $userType = '')
-    {
-        try {
-            $attachmentModel = new AttachmentModel();
-            $attachmentModel->user_id = $userId;
-            $attachmentModel->user_type = $userType;
-            $attachmentModel->group_id = $groupId;
-            $attachmentModel->module = AttachmentModel::MODULE_UE_IMAGE;
-
-            if (!$this->upload($attachmentModel)) {
-                return false;
-            }
-
-            $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
-            $attachmentModel->save();
-
-            return $attachmentModel;
-        } catch (\Exception $exception) {
-            $this->setError($exception->getMessage());
-            return false;
-        }
-    }
-
-    /**
      * 统一文件上传操作
      */
     private function upload(AttachmentModel $attachmentModel): bool

@@ -1,12 +1,11 @@
 <?php
 
-use app\admin\service\AdminUserService;
 use app\common\controller\upload\Panel;
+use app\common\model\upload\AttachmentModel;
+use app\common\service\upload\UploadService;
 use think\App;
-use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Db;
-use think\facade\Session;
 use think\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -49,26 +48,86 @@ function assertUploadPanelImageUEUpload(bool $condition, string $message): void
     }
 }
 
-$tempCacheDir = sys_get_temp_dir() . '/ztbcms_panel_ue_test_' . uniqid('', true);
-if (!is_dir($tempCacheDir)) {
-    mkdir($tempCacheDir, 0777, true);
-}
-
 try {
-    // 1. 源码导入检查
-    $panelSource = file_get_contents(dirname(__DIR__) . '/app/common/controller/upload/Panel.php');
+    // 1. 验证 UE 上传整条冗余链路已从控制器、服务、模型与视图中彻底移除
+    $panelRef = new ReflectionClass(Panel::class);
     assertUploadPanelImageUEUpload(
-        is_string($panelSource) && strpos($panelSource, 'use app\admin\service\AdminUserService;') !== false,
-        'Panel.php 必须导入 app\admin\service\AdminUserService'
+        !$panelRef->hasMethod('imageUEUpload'),
+        'Panel::imageUEUpload 方法应已移除'
     );
 
-    // 2. 配置独立 SQLite 内存库与缓存目录
+    $uploadServiceRef = new ReflectionClass(UploadService::class);
+    assertUploadPanelImageUEUpload(
+        !$uploadServiceRef->hasMethod('uploadUEImage'),
+        'UploadService::uploadUEImage 方法应已移除'
+    );
+
+    $attachmentRef = new ReflectionClass(AttachmentModel::class);
+    assertUploadPanelImageUEUpload(
+        !$attachmentRef->hasConstant('MODULE_UE_IMAGE'),
+        'AttachmentModel::MODULE_UE_IMAGE 常量应已移除'
+    );
+
+    $viewFile = dirname(__DIR__) . '/app/common/view/upload/panel/imageUEUpload.php';
+    assertUploadPanelImageUEUpload(
+        !file_exists($viewFile),
+        'view/upload/panel/imageUEUpload.php 视图文件应已删除'
+    );
+
+    // 2. 验证 Panel.php 不再保留冗余的 AdminUserService 导入及残留标识符
+    $panelSource = file_get_contents(dirname(__DIR__) . '/app/common/controller/upload/Panel.php');
+    assertUploadPanelImageUEUpload(
+        is_string($panelSource) && strpos($panelSource, 'AdminUserService') === false,
+        'Panel.php 应移除仅被 imageUEUpload 使用的 AdminUserService 导入'
+    );
+
+    $appIterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(dirname(__DIR__) . '/app', FilesystemIterator::SKIP_DOTS)
+    );
+    foreach ($appIterator as $fileInfo) {
+        if (!$fileInfo->isFile()) {
+            continue;
+        }
+        $content = file_get_contents($fileInfo->getPathname());
+        assertUploadPanelImageUEUpload(is_string($content), '读取文件失败: ' . $fileInfo->getPathname());
+        foreach (['imageUEUpload', 'uploadUEImage', 'MODULE_UE_IMAGE', 'ZTBCMS_UPLOAD_UE_IMAGE'] as $needle) {
+            assertUploadPanelImageUEUpload(
+                stripos($content, $needle) === false,
+                "tp6/app 下不应再残留 {$needle} 引用: " . $fileInfo->getPathname()
+            );
+        }
+    }
+
+    // 3. 验证统一上传面板核心能力正常，非法或废弃 module（含 ue_image）会回退到 image
+    /** @var Panel $controller */
+    $controller = $panelRef->newInstanceWithoutConstructor();
+    $normalizeMethod = $panelRef->getMethod('normalizeModule');
+    $normalizeMethod->setAccessible(true);
+
+    assertUploadPanelImageUEUpload(
+        $normalizeMethod->invoke($controller, 'image') === AttachmentModel::MODULE_IMAGE,
+        'normalizeModule(image) 应返回 image'
+    );
+    assertUploadPanelImageUEUpload(
+        $normalizeMethod->invoke($controller, 'VIDEO') === AttachmentModel::MODULE_VIDEO,
+        'normalizeModule(VIDEO) 应返回 video'
+    );
+    assertUploadPanelImageUEUpload(
+        $normalizeMethod->invoke($controller, 'file') === AttachmentModel::MODULE_FILE,
+        'normalizeModule(file) 应返回 file'
+    );
+    assertUploadPanelImageUEUpload(
+        $normalizeMethod->invoke($controller, 'ue_image') === AttachmentModel::MODULE_IMAGE,
+        '废弃模块 ue_image 应安全回退为 image'
+    );
+
+    // 4. 验证 getFilesByGroupIdList 在内存 SQLite 下正常查询列表
     Config::set([
-        'default' => 'upload_panel_ue_test',
+        'default' => 'upload_panel_ue_cleanup_test',
         'auto_timestamp' => false,
         'datetime_format' => 'Y-m-d H:i:s',
         'connections' => [
-            'upload_panel_ue_test' => [
+            'upload_panel_ue_cleanup_test' => [
                 'type' => 'sqlite',
                 'database' => ':memory:',
                 'prefix' => '',
@@ -77,88 +136,45 @@ try {
         ],
     ], 'database');
 
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tempCacheDir . DIRECTORY_SEPARATOR,
-                'prefix' => '',
-                'expire' => 0,
-            ],
-        ],
-    ], 'cache');
-    Cache::clear();
-
-    Db::execute('CREATE TABLE config (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        varname VARCHAR(64) NOT NULL,
-        value TEXT NOT NULL
+    Db::execute('CREATE TABLE attachment (
+        aid INTEGER PRIMARY KEY AUTOINCREMENT,
+        module VARCHAR(32) NOT NULL DEFAULT "",
+        filename VARCHAR(255) NOT NULL DEFAULT "",
+        filepath VARCHAR(255) NOT NULL DEFAULT "",
+        fileurl VARCHAR(255) NOT NULL DEFAULT "",
+        filethumb VARCHAR(255) NOT NULL DEFAULT "",
+        filesize INTEGER NOT NULL DEFAULT 0,
+        user_type VARCHAR(32) NOT NULL DEFAULT "",
+        group_id INTEGER NOT NULL DEFAULT 0,
+        is_private INTEGER NOT NULL DEFAULT 0,
+        driver VARCHAR(32) NOT NULL DEFAULT "Local",
+        create_time INTEGER NOT NULL DEFAULT 0,
+        delete_time INTEGER NOT NULL DEFAULT 0
     )');
-    Db::name('config')->insertAll([
-        ['varname' => 'attachment_driver', 'value' => 'Local'],
-        ['varname' => 'attachment_local_domain', 'value' => 'http://127.0.0.1'],
-        ['varname' => 'uploadmaxsize', 'value' => '2048'],
-        ['varname' => 'uploadallowext', 'value' => 'jpg|png'],
-        ['varname' => 'qtuploadmaxsize', 'value' => '2048'],
-        ['varname' => 'qtuploadallowext', 'value' => 'jpg|png'],
+    Db::name('attachment')->insert([
+        'module' => AttachmentModel::MODULE_IMAGE,
+        'filename' => 'demo.png',
+        'filepath' => 'image/demo.png',
+        'fileurl' => '/d/file/image/demo.png',
+        'filethumb' => '/d/file/image/demo.png',
+        'filesize' => 1024,
+        'user_type' => AttachmentModel::USER_TYPE_ADMIN,
+        'group_id' => 0,
+        'create_time' => 1700000000,
+        'delete_time' => 0,
     ]);
 
-    /** @var Panel $controller */
-    $controller = (new ReflectionClass(Panel::class))->newInstanceWithoutConstructor();
-
-    // 3. 测试未登录状态下调用 imageUEUpload POST 分支不会因缺少 use 或 null 访问报错
-    Session::delete(AdminUserService::KEY_USER_INFO);
-    $userInfoProp = new ReflectionProperty(AdminUserService::class, 'userInfo');
-    $userInfoProp->setAccessible(true);
-    $userInfoProp->setValue(null, []);
-
-    $guestRequest = new Request();
-    $guestRequest->withServer(['REQUEST_METHOD' => 'POST'])
-        ->withPost(['group_id' => 'all']);
-    $app->instance('request', $guestRequest);
-
-    $guestResp = $controller->imageUEUpload($guestRequest);
+    $listRequest = new Request();
+    $listRequest->withGet(['module' => 'ue_image', 'group_id' => 'all', 'limit' => 10]);
+    $listRes = $controller->getFilesByGroupIdList($listRequest);
     assertUploadPanelImageUEUpload(
-        $guestResp instanceof \think\response\Json,
-        'POST 调用 imageUEUpload 应返回 Json 响应'
-    );
-    $guestData = $guestResp->getData();
-    assertUploadPanelImageUEUpload(
-        ($guestData['status'] ?? true) === false,
-        '未上传文件时 status 应为 false'
-    );
-    assertUploadPanelImageUEUpload(
-        ($guestData['msg'] ?? '') === '未选择文件或文件过大',
-        '未上传文件时应正常走入 UploadService 错误返回，实际为: ' . ($guestData['msg'] ?? '')
+        ($listRes['status'] ?? false) === true
+        && ($listRes['data']['setting']['module'] ?? '') === AttachmentModel::MODULE_IMAGE
+        && intval($listRes['data']['file_list']->total()) === 1,
+        'getFilesByGroupIdList 应正常返回统一图片列表并回退模块为 image'
     );
 
-    // 4. 测试已登录管理员状态下调用 imageUEUpload POST 分支正常解析 AdminUserService
-    $userInfoProp->setValue(null, ['id' => 101, 'username' => 'admin']);
-    $adminRequest = new Request();
-    $adminRequest->withServer(['REQUEST_METHOD' => 'POST'])
-        ->withPost(['group_id' => '3']);
-    $app->instance('request', $adminRequest);
-
-    $adminResp = $controller->imageUEUpload($adminRequest);
-    $adminData = $adminResp->getData();
-    assertUploadPanelImageUEUpload(
-        ($adminData['status'] ?? true) === false && ($adminData['msg'] ?? '') === '未选择文件或文件过大',
-        '已登录状态下调用 imageUEUpload 应正常走到 UploadService 校验'
-    );
-
-    $userInfoProp->setValue(null, []);
     echo "upload_panel_image_ue_upload_test passed\n";
 } finally {
     restore_error_handler();
-    if (is_dir($tempCacheDir)) {
-        $items = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($tempCacheDir, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach ($items as $item) {
-            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
-        }
-        rmdir($tempCacheDir);
-    }
 }

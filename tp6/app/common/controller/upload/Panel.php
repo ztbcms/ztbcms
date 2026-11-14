@@ -8,7 +8,6 @@ namespace app\common\controller\upload;
 
 use think\facade\View;
 use think\Request;
-use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use app\common\model\upload\AttachmentGroupModel;
 use app\common\model\upload\AttachmentModel;
@@ -244,34 +243,5 @@ class Panel extends AdminController
             ->select();
 
         return self::createReturn(true, $lists, 'ok');
-    }
-
-
-    /**
-     * 上传UEditor文件图片
-     *
-     * @param Request $request
-     *
-     * @return string|\think\response\Json
-     */
-    function imageUEUpload(Request $request)
-    {
-        if ($request->isPost()) {
-            $groupId = $request->post('group_id', '');
-            $uploadService = new UploadService();
-            $userInfo = AdminUserService::getInstance()
-                ->getInfo();
-            if ($uploadService->uploadUEImage(
-                $groupId == 'all' ? 0 : intval($groupId),
-                intval($userInfo['id'] ?? 0),
-                AttachmentModel::USER_TYPE_ADMIN
-            )) {
-                return json(self::createReturn(true, [], '上传成功'));
-            } else {
-                return json(self::createReturn(false, [], $uploadService->getError()));
-            }
-        }
-
-        return View::fetch('imageUEUpload');
     }
 }
