@@ -69,7 +69,7 @@ class ApiAuth
     private function auth($request, \Closure $next, $unauth_code)
     {
         // header格式: Authorization: Bearer xxxxx
-        $auth_str = request()->header('Authorization');
+        $auth_str = $request->header('Authorization');
         if (empty($auth_str)) {
             return json(createReturn(false, null, '凭证不能为空', $unauth_code));
         }
@@ -80,8 +80,8 @@ class ApiAuth
         $token = $auth_str[1];
         $jwtService = new JwtService($this->getJwtScene($request));
         $res = $jwtService->parserToken($token);
-        if (!$res['status']) {
-            return json(createReturn(false, null, $res['msg'], $unauth_code));
+        if (!$res['status'] || !$this->checkJwtPurpose($request, $res['data'])) {
+            return json(createReturn(false, null, $res['status'] ? 'Token无效' : $res['msg'], $unauth_code));
         }
         // 注入登录用户信息
         $request->authorization = $res['data'];
@@ -97,7 +97,7 @@ class ApiAuth
     private function tryAuth($request, \Closure $next)
     {
         // header格式: Authorization: Bearer xxxxx
-        $auth_str = request()->header('Authorization');
+        $auth_str = $request->header('Authorization');
         if (empty($auth_str)) {
             return $next($request);
         }
@@ -108,7 +108,7 @@ class ApiAuth
         $token = $auth_str[1];
         $jwtService = new JwtService($this->getJwtScene($request));
         $res = $jwtService->parserToken($token);
-        if (!$res['status']) {
+        if (!$res['status'] || !$this->checkJwtPurpose($request, $res['data'])) {
             return $next($request);
         }
         // 注入登录用户信息
@@ -128,6 +128,34 @@ class ApiAuth
     {
         $scene = trim((string)($request->jwtScene ?? 'default'));
         return $scene !== '' ? $scene : 'default';
+    }
+
+    /**
+     * 获取服务端要求校验的 JWT 用途声明
+     *
+     * 仅从服务端注入的请求上下文读取，不从用户输入决定用途。
+     *
+     * @param $request 请求对象
+     * @return string
+     */
+    private function getJwtPurpose($request): string
+    {
+        return trim((string)($request->jwtPurpose ?? ''));
+    }
+
+    /**
+     * 校验 Token 用途声明与当前接口声明是否匹配
+     *
+     * @param $request
+     * @param mixed $payload
+     * @return bool
+     */
+    private function checkJwtPurpose($request, $payload): bool
+    {
+        $expectedPurpose = $this->getJwtPurpose($request);
+        $tokenPurpose = is_array($payload) ? trim((string)($payload['purpose'] ?? '')) : '';
+
+        return $expectedPurpose === $tokenPurpose;
     }
 
     /**

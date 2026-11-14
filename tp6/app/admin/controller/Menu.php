@@ -45,14 +45,6 @@ class Menu extends AdminController
     }
 
     /**
-     * 获取菜单列表
-     */
-    function getMenuList()
-    {
-        return json(MenuService::getMenuList());
-    }
-
-    /**
      * 添加菜单
      *
      * @return \think\response\Json|\think\response\View
@@ -103,23 +95,5 @@ class Menu extends AdminController
         $id = Request::param('id', '', 'trim'); //字段
         return json(MenuService::doDelete($id));
     }
-
-    /**
-     * 公共编辑
-     */
-    public function updateTable()
-    {
-        $field = Request::param('field', '', 'trim'); //字段
-        $value = Request::param('value', '', 'trim');  //值
-        $where_name = Request::param('where_name', 'trim'); //条件名称
-        $where_value = Request::param('where_value', '', 'trim'); //添加的内容
-
-        $save[$field] = $value;
-        $where[$where_name] = $where_value;
-        $MenuModel = new MenuModel();
-        $MenuModel->where($where)->save($save);
-
-        return json(self::createReturn(true, '', '保存成功'));
-    }
-
 }
+

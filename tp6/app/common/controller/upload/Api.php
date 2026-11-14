@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\common\controller\upload;
 
 
+use think\App;
 use think\facade\Event;
 use think\response\Json;
 use app\BaseController;
@@ -20,12 +21,31 @@ use app\common\service\upload\UploadService;
 class Api extends BaseController
 {
     /**
+     * JWT 使用场景（服务端固定声明为 upload）
+     * @var string
+     */
+    protected $jwtScene = 'upload';
+
+    /**
+     * JWT 凭证用途（服务端固定声明为 upload）
+     * @var string
+     */
+    protected $jwtPurpose = 'upload';
+
+    /**
      * 控制器中间件 - 启用 JWT 鉴权
      * @var array
      */
     protected $middleware = [
         \app\api\middleware\ApiAuth::class,
     ];
+
+    public function __construct(App $app)
+    {
+        parent::__construct($app);
+        $app->request->jwtScene = $this->jwtScene;
+        $app->request->jwtPurpose = $this->jwtPurpose;
+    }
 
     /**
      * 获取前台上传配置

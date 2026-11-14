@@ -168,6 +168,7 @@
                         group_id: 'all'
                     },
                     jwtToken: '',
+                    jwtTokenExpireAt: 0,
                     loading: true,
                     uploadLoading: null,
                     max_select: 1 // 最大选择数量，默认1
@@ -302,7 +303,8 @@
                     },
                     fetchUploadToken: function() {
                         var that = this;
-                        if (this.jwtToken) {
+                        var now = Math.floor(Date.now() / 1000);
+                        if (this.jwtToken && this.jwtTokenExpireAt > now + 30) {
                             return Promise.resolve(this.jwtToken);
                         }
                         return new Promise(function(resolve, reject) {
@@ -312,6 +314,8 @@
                                 success: function(res) {
                                     if (res.status && res.data && res.data.token) {
                                         that.jwtToken = res.data.token;
+                                        var ttl = parseInt(res.data.ttl, 10) || 300;
+                                        that.jwtTokenExpireAt = parseInt(res.data.expire_time, 10) || (Math.floor(Date.now() / 1000) + ttl);
                                         resolve(res.data.token);
                                     } else {
                                         reject(new Error(res.msg || '获取上传凭证失败'));
@@ -657,7 +661,7 @@
                             files.push(this.selectdFileList[i])
                         }
                         $.ajax({
-                            url: "{:api_url('common/upload.panel/moveGralleryGroup')}",
+                            url: "{:api_url('common/upload.panel/moveGalleryGroup')}",
                             data: {
                                 files: files,
                                 group_id: this.move_group_id

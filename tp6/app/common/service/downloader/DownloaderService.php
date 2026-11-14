@@ -6,9 +6,6 @@
 namespace app\common\service\downloader;
 
 use app\common\libs\downloader\DownloaderTool;
-use app\common\libs\downloader\FileTool;
-use app\common\libs\downloader\ImgTool;
-use app\common\libs\downloader\VideoTool;
 use app\common\model\downloader\DownloaderModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
@@ -46,7 +43,7 @@ class DownloaderService extends BaseService
                 'create_time' => time(),
                 'update_time' => time()
             ]);
-            Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
+            Queue::push('app\common\job\downloader\ImplementDownloaderTaskJob', [
                 'downloader_id' => $downloader_id
             ], 'downloader');
             return self::createReturn(true, [
@@ -68,7 +65,7 @@ class DownloaderService extends BaseService
                     'process_start_time' => 0,
                     'process_end_time' => 0,
                 ]);
-                Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
+                Queue::push('app\common\job\downloader\ImplementDownloaderTaskJob', [
                     'downloader_id' => $downloader_id
                 ], 'downloader');
                 return self::createReturn(true, [
@@ -76,7 +73,7 @@ class DownloaderService extends BaseService
                 ], '下载任务创建成功');
             }
             // 下载中、待下载
-            if ($downloader_state == DownloaderModel::STATE_FAIL || $downloader_state == DownloaderModel::STATE_WAIT) {
+            if ($downloader_state == DownloaderModel::STATE_PROCESSING || $downloader_state == DownloaderModel::STATE_WAIT) {
                 return self::createReturn(true, [
                     'downloader_id' => $downloader_id
                 ], '下载中,请稍候');
@@ -194,7 +191,7 @@ class DownloaderService extends BaseService
         $downloader->process_start_time = 0;
         $downloader->process_end_time = 0;
         $downloader->save();
-        Queue::push('app\common\job\downloader\ImplementDownloaderTaskJop', [
+        Queue::push('app\common\job\downloader\ImplementDownloaderTaskJob', [
             'downloader_id' => $downloader_id
         ], 'downloader');
         return self::createReturn(true, [], '下载任务已重启');

@@ -14,7 +14,6 @@ use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
 use think\exception\ValidateException;
-use function EasyWeChat\Kernel\Support\get_client_ip;
 
 class UploadService extends BaseService
 {
@@ -193,33 +192,6 @@ class UploadService extends BaseService
     }
 
     /**
-     * 上传UEditor图片
-     * @return AttachmentModel|false
-     */
-    public function uploadUEImage(int $groupId = 0, int $userId = 0, string $userType = '')
-    {
-        try {
-            $attachmentModel = new AttachmentModel();
-            $attachmentModel->user_id = $userId;
-            $attachmentModel->user_type = $userType;
-            $attachmentModel->group_id = $groupId;
-            $attachmentModel->module = AttachmentModel::MODULE_UE_IMAGE;
-
-            if (!$this->upload($attachmentModel)) {
-                return false;
-            }
-
-            $attachmentModel->filethumb = $attachmentModel->getData('fileurl');
-            $attachmentModel->save();
-
-            return $attachmentModel;
-        } catch (\Exception $exception) {
-            $this->setError($exception->getMessage());
-            return false;
-        }
-    }
-
-    /**
      * 统一文件上传操作
      */
     private function upload(AttachmentModel $attachmentModel): bool
@@ -232,7 +204,7 @@ class UploadService extends BaseService
         $attachmentModel->fileext = self::normalizeFileExt($file->getOriginalExtension());
         $attachmentModel->create_time = time();
         $attachmentModel->update_time = time();
-        $attachmentModel->upload_ip = get_client_ip();
+        $attachmentModel->upload_ip = request()->ip();
         $attachmentModel->is_private = $this->isPrivate;
         $attachmentModel->hash = $file->hash('md5');
 

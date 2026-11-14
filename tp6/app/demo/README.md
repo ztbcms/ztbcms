@@ -13,9 +13,12 @@
 ├─ Iconfont
 │  ├─ 内置Iconfont      demo/admin.iconfont/aliIconFont
 │  └─ Element Iconfont  demo/admin.iconfont/elementIconfont
-└─ 图片处理
-   ├─ 图片裁剪     demo/admin.image/index
-   └─ 图片裁剪面板 demo/admin.image/cropImage（弹窗页，不在菜单显示）
+├─ 图片处理
+│  ├─ 图片裁剪     demo/admin.image/index
+│  └─ 图片裁剪面板 demo/admin.image/cropImage（弹窗页，不在菜单显示）
+└─ 上传示例
+   ├─ 上传面板示例 demo/admin.upload/demo
+   └─ 直传示例     demo/admin.upload/directUploadDemo（演示详情页，不在菜单显示）
 ```
 
 #### 图片裁剪

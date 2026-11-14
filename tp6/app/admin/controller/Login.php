@@ -111,14 +111,8 @@ class Login extends AdminController
             return self::makeJsonReturn(false, null, "验证码错误，请重新输入！");
         }
         if (AdminUserService::getInstance()->login($username, $password)) {
-            $forward = cookie("forward");
-            if (!$forward) {
-                $forward = build_url("/admin/Dashboard/index");
-            } else {
-                cookie("forward", null);
-            }
             return self::makeJsonReturn(true, [
-                'forward' => $forward
+                'forward' => build_url("/admin/Dashboard/index")
             ], "登录成功");
         } else {
             return self::makeJsonReturn(false, null, "用户名或者密码错误");

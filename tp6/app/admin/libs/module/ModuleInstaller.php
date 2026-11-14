@@ -13,7 +13,6 @@ use app\admin\service\ModuleService;
 use app\common\service\BaseService;
 use think\facade\Config;
 use think\facade\Db;
-use think\File;
 
 /**
  * 模块安装器
@@ -47,11 +46,6 @@ class ModuleInstaller extends BaseService
         //设置脚本最大执行时间
         set_time_limit(0);
         $moduleService = new ModuleService();
-        // 检测目录权限
-        $res = $this->_checkPermission($moduleName);
-        if (!$res['status']) {
-            return $res;
-        }
         //加载模块基本配置
         $res = $moduleService->getModuleInfo($moduleName);
         if (!$res['status']) {
@@ -128,40 +122,6 @@ class ModuleInstaller extends BaseService
         $this->_copyResource($moduleName);
 
         return self::createReturn(true, null, '安装完成');
-    }
-
-    /**
-     * 目录权限检查
-     *
-     * @param  string  $moduleName  模块名称
-     */
-    function _checkPermission($moduleName = '')
-    {
-        //模板目录权限检测
-//        if ($this->chechmod($this->templatePath) == false) {
-//            $this->error = '目录 ' . $this->templatePath . ' 没有可写权限！';
-//            return false;
-//        }
-//        if ($moduleName && file_exists($this->extresPath . $moduleName)) {
-//            if ($this->chechmod($this->extresPath . $moduleName) == false) {
-//                $this->error = '目录 ' . $this->extresPath . $moduleName . ' 没有可写权限！';
-//                return false;
-//            }
-//        }
-//        //静态资源目录权限检测
-//        if (!file_exists($this->extresPath)) {
-//            //创建目录
-//            if (mkdir($this->extresPath, 0777, true) == false) {
-//                $this->error = '目录 ' . $this->extresPath . ' 创建失败，请检查是否有可写权限！';
-//                return false;
-//            }
-//        }
-//        //权限检测
-//        if ($this->chechmod($this->extresPath) == false) {
-//            $this->error = '目录 ' . $this->extresPath . ' 没有可写权限！';
-//            return false;
-//        }
-        return self::createReturn(true, null, '校验通过');
     }
 
     /**
@@ -265,12 +225,9 @@ class ModuleInstaller extends BaseService
             return self::createReturn(false, null, '模块名称不能为空');
         }
         $resource_dir = base_path()."{$moduleName}/install/extra/";
-        if (file_exists($resource_dir)) {
-            $dir = new File($resource_dir, false);
-            if ($dir->isDir()) {
-                $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
-                $this->_copyDir($resource_dir, $des_dir);
-            }
+        if (is_dir($resource_dir)) {
+            $des_dir = public_path().'statics/extra/'.strtolower($moduleName).'/';
+            $this->_copyDir($resource_dir, $des_dir);
         }
         return self::createReturn(true, null, '资源安装完成');
     }

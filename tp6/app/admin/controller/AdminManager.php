@@ -174,7 +174,7 @@ class AdminManager extends AdminController
         $role_id = Request::param('role_id', 0);
         $userInfo = AdminUserService::getInstance()->getInfo();
         // 指定角色时，需要判断权限
-        if (!empty($role_id) && $userInfo['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if (!empty($role_id) && (int) $userInfo['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
             // 角色层级权限判断
             $result = $roleService->compareRoleLevel($userInfo['role_id'], $role_id)['data'];
             if ($result <= 0) {
@@ -190,7 +190,7 @@ class AdminManager extends AdminController
                 return $item['id'];
             }, $son_role_list);
             // 超管可以管理全部管理员，包括其他管理角色
-            if ($userInfo['role_id'] == RoleModel::SUPER_ADMIN_ROLE_ID) {
+            if ((int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
                 $son_role_id_list [] = $userInfo['role_id'];
             }
             //如果没有找到下级role_ids 则默认为0
@@ -220,8 +220,8 @@ class AdminManager extends AdminController
         $id = Request::param('id');
         $where['id'] = $id;
         $res = $AdminUserModel->where($where)->withoutField('create_time,update_time,verify,password')->find();
-        $res['status'] = (string)$res['status'];
         if ($res) {
+            $res['status'] = (string)$res['status'];
             return json(self::createReturn(true, $res));
         } else {
             return json(self::createReturn(false, null, '该管理员不存在'));

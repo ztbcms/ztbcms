@@ -5,7 +5,7 @@ return array(
         //父菜单ID，NULL或者不写系统默认，0为顶级菜单
         "parentid" => 0,
         //地址，[模块/]控制器/方法
-        "route" => "common/index/index",
+        "route" => "common/cron.dashboard/index",
         //是否验证菜单，1：验证，0：不验证
         "type" => 0,
         //状态，1是显示，0不显示（需要参数的，建议不显示，例如编辑,删除等操作）
@@ -36,10 +36,22 @@ return array(
                         "name" => "任务列表",
                     ],
                     [
-                        "route" => "common/cron.dashboard/createCron",
+                        "route" => "common/cron.dashboard/addOrEditCron",
                         "type" => 1,
                         "status" => 0,
                         "name" => "新增编辑任务",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/runAction",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "执行任务",
+                    ],
+                    [
+                        "route" => "common/cron.dashboard/deleteCron",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "删除任务",
                     ],
                     [
                         "route" => "common/cron.dashboard/schedulingLog",
@@ -118,21 +130,21 @@ return array(
                         "name" => "上传配置",
                     ],
                     [
-                        "route" => "common/upload.upload/demo",
-                        "type" => 1,
-                        "status" => 1,
-                        "name" => "上传示例",
-                    ],
-                    [
                         "route" => "common/upload.upload/attachments",
                         "type" => 1,
                         "status" => 1,
                         "name" => "附件管理",
-                    ]
+                    ],
+                    [
+                        "route" => "common/upload.upload/getUploadToken",
+                        "type" => 1,
+                        "status" => 0,
+                        "name" => "获取上传凭证",
+                    ],
                 ]
             ],
             [
-                "route" => "common/email.Email/index",
+                "route" => "common/email.Email/config",
                 "type" => 0,
                 "status" => 1,
                 "name" => "邮件服务",

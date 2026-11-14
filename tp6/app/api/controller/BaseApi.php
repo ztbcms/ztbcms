@@ -36,6 +36,14 @@ class BaseApi extends BaseController
      */
     protected $jwtScene = 'default';
     /**
+     * JWT 凭证用途声明
+     *
+     * 由服务端 API 基类声明，默认为空（常规 API 登录凭证），不允许从请求参数或请求头读取。
+     *
+     * @var string
+     */
+    protected $jwtPurpose = '';
+    /**
      * API 速率限制配置
      *
      * 说明：
@@ -86,5 +94,6 @@ class BaseApi extends BaseController
         $app->request->tryAuthActions = $this->tryAuthActions ?? [];
         $app->request->apiRateLimit = $this->apiRateLimit;
         $app->request->jwtScene = $this->jwtScene;
+        $app->request->jwtPurpose = $this->jwtPurpose;
     }
 }
