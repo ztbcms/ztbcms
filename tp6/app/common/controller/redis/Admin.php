@@ -53,7 +53,7 @@ class Admin extends AdminController
                 } catch (ConnectionException $e) {
                     $ret [] = [
                         'connection' => $key,
-                        'runing' => false,
+                        'running' => false,
                         'version' => '-',
                         'info' => [],
                     ];
