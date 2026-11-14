@@ -6,12 +6,13 @@
 
 namespace app\common\controller\upload;
 
+use think\facade\View;
+use think\Request;
+use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
 use app\common\model\upload\AttachmentGroupModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\upload\UploadService;
-use think\facade\View;
-use think\Request;
 
 /**
  * 上传面板
@@ -261,8 +262,8 @@ class Panel extends AdminController
             $userInfo = AdminUserService::getInstance()
                 ->getInfo();
             if ($uploadService->uploadUEImage(
-                $groupId == 'all' ? 0 : $groupId,
-                $userInfo['id'],
+                $groupId == 'all' ? 0 : intval($groupId),
+                intval($userInfo['id'] ?? 0),
                 AttachmentModel::USER_TYPE_ADMIN
             )) {
                 return json(self::createReturn(true, [], '上传成功'));
