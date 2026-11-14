@@ -29,10 +29,6 @@ class AttachmentModel extends Model
     const MODULE_IMAGE = "image";
     const MODULE_VIDEO = "video";
     const MODULE_FILE = "file";
-    /**
-     * UE富文本图片
-     */
-    const MODULE_UE_IMAGE = "ue_image";
 
     const DRIVER_ALIYUN = "Aliyun";
     const DRIVER_LOCAL = "Local";
