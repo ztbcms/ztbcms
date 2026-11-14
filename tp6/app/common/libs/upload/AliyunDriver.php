@@ -32,7 +32,8 @@ class AliyunDriver extends UploadDriver
         $this->endpoint = $config['attachment_aliyun_endpoint'] ?? "";
         $this->bucket = $config['attachment_aliyun_bucket'] ?? "";
         $this->isPrivate = intval($config['attachment_aliyun_privilege'] ?? "") == 2;
-        $this->expireTime = intval($config['attachment_aliyun_expire_time'] ?? 3600);
+        $expireTime = intval($config['attachment_aliyun_expire_time'] ?? 3600);
+        $this->expireTime = $expireTime > 0 ? $expireTime : 3600;
         $this->roleArn = $config['attachment_aliyun_sts_role_arn'] ?? "";
         $this->regionId = str_replace(['.aliyuncs.com'], '', $this->endpoint);
     }
@@ -47,7 +48,7 @@ class AliyunDriver extends UploadDriver
             $filePath = $file->getPath() . '/' . $file->getFilename();
             $object = $attachmentModel->module . '/' . date('Ymd') . '/' . md5(time() . rand(1000, 9999)) . '.' . $attachmentModel->fileext;
 
-            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
+            $ossClient = $this->createOssClient();
             $res = $ossClient->uploadFile($this->bucket, $object, $filePath);
 
             if (!empty($res['oss-request-url'])) {
@@ -73,7 +74,7 @@ class AliyunDriver extends UploadDriver
     public function delete(string $filePath): bool
     {
         try {
-            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
+            $ossClient = $this->createOssClient();
             $ossClient->deleteObject($this->bucket, $filePath);
             return true;
         } catch (OssException $e) {
@@ -93,8 +94,9 @@ class AliyunDriver extends UploadDriver
     /**
      * 获取私有访问 URL
      */
-    public function getPrivateUrl(string $filePath, int $expireSeconds = 3600): string
+    public function getPrivateUrl(string $filePath, int $expireSeconds = 0): string
     {
+        $expireTime = $expireSeconds > 0 ? $expireSeconds : ($this->expireTime > 0 ? $this->expireTime : 3600);
         $cacheKey = 'aliyun_private_url_' . md5($filePath);
         $privateUrl = Cache::get($cacheKey);
 
@@ -103,9 +105,10 @@ class AliyunDriver extends UploadDriver
         }
 
         try {
-            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
-            $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireSeconds ?: $this->expireTime);
-            Cache::set($cacheKey, $privateUrl, $expireSeconds - 600);
+            $ossClient = $this->createOssClient();
+            $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireTime);
+            $cacheTtl = $expireTime > 600 ? ($expireTime - 600) : max(1, intval($expireTime / 2));
+            Cache::set($cacheKey, $privateUrl, $cacheTtl);
             return $privateUrl;
         } catch (\Exception $e) {
             return "";
@@ -118,7 +121,7 @@ class AliyunDriver extends UploadDriver
     public function exists(string $filePath): bool
     {
         try {
-            $ossClient = new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
+            $ossClient = $this->createOssClient();
             return $ossClient->doesObjectExist($this->bucket, $filePath);
         } catch (OssException $e) {
             return false;
@@ -185,5 +188,16 @@ class AliyunDriver extends UploadDriver
         } catch (\Throwable $e) {
             return [];
         }
+    }
+
+    /**
+     * 创建阿里云 OSS 客户端实例
+     *
+     * @return OssClient
+     * @throws OssException
+     */
+    protected function createOssClient(): OssClient
+    {
+        return new OssClient($this->accessKeyId, $this->accessKeySecret, $this->endpoint);
     }
 }
