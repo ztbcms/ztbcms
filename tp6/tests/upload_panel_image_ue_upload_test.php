@@ -74,11 +74,15 @@ try {
         'view/upload/panel/imageUEUpload.php 视图文件应已删除'
     );
 
-    // 2. 验证 Panel.php 不再保留冗余的 AdminUserService 导入及残留标识符
+    // 2. 验证 Panel.php 不再保留冗余的 AdminUserService、UploadService 导入及残留标识符
     $panelSource = file_get_contents(dirname(__DIR__) . '/app/common/controller/upload/Panel.php');
     assertUploadPanelImageUEUpload(
         is_string($panelSource) && strpos($panelSource, 'AdminUserService') === false,
         'Panel.php 应移除仅被 imageUEUpload 使用的 AdminUserService 导入'
+    );
+    assertUploadPanelImageUEUpload(
+        strpos($panelSource, 'UploadService') === false,
+        'Panel.php 应移除仅被 imageUEUpload 使用的 UploadService 导入'
     );
 
     $appIterator = new RecursiveIteratorIterator(

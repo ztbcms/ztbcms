@@ -11,7 +11,6 @@ use think\Request;
 use app\common\controller\AdminController;
 use app\common\model\upload\AttachmentGroupModel;
 use app\common\model\upload\AttachmentModel;
-use app\common\service\upload\UploadService;
 
 /**
  * 上传面板
