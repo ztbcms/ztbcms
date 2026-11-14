@@ -76,7 +76,7 @@ class DownloaderService extends BaseService
                 ], '下载任务创建成功');
             }
             // 下载中、待下载
-            if ($downloader_state == DownloaderModel::STATE_FAIL || $downloader_state == DownloaderModel::STATE_WAIT) {
+            if ($downloader_state == DownloaderModel::STATE_PROCESSING || $downloader_state == DownloaderModel::STATE_WAIT) {
                 return self::createReturn(true, [
                     'downloader_id' => $downloader_id
                 ], '下载中,请稍候');
