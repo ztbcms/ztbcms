@@ -131,11 +131,11 @@ git tag -a vx.y.z -m "Release vx.y.z"
    ```bash
    git checkout develop
    ```
-2. 将 `release/x.y.z` 合并回 `develop` 分支：
+2. 将 `master` 合并回 `develop` 分支（同步发版提交与 merge 节点，避免 `develop` 显示 `behind master`；若发版期间 `develop` 无新提交，将自动 fast-forward 使两分支指向同一 commit）：
    ```bash
-   git merge --no-ff release/x.y.z -m "Merge branch 'release/x.y.z' into develop"
+   git merge master
    ```
-3. 删除本地 `release/x.y.z` 分支（已合并到 master 和 develop，不再需要）：
+3. 删除本地 `release/x.y.z` 分支（已合并到 master 并同步回 develop，不再需要）：
    ```bash
    git branch -d release/x.y.z
    ```
