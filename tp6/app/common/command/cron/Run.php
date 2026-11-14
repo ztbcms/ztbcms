@@ -33,14 +33,19 @@ class Run extends Command
             $output->error("计划任务功能已关闭");
             return;
         }
-        // 锁定自动执行
+        // 锁定自动执行（使用 flock 非阻塞排他锁，避免进程异常退出后残留锁文件导致永久停摆）
         $lockfile = runtime_path() . 'cron.lock';
-        if (file_exists($lockfile)) {
+        $lockDir = dirname($lockfile);
+        if (!is_dir($lockDir)) {
+            mkdir($lockDir, 0777, true);
+        }
+        $lockHandle = fopen($lockfile, 'c+');
+        if ($lockHandle === false || !flock($lockHandle, LOCK_EX | LOCK_NB)) {
+            if (is_resource($lockHandle)) {
+                fclose($lockHandle);
+            }
             $output->error("已存在文件锁 cron.lock ");
             return;
-        } else {
-            //设置指定文件的访问和修改时间
-            touch($lockfile);
         }
 
         try {
@@ -94,9 +99,10 @@ class Run extends Command
                 'error_amount' => $errorCount,
             ]));
         } finally {
-            // 确保解除锁定
-            if (file_exists($lockfile)) {
-                unlink($lockfile);
+            // 释放文件锁并关闭句柄
+            if (is_resource($lockHandle)) {
+                flock($lockHandle, LOCK_UN);
+                fclose($lockHandle);
             }
         }
     }
