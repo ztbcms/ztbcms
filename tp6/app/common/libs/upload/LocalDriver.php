@@ -49,11 +49,18 @@ class LocalDriver extends UploadDriver
      */
     public function delete(string $filePath): bool
     {
-        $fullPath = public_path() . 'upload/' . $filePath;
-        if (file_exists($fullPath)) {
-            return unlink($fullPath);
+        if (trim($filePath) === '') {
+            return true;
         }
-        return true;
+        try {
+            $disk = Filesystem::disk(self::DISK_CONFIG);
+            if ($disk->fileExists($filePath)) {
+                $disk->delete($filePath);
+            }
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**
@@ -78,8 +85,14 @@ class LocalDriver extends UploadDriver
      */
     public function exists(string $filePath): bool
     {
-        $fullPath = public_path() . 'upload/' . $filePath;
-        return file_exists($fullPath);
+        if (trim($filePath) === '') {
+            return false;
+        }
+        try {
+            return Filesystem::disk(self::DISK_CONFIG)->fileExists($filePath);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**
