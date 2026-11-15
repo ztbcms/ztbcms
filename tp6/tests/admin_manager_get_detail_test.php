@@ -1,9 +1,11 @@
 <?php
 
 use app\admin\controller\AdminManager;
+use app\admin\service\AdminUserService;
 use think\App;
 use think\facade\Config;
 use think\facade\Db;
+use think\facade\Session;
 use think\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -60,6 +62,24 @@ Config::set([
     ],
 ], 'database');
 
+Db::execute('CREATE TABLE role (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(64) NOT NULL,
+    parentid INTEGER NOT NULL DEFAULT 0,
+    status INTEGER NOT NULL DEFAULT 1,
+    remark VARCHAR(255) NOT NULL DEFAULT "",
+    listorder INTEGER NOT NULL DEFAULT 0,
+    create_time INTEGER NOT NULL DEFAULT 0,
+    update_time INTEGER NOT NULL DEFAULT 0
+)');
+
+Db::name('role')->insert([
+    'id' => 1,
+    'name' => '超级管理员',
+    'parentid' => 0,
+    'status' => 1,
+]);
+
 Db::execute('CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(64) NOT NULL,
@@ -87,6 +107,8 @@ Db::name('user')->insert([
     'create_time' => 1700000000,
     'update_time' => 1700000001,
 ]);
+
+Session::set(AdminUserService::KEY_USER_INFO, ['id' => 1, 'role_id' => 1]);
 
 /** @var AdminManager $controller */
 $controller = (new ReflectionClass(AdminManager::class))->newInstanceWithoutConstructor();
@@ -117,6 +139,7 @@ assertAdminManagerGetDetail(($missingResp['status'] ?? true) === false, '管理�
 assertAdminManagerGetDetail(array_key_exists('data', $missingResp) && $missingResp['data'] === null, '管理员不存在时 data 应为 null');
 assertAdminManagerGetDetail(($missingResp['msg'] ?? '') === '该管理员不存在', '管理员不存在时提示信息不匹配');
 
+Session::delete(AdminUserService::KEY_USER_INFO);
 restore_error_handler();
 
 echo "admin_manager_get_detail_test passed\n";

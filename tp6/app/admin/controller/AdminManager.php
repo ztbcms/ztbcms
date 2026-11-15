@@ -34,10 +34,9 @@ class AdminManager extends AdminController
                 'nickname' => Request::param('nickname'),
                 'email'    => Request::param('email'),
                 'remark'   => Request::param('remark'),
-                'id'       => $userInfo['id']
             );
             $adminManagerService = new AdminManagerService();
-            $res = $adminManagerService->addOrEditAdminManager($user_data);
+            $res = $adminManagerService->updateBasicInfo($userInfo['id'], $user_data);
             return json($res);
         }
         return view(
@@ -221,6 +220,16 @@ class AdminManager extends AdminController
         $where['id'] = $id;
         $res = $AdminUserModel->where($where)->withoutField('create_time,update_time,verify,password')->find();
         if ($res) {
+            $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
+            $roleCheck = (new RoleService())->canManageRole(
+                $operatorRoleId,
+                $res['role_id'],
+                $operatorRoleId === RoleModel::SUPER_ADMIN_ROLE_ID
+            );
+            if (!$roleCheck['status']) {
+                return json(self::createReturn(false, null, $roleCheck['msg']));
+            }
+
             $res['status'] = (string)$res['status'];
             return json(self::createReturn(true, $res));
         } else {
@@ -232,8 +241,8 @@ class AdminManager extends AdminController
     function managerDelete()
     {
         $id = Request::param('id', '', 'trim');
-        $userInfo = AdminUserService::getInstance()->getInfo();
-        if ($id == $userInfo['id']) {
+        $userInfo = AdminUserService::getInstance()->getRealtimeOperatorInfo();
+        if ($id == ($userInfo['id'] ?? 0)) {
             return json(self::createReturn(false, [], '不能删除自己'));
         }
 
