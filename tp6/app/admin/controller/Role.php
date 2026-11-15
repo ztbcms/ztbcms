@@ -67,6 +67,11 @@ class Role extends AdminController
         $action = input('_action', '', 'trim');
 
         if (Request::isGet() && $action == 'getDetail') {
+            $userInfo = AdminUserService::getInstance()->getInfo();
+            $check = (new RoleService())->canManageRole($userInfo['role_id'] ?? 0, $id, false);
+            if (!$check['status']) {
+                return self::makeJsonReturn(false, null, $check['msg']);
+            }
 
             $RoleModel = new RoleModel();
             $info = $RoleModel->where(['id' => $id])->find();
@@ -182,7 +187,8 @@ class Role extends AdminController
             //被选中的菜单项
             $menuIdList = explode(',', $menuid);
             $rbacService = new RbacService();
-            return $rbacService->authorizeRoleAccess($roleid, $menuIdList);
+            $res = $rbacService->authorizeRoleAccess($roleid, $menuIdList);
+            return json($res);
         }
 
         $id = Request::param('id', 0, 'intval');
@@ -198,11 +204,15 @@ class Role extends AdminController
     {
         //角色ID
         $role_id = Request::param('id', 0, 'intval');
+        $userInfo = AdminUserService::getInstance()->getInfo();
+        $check = (new RoleService())->canManageRole($userInfo['role_id'] ?? 0, $role_id, false);
+        if (!$check['status']) {
+            return json(self::createReturn(false, null, $check['msg']));
+        }
         $roleModel = new RoleModel();
         //获取登录管理员的授权信息
         $select_menu_ids = []; // 选中权限
         $select_menu_paretids = []; // 选中的菜单项
-        $userInfo = AdminUserService::getInstance()->getInfo();
         //获取当前登录用户角色的所有权限菜单
         $loginUsermenuList = MenuService::getMenuByRole($userInfo['role_id'])['data'];
         // 菜单排序，父类菜单靠前

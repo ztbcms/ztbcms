@@ -53,8 +53,9 @@ class AdminUserService extends BaseService
      */
     public function getInfo()
     {
-        if (empty(self::$userInfo)) {
-            self::$userInfo = session(self::KEY_USER_INFO);
+        $sessionUserInfo = session(self::KEY_USER_INFO);
+        if (!empty($sessionUserInfo)) {
+            self::$userInfo = $sessionUserInfo;
         }
 
         return !empty(self::$userInfo) ? self::$userInfo : null;
@@ -154,6 +155,7 @@ class AdminUserService extends BaseService
      */
     public function logout()
     {
+        self::$userInfo = [];
         session(null);
         return true;
     }
