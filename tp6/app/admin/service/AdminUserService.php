@@ -49,16 +49,104 @@ class AdminUserService extends BaseService
     /**
      * 获取当前登录用户资料
      *
-     * @return array
+     * @return array|null
      */
     public function getInfo()
     {
         $sessionUserInfo = session(self::KEY_USER_INFO);
-        if (!empty($sessionUserInfo)) {
-            self::$userInfo = $sessionUserInfo;
+        if (empty($sessionUserInfo) || !is_array($sessionUserInfo)) {
+            self::$userInfo = [];
+            return null;
         }
 
+        if (!empty($sessionUserInfo['id'])) {
+            try {
+                $freshUser = (new AdminUserModel())->where('id', (int) $sessionUserInfo['id'])->findOrEmpty();
+                if (!$freshUser->isEmpty()) {
+                    $sessionUserInfo = $this->syncSessionUserInfo($sessionUserInfo, $freshUser->toArray());
+                } else {
+                    $sessionUserInfo['role_id'] = 0;
+                    $sessionUserInfo['status'] = AdminUserModel::STATUS_DISABLE;
+                    session(self::KEY_USER_INFO, $sessionUserInfo);
+                }
+            } catch (\Throwable $e) {
+                // 兼容未初始化用户表的轻量测试场景
+            }
+        }
+
+        self::$userInfo = $sessionUserInfo;
         return !empty(self::$userInfo) ? self::$userInfo : null;
+    }
+
+    /**
+     * 从数据库获取当前操作者的实时有效信息（校验存在性与启用状态）
+     *
+     * @param array|null $operatorUser 指定操作者数组，默认从当前登录会话获取
+     *
+     * @return array|null
+     */
+    public function getRealtimeOperatorInfo(?array $operatorUser = null): ?array
+    {
+        $sessionInfo = $operatorUser ?? session(self::KEY_USER_INFO);
+        $userId = (int) ($sessionInfo['id'] ?? $this->isLogin());
+        if ($userId <= 0) {
+            return null;
+        }
+
+        $adminUserModel = new AdminUserModel();
+        $freshUser = $adminUserModel->where('id', $userId)->findOrEmpty();
+        if ($freshUser->isEmpty()) {
+            return null;
+        }
+
+        $freshData = $freshUser->toArray();
+        if ((int) ($freshData['status'] ?? AdminUserModel::STATUS_ENABLE) === AdminUserModel::STATUS_DISABLE) {
+            return null;
+        }
+
+        if (is_array($sessionInfo) && !empty($sessionInfo['id']) && (int) $sessionInfo['id'] === $userId) {
+            $this->syncSessionUserInfo($sessionInfo, $freshData);
+        }
+
+        return $freshData;
+    }
+
+    /**
+     * 从数据库获取当前操作者的实时有效角色ID
+     *
+     * @param array|null $operatorUser 指定操作者数组，默认从当前登录会话获取
+     *
+     * @return int
+     */
+    public function getRealtimeOperatorRoleId(?array $operatorUser = null): int
+    {
+        $operator = $this->getRealtimeOperatorInfo($operatorUser);
+        return (int) ($operator['role_id'] ?? 0);
+    }
+
+    /**
+     * 将数据库最新管理员字段同步回 Session 与静态缓存
+     *
+     * @param array $sessionUserInfo 原会话信息
+     * @param array $freshData       数据库最新管理员记录
+     *
+     * @return array
+     */
+    private function syncSessionUserInfo(array $sessionUserInfo, array $freshData): array
+    {
+        $merged = array_merge($sessionUserInfo, [
+            'id'       => $freshData['id'],
+            'username' => $freshData['username'] ?? ($sessionUserInfo['username'] ?? ''),
+            'nickname' => $freshData['nickname'] ?? ($sessionUserInfo['nickname'] ?? ''),
+            'email'    => $freshData['email'] ?? ($sessionUserInfo['email'] ?? ''),
+            'role_id'  => $freshData['role_id'],
+            'status'   => $freshData['status'] ?? AdminUserModel::STATUS_ENABLE,
+            'remark'   => $freshData['remark'] ?? ($sessionUserInfo['remark'] ?? ''),
+        ]);
+        session(self::KEY_USER_INFO, $merged);
+        self::$userInfo = $merged;
+
+        return $merged;
     }
 
     /**

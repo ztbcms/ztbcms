@@ -220,8 +220,7 @@ class AdminManager extends AdminController
         $where['id'] = $id;
         $res = $AdminUserModel->where($where)->withoutField('create_time,update_time,verify,password')->find();
         if ($res) {
-            $userInfo = AdminUserService::getInstance()->getInfo();
-            $operatorRoleId = (int) ($userInfo['role_id'] ?? 0);
+            $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
             $roleCheck = (new RoleService())->canManageRole(
                 $operatorRoleId,
                 $res['role_id'],
@@ -242,8 +241,8 @@ class AdminManager extends AdminController
     function managerDelete()
     {
         $id = Request::param('id', '', 'trim');
-        $userInfo = AdminUserService::getInstance()->getInfo();
-        if ($id == $userInfo['id']) {
+        $userInfo = AdminUserService::getInstance()->getRealtimeOperatorInfo();
+        if ($id == ($userInfo['id'] ?? 0)) {
             return json(self::createReturn(false, [], '不能删除自己'));
         }
 

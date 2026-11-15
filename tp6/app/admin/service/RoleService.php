@@ -149,7 +149,7 @@ class RoleService extends BaseService
     function addOrEditRole($roleData, $operator_role_id = null)
     {
         if ($operator_role_id === null) {
-            $operator_role_id = AdminUserService::getInstance()->getInfo()['role_id'] ?? 0;
+            $operator_role_id = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
         }
 
         $editingRoleId = isset($roleData['id']) && !empty($roleData['id']) ? (int) $roleData['id'] : 0;
@@ -217,7 +217,7 @@ class RoleService extends BaseService
         }
 
         if ($operator_role_id === null) {
-            $operator_role_id = AdminUserService::getInstance()->getInfo()['role_id'] ?? 0;
+            $operator_role_id = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
         }
         if ((int) $role_id === (int) $operator_role_id) {
             return self::createReturn(false, null, '您不能删除自己使用的角色');

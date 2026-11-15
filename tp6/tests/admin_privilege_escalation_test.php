@@ -559,6 +559,100 @@ try {
     $adminController = new AdminManager($app);
     $resp = $adminController->managerDelete()->getData();
     assertAdminPrivilegeSame(false, $resp['status'], 'AdminManager::managerDelete 应拒绝非超管删除平级/其他分支管理员');
+
+    // ==================== 5. 已登录账号被降权/禁用后持旧 Session 请求回归测试 ====================
+    seedAdminPrivilegeFixture();
+    Db::name('access')->insert([
+        'role_id' => 2,
+        'app' => 'admin',
+        'controller' => 'AdminManager',
+        'action' => 'managerEdit',
+        'status' => 1,
+    ]);
+    Cache::tag(RbacService::CacheTagName)->clear();
+
+    // 5.1 id=7 原为超管并登录保留旧 Session，之后被初始超管 id=1 降权为 role_id=2
+    $staleSuperSession = ['id' => 7, 'username' => 'super2', 'role_id' => 1, 'status' => 1];
+    setAdminPrivilegeOperator($superOperator);
+    $demoteRes = $adminManagerService->addOrEditAdminManager([
+        'id' => 7,
+        'role_id' => 2,
+    ]);
+    assertAdminPrivilegeSame(true, $demoteRes['status'], '初始超管将 id=7 降为 role_id=2 应成功: ' . $demoteRes['msg']);
+    assertAdminPrivilegeSame(2, (int) Db::name('user')->where('id', 7)->value('role_id'), '数据库中 id=7 的 role_id 应已降为 2');
+
+    // 5.2 恢复 id=7 降权前留存的旧 Session（role_id=1），确认 role_id=2 仍保有 managerEdit 菜单访问权限
+    Session::set(AdminUserService::KEY_USER_INFO, $staleSuperSession);
+    $userRef = new ReflectionClass(AdminUserService::class);
+    $userProp = $userRef->getProperty('userInfo');
+    $userProp->setAccessible(true);
+    $userProp->setValue(null, []);
+    $accessCheck = $rbacService->enableUserAccess(7, 'admin', 'AdminManager', 'managerEdit');
+    assertAdminPrivilegeSame(true, $accessCheck['status'], '降权后 role_id=2 仍保留 managerEdit 接口菜单权限');
+
+    // 5.3 id=7 持旧 Session 通过 managerEdit POST 试图修改初始超管 id=1 的密码 -> 必须拦截
+    setAdminPrivilegeRequest($app, 'POST', [], [
+        'id' => 1,
+        'username' => 'admin',
+        'nickname' => '超管',
+        'email' => 'admin@test.com',
+        'password' => 'hijack123',
+        'pwdconfirm' => 'hijack123',
+        'role_id' => 1,
+        'status' => 1,
+    ]);
+    $adminController = new AdminManager($app);
+    $resp = $adminController->managerEdit()->getData();
+    assertAdminPrivilegeSame(false, $resp['status'], '降权后持旧 Session 的 id=7 不应能编辑超管 id=1');
+    assertAdminPrivilegeSame('hash1', Db::name('user')->where('id', 1)->value('password'), '超管 id=1 密码不得被已降权账号篡改');
+
+    // 5.4 验证旧 Session 已被实时同步刷新为数据库中的 role_id=2
+    $syncedSession = Session::get(AdminUserService::KEY_USER_INFO);
+    assertAdminPrivilegeSame(2, (int) ($syncedSession['role_id'] ?? 0), '旧 Session 中的 role_id 应已被同步更新为数据库最新的 2');
+
+    // 5.5 再次模拟陈旧 Session 对管理员详情、角色编辑、角色授权及显式旧操作者参数发起越权请求 -> 全部拦截
+    Session::set(AdminUserService::KEY_USER_INFO, $staleSuperSession);
+    $userProp->setValue(null, []);
+
+    setAdminPrivilegeRequest($app, 'GET', ['_action' => 'getDetail', 'id' => 1]);
+    $resp = (new AdminManager($app))->managerEdit()->getData();
+    assertAdminPrivilegeSame(false, $resp['status'], '降权后持旧 Session 不应能查看超管详情');
+
+    $roleRes = $roleService->addOrEditRole([
+        'id' => 2,
+        'name' => '篡改自身角色',
+        'remark' => '',
+        'status' => 1,
+        'parentid' => 1,
+    ]);
+    assertAdminPrivilegeSame(false, $roleRes['status'], '降权后持旧 Session 不应能修改自身所属角色 role_id=2');
+
+    $authSelfRes = $rbacService->authorizeRoleAccess(2, [10, 11]);
+    assertAdminPrivilegeSame(false, $authSelfRes['status'], '降权后持旧 Session 不应能给自己 role_id=2 授权');
+
+    $authScopeRes = $rbacService->authorizeRoleAccess(3, [10, 12]);
+    assertAdminPrivilegeSame(false, $authScopeRes['status'], '降权后持旧 Session 不应能授予超出 role_id=2 权限范围的菜单');
+
+    $explicitStaleRes = $adminManagerService->addOrEditAdminManager([
+        'id' => 1,
+        'password' => 'hijack456',
+    ], $staleSuperSession);
+    assertAdminPrivilegeSame(false, $explicitStaleRes['status'], '即使显式传入过期操作者快照，也应按数据库实时角色拦截越权');
+
+    // 5.6 数据库中将 id=7 禁用（status=0）后，持旧 Session 编辑下级管理员 id=3 也必须被拦截
+    Db::name('user')->where('id', 7)->update(['status' => 0]);
+    Session::set(AdminUserService::KEY_USER_INFO, $staleSuperSession);
+    $userProp->setValue(null, []);
+    setAdminPrivilegeRequest($app, 'POST', [], [
+        'id' => 3,
+        'username' => 'publisher',
+        'nickname' => '被禁用账号尝试修改',
+        'email' => 'pub@test.com',
+        'role_id' => 3,
+        'status' => 1,
+    ]);
+    $disabledResp = (new AdminManager($app))->managerEdit()->getData();
+    assertAdminPrivilegeSame(false, $disabledResp['status'], '已禁用账号持旧 Session 不应能继续执行写操作');
 } finally {
     AdminUserService::getInstance()->logout();
     restore_error_handler();

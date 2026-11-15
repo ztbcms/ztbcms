@@ -163,7 +163,7 @@ class RbacService extends BaseService
         }
 
         if ($operator_role_id === null) {
-            $operator_role_id = AdminUserService::getInstance()->getInfo()['role_id'] ?? 0;
+            $operator_role_id = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
         }
         if ((int) $role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
             return self::createReturn(false, null, '超级管理员角色无需授权');

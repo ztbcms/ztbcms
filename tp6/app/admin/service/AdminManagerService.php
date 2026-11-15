@@ -77,7 +77,7 @@ class AdminManagerService extends BaseService
         if (empty($user_data) || !is_array($user_data)) {
             return self::createReturn(false, null, '参数异常');
         }
-        $operator = $operator_user ?? AdminUserService::getInstance()->getInfo();
+        $operator = AdminUserService::getInstance()->getRealtimeOperatorInfo($operator_user);
         $operator_role_id = (int) ($operator['role_id'] ?? 0);
         if ($operator_role_id <= 0) {
             return self::createReturn(false, null, '当前登录用户无权限操作');
@@ -229,7 +229,7 @@ class AdminManagerService extends BaseService
             return self::createReturn(false, null, '该管理员不能被删除');
         }
 
-        $operator = $operator_user ?? AdminUserService::getInstance()->getInfo();
+        $operator = AdminUserService::getInstance()->getRealtimeOperatorInfo($operator_user);
         $operator_id = (int) ($operator['id'] ?? 0);
         $operator_role_id = (int) ($operator['role_id'] ?? 0);
         if ($operator_role_id <= 0) {
