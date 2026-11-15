@@ -2,10 +2,12 @@
 
 use app\admin\model\AccessModel;
 use app\admin\service\AccessService;
+use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
 use think\App;
 use think\facade\Config;
 use think\facade\Db;
+use think\facade\Session;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -130,6 +132,7 @@ try {
     ]);
 
     // 2. 验证 RbacService::authorizeRoleAccess 通过 AccessModel 正常写入权限
+    Session::set(AdminUserService::KEY_USER_INFO, ['id' => 1, 'role_id' => 1]);
     $rbacService = new RbacService();
     $authRes = $rbacService->authorizeRoleAccess(2, [10, 11]);
     assertAccessModelCleanup(
@@ -149,6 +152,7 @@ try {
         'AccessService::getAccessListByRoleId(2) 返回的控制器字段应正确'
     );
 } finally {
+    Session::delete(AdminUserService::KEY_USER_INFO);
     restore_error_handler();
     if (is_dir($cacheDir)) {
         $iterator = new RecursiveIteratorIterator(
