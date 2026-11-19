@@ -125,6 +125,7 @@ class Logs extends AdminController
             $OperationlogModel = new OperationlogModel();
             $items = $OperationlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
             foreach ($items as $key => $item) {
+                $items[$key]['url'] = OperationlogModel::sanitizeUrl((string) ($item['url'] ?? ''));
                 $items[$key]['params'] = OperationlogModel::sanitizeParamsString((string) ($item['params'] ?? ''));
             }
             $total_items = $OperationlogModel->where($where)->count();

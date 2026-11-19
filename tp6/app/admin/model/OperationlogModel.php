@@ -58,7 +58,7 @@ class OperationlogModel extends Model
             'uid'      => is_array($adminInfo) ? (int) ($adminInfo['id'] ?? 0) : 0,
             'status'   => $status ? 1 : 0,
             'method'   => $request->method(),
-            'url'      => $request->url(),
+            'url'      => self::sanitizeUrl((string) $request->url(), $request),
             'params'   => $encodedParams !== false ? $encodedParams : '{}',
             'response' => $response->getContent(),
             'time'     => time(),
@@ -66,6 +66,44 @@ class OperationlogModel extends Model
         ];
         OperationlogModel::insert($logData);
         return true;
+    }
+
+    /**
+     * 清洗操作日志记录的 URL，去除查询字符串并保留 s 路由模式所需的路由标识
+     *
+     * @param  string  $rawUrl   原始 URL
+     * @param  mixed   $request  可选请求实例（用于 rawUrl 为空时兜底获取 baseUrl）
+     *
+     * @return string
+     */
+    public static function sanitizeUrl(string $rawUrl, $request = null): string
+    {
+        if ($rawUrl === '' && $request) {
+            $rawUrl = (string) $request->baseUrl();
+        }
+        if ($rawUrl === '') {
+            return '';
+        }
+
+        $cleanUrl = explode('#', $rawUrl, 2)[0];
+        if (strpos($cleanUrl, '?') === false) {
+            return $cleanUrl;
+        }
+
+        [$pathPart, $queryString] = explode('?', $cleanUrl, 2);
+        $sRoute = self::extractSRouteFromQuery($queryString);
+        if ($sRoute === '' && $request && method_exists($request, 'get')) {
+            $reqS = $request->get('s');
+            if (is_string($reqS) && trim($reqS) !== '') {
+                $sRoute = self::cleanRouteSegment($reqS);
+            }
+        }
+
+        if ($sRoute !== '') {
+            return $pathPart . '?s=' . $sRoute;
+        }
+
+        return $pathPart;
     }
 
     /**
@@ -81,37 +119,101 @@ class OperationlogModel extends Model
             return false;
         }
 
-        $controller = strtolower((string) $request->controller());
-        $action = strtolower((string) $request->action());
-        if (($controller === 'login' && in_array($action, ['dologin', 'index', ''], true)) || $action === 'dologin') {
-            return true;
+        $controller = strtolower(trim((string) $request->controller()));
+        $action = strtolower(trim((string) $request->action()));
+        if ($controller !== '') {
+            return $controller === 'login' && in_array($action, ['dologin', 'index', ''], true);
+        }
+        if ($action !== '') {
+            return $action === 'dologin';
         }
 
-        $candidates = [
-            (string) $request->baseUrl(),
-            (string) $request->url(),
-        ];
-        if (
-            PHP_SAPI !== 'cli'
-            || (string) $request->server('PATH_INFO', '') !== ''
-            || (string) $request->server('REQUEST_URI', '') !== ''
-            || isset($_GET['s'])
-        ) {
-            $candidates[] = (string) $request->pathinfo();
+        $routePath = self::extractRoutePath($request);
+        if ($routePath === '') {
+            return false;
         }
 
-        foreach ($candidates as $candidate) {
-            if ($candidate === '') {
-                continue;
-            }
-            foreach ([$candidate, urldecode($candidate)] as $path) {
-                if ($path !== '' && preg_match('#(?:^|/|\b)login/dologin(?:\b|/|\.|\?|$)#i', $path) === 1) {
-                    return true;
-                }
+        foreach ([$routePath, urldecode($routePath)] as $path) {
+            if ($path !== '' && preg_match('#(?:^|/|\b)login/dologin(?:\b|/|\.|$)#i', $path) === 1) {
+                return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * 从未解析路由的请求中提取纯路由路径（不含无关查询参数）
+     *
+     * @param  mixed  $request  请求实例
+     *
+     * @return string
+     */
+    private static function extractRoutePath($request): string
+    {
+        $url = (string) $request->url();
+        if ($url !== '' && strpos($url, '?') !== false) {
+            [, $queryString] = explode('?', explode('#', $url, 2)[0], 2);
+            $sRoute = self::extractSRouteFromQuery($queryString);
+            if ($sRoute !== '') {
+                return $sRoute;
+            }
+        }
+
+        if (method_exists($request, 'get')) {
+            $reqS = $request->get('s');
+            if (is_string($reqS) && trim($reqS) !== '') {
+                return self::cleanRouteSegment($reqS);
+            }
+        }
+
+        $candidates = [
+            (string) $request->baseUrl(),
+            $url,
+            (string) $request->server('PATH_INFO', ''),
+        ];
+        foreach ($candidates as $candidate) {
+            if ($candidate !== '') {
+                return self::cleanRouteSegment($candidate);
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * 从查询字符串中提取 s 路由标识
+     *
+     * @param  string  $queryString  查询字符串
+     *
+     * @return string
+     */
+    private static function extractSRouteFromQuery(string $queryString): string
+    {
+        if ($queryString === '') {
+            return '';
+        }
+
+        $queryParams = [];
+        parse_str($queryString, $queryParams);
+        if (isset($queryParams['s']) && is_string($queryParams['s']) && trim($queryParams['s']) !== '') {
+            return self::cleanRouteSegment($queryParams['s']);
+        }
+
+        return '';
+    }
+
+    /**
+     * 截断路由段中的查询字符串与锚点
+     *
+     * @param  string  $route  原始路由段
+     *
+     * @return string
+     */
+    private static function cleanRouteSegment(string $route): string
+    {
+        $parts = preg_split('/[?&#]/', trim($route), 2);
+        return is_array($parts) ? ($parts[0] ?? '') : trim($route);
     }
 
     /**

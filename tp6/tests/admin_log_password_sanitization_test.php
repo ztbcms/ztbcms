@@ -314,6 +314,32 @@ try {
 
     assertLogSanitizationSame(0, (int) Db::name('operation_log')->count(), '登录接口调用后 operation_log 应保持为空');
 
+    // 3.4 普通业务 POST 携带登录跳转查询参数时，必须正常记录操作日志
+    bindLogTestRequest($app, 'POST', [
+        'controller' => 'Config',
+        'action' => 'index',
+        'base_url' => '/admin/Config/index',
+        'url' => '/admin/Config/index?redirect=/admin/Login/doLogin&next=/admin/login/dologin',
+        'post' => ['sitename' => 'demo'],
+    ]);
+    assertLogSanitizationSame(true, OperationlogModel::record($okResponse), '已解析非登录控制器时携带 login/doLogin 跳转参数仍应记录操作日志');
+
+    bindLogTestRequest($app, 'POST', [
+        'base_url' => '/admin/Config/index',
+        'url' => '/admin/Config/index?redirect=/admin/Login/doLogin',
+        'post' => ['sitename' => 'demo2'],
+    ]);
+    assertLogSanitizationSame(true, OperationlogModel::record($okResponse), '未解析控制器但路径为 /admin/Config/index 且查询参数含 login/doLogin 时仍应记录操作日志');
+
+    bindLogTestRequest($app, 'POST', [
+        'url' => '/index.php?s=/admin/Config/index&redirect=/admin/Login/doLogin',
+        'post' => ['sitename' => 'demo3'],
+    ]);
+    assertLogSanitizationSame(true, OperationlogModel::record($okResponse), '未解析控制器但 s 路由为 /admin/Config/index 且查询参数含 login/doLogin 时仍应记录操作日志');
+
+    assertLogSanitizationSame(3, (int) Db::name('operation_log')->count(), '3 次携带登录跳转查询参数的普通 POST 均应写入 operation_log');
+    Db::execute('DELETE FROM operation_log');
+
     // ==================== 4. 问题 4：操作日志敏感参数递归脱敏 ====================
     $sensitiveCases = [
         [
@@ -452,6 +478,34 @@ try {
     assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $innerJsonDecoded['app_secret'] ?? '', '内嵌 JSON 的 app_secret 应脱敏');
     assertLogSanitizationSame('保留标题', $innerJsonDecoded['title'] ?? '', '内嵌 JSON 的 title 应保留');
 
+    // 4.1 URL 查询参数携带密码时，记录时应去除敏感查询参数并保留 s 路由标识
+    bindLogTestRequest($app, 'POST', [
+        'controller' => 'AdminManager',
+        'action' => 'changePassword',
+        'base_url' => '/admin/AdminManager/changePassword',
+        'url' => '/admin/AdminManager/changePassword?password=UrlQueryOldPass!&new_password=UrlQueryNewPass!',
+        'post' => ['new_pwdconfirm' => 'UrlQueryNewPass!'],
+    ]);
+    assertLogSanitizationSame(true, OperationlogModel::record($okResponse), '带查询参数密码的 changePassword 应记录脱敏日志');
+    $urlSanitizedRow = Db::name('operation_log')->order('id', 'desc')->find();
+    assertLogSanitizationSame('/admin/AdminManager/changePassword', (string) ($urlSanitizedRow['url'] ?? ''), '普通路由记录的 url 应去除查询字符串');
+    $urlSanitizedRowJson = (string) json_encode($urlSanitizedRow, JSON_UNESCAPED_UNICODE);
+    assertLogSanitizationTrue(strpos($urlSanitizedRowJson, 'UrlQueryOldPass!') === false, '日志整行不应包含 URL 中的 UrlQueryOldPass!');
+    assertLogSanitizationTrue(strpos($urlSanitizedRowJson, 'UrlQueryNewPass!') === false, '日志整行不应包含 URL 中的 UrlQueryNewPass!');
+
+    bindLogTestRequest($app, 'POST', [
+        'controller' => 'AdminManager',
+        'action' => 'changePassword',
+        'url' => '/index.php?s=/admin/AdminManager/changePassword&password=UrlQueryOldPass2!&new_password=UrlQueryNewPass2!',
+        'post' => ['new_pwdconfirm' => 'UrlQueryNewPass2!'],
+    ]);
+    assertLogSanitizationSame(true, OperationlogModel::record($okResponse), 's 路由带查询参数密码的 changePassword 应记录脱敏日志');
+    $sRouteSanitizedRow = Db::name('operation_log')->order('id', 'desc')->find();
+    assertLogSanitizationSame('/index.php?s=/admin/AdminManager/changePassword', (string) ($sRouteSanitizedRow['url'] ?? ''), 's 路由记录的 url 应仅保留 s 路由路径标识');
+    $sRouteSanitizedRowJson = (string) json_encode($sRouteSanitizedRow, JSON_UNESCAPED_UNICODE);
+    assertLogSanitizationTrue(strpos($sRouteSanitizedRowJson, 'UrlQueryOldPass2!') === false, 's 路由日志整行不应包含 URL 中的 UrlQueryOldPass2!');
+    assertLogSanitizationTrue(strpos($sRouteSanitizedRowJson, 'UrlQueryNewPass2!') === false, 's 路由日志整行不应包含 URL 中的 UrlQueryNewPass2!');
+
     // ==================== 5. 列表接口读取兜底脱敏测试 ====================
     Db::execute('DELETE FROM login_log');
     Db::execute('DELETE FROM operation_log');
@@ -493,8 +547,18 @@ try {
             'ip' => '127.0.0.1',
             'status' => 1,
             'method' => 'POST',
-            'url' => '/admin/AdminManager/changePassword',
+            'url' => '/admin/AdminManager/changePassword?password=HistUrlPass123',
             'params' => json_encode(['password' => 'old_hist_pass', 'new_password' => 'new_hist_pass', 'new_pwdconfirm' => 'new_hist_pass']),
+            'response' => '{"status":true}',
+        ],
+        [
+            'uid' => 1,
+            'time' => $now - 85,
+            'ip' => '127.0.0.1',
+            'status' => 1,
+            'method' => 'POST',
+            'url' => '/index.php?s=/admin/AdminManager/changePassword&password=HistUrlPass456',
+            'params' => json_encode(['password' => 'old_hist_pass2']),
             'response' => '{"status":true}',
         ],
         [
@@ -540,12 +604,14 @@ try {
     $opListResp = $logsController->adminOperationLogList($getOpListReq)->getData();
     assertLogSanitizationSame(true, $opListResp['status'], 'adminOperationLogList 应查询成功');
     $opItems = $opListResp['data']['items']->toArray();
-    assertLogSanitizationSame(4, count($opItems), 'adminOperationLogList 应返回 4 条数据');
+    assertLogSanitizationSame(5, count($opItems), 'adminOperationLogList 应返回 5 条数据');
     $opItemsJson = (string) json_encode($opItems, JSON_UNESCAPED_UNICODE);
     assertLogSanitizationTrue(strpos($opItemsJson, 'bGVha2VkX3Bhc3M=') === false, 'adminOperationLogList 不应暴露历史 doLogin 编码密码');
     assertLogSanitizationTrue(strpos($opItemsJson, 'old_hist_pass') === false, 'adminOperationLogList 不应暴露历史 old_hist_pass');
     assertLogSanitizationTrue(strpos($opItemsJson, 'new_hist_pass') === false, 'adminOperationLogList 不应暴露历史 new_hist_pass');
     assertLogSanitizationTrue(strpos($opItemsJson, 'raw_secret_leak') === false, 'adminOperationLogList 不应暴露损坏日志中的 raw_secret_leak');
+    assertLogSanitizationTrue(strpos($opItemsJson, 'HistUrlPass123') === false, 'adminOperationLogList 不应暴露 URL 查询参数中的 HistUrlPass123');
+    assertLogSanitizationTrue(strpos($opItemsJson, 'HistUrlPass456') === false, 'adminOperationLogList 不应暴露 URL 查询参数中的 HistUrlPass456');
 
     // 验证列表接口按 id desc 返回的条目脱敏与保留结果
     $opItemsByUrl = [];
@@ -555,9 +621,11 @@ try {
     $listLoginDecoded = json_decode((string) $opItemsByUrl['/admin/Login/doLogin']['params'], true);
     assertLogSanitizationSame('YWRtaW4=', $listLoginDecoded['form']['username'] ?? '', '列表返回 doLogin 日志 username 保留');
     assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $listLoginDecoded['form']['password'] ?? '', '列表返回 doLogin 日志 password 应脱敏');
+    assertLogSanitizationTrue(isset($opItemsByUrl['/admin/AdminManager/changePassword']), '列表返回普通 URL 应去除查询字符串');
     $listChangePassDecoded = json_decode((string) $opItemsByUrl['/admin/AdminManager/changePassword']['params'], true);
     assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $listChangePassDecoded['password'] ?? '', '列表返回 changePassword 日志 password 应脱敏');
     assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $listChangePassDecoded['new_password'] ?? '', '列表返回 changePassword 日志 new_password 应脱敏');
+    assertLogSanitizationTrue(isset($opItemsByUrl['/index.php?s=/admin/AdminManager/changePassword']), '列表返回 s 路由 URL 应保留 s 路由标识并去除密码查询参数');
     assertLogSanitizationSame('{"sitename":"ztbcms"}', (string) $opItemsByUrl['/admin/Config/index']['params'], '列表返回普通日志参数应保持原样');
     assertLogSanitizationSame('{}', (string) $opItemsByUrl['/admin/AdminManager/managerAdd']['params'], '列表返回含敏感词损坏日志应脱敏为 {}');
 } catch (\Throwable $e) {
