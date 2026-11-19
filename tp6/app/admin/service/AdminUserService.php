@@ -175,12 +175,12 @@ class AdminUserService extends BaseService
         $res = $this->checkUserPassword($identifier, $password);
         if(!$res['status']){
             //记录登录日志
-            $this->record($identifier, $password, 0);
+            $this->record($identifier, 0);
             return false;
         }
         $userInfo = $res['data'];
         //记录登录日志
-        $this->record($identifier, $password, 1);
+        $this->record($identifier, 1);
         //注册登录状态
         $this->registerLogin($userInfo);
         return true;
@@ -251,18 +251,19 @@ class AdminUserService extends BaseService
     /**
      * 记录登录日志
      *
-     * @param  string  $identifier  登录方式，uid,username
-     * @param  string  $password  密码
-     * @param  int  $status
+     * @param  string|int  $identifier  登录方式，uid,username
+     * @param  int|mixed   $status      登录状态（兼容旧版三参数签名时为第三参数）
      */
-    private function record($identifier, $password, $status = 0)
+    private function record($identifier, $status = 0)
     {
+        if (func_num_args() >= 3) {
+            $status = func_get_arg(2);
+        }
         //登录日志
         $loginLogModel = new LoginlogModel();
         $loginLogModel->addLoginLog([
             "username" => $identifier,
-            "status"   => $status,
-            "password" => $status ? '密码保密' : $password,
+            "status"   => (int) $status,
             "info"     => is_int($identifier) ? '用户ID登录' : '用户名登录',
         ]);
     }

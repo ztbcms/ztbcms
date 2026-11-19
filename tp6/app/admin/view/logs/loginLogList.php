@@ -58,11 +58,6 @@
                         width="80">
                 </el-table-column>
                 <el-table-column
-                        prop="password"
-                        label="密码"
-                        width="80">
-                </el-table-column>
-                <el-table-column
                         prop="status"
                         label="状态"
                         width="80">

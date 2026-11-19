@@ -42,6 +42,7 @@ class LoginlogModel extends Model
      */
     public function addLoginLog($data)
     {
+        unset($data['password']);
         $data['logintime'] = time();
         $data['loginip'] = request()->ip();
         return $this->insert($data) !== false ? true : false;
