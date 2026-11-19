@@ -544,6 +544,15 @@ try {
     assertLogSanitizationSame('/admin/AdminManager/changePassword', OperationlogModel::sanitizeUrl('/admin/AdminManager/changePassword'), '无 request 时多应用 action changePassword 不应被误截断');
     assertLogSanitizationSame('/AdminManager/changePassword', OperationlogModel::sanitizeUrl('/AdminManager/changePassword/password/Leak123'), '无 request 时单应用路径敏感参数段应被截断');
 
+    bindLogTestRequest($app, 'POST', [
+        'controller' => 'Config',
+        'action' => 'index',
+        'url' => '/admin/Config/index%7Cid%2F123',
+    ]);
+    assertLogSanitizationSame(true, OperationlogModel::record($okResponse), '使用编码兼容分隔符的普通 POST 应写入操作日志');
+    $compatRouteRow = Db::name('operation_log')->order('id', 'desc')->find();
+    assertLogSanitizationSame('/admin/Config/index', (string) ($compatRouteRow['url'] ?? ''), '新日志应剥离编码兼容分隔符后的路由参数');
+
     // ==================== 5. 列表接口读取兜底脱敏测试 ====================
     Db::execute('DELETE FROM login_log');
     Db::execute('DELETE FROM operation_log');
@@ -625,7 +634,7 @@ try {
             'ip' => '127.0.0.1',
             'status' => 1,
             'method' => 'POST',
-            'url' => '/admin/Config/index',
+            'url' => '/index.php?s=/admin/Config/index|id|123',
             'params' => '{"sitename":"ztbcms"}',
             'response' => '{"status":true}',
         ],
@@ -690,6 +699,7 @@ try {
     assertLogSanitizationSame('/index.php?s=/admin/AdminManager/changePassword', (string) $opItemsByTime[$now - 85]['url'], '列表返回 s 路由 URL 应保留 s 路由标识并去除密码查询参数');
     assertLogSanitizationSame('/admin/AdminManager/changePassword', (string) $opItemsByTime[$now - 83]['url'], '列表返回带额外路径参数的普通 URL 应仅保留应用/控制器/操作标识');
     assertLogSanitizationSame('/index.php?s=/admin/AdminManager/changePassword', (string) $opItemsByTime[$now - 82]['url'], '列表返回带额外路径参数的 s 路由 URL 应仅保留应用/控制器/操作标识');
+    assertLogSanitizationSame('/index.php?s=/admin/Config/index', (string) $opItemsByTime[$now - 80]['url'], '历史日志应剥离兼容分隔符后的 s 路由参数');
     assertLogSanitizationSame('{"sitename":"ztbcms"}', (string) $opItemsByTime[$now - 80]['params'], '列表返回普通日志参数应保持原样');
     assertLogSanitizationSame('{}', (string) $opItemsByTime[$now - 70]['params'], '列表返回含敏感词损坏日志应脱敏为 {}');
 } catch (\Throwable $e) {

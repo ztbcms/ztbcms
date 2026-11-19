@@ -196,6 +196,8 @@ class OperationlogModel extends Model
             return '';
         }
 
+        // 按 ThinkPHP 的规则统一分隔符，同时处理原始 URL 中保留的分隔符编码。
+        $clean = str_ireplace(['|', '%7c', '%2f'], '/', $clean);
         $hasLeadingSlash = ($clean[0] === '/');
         $segments = array_values(array_filter(explode('/', trim($clean, '/')), 'strlen'));
         if (empty($segments)) {
