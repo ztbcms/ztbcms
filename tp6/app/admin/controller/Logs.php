@@ -61,7 +61,7 @@ class Logs extends AdminController
             $page = PaginationHelper::normalizePage(input('page', 1));
             $limit = PaginationHelper::normalizeLimit(input('limit', 20));
             $LoginlogModel = new LoginlogModel();
-            $items = $LoginlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            $items = $LoginlogModel->where($where)->withoutField('password')->order($order)->page($page)->limit($limit)->select();
             $total_items = $LoginlogModel->where($where)->count();
             $total_page = ceil($total_items / $limit);
             return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
@@ -124,6 +124,9 @@ class Logs extends AdminController
             }
             $OperationlogModel = new OperationlogModel();
             $items = $OperationlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            foreach ($items as $key => $item) {
+                $items[$key]['params'] = OperationlogModel::sanitizeParamsString((string) ($item['params'] ?? ''));
+            }
             $total_items = $OperationlogModel->where($where)->count();
             $total_page = ceil($total_items / $limit);
             return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
