@@ -13,7 +13,6 @@ use think\Request;
 use think\Response;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/database/migrations/20261120000000_clean_admin_logs_sensitive_data.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -453,7 +452,7 @@ try {
     assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $innerJsonDecoded['app_secret'] ?? '', '内嵌 JSON 的 app_secret 应脱敏');
     assertLogSanitizationSame('保留标题', $innerJsonDecoded['title'] ?? '', '内嵌 JSON 的 title 应保留');
 
-    // ==================== 5. 历史数据清理与列表接口兜底测试 ====================
+    // ==================== 5. 列表接口读取兜底脱敏测试 ====================
     Db::execute('DELETE FROM login_log');
     Db::execute('DELETE FROM operation_log');
 
@@ -520,7 +519,6 @@ try {
         ],
     ]);
 
-    // 5.1 清理前，先通过控制器查询列表，验证接口本身已兜底不泄漏历史明文密码
     $getLoginListReq = bindLogTestRequest($app, 'GET', [
         'get' => ['_action' => 'getList', 'page' => 1, 'limit' => 20],
     ]);
@@ -549,31 +547,19 @@ try {
     assertLogSanitizationTrue(strpos($opItemsJson, 'new_hist_pass') === false, 'adminOperationLogList 不应暴露历史 new_hist_pass');
     assertLogSanitizationTrue(strpos($opItemsJson, 'raw_secret_leak') === false, 'adminOperationLogList 不应暴露损坏日志中的 raw_secret_leak');
 
-    // 5.2 执行数据库迁移脚本 CleanAdminLogsSensitiveData::up()
-    $migration = new CleanAdminLogsSensitiveData('testing', 20261120000000);
-    $migration->up();
-
-    $cleanedLoginLogs = Db::name('login_log')->select()->toArray();
-    foreach ($cleanedLoginLogs as $row) {
-        assertLogSanitizationSame('', (string) $row['password'], '迁移清理后 login_log.password 必须为空字符串');
+    // 验证列表接口按 id desc 返回的条目脱敏与保留结果
+    $opItemsByUrl = [];
+    foreach ($opItems as $item) {
+        $opItemsByUrl[$item['url']] = $item;
     }
-
-    $cleanedOpLogs = Db::name('operation_log')->order('id', 'asc')->select()->toArray();
-    $histLoginDecoded = json_decode((string) $cleanedOpLogs[0]['params'], true);
-    assertLogSanitizationSame('YWRtaW4=', $histLoginDecoded['form']['username'] ?? '', '历史登录日志 username 保留');
-    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $histLoginDecoded['form']['password'] ?? '', '历史登录日志编码密码应已被脱敏');
-
-    $histChangePassDecoded = json_decode((string) $cleanedOpLogs[1]['params'], true);
-    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $histChangePassDecoded['password'] ?? '', '历史 changePassword password 应已被脱敏');
-    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $histChangePassDecoded['new_password'] ?? '', '历史 changePassword new_password 应已被脱敏');
-    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $histChangePassDecoded['new_pwdconfirm'] ?? '', '历史 changePassword new_pwdconfirm 应已被脱敏');
-
-    assertLogSanitizationSame('{"sitename":"ztbcms"}', (string) $cleanedOpLogs[2]['params'], '不含敏感字段的普通历史日志应保持原样不被篡改');
-    assertLogSanitizationSame('{}', (string) $cleanedOpLogs[3]['params'], '含敏感关键词的非合法 JSON 损坏历史日志应被清空为 {}');
-
-    // 5.3 验证历史清理幂等性
-    assertLogSanitizationSame(0, LoginlogModel::cleanHistoryPasswords(), '重复执行 cleanHistoryPasswords 应返回 0');
-    assertLogSanitizationSame(0, OperationlogModel::cleanHistoryParams(), '重复执行 cleanHistoryParams 应返回 0');
+    $listLoginDecoded = json_decode((string) $opItemsByUrl['/admin/Login/doLogin']['params'], true);
+    assertLogSanitizationSame('YWRtaW4=', $listLoginDecoded['form']['username'] ?? '', '列表返回 doLogin 日志 username 保留');
+    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $listLoginDecoded['form']['password'] ?? '', '列表返回 doLogin 日志 password 应脱敏');
+    $listChangePassDecoded = json_decode((string) $opItemsByUrl['/admin/AdminManager/changePassword']['params'], true);
+    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $listChangePassDecoded['password'] ?? '', '列表返回 changePassword 日志 password 应脱敏');
+    assertLogSanitizationSame(OperationlogModel::SENSITIVE_MASK, $listChangePassDecoded['new_password'] ?? '', '列表返回 changePassword 日志 new_password 应脱敏');
+    assertLogSanitizationSame('{"sitename":"ztbcms"}', (string) $opItemsByUrl['/admin/Config/index']['params'], '列表返回普通日志参数应保持原样');
+    assertLogSanitizationSame('{}', (string) $opItemsByUrl['/admin/AdminManager/managerAdd']['params'], '列表返回含敏感词损坏日志应脱敏为 {}');
 } catch (\Throwable $e) {
     fwrite(STDERR, $e->getMessage() . "\n" . $e->getTraceAsString() . "\n");
     restore_error_handler();

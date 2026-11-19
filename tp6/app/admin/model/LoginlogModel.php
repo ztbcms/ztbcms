@@ -47,18 +47,4 @@ class LoginlogModel extends Model
         $data['loginip'] = request()->ip();
         return $this->insert($data) !== false ? true : false;
     }
-
-    /**
-     * 清理历史登录日志中的密码字段数据
-     *
-     * @return int 受影响行数
-     */
-    public static function cleanHistoryPasswords(): int
-    {
-        try {
-            return (int) self::where('password', '<>', '')->update(['password' => '']);
-        } catch (\Throwable $e) {
-            return 0;
-        }
-    }
 }
