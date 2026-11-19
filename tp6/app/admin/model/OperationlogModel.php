@@ -69,10 +69,10 @@ class OperationlogModel extends Model
     }
 
     /**
-     * 清洗操作日志记录的 URL，去除查询字符串并保留 s 路由模式所需的路由标识
+     * 清洗操作日志记录的 URL，剥离查询字符串与操作名之后的额外路由参数，仅保留应用/控制器/操作标识及 s 路由模式标识
      *
      * @param  string  $rawUrl   原始 URL
-     * @param  mixed   $request  可选请求实例（用于 rawUrl 为空时兜底获取 baseUrl）
+     * @param  mixed   $request  可选请求实例（用于辅助定位控制器/操作及 rawUrl 为空时兜底获取 baseUrl）
      *
      * @return string
      */
@@ -87,7 +87,7 @@ class OperationlogModel extends Model
 
         $cleanUrl = explode('#', $rawUrl, 2)[0];
         if (strpos($cleanUrl, '?') === false) {
-            return $cleanUrl;
+            return self::normalizeRoutePath($cleanUrl, $request);
         }
 
         [$pathPart, $queryString] = explode('?', $cleanUrl, 2);
@@ -100,10 +100,10 @@ class OperationlogModel extends Model
         }
 
         if ($sRoute !== '') {
-            return $pathPart . '?s=' . $sRoute;
+            return $pathPart . '?s=' . self::normalizeRoutePath($sRoute, $request);
         }
 
-        return $pathPart;
+        return self::normalizeRoutePath($pathPart, $request);
     }
 
     /**
@@ -143,7 +143,7 @@ class OperationlogModel extends Model
     }
 
     /**
-     * 从未解析路由的请求中提取纯路由路径（不含无关查询参数）
+     * 从未解析路由的请求中提取纯路由路径（不含无关查询参数与操作名后额外路由参数）
      *
      * @param  mixed  $request  请求实例
      *
@@ -156,14 +156,14 @@ class OperationlogModel extends Model
             [, $queryString] = explode('?', explode('#', $url, 2)[0], 2);
             $sRoute = self::extractSRouteFromQuery($queryString);
             if ($sRoute !== '') {
-                return $sRoute;
+                return self::normalizeRoutePath($sRoute, $request);
             }
         }
 
         if (method_exists($request, 'get')) {
             $reqS = $request->get('s');
             if (is_string($reqS) && trim($reqS) !== '') {
-                return self::cleanRouteSegment($reqS);
+                return self::normalizeRoutePath($reqS, $request);
             }
         }
 
@@ -174,11 +174,98 @@ class OperationlogModel extends Model
         ];
         foreach ($candidates as $candidate) {
             if ($candidate !== '') {
-                return self::cleanRouteSegment($candidate);
+                return self::normalizeRoutePath($candidate, $request);
             }
         }
 
         return '';
+    }
+
+    /**
+     * 规范化路由路径：仅保留应用/控制器/操作标识，截断操作名之后的额外路由参数段
+     *
+     * @param  string  $routePath  原始路由路径
+     * @param  mixed   $request    可选请求实例
+     *
+     * @return string
+     */
+    private static function normalizeRoutePath(string $routePath, $request = null): string
+    {
+        $clean = self::cleanRouteSegment($routePath);
+        if ($clean === '') {
+            return '';
+        }
+
+        $hasLeadingSlash = ($clean[0] === '/');
+        $segments = array_values(array_filter(explode('/', trim($clean, '/')), 'strlen'));
+        if (empty($segments)) {
+            return $hasLeadingSlash ? '/' : '';
+        }
+
+        $scriptPrefix = '';
+        if (stripos($segments[0], '.php') !== false) {
+            $scriptPrefix = array_shift($segments);
+            if (empty($segments)) {
+                return ($hasLeadingSlash ? '/' : '') . $scriptPrefix;
+            }
+        }
+
+        if ($request) {
+            $controller = strtolower(trim((string) $request->controller()));
+            $action = strtolower(trim((string) $request->action()));
+            if ($controller !== '' && $action !== '') {
+                $maxIndex = min(2, count($segments) - 2);
+                for ($i = 0; $i <= $maxIndex; $i++) {
+                    $segCtrl = strtolower($segments[$i]);
+                    $segActionRaw = strtolower($segments[$i + 1]);
+                    $segActionNoExt = strtolower((string) pathinfo($segments[$i + 1], PATHINFO_FILENAME));
+                    if ($segCtrl === $controller && ($segActionRaw === $action || $segActionNoExt === $action)) {
+                        $segments = array_slice($segments, 0, $i + 2);
+                        if ($scriptPrefix !== '') {
+                            array_unshift($segments, $scriptPrefix);
+                        }
+                        return ($hasLeadingSlash ? '/' : '') . implode('/', $segments);
+                    }
+                }
+            }
+        }
+
+        $origCount = count($segments);
+        if ($origCount >= 4) {
+            $thirdSeg = strtolower((string) pathinfo($segments[2], PATHINFO_FILENAME));
+            $singleAppParamKeys = [
+                'password',
+                'passwd',
+                'pwd',
+                'old_password',
+                'new_password',
+                'new_pwdconfirm',
+                'pwdconfirm',
+                'repassword',
+                'confirm_password',
+                'secret',
+                'pass',
+                'old_pass',
+                'new_pass',
+                'private_key',
+                'aes_key',
+                'access_token',
+                'refresh_token',
+            ];
+            if (in_array(strtolower($segments[2]), $singleAppParamKeys, true) || in_array($thirdSeg, $singleAppParamKeys, true)) {
+                $segments = array_slice($segments, 0, 2);
+            }
+        }
+
+        if (count($segments) > 3) {
+            $segments = array_slice($segments, 0, 3);
+        }
+
+        if ($scriptPrefix !== '') {
+            array_unshift($segments, $scriptPrefix);
+        }
+
+        return ($hasLeadingSlash ? '/' : '') . implode('/', $segments);
     }
 
     /**
