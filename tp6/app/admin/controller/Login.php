@@ -6,6 +6,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
 use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
@@ -32,9 +33,15 @@ class Login extends AdminController
      */
     function index()
     {
-        //如果已经登录
-        if (AdminUserService::getInstance()->isLogin()) {
-            return redirect(build_url('/admin/dashboard/index'));
+        //如果已经登录，需实时校验账号仍然存在且处于启用状态
+        $adminUserService = AdminUserService::getInstance();
+        $userId = (int) $adminUserService->isLogin();
+        if ($userId > 0) {
+            $userInfo = $adminUserService->getRealtimeUserInfoById($userId);
+            if (!empty($userInfo) && (int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) === AdminUserModel::STATUS_ENABLE) {
+                return redirect(build_url('/admin/dashboard/index'));
+            }
+            $adminUserService->logout();
         }
 
         //安全码校验

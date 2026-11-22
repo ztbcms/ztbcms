@@ -7,6 +7,7 @@ namespace app\admin\service;
 
 
 use app\admin\model\AccessModel;
+use app\admin\model\AdminUserModel;
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\service\BaseService;
@@ -73,6 +74,9 @@ class RbacService extends BaseService
             return $res;
         }
         $userInfo = $res['data'];
+        if ((int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) !== AdminUserModel::STATUS_ENABLE) {
+            return self::createReturn(false, null, '账号已被禁用');
+        }
         return $this->enableRoleAccess($userInfo['role_id'], $app, $controller, $action);
     }
 
