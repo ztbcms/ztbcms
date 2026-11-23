@@ -11,26 +11,44 @@ namespace app\common\libs\checkcode;
  */
 class Checkcode
 {
-//随机因子
+    public const MIN_CODE_LEN = 2;
+    public const MAX_CODE_LEN = 8;
+    public const DEFAULT_CODE_LEN = 4;
+
+    public const MIN_WIDTH = 50;
+    public const MAX_WIDTH = 400;
+    public const DEFAULT_WIDTH = 100;
+
+    public const MIN_HEIGHT = 20;
+    public const MAX_HEIGHT = 200;
+    public const DEFAULT_HEIGHT = 30;
+
+    public const MIN_FONT_SIZE = 10;
+    public const MAX_FONT_SIZE = 60;
+    public const DEFAULT_FONT_SIZE = 15;
+
+    public const DEFAULT_BACKGROUND = '#EDF7FF';
+
+    //随机因子
     private $charset = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ23456789';
     //验证码
     private $code;
     //验证码长度
-    private $codelen = 4;
+    private $codelen = self::DEFAULT_CODE_LEN;
     //宽度
-    private $width = 100;
+    private $width = self::DEFAULT_WIDTH;
     //高度
-    private $height = 30;
+    private $height = self::DEFAULT_HEIGHT;
     //图形资源句柄
     private $img;
     //指定的字体
     private $font;
     //指定字体大小
-    private $fontsize = 15;
+    private $fontsize = self::DEFAULT_FONT_SIZE;
     //指定字体颜色
     private $fontcolor;
     //设置背景色
-    private $background = '#EDF7FF';
+    private $background = self::DEFAULT_BACKGROUND;
     //验证码类型
     private $type = '';
     //输出多少次后更换验证码
@@ -60,18 +78,159 @@ class Checkcode
         }
     }
 
+    /**
+     * 规范化验证码长度
+     *
+     * @param  mixed  $value    待校验值
+     * @param  int    $default  默认值
+     *
+     * @return int
+     */
+    public static function normalizeCodeLen($value, int $default = self::DEFAULT_CODE_LEN): int
+    {
+        return self::normalizeIntRange($value, self::MIN_CODE_LEN, self::MAX_CODE_LEN, $default);
+    }
+
+    /**
+     * 规范化验证码图片宽度
+     *
+     * @param  mixed  $value    待校验值
+     * @param  int    $default  默认值
+     *
+     * @return int
+     */
+    public static function normalizeWidth($value, int $default = self::DEFAULT_WIDTH): int
+    {
+        return self::normalizeIntRange($value, self::MIN_WIDTH, self::MAX_WIDTH, $default);
+    }
+
+    /**
+     * 规范化验证码图片高度
+     *
+     * @param  mixed  $value    待校验值
+     * @param  int    $default  默认值
+     *
+     * @return int
+     */
+    public static function normalizeHeight($value, int $default = self::DEFAULT_HEIGHT): int
+    {
+        return self::normalizeIntRange($value, self::MIN_HEIGHT, self::MAX_HEIGHT, $default);
+    }
+
+    /**
+     * 规范化验证码字体大小
+     *
+     * @param  mixed  $value    待校验值
+     * @param  int    $default  默认值
+     *
+     * @return int
+     */
+    public static function normalizeFontSize($value, int $default = self::DEFAULT_FONT_SIZE): int
+    {
+        return self::normalizeIntRange($value, self::MIN_FONT_SIZE, self::MAX_FONT_SIZE, $default);
+    }
+
+    /**
+     * 规范化十六进制颜色值（#RRGGBB）
+     *
+     * @param  mixed   $value       待校验值
+     * @param  string  $default     默认颜色
+     * @param  bool    $allowEmpty  是否允许空字符串
+     *
+     * @return string
+     */
+    public static function normalizeHexColor($value, string $default = '', bool $allowEmpty = false): string
+    {
+        if (!is_string($value)) {
+            return $default;
+        }
+        $trimmed = trim($value);
+        if ($trimmed === '') {
+            return $allowEmpty ? '' : $default;
+        }
+        if (preg_match('/^#[0-9a-fA-F]{6}$/', $trimmed) === 1) {
+            return $trimmed;
+        }
+
+        return $default;
+    }
+
+    /**
+     * 在指定闭区间内校验并解析整数，不合法或越界时返回默认值
+     *
+     * @param  mixed  $value    待校验值
+     * @param  int    $min      最小允许值
+     * @param  int    $max      最大允许值
+     * @param  int    $default  默认值
+     *
+     * @return int
+     */
+    private static function normalizeIntRange($value, int $min, int $max, int $default): int
+    {
+        // 避免 filter_var(true, FILTER_VALIDATE_INT) 返回 1 或数组/浮点静默截断
+        if (is_bool($value)) {
+            return $default;
+        }
+        if (is_int($value)) {
+            $intVal = $value;
+        } elseif (is_string($value)) {
+            $trimmed = trim($value);
+            if ($trimmed === '' || preg_match('/^[+-]?\d+$/', $trimmed) !== 1) {
+                return $default;
+            }
+            $filtered = filter_var($trimmed, FILTER_VALIDATE_INT);
+            if ($filtered === false) {
+                return $default;
+            }
+            $intVal = (int) $filtered;
+        } else {
+            return $default;
+        }
+
+        if ($intVal < $min || $intVal > $max) {
+            return $default;
+        }
+
+        return $intVal;
+    }
+
     //魔术方法，设置
     public function __set($name, $value)
     {
         if (empty($name) || in_array($name, array('code', 'img'))) {
             return false;
         }
-        $this->$name = $value;
+        switch ($name) {
+            case 'codelen':
+                $this->codelen = self::normalizeCodeLen($value);
+                return;
+            case 'width':
+                $this->width = self::normalizeWidth($value);
+                return;
+            case 'height':
+                $this->height = self::normalizeHeight($value);
+                return;
+            case 'fontsize':
+                $this->fontsize = self::normalizeFontSize($value);
+                return;
+            case 'background':
+                $this->background = self::normalizeHexColor($value, self::DEFAULT_BACKGROUND, true);
+                return;
+            case 'fontcolor':
+                $this->fontcolor = self::normalizeHexColor($value, '', true);
+                return;
+            case 'type':
+                $this->type = is_scalar($value) ? (string) $value : '';
+                return;
+            default:
+                $this->$name = $value;
+        }
     }
 
     //生成随机码
     private function createCode()
     {
+        $this->codelen = self::normalizeCodeLen($this->codelen);
         $code = '';
         $_len = strlen($this->charset) - 1;
         for ($i = 0; $i < $this->codelen; $i++) {
@@ -83,12 +242,16 @@ class Checkcode
     //生成背景
     private function createBg()
     {
+        $this->width = self::normalizeWidth($this->width);
+        $this->height = self::normalizeHeight($this->height);
+        $background = self::normalizeHexColor($this->background, self::DEFAULT_BACKGROUND, true);
+
         $this->img = imagecreatetruecolor($this->width, $this->height);
-        if (empty($this->background)) {
+        if (empty($background)) {
             $color = imagecolorallocate($this->img, mt_rand(157, 255), mt_rand(157, 255), mt_rand(157, 255));
         } else {
             //设置背景色
-            $color = imagecolorallocate($this->img, hexdec(substr($this->background, 1, 2)), hexdec(substr($this->background, 3, 2)), hexdec(substr($this->background, 5, 2)));
+            $color = imagecolorallocate($this->img, hexdec(substr($background, 1, 2)), hexdec(substr($background, 3, 2)), hexdec(substr($background, 5, 2)));
         }
         imagefilledrectangle($this->img, 0, $this->height, $this->width, 0, $color);
     }
@@ -96,17 +259,24 @@ class Checkcode
     //生成文字
     private function createFont()
     {
+        $this->width = self::normalizeWidth($this->width);
+        $this->height = self::normalizeHeight($this->height);
+        $this->codelen = self::normalizeCodeLen($this->codelen);
+        $this->fontsize = self::normalizeFontSize($this->fontsize);
+
         $_x = $this->width / $this->codelen;
+        $hexFontColor = self::normalizeHexColor($this->fontcolor, '', true);
         $isFontcolor = false;
-        if ($this->fontcolor && !$isFontcolor) {
-            $this->fontcolor = imagecolorallocate($this->img, hexdec(substr($this->fontcolor, 1, 2)), hexdec(substr($this->fontcolor, 3, 2)), hexdec(substr($this->fontcolor, 5, 2)));
+        $fontColor = null;
+        if ($hexFontColor !== '') {
+            $fontColor = imagecolorallocate($this->img, hexdec(substr($hexFontColor, 1, 2)), hexdec(substr($hexFontColor, 3, 2)), hexdec(substr($hexFontColor, 5, 2)));
             $isFontcolor = true;
         }
         for ($i = 0; $i < $this->codelen; $i++) {
             if (!$isFontcolor) {
-                $this->fontcolor = imagecolorallocate($this->img, mt_rand(0, 156), mt_rand(0, 156), mt_rand(0, 156));
+                $fontColor = imagecolorallocate($this->img, mt_rand(0, 156), mt_rand(0, 156), mt_rand(0, 156));
             }
-            imagettftext($this->img, $this->fontsize, mt_rand(-30, 30), (int) ($_x * $i + mt_rand(1, 5)), (int) ($this->height / 1.4), $this->fontcolor, $this->font, $this->code[$i]);
+            imagettftext($this->img, $this->fontsize, mt_rand(-30, 30), (int) ($_x * $i + mt_rand(1, 5)), (int) ($this->height / 1.4), $fontColor, $this->font, $this->code[$i]);
         }
     }
 
