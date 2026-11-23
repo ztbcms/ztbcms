@@ -10,6 +10,7 @@ use app\admin\model\OperationlogModel;
 use app\admin\service\AdminLogService;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -231,19 +232,7 @@ try {
     }
 
     // ==================== 2. 初始化 SQLite 内存库与临时缓存 ====================
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tmpCacheDir,
-                'prefix' => 'test_',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tmpCacheDir, ['prefix' => 'test_']);
 
     Config::set([
         'default' => 'admin_log_retention_test',

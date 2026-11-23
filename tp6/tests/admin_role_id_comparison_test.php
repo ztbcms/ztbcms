@@ -13,6 +13,7 @@ use think\facade\Session;
 use think\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -76,19 +77,7 @@ function setTestAdminUserInfo(?array $userInfo): void
 $cacheDir = sys_get_temp_dir() . '/ztbcms_role_id_cmp_cache_' . getmypid() . '_' . uniqid('', true) . '/';
 
 try {
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $cacheDir,
-                'prefix' => '',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($cacheDir);
 
     Config::set([
         'default' => 'admin_role_id_comparison_test',

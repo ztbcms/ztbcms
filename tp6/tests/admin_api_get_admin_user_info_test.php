@@ -8,6 +8,7 @@ use think\facade\Db;
 use think\facade\Session;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -85,19 +86,7 @@ try {
     );
 
     // 2. 初始化临时缓存与 SQLite 内存数据库
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $cacheDir,
-                'prefix' => '',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($cacheDir);
 
     Config::set([
         'default' => 'admin_api_get_admin_user_info_test',

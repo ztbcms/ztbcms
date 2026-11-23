@@ -14,6 +14,7 @@ use app\admin\service\RbacService;
 use app\admin\service\RoleService;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -170,19 +171,7 @@ try {
         ],
     ], 'database');
 
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tmpCacheDir,
-                'prefix' => 'test_',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tmpCacheDir, ['prefix' => 'test_']);
 
     Db::execute('CREATE TABLE cms_role (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

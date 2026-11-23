@@ -7,6 +7,7 @@ use think\facade\Cache;
 use think\facade\Config;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -116,7 +117,7 @@ class TestableAliyunDriver extends AliyunDriver
  */
 function readFileCacheTtl(string $cacheKey): int
 {
-    $store = Cache::store('file');
+    $store = Cache::store();
     $method = new ReflectionMethod($store, 'getCacheKey');
     $method->setAccessible(true);
     $filename = $method->invoke($store, $cacheKey);
@@ -135,18 +136,7 @@ if (!is_dir($tempCacheDir)) {
 }
 
 try {
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tempCacheDir . DIRECTORY_SEPARATOR,
-                'prefix' => '',
-                'expire' => 0,
-                'data_compress' => false,
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tempCacheDir, ['data_compress' => false]);
     Cache::clear();
 
     $baseConfig = [

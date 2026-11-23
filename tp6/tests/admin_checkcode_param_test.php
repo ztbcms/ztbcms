@@ -9,6 +9,7 @@ use think\facade\Session;
 use think\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -51,19 +52,7 @@ function assertCheckcodeParam(bool $condition, string $message): void
 $cacheDir = sys_get_temp_dir() . '/ztbcms_checkcode_test_cache_' . getmypid() . '_' . uniqid('', true) . '/';
 
 try {
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $cacheDir,
-                'prefix' => '',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($cacheDir);
 
     Config::set([
         'default' => 'admin_checkcode_param_test',
