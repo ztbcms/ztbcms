@@ -2,8 +2,9 @@
 
 namespace app\admin\model;
 
-use app\admin\service\AdminUserService;
 use think\Model;
+use app\admin\service\AdminLogService;
+use app\admin\service\AdminUserService;
 
 /**
  * 操作日志
@@ -12,6 +13,21 @@ use think\Model;
  */
 class OperationlogModel extends Model
 {
+    /**
+     * 默认日志保留天数
+     */
+    const DEFAULT_RETENTION_DAYS = AdminLogService::DEFAULT_RETENTION_DAYS;
+
+    /**
+     * 日志清理最少保留天数
+     */
+    const MIN_RETENTION_DAYS = AdminLogService::MIN_RETENTION_DAYS;
+
+    /**
+     * 日志清理最大保留天数
+     */
+    const MAX_RETENTION_DAYS = AdminLogService::MAX_RETENTION_DAYS;
+
     /**
      * 敏感字段脱敏占位符
      */
@@ -22,13 +38,18 @@ class OperationlogModel extends Model
     /**
      * 删除操作日志(X天前的数据)
      *
-     * @param  int  $day  天数
+     * @param  mixed  $day  保留天数
      *
      * @return bool
      */
-    static function deleteOperationLog($day = 30)
+    static function deleteOperationLog($day = self::DEFAULT_RETENTION_DAYS)
     {
-        $limit_time = time() - $day * 24 * 60 * 60;
+        $retentionDays = AdminLogService::parseRetentionDays($day);
+        if ($retentionDays === null) {
+            return false;
+        }
+
+        $limit_time = time() - $retentionDays * 24 * 60 * 60;
         OperationlogModel::where('time', '<=', $limit_time)->delete();
         return true;
     }
