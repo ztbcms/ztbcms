@@ -77,16 +77,27 @@ class MenuService extends BaseService
     static function addEditDetails($posts = []){
         $MenuModel = new MenuModel();
 
+        if (array_key_exists('icon', $posts) && is_string($posts['icon'])) {
+            // 仅剥离首尾普通空格，保留控制字符交由验证器拦截
+            $posts['icon'] = trim($posts['icon'], ' ');
+        }
+
         try {
             validate(Menu::class)->check($posts);
-            if($posts['id']) {
+            if (array_key_exists('icon', $posts) && $posts['icon'] === null) {
+                $posts['icon'] = '';
+            }
+            if (!empty($posts['id'])) {
                 //编辑菜单
-                if ($MenuModel->where('id',$posts['id'])->save($posts) !== false) {
+                if ($MenuModel->where('id', $posts['id'])->save($posts) !== false) {
                     return self::createReturn(true,'','操作成功');
                 } else {
                     return self::createReturn(false,'',$MenuModel->getError());
                 }
             } else {
+                if (array_key_exists('id', $posts) && empty($posts['id'])) {
+                    unset($posts['id']);
+                }
                 //添加菜单
                 if($MenuModel->create($posts)) {
                     return self::createReturn(true,'','操作成功');

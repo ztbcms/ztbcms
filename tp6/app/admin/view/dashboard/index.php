@@ -18,12 +18,12 @@
                 >
                     <div v-for="(item, index) in navData" :key="item.id">
                         <el-menu-item v-if="item.items.length === 0" :index="item.id" @click="goUrl([item.name], item)">
-                            <i style="vertical-align:unset;" v-html="item.icon_html"></i>
+                            <i style="vertical-align:unset;" class="iconfont" :class="[item.icon]"></i>
                             <span slot="title">{{item.name}}</span>
                         </el-menu-item>
                         <el-submenu v-else :index="item.id">
                             <template slot="title">
-                                <i style="vertical-align:unset;" v-html="item.icon_html"></i>
+                                <i style="vertical-align:unset;" class="iconfont" :class="[item.icon]"></i>
                                 <span class="title">{{item.name}}</span>
                             </template>
                             <div v-for="(val, j) in item.items" :key="val.id">
@@ -751,9 +751,9 @@
                         that.roleAccessList = res.data.roleAccessList
                         var _menuList = res.data.menuList
                         for (var i = 0; i < _menuList.length; i++) {
-                            // 默认icon
-                            var icon = _menuList[i]['icon'] || 'icon-dashboard'
-                            _menuList[i]['icon_html'] = ' <i class="iconfont ' + icon + '"></i>'
+                            // 默认icon，仅允许合法图标类名，避免异常类名污染样式
+                            var rawIcon = typeof _menuList[i]['icon'] === 'string' ? _menuList[i]['icon'].trim() : ''
+                            _menuList[i]['icon'] = /^[A-Za-z0-9_-]{1,100}$/.test(rawIcon) ? rawIcon : 'icon-dashboard'
                         }
                         that.navData = _menuList
                         if (_menuList && _menuList[0]) {
