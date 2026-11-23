@@ -6,6 +6,7 @@
 
 namespace app\admin\service;
 
+use think\facade\Session;
 
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
@@ -289,7 +290,7 @@ class AdminUserService extends BaseService
     public function logout()
     {
         self::$userInfo = [];
-        session(null);
+        Session::destroy();
         return true;
     }
 
@@ -323,6 +324,11 @@ class AdminUserService extends BaseService
      */
     private function registerLogin(array $userInfo)
     {
+        // 重新生成 Session ID 并清空登录前会话数据，防范会话固定攻击
+        Session::regenerate(true);
+        Session::clear();
+        self::$userInfo = $userInfo;
+
         //写入session
         $token = Encrypt::authcode((int) $userInfo['id'], '');
         session(self::KEY_USER_ID, $token);
