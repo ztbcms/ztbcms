@@ -36,28 +36,35 @@ class AdminAuth
             return $next($request);
         } else {
             // 登录验证
-            if (AdminUserService::getInstance()->isLogin()) {
-                $userInfo = AdminUserService::getInstance()->getInfo();
-                // 账号是否被禁用
-                if ($userInfo['status'] == AdminUserModel::STATUS_DISABLE) {
-                    return $this->_handleDisabled($request);
-                }
-                // 权限检测
-                $noNeedPermission = $request->noNeedPermission ?? [];// controller 设置忽略需菜单权限验证
-                // 该方法是否需要权限检测
-                if ($this->_checkActionMatch($request->action(), $noNeedPermission)) {
-                    // 不需要检测
-                    return $next($request);
-                } else {
-                    // 菜单验证
-                    $info = AdminUserService::getInstance()->getInfo();
-                    $hasPremission = $this->hasAccessPermission($info['id'], $request->baseUrl());
-                    if (!$hasPremission) {
-                        return $this->_handleNoPermiassion($request);
-                    }
-                }
-            } else {
+            $adminUserService = AdminUserService::getInstance();
+            $userId = (int) $adminUserService->isLogin();
+            if ($userId <= 0) {
                 return $this->_handleUnlogin($request);
+            }
+
+            $userInfo = $adminUserService->getRealtimeUserInfoById($userId);
+            if (empty($userInfo)) {
+                $adminUserService->logout();
+                return $this->_handleUnlogin($request);
+            }
+
+            // 账号是否处于启用状态
+            if ((int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) !== AdminUserModel::STATUS_ENABLE) {
+                return $this->_handleDisabled($request);
+            }
+
+            // 权限检测
+            $noNeedPermission = $request->noNeedPermission ?? [];// controller 设置忽略需菜单权限验证
+            // 该方法是否需要权限检测
+            if ($this->_checkActionMatch($request->action(), $noNeedPermission)) {
+                // 不需要检测
+                return $next($request);
+            } else {
+                // 菜单验证
+                $hasPremission = $this->hasAccessPermission($userInfo['id'], $request->baseUrl());
+                if (!$hasPremission) {
+                    return $this->_handleNoPermiassion($request);
+                }
             }
         }
 
@@ -93,7 +100,7 @@ class AdminAuth
     {
         // 退出账户
         AdminUserService::getInstance()->logout();
-        if (request()->isAjax()) {
+        if ($request->isAjax()) {
             return json(createReturn(false, null, '账号已被禁用', 403));
         } else {
             $file = 'common/403';
@@ -154,7 +161,7 @@ class AdminAuth
     // 无权限情况
     private function _handleNoPermiassion(Request $request)
     {
-        if (request()->isAjax()) {
+        if ($request->isAjax()) {
             return json(createReturn(false, null, '无权限', 403));
         } else {
             $file = 'common/403';

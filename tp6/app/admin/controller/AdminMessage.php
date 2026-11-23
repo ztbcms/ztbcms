@@ -101,8 +101,11 @@ class AdminMessage extends AdminController
      */
     public function readMsg()
     {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         // 更新状态为 已读
-        $ids = input('ids', []);
+        $ids = Request::post('ids', []);
         if (!is_array($ids)) {
             $ids = [$ids];
         }
@@ -119,8 +122,11 @@ class AdminMessage extends AdminController
      */
     public function readMsgAll()
     {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         // 消息类型
-        $type = Request::param('type', '');
+        $type = Request::post('type', '');
         $userInfo = AdminUserService::getInstance()->getInfo();
         $res = AdminMessageService::readAllAdminMessage($userInfo['id'], $type);
         return json($res);
@@ -132,8 +138,11 @@ class AdminMessage extends AdminController
     public function sendMessage()
     {
         $action = input('_action', '', 'trim');
-        $post = input('post.');
         if ($action == 'createMessage') {
+            if (!Request::isPost()) {
+                return self::returnMethodNotAllowedJson();
+            }
+            $post = Request::post();
             AdminMessageService::createMessage(
                 $post['title'], $post['content'],
                 $post['receiver'], $post['sender'],

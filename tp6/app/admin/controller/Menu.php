@@ -92,7 +92,10 @@ class Menu extends AdminController
      */
     function menuDelete()
     {
-        $id = Request::param('id', '', 'trim'); //字段
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $id = Request::post('id', '', 'trim'); //字段
         return json(MenuService::doDelete($id));
     }
 }

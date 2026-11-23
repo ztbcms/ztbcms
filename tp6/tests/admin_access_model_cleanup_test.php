@@ -2,10 +2,12 @@
 
 use app\admin\model\AccessModel;
 use app\admin\service\AccessService;
+use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
 use think\App;
 use think\facade\Config;
 use think\facade\Db;
+use think\facade\Session;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -119,9 +121,35 @@ try {
         icon VARCHAR(64) NOT NULL DEFAULT ""
     )');
 
+    Db::execute('CREATE TABLE user (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username VARCHAR(64) NOT NULL,
+        nickname VARCHAR(64) NOT NULL,
+        password VARCHAR(32) NOT NULL DEFAULT "",
+        verify VARCHAR(32) NOT NULL DEFAULT "",
+        email VARCHAR(128) NOT NULL DEFAULT "",
+        avatar VARCHAR(255) NOT NULL DEFAULT "",
+        phone VARCHAR(32) NOT NULL DEFAULT "",
+        role_id INTEGER NOT NULL,
+        status INTEGER NOT NULL DEFAULT 1,
+        remark VARCHAR(255) NOT NULL DEFAULT "",
+        last_login_ip VARCHAR(64) NOT NULL DEFAULT "",
+        last_login_time INTEGER NOT NULL DEFAULT 0,
+        create_time INTEGER NOT NULL DEFAULT 0,
+        update_time INTEGER NOT NULL DEFAULT 0
+    )');
+
     Db::name('role')->insertAll([
         ['id' => 1, 'name' => '超级管理员', 'parentid' => 0, 'status' => 1],
         ['id' => 2, 'name' => '普通管理员', 'parentid' => 1, 'status' => 1],
+    ]);
+
+    Db::name('user')->insert([
+        'id' => 1,
+        'username' => 'admin',
+        'nickname' => '超管',
+        'role_id' => 1,
+        'status' => 1,
     ]);
 
     Db::name('menu')->insertAll([
@@ -130,6 +158,7 @@ try {
     ]);
 
     // 2. 验证 RbacService::authorizeRoleAccess 通过 AccessModel 正常写入权限
+    Session::set(AdminUserService::KEY_USER_INFO, ['id' => 1, 'role_id' => 1]);
     $rbacService = new RbacService();
     $authRes = $rbacService->authorizeRoleAccess(2, [10, 11]);
     assertAccessModelCleanup(
@@ -149,6 +178,7 @@ try {
         'AccessService::getAccessListByRoleId(2) 返回的控制器字段应正确'
     );
 } finally {
+    Session::delete(AdminUserService::KEY_USER_INFO);
     restore_error_handler();
     if (is_dir($cacheDir)) {
         $iterator = new RecursiveIteratorIterator(

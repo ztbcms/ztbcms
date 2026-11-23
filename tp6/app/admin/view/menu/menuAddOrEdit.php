@@ -131,6 +131,17 @@
                             message: '请选择类型',
                             trigger: 'change'
                         }],
+                        icon: [{
+                            validator: function (rule, value, callback) {
+                                var icon = typeof value === 'string' ? value.trim() : '';
+                                if (!icon || /^[A-Za-z0-9_-]{1,100}$/.test(icon)) {
+                                    callback();
+                                } else {
+                                    callback(new Error('图标仅支持字母、数字、下划线和中划线（不超过100个字符）'));
+                                }
+                            },
+                            trigger: ['blur', 'change']
+                        }],
                     },
                     parentidOptions: [],
                     appOptions: [],

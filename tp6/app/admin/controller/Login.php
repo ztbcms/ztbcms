@@ -6,6 +6,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
 use app\admin\service\AdminConfigService;
 use app\admin\service\AdminUserService;
@@ -32,9 +33,15 @@ class Login extends AdminController
      */
     function index()
     {
-        //如果已经登录
-        if (AdminUserService::getInstance()->isLogin()) {
-            return redirect(build_url('/admin/dashboard/index'));
+        //如果已经登录，需实时校验账号仍然存在且处于启用状态
+        $adminUserService = AdminUserService::getInstance();
+        $userId = (int) $adminUserService->isLogin();
+        if ($userId > 0) {
+            $userInfo = $adminUserService->getRealtimeUserInfoById($userId);
+            if (!empty($userInfo) && (int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) === AdminUserModel::STATUS_ENABLE) {
+                return redirect(build_url('/admin/dashboard/index'));
+            }
+            $adminUserService->logout();
         }
 
         //安全码校验
@@ -58,9 +65,12 @@ class Login extends AdminController
      */
     function doLogin()
     {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         //记录登录失败者IP
         $ip = request()->ip();
-        $form = Request::param('form', []);
+        $form = Request::post('form', []);
         if (!is_array($form)) {
             return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
         }
@@ -143,6 +153,9 @@ class Login extends AdminController
      */
     function doLogout()
     {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         AdminUserService::getInstance()->logout();
         return self::makeJsonReturn(true, [
             'redirect' => build_url('/admin/login/index')

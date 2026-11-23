@@ -6,6 +6,7 @@
 
 namespace app\admin\service;
 
+use think\facade\Session;
 
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
@@ -49,15 +50,141 @@ class AdminUserService extends BaseService
     /**
      * 获取当前登录用户资料
      *
-     * @return array
+     * @return array|null
      */
     public function getInfo()
     {
-        if (empty(self::$userInfo)) {
-            self::$userInfo = session(self::KEY_USER_INFO);
+        $sessionUserInfo = session(self::KEY_USER_INFO);
+        if (empty($sessionUserInfo) || !is_array($sessionUserInfo)) {
+            self::$userInfo = [];
+            return null;
         }
 
+        if (!empty($sessionUserInfo['id'])) {
+            try {
+                $freshUser = (new AdminUserModel())->where('id', (int) $sessionUserInfo['id'])->findOrEmpty();
+                if (!$freshUser->isEmpty()) {
+                    $sessionUserInfo = $this->syncSessionUserInfo($sessionUserInfo, $freshUser->toArray());
+                } else {
+                    $sessionUserInfo['role_id'] = 0;
+                    $sessionUserInfo['status'] = AdminUserModel::STATUS_DISABLE;
+                    session(self::KEY_USER_INFO, $sessionUserInfo);
+                }
+            } catch (\Throwable $e) {
+                // 兼容未初始化用户表的轻量测试场景
+            }
+        }
+
+        self::$userInfo = $sessionUserInfo;
         return !empty(self::$userInfo) ? self::$userInfo : null;
+    }
+
+    /**
+     * 按管理员 ID 从数据库实时获取最新资料（不捕获数据库异常，确保 fail-closed）
+     *
+     * @param int $userId 管理员 ID
+     *
+     * @return array|null
+     */
+    public function getRealtimeUserInfoById(int $userId): ?array
+    {
+        if ($userId <= 0) {
+            return null;
+        }
+
+        $freshUser = (new AdminUserModel())
+            ->where('id', $userId)
+            ->withoutField('password,verify')
+            ->findOrEmpty();
+        if ($freshUser->isEmpty()) {
+            return null;
+        }
+
+        $freshData = $freshUser->toArray();
+        $sessionUserInfo = session(self::KEY_USER_INFO);
+        if (!is_array($sessionUserInfo) || (int) ($sessionUserInfo['id'] ?? 0) !== $userId) {
+            $sessionUserInfo = [];
+        }
+
+        if ((int) ($freshData['status'] ?? AdminUserModel::STATUS_DISABLE) === AdminUserModel::STATUS_ENABLE) {
+            $this->syncSessionUserInfo($sessionUserInfo, $freshData);
+        }
+
+        return $freshData;
+    }
+
+    /**
+     * 从数据库获取当前操作者的实时有效信息（校验存在性与启用状态）
+     *
+     * @param array|null $operatorUser 指定操作者数组，默认从当前登录会话获取
+     *
+     * @return array|null
+     */
+    public function getRealtimeOperatorInfo(?array $operatorUser = null): ?array
+    {
+        $sessionInfo = $operatorUser ?? session(self::KEY_USER_INFO);
+        $userId = (int) ($sessionInfo['id'] ?? $this->isLogin());
+        if ($userId <= 0) {
+            return null;
+        }
+
+        $adminUserModel = new AdminUserModel();
+        $freshUser = $adminUserModel->where('id', $userId)->findOrEmpty();
+        if ($freshUser->isEmpty()) {
+            return null;
+        }
+
+        $freshData = $freshUser->toArray();
+        if ((int) ($freshData['status'] ?? AdminUserModel::STATUS_DISABLE) !== AdminUserModel::STATUS_ENABLE) {
+            return null;
+        }
+
+        if (is_array($sessionInfo) && !empty($sessionInfo['id']) && (int) $sessionInfo['id'] === $userId) {
+            $this->syncSessionUserInfo($sessionInfo, $freshData);
+        }
+
+        return $freshData;
+    }
+
+    /**
+     * 从数据库获取当前操作者的实时有效角色ID
+     *
+     * @param array|null $operatorUser 指定操作者数组，默认从当前登录会话获取
+     *
+     * @return int
+     */
+    public function getRealtimeOperatorRoleId(?array $operatorUser = null): int
+    {
+        $operator = $this->getRealtimeOperatorInfo($operatorUser);
+        return (int) ($operator['role_id'] ?? 0);
+    }
+
+    /**
+     * 将数据库最新管理员字段同步回 Session 与静态缓存
+     *
+     * @param array $sessionUserInfo 原会话信息
+     * @param array $freshData       数据库最新管理员记录
+     *
+     * @return array
+     */
+    private function syncSessionUserInfo(array $sessionUserInfo, array $freshData): array
+    {
+        $merged = array_merge($sessionUserInfo, [
+            'id'       => $freshData['id'],
+            'username' => $freshData['username'] ?? ($sessionUserInfo['username'] ?? ''),
+            'nickname' => $freshData['nickname'] ?? ($sessionUserInfo['nickname'] ?? ''),
+            'email'    => $freshData['email'] ?? ($sessionUserInfo['email'] ?? ''),
+            'role_id'  => $freshData['role_id'],
+            'info'     => $freshData['info'] ?? ($sessionUserInfo['info'] ?? ''),
+            'avatar'   => $freshData['avatar'] ?? ($sessionUserInfo['avatar'] ?? ''),
+            'phone'    => $freshData['phone'] ?? ($sessionUserInfo['phone'] ?? ''),
+            'status'   => $freshData['status'] ?? AdminUserModel::STATUS_DISABLE,
+            'remark'   => $freshData['remark'] ?? ($sessionUserInfo['remark'] ?? ''),
+        ]);
+        session(self::KEY_USER_INFO, $merged);
+        self::$userInfo = $merged;
+
+        return $merged;
     }
 
     /**
@@ -86,12 +213,17 @@ class AdminUserService extends BaseService
         $res = $this->checkUserPassword($identifier, $password);
         if(!$res['status']){
             //记录登录日志
-            $this->record($identifier, $password, 0);
+            $this->record($identifier, 0);
             return false;
         }
         $userInfo = $res['data'];
+        if ((int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) !== AdminUserModel::STATUS_ENABLE) {
+            // 账号未启用，记录登录失败日志并拒绝登录
+            $this->record($identifier, 0);
+            return false;
+        }
         //记录登录日志
-        $this->record($identifier, $password, 1);
+        $this->record($identifier, 1);
         //注册登录状态
         $this->registerLogin($userInfo);
         return true;
@@ -141,7 +273,10 @@ class AdminUserService extends BaseService
     public function isAdministrator()
     {
         $userInfo = $this->getInfo();
-        if (!empty($userInfo) && (int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID) {
+        if (!empty($userInfo)
+            && (int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) === AdminUserModel::STATUS_ENABLE
+            && (int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID
+        ) {
             return true;
         }
         return false;
@@ -154,25 +289,27 @@ class AdminUserService extends BaseService
      */
     public function logout()
     {
-        session(null);
+        self::$userInfo = [];
+        Session::destroy();
         return true;
     }
 
     /**
      * 记录登录日志
      *
-     * @param  string  $identifier  登录方式，uid,username
-     * @param  string  $password  密码
-     * @param  int  $status
+     * @param  string|int  $identifier  登录方式，uid,username
+     * @param  int|mixed   $status      登录状态（兼容旧版三参数签名时为第三参数）
      */
-    private function record($identifier, $password, $status = 0)
+    private function record($identifier, $status = 0)
     {
+        if (func_num_args() >= 3) {
+            $status = func_get_arg(2);
+        }
         //登录日志
         $loginLogModel = new LoginlogModel();
         $loginLogModel->addLoginLog([
             "username" => $identifier,
-            "status"   => $status,
-            "password" => $status ? '密码保密' : $password,
+            "status"   => (int) $status,
             "info"     => is_int($identifier) ? '用户ID登录' : '用户名登录',
         ]);
     }
@@ -187,6 +324,11 @@ class AdminUserService extends BaseService
      */
     private function registerLogin(array $userInfo)
     {
+        // 重新生成 Session ID 并清空登录前会话数据，防范会话固定攻击
+        Session::regenerate(true);
+        Session::clear();
+        self::$userInfo = $userInfo;
+
         //写入session
         $token = Encrypt::authcode((int) $userInfo['id'], '');
         session(self::KEY_USER_ID, $token);
@@ -230,6 +372,9 @@ class AdminUserService extends BaseService
      */
     function hasPermission($app, $controller, $action){
         $userInfo = $this->getInfo();
+        if (empty($userInfo) || empty($userInfo['id'])) {
+            return false;
+        }
         $rbacService = new RbacService();
         return $rbacService->enableUserAccess($userInfo['id'], $app, $controller, $action)['status'];
     }

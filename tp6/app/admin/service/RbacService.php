@@ -7,6 +7,7 @@ namespace app\admin\service;
 
 
 use app\admin\model\AccessModel;
+use app\admin\model\AdminUserModel;
 use app\admin\model\MenuModel;
 use app\admin\model\RoleModel;
 use app\common\service\BaseService;
@@ -73,6 +74,9 @@ class RbacService extends BaseService
             return $res;
         }
         $userInfo = $res['data'];
+        if ((int) ($userInfo['status'] ?? AdminUserModel::STATUS_DISABLE) !== AdminUserModel::STATUS_ENABLE) {
+            return self::createReturn(false, null, '账号已被禁用');
+        }
         return $this->enableRoleAccess($userInfo['role_id'], $app, $controller, $action);
     }
 
@@ -140,13 +144,20 @@ class RbacService extends BaseService
     /**
      * 授权角色权限(菜单)
      *
-     * @param  int|string  $role_id  角色ID
-     * @param  array  $menuIdList  菜单Id列表
+     * @param  int|string  $role_id          角色ID
+     * @param  array       $menuIdList       菜单Id列表
+     * @param  int|null    $operator_role_id 操作者角色ID，默认取当前登录用户角色
      *
      * @return array
      */
-    function authorizeRoleAccess($role_id, $menuIdList = [])
+    function authorizeRoleAccess($role_id, $menuIdList = [], $operator_role_id = null)
     {
+        if (is_array($menuIdList)) {
+            $menuIdList = array_values(array_unique(array_filter(array_map('intval', $menuIdList), function ($id) {
+                return $id > 0;
+            })));
+        }
+
         //被选中的菜单项
         if (empty($menuIdList)) {
             throw new InvalidArgumentException('请选择授权菜单');
@@ -155,9 +166,32 @@ class RbacService extends BaseService
             throw new InvalidArgumentException('请选择授权角色');
         }
 
+        if ($operator_role_id === null) {
+            $operator_role_id = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
+        }
+        if ((int) $role_id === RoleModel::SUPER_ADMIN_ROLE_ID) {
+            return self::createReturn(false, null, '超级管理员角色无需授权');
+        }
+        $roleService = new RoleService();
+        $manageCheck = $roleService->canManageRole($operator_role_id, $role_id, false);
+        if (!$manageCheck['status']) {
+            return $manageCheck;
+        }
+
         //取得菜单数据
         $menuModel = new MenuModel();
         $menuList = $menuModel->where('id', 'in', $menuIdList)->select()->toArray();
+        if (count($menuList) !== count($menuIdList)) {
+            return self::createReturn(false, null, '包含无效的授权菜单');
+        }
+        if ((int) $operator_role_id !== RoleModel::SUPER_ADMIN_ROLE_ID) {
+            $operatorMenus = MenuService::getMenuByRole($operator_role_id)['data'] ?? [];
+            $allowedMenuIds = array_map('intval', array_column($operatorMenus, 'id'));
+            if (!empty(array_diff($menuIdList, $allowedMenuIds))) {
+                return self::createReturn(false, null, '不能授予超出当前角色权限范围的菜单');
+            }
+        }
+
         $accessList = [];
         //检测数据合法性
         foreach ($menuList as $menu) {

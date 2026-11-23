@@ -67,13 +67,18 @@ class Role extends AdminController
         $action = input('_action', '', 'trim');
 
         if (Request::isGet() && $action == 'getDetail') {
+            $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
+            $check = (new RoleService())->canManageRole($operatorRoleId, $id, false);
+            if (!$check['status']) {
+                return self::makeJsonReturn(false, null, $check['msg']);
+            }
 
             $RoleModel = new RoleModel();
             $info = $RoleModel->where(['id' => $id])->find();
             return self::makeJsonReturn(true, $info);
         }
-        $userInfo = AdminUserService::getInstance()->getInfo();
-        $is_superior = (int) $userInfo['role_id'] === RoleModel::SUPER_ADMIN_ROLE_ID;
+        $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
+        $is_superior = $operatorRoleId === RoleModel::SUPER_ADMIN_ROLE_ID;
 
         return view('roleAddOrEdit', [
             'id' => $id,
@@ -131,11 +136,11 @@ class Role extends AdminController
         if (empty($name)) {
             return json(self::createReturn(false, null, '请填写角色名称'));
         }
-        $userInfo = AdminUserService::getInstance()->getInfo();
+        $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
         if (empty($parentid)) {
             // 非超管时，上级角色默认是当前登录角色
-            if ((int) $userInfo['role_id'] !== RoleModel::SUPER_ADMIN_ROLE_ID) {
-                $parentid = $userInfo['role_id'];
+            if ($operatorRoleId !== RoleModel::SUPER_ADMIN_ROLE_ID) {
+                $parentid = $operatorRoleId;
             }
         }
         $data['id'] = $id;
@@ -155,9 +160,12 @@ class Role extends AdminController
      */
     function roleDelete()
     {
-        $id = Request::param('id', '', 'trim');
-        $userInfo = AdminUserService::getInstance()->getInfo();
-        if ((int) $id === (int) $userInfo['role_id']) {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $id = Request::post('id', '', 'trim');
+        $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
+        if ((int) $id === $operatorRoleId) {
             return json(self::createReturn(false, null, '您不能删除自己使用的角色'));
         }
         $roleService = new RoleService();
@@ -182,7 +190,8 @@ class Role extends AdminController
             //被选中的菜单项
             $menuIdList = explode(',', $menuid);
             $rbacService = new RbacService();
-            return $rbacService->authorizeRoleAccess($roleid, $menuIdList);
+            $res = $rbacService->authorizeRoleAccess($roleid, $menuIdList);
+            return json($res);
         }
 
         $id = Request::param('id', 0, 'intval');
@@ -198,13 +207,17 @@ class Role extends AdminController
     {
         //角色ID
         $role_id = Request::param('id', 0, 'intval');
+        $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
+        $check = (new RoleService())->canManageRole($operatorRoleId, $role_id, false);
+        if (!$check['status']) {
+            return json(self::createReturn(false, null, $check['msg']));
+        }
         $roleModel = new RoleModel();
         //获取登录管理员的授权信息
         $select_menu_ids = []; // 选中权限
         $select_menu_paretids = []; // 选中的菜单项
-        $userInfo = AdminUserService::getInstance()->getInfo();
         //获取当前登录用户角色的所有权限菜单
-        $loginUsermenuList = MenuService::getMenuByRole($userInfo['role_id'])['data'];
+        $loginUsermenuList = MenuService::getMenuByRole($operatorRoleId)['data'];
         // 菜单排序，父类菜单靠前
         $loginUsermenuList = TreeHelper::arrayToTreeList($loginUsermenuList, 0, [
             'parentKey' => 'parentid'
@@ -246,11 +259,10 @@ class Role extends AdminController
             'childrenKey' => 'children',
         ]);
 
-        $userInfo = AdminUserService::getInstance()->getInfo();
         $role_info = $roleModel->where('id', $role_id)->findOrEmpty();
         $res['list'] = $menuList;
         $res['role_id'] = $role_id;
-        $res['my_role_id'] = $userInfo['role_id'];
+        $res['my_role_id'] = $operatorRoleId;
         $res['name'] = $role_info['name'];
         $res['select_menu_id'] = $select_menu_ids;
         return json(self::createReturn(true, $res));

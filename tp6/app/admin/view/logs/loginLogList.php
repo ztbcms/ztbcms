@@ -58,11 +58,6 @@
                         width="80">
                 </el-table-column>
                 <el-table-column
-                        prop="password"
-                        label="密码"
-                        width="80">
-                </el-table-column>
-                <el-table-column
                         prop="status"
                         label="状态"
                         width="80">
@@ -75,7 +70,7 @@
                         prop="info"
                         label="其他说明">
                     <template slot-scope="scope">
-                        <p v-html="scope.row.info"></p>
+                        <span>{{ scope.row.info }}</span>
                     </template>
                 </el-table-column>
 

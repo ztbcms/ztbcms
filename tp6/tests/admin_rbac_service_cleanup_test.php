@@ -1,9 +1,11 @@
 <?php
 
+use app\admin\service\AdminUserService;
 use app\admin\service\RbacService;
 use think\App;
 use think\facade\Config;
 use think\facade\Db;
+use think\facade\Session;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -164,6 +166,7 @@ try {
     $rbacService = new RbacService();
 
     // 2. 授权菜单并验证 getRoleAccessList / enableUserAccess
+    Session::set(AdminUserService::KEY_USER_INFO, ['id' => 1, 'role_id' => 1]);
     $authRes = $rbacService->authorizeRoleAccess(2, [20]);
     assertRbacServiceCleanup(($authRes['status'] ?? false) === true, 'authorizeRoleAccess 应成功');
 
@@ -179,6 +182,7 @@ try {
     $denyRes = $rbacService->enableUserAccess(2, 'Admin', 'Role', 'index');
     assertRbacServiceCleanup(($denyRes['status'] ?? true) === false, '用户 2 对未授权接口应鉴权拒绝');
 } finally {
+    Session::delete(AdminUserService::KEY_USER_INFO);
     restore_error_handler();
     if (is_dir($cacheDir)) {
         $iterator = new RecursiveIteratorIterator(

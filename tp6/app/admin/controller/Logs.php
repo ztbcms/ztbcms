@@ -2,14 +2,15 @@
 
 namespace app\admin\controller;
 
+use think\Request;
 use app\admin\model\LoginlogModel;
 use app\admin\model\OperationlogModel;
 use app\admin\service\AdminConfigService;
+use app\admin\service\AdminLogService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
 use app\common\libs\helper\PaginationHelper;
 use app\common\service\BaseService;
-use think\Request;
 
 /**
  * 日志管理
@@ -61,7 +62,7 @@ class Logs extends AdminController
             $page = PaginationHelper::normalizePage(input('page', 1));
             $limit = PaginationHelper::normalizeLimit(input('limit', 20));
             $LoginlogModel = new LoginlogModel();
-            $items = $LoginlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            $items = $LoginlogModel->where($where)->withoutField('password')->order($order)->page($page)->limit($limit)->select();
             $total_items = $LoginlogModel->where($where)->count();
             $total_page = ceil($total_items / $limit);
             return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
@@ -77,9 +78,19 @@ class Logs extends AdminController
      */
     function deleteLoginLog()
     {
-        $day = input('day', 30, 'intval');
+        if (!request()->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $day = AdminLogService::resolveRetentionDaysFromParams(request()->param(false));
+        if ($day === null) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         $LoginlogModel = new LoginlogModel();
-        $LoginlogModel->deleteLoginLog($day);
+        if (!$LoginlogModel->deleteLoginLog($day)) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         return json(self::createReturn(true, '', '删除成功'));
     }
 
@@ -124,12 +135,19 @@ class Logs extends AdminController
             }
             $OperationlogModel = new OperationlogModel();
             $items = $OperationlogModel->where($where)->order($order)->page($page)->limit($limit)->select();
+            foreach ($items as $key => $item) {
+                $items[$key]['url'] = OperationlogModel::sanitizeUrl((string) ($item['url'] ?? ''));
+                $items[$key]['params'] = OperationlogModel::sanitizeParamsString((string) ($item['params'] ?? ''));
+            }
             $total_items = $OperationlogModel->where($where)->count();
             $total_page = ceil($total_items / $limit);
             return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
         } else {
             if ($action == 'updateAdminOperationConfig') {
-                $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
+                if (!$request->isPost()) {
+                    return self::returnMethodNotAllowedJson();
+                }
+                $admin_operation_switch = $request->post('admin_operation_switch', '0', 'trim');
                 $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
                 AdminConfigService::getInstance()->clearConfigCache();
                 return json($getConfig);
@@ -146,9 +164,19 @@ class Logs extends AdminController
      */
     function deleteAdminOperationLog()
     {
-        $day = input('day', 30, 'intval');
+        if (!request()->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $day = AdminLogService::resolveRetentionDaysFromParams(request()->param(false));
+        if ($day === null) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         $OperationlogModel = new OperationlogModel();
-        $OperationlogModel->deleteOperationLog($day);
+        if (!$OperationlogModel->deleteOperationLog($day)) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         return json(self::createReturn(true, '', '删除成功'));
     }
 

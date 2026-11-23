@@ -7,6 +7,7 @@ use app\admin\service\AdminConfigService;
 use app\BaseController;
 use think\App;
 use think\facade\View;
+use think\response\Json;
 
 /**
  * 管理后台基础控制器
@@ -48,5 +49,17 @@ class AdminController extends BaseController
         // 视图注入配置信息 $_Config
         $config = AdminConfigService::getInstance()->getConfig()['data'];
         View::assign('_Config', $config);
+    }
+
+    /**
+     * 返回仅允许 POST 请求的 JSON 错误响应
+     *
+     * @return Json
+     */
+    protected static function returnMethodNotAllowedJson(): Json
+    {
+        return self::makeJsonReturn(false, null, '仅支持 POST 请求', 405)
+            ->code(405)
+            ->header(['Allow' => 'POST']);
     }
 }
