@@ -555,10 +555,13 @@ try {
     assertAdminPrivilegeSame(false, $resp['status'], 'AdminManager::managerEdit 应拒绝非超管编辑超管账号');
 
     // AdminManager::managerDelete 试图删除同级/其他分支管理员应被拒绝
-    setAdminPrivilegeRequest($app, 'GET', ['id' => 5]);
+    setAdminPrivilegeRequest($app, 'POST', [], ['id' => 5]);
     $adminController = new AdminManager($app);
-    $resp = $adminController->managerDelete()->getData();
+    $deleteResponse = $adminController->managerDelete();
+    $resp = $deleteResponse->getData();
     assertAdminPrivilegeSame(false, $resp['status'], 'AdminManager::managerDelete 应拒绝非超管删除平级/其他分支管理员');
+    assertAdminPrivilegeSame(400, $resp['code'], 'AdminManager::managerDelete 越权拦截应走业务校验而非 405');
+    assertAdminPrivilegeSame(200, $deleteResponse->getCode(), 'AdminManager::managerDelete POST 请求 HTTP 状态码不应为 405');
 
     // ==================== 5. 已登录账号被降权/禁用后持旧 Session 请求回归测试 ====================
     seedAdminPrivilegeFixture();

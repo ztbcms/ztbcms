@@ -65,9 +65,12 @@ class Login extends AdminController
      */
     function doLogin()
     {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         //记录登录失败者IP
         $ip = request()->ip();
-        $form = Request::param('form', []);
+        $form = Request::post('form', []);
         if (!is_array($form)) {
             return self::makeJsonReturn(false, null, '用户名或者密码不能为空，请重新输入');
         }
@@ -150,6 +153,9 @@ class Login extends AdminController
      */
     function doLogout()
     {
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         AdminUserService::getInstance()->logout();
         return self::makeJsonReturn(true, [
             'redirect' => build_url('/admin/login/index')

@@ -240,7 +240,10 @@ class AdminManager extends AdminController
     //管理员删除
     function managerDelete()
     {
-        $id = Request::param('id', '', 'trim');
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $id = Request::post('id', '', 'trim');
         $userInfo = AdminUserService::getInstance()->getRealtimeOperatorInfo();
         if ($id == ($userInfo['id'] ?? 0)) {
             return json(self::createReturn(false, [], '不能删除自己'));

@@ -359,14 +359,41 @@ try {
         ['POST', [], ['day' => '99999999999999999999999999'], []],
         ['POST', [], ['day' => null], []],
         ['POST', [], ['day' => [30]], []],
-        ['GET', ['day' => '-1'], [], []],
-        ['GET', ['day' => '0'], [], []],
-        ['GET', ['day' => '6'], [], []],
-        ['GET', ['day' => '30.5'], [], []],
-        ['GET', [], [], ['day' => '-1']],
         ['POST', [], [], ['day' => '0']],
     ];
 
+    // 4.1 非 POST 请求拦截验证（无论是否传 day 或参数是否合法，一律返回 405 且不删除任何日志）
+    $nonPostRequests = [
+        ['GET', [], [], []],
+        ['GET', ['day' => '30'], [], []],
+        ['GET', ['day' => '-1'], [], []],
+        ['GET', [], [], ['day' => '-1']],
+        ['HEAD', ['day' => '30'], [], []],
+    ];
+    seedAdminLogsForRetentionTest($now);
+    foreach ($nonPostRequests as [$method, $get, $post, $route]) {
+        bindRetentionTestRequest($app, $method, $get, $post, $route);
+        $controller = new Logs($app);
+        $loginResponse = $controller->deleteLoginLog();
+        $loginResp = $loginResponse->getData();
+        assertRetentionSame(405, $loginResponse->getCode(), 'deleteLoginLog 非 POST HTTP 状态码应为 405: ' . var_export([$method, $get, $post, $route], true));
+        assertRetentionSame(false, $loginResp['status'], 'deleteLoginLog 非 POST 请求应失败');
+        assertRetentionSame(405, $loginResp['code'], 'deleteLoginLog 非 POST 业务 code 应为 405');
+        assertRetentionSame('仅支持 POST 请求', $loginResp['msg'], 'deleteLoginLog 非 POST 错误提示不匹配');
+        assertRetentionSame([35, 8, 6, 1], getExistingLogAges('login_log', 'logintime', $now), 'deleteLoginLog 拦截非 POST 后不得删除任何登录日志');
+
+        bindRetentionTestRequest($app, $method, $get, $post, $route);
+        $controller = new Logs($app);
+        $opResponse = $controller->deleteAdminOperationLog();
+        $opResp = $opResponse->getData();
+        assertRetentionSame(405, $opResponse->getCode(), 'deleteAdminOperationLog 非 POST HTTP 状态码应为 405: ' . var_export([$method, $get, $post, $route], true));
+        assertRetentionSame(false, $opResp['status'], 'deleteAdminOperationLog 非 POST 请求应失败');
+        assertRetentionSame(405, $opResp['code'], 'deleteAdminOperationLog 非 POST 业务 code 应为 405');
+        assertRetentionSame('仅支持 POST 请求', $opResp['msg'], 'deleteAdminOperationLog 非 POST 错误提示不匹配');
+        assertRetentionSame([35, 8, 6, 1], getExistingLogAges('operation_log', 'time', $now), 'deleteAdminOperationLog 拦截非 POST 后不得删除任何操作日志');
+    }
+
+    // 4.2 POST 非法参数验证
     seedAdminLogsForRetentionTest($now);
     foreach ($controllerInvalidRequests as [$method, $get, $post, $route]) {
         bindRetentionTestRequest($app, $method, $get, $post, $route);
@@ -386,7 +413,7 @@ try {
         assertRetentionSame([35, 8, 6, 1], getExistingLogAges('operation_log', 'time', $now), 'deleteAdminOperationLog 拦截后不得删除任何操作日志');
     }
 
-    // 未传 day 参数（POST 与 GET）：按默认 30 天清理
+    // 未传 day 参数（POST）：按默认 30 天清理
     seedAdminLogsForRetentionTest($now);
     bindRetentionTestRequest($app, 'POST');
     $controller = new Logs($app);
@@ -396,7 +423,7 @@ try {
     assertRetentionSame('删除成功', $defaultLoginResp['msg'], 'deleteLoginLog 成功文案不匹配');
     assertRetentionSame([8, 6, 1], getExistingLogAges('login_log', 'logintime', $now), '未传 day 应清理 30 日前登录日志');
 
-    bindRetentionTestRequest($app, 'GET');
+    bindRetentionTestRequest($app, 'POST');
     $controller = new Logs($app);
     $defaultOpResp = $controller->deleteAdminOperationLog()->getData();
     assertRetentionSame(true, $defaultOpResp['status'], 'deleteAdminOperationLog 未传 day 应按默认 30 天成功');

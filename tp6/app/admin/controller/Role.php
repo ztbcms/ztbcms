@@ -160,7 +160,10 @@ class Role extends AdminController
      */
     function roleDelete()
     {
-        $id = Request::param('id', '', 'trim');
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $id = Request::post('id', '', 'trim');
         $operatorRoleId = AdminUserService::getInstance()->getRealtimeOperatorRoleId();
         if ((int) $id === $operatorRoleId) {
             return json(self::createReturn(false, null, '您不能删除自己使用的角色'));

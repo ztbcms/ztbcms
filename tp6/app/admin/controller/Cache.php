@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use think\facade\App;
+use think\facade\Request;
 use think\facade\View;
 
 use app\admin\service\AdminConfigService;
@@ -23,8 +24,18 @@ class Cache extends AdminController
      */
     public function cache()
     {
+        if (!Request::isPost()) {
+            $typeParam = Request::param('type');
+            if ((is_string($typeParam) && trim($typeParam) !== '') || (!is_string($typeParam) && $typeParam !== null)) {
+                return self::returnMethodNotAllowedJson();
+            }
+
+            return View::fetch('cache');
+        }
+
         set_time_limit(0);
-        $type = input('type', '', 'trim');
+        $rawType = Request::post('type', '');
+        $type = is_string($rawType) ? trim($rawType) : '';
         if ($type === 'site') {
             // 清除后台配置缓存
             AdminConfigService::getInstance()->clearConfigCache();
@@ -42,7 +53,7 @@ class Cache extends AdminController
             return json(self::createReturn(true, '', '清除成功'));
         }
 
-        return View::fetch('cache');
+        return self::returnErrorJson('参数异常');
     }
 
     /**
@@ -50,7 +61,7 @@ class Cache extends AdminController
      *
      * @return string
      */
-    private function getRuntimeRootPath(): string
+    protected function getRuntimeRootPath(): string
     {
         return App::getRootPath() . 'runtime' . DIRECTORY_SEPARATOR;
     }
