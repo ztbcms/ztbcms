@@ -78,6 +78,9 @@ class Logs extends AdminController
      */
     function deleteLoginLog()
     {
+        if (!request()->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $day = AdminLogService::resolveRetentionDaysFromParams(request()->param(false));
         if ($day === null) {
             return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
@@ -141,7 +144,10 @@ class Logs extends AdminController
             return json(BaseService::createReturnList(true, $items, $page, $limit, $total_items, $total_page));
         } else {
             if ($action == 'updateAdminOperationConfig') {
-                $admin_operation_switch = input('admin_operation_switch', '0', 'trim');
+                if (!$request->isPost()) {
+                    return self::returnMethodNotAllowedJson();
+                }
+                $admin_operation_switch = $request->post('admin_operation_switch', '0', 'trim');
                 $getConfig = AdminConfigService::getInstance()->updateConfig(['admin_operation_switch' => $admin_operation_switch]);
                 AdminConfigService::getInstance()->clearConfigCache();
                 return json($getConfig);
@@ -158,6 +164,9 @@ class Logs extends AdminController
      */
     function deleteAdminOperationLog()
     {
+        if (!request()->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $day = AdminLogService::resolveRetentionDaysFromParams(request()->param(false));
         if ($day === null) {
             return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());

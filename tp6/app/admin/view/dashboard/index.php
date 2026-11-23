@@ -877,8 +877,8 @@
                 var that = this
                 $.ajax({
                     url: "{:api_url('/admin/Login/doLogout')}",
-                    method: 'get',
-                    params: {}
+                    method: 'post',
+                    data: {}
                 }).then(function (res) {
                     if (res.status) {
                         layer.msg(res.msg)

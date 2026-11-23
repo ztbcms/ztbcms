@@ -149,6 +149,9 @@ class Config extends AdminController
      * @throws \think\db\exception\DbException
      */
     function doDeleteExtendField(Request $request){
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $configFieldService = new ConfigFieldService();
         $fid = $request->post("fid");
         $res = $configFieldService->deleteConfigField($fid);

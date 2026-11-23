@@ -84,7 +84,10 @@ class Module extends AdminController
     // 安装
     function doInstallModule()
     {
-        $moduleName = input('module', '', 'strtolower');
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $moduleName = Request::post('module', '', 'strtolower');
         if (empty($moduleName)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
@@ -101,7 +104,10 @@ class Module extends AdminController
     // 卸载
     function doUninstallModule()
     {
-        $moduleName = input('module', '', 'strtolower');
+        if (!Request::isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
+        $moduleName = Request::post('module', '', 'strtolower');
         if (empty($moduleName)) {
             return self::makeJsonReturn(false, null, '参数异常');
         }
