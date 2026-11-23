@@ -27,6 +27,46 @@ class MenuModel extends Model
     // 展示
     const STATUS_SHOW = 1;
 
+    // 菜单图标类名白名单正则（匹配 iconfont 与 Element UI 图标名，使用 D 修饰符防止末尾换行绕过）
+    const ICON_PATTERN = '/^[A-Za-z0-9_-]+$/D';
+    // 菜单图标最大长度
+    const ICON_MAX_LENGTH = 100;
+
+    /**
+     * 校验菜单图标类名是否合法（允许为空）
+     *
+     * @param mixed $icon 图标值
+     * @return bool
+     */
+    public static function isValidIcon($icon): bool
+    {
+        if ($icon === null || $icon === '') {
+            return true;
+        }
+        if (!is_string($icon)) {
+            return false;
+        }
+        return strlen($icon) <= self::ICON_MAX_LENGTH && preg_match(self::ICON_PATTERN, $icon) === 1;
+    }
+
+    /**
+     * 清洗菜单图标类名，非法值返回空字符串
+     *
+     * @param mixed $icon 图标值
+     * @return string
+     */
+    public static function sanitizeIcon($icon): string
+    {
+        if (!is_string($icon)) {
+            return '';
+        }
+        $icon = trim($icon, ' ');
+        if ($icon !== '' && self::isValidIcon($icon)) {
+            return $icon;
+        }
+        return '';
+    }
+
     /**
      * 获取后台管理员的菜单
      *
@@ -60,7 +100,7 @@ class MenuModel extends Model
             }
             $array = array(
                 "_tree_id" => $id,
-                "icon" => $a['icon'],
+                "icon" => self::sanitizeIcon($a['icon'] ?? ''),
                 "id" => $id . $name,
                 "pid" => $a['parentid'],
                 "name" => $a['name'],
@@ -131,7 +171,7 @@ class MenuModel extends Model
                 'remark' => $rs['remark'] ?? '',
                 'listorder' => isset($rs['listorder']) ? $rs['listorder'] : 0,
                 'parameter' => isset($rs['parameter']) ? $rs['parameter'] : '',
-                'icon' => isset($rs['icon']) ? $rs['icon'] : '',
+                'icon' => self::sanitizeIcon($rs['icon'] ?? ''),
             ), $route);
             $newId = Db::name('menu')->insertGetId($newData);
             if (!$newId) {

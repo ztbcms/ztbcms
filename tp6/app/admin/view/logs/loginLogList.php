@@ -70,7 +70,7 @@
                         prop="info"
                         label="其他说明">
                     <template slot-scope="scope">
-                        <p v-html="scope.row.info"></p>
+                        <span>{{ scope.row.info }}</span>
                     </template>
                 </el-table-column>
 
