@@ -2,14 +2,15 @@
 
 namespace app\admin\controller;
 
+use think\Request;
 use app\admin\model\LoginlogModel;
 use app\admin\model\OperationlogModel;
 use app\admin\service\AdminConfigService;
+use app\admin\service\AdminLogService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
 use app\common\libs\helper\PaginationHelper;
 use app\common\service\BaseService;
-use think\Request;
 
 /**
  * 日志管理
@@ -77,9 +78,16 @@ class Logs extends AdminController
      */
     function deleteLoginLog()
     {
-        $day = input('day', 30, 'intval');
+        $day = AdminLogService::resolveRetentionDaysFromParams(request()->param(false));
+        if ($day === null) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         $LoginlogModel = new LoginlogModel();
-        $LoginlogModel->deleteLoginLog($day);
+        if (!$LoginlogModel->deleteLoginLog($day)) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         return json(self::createReturn(true, '', '删除成功'));
     }
 
@@ -150,9 +158,16 @@ class Logs extends AdminController
      */
     function deleteAdminOperationLog()
     {
-        $day = input('day', 30, 'intval');
+        $day = AdminLogService::resolveRetentionDaysFromParams(request()->param(false));
+        if ($day === null) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         $OperationlogModel = new OperationlogModel();
-        $OperationlogModel->deleteOperationLog($day);
+        if (!$OperationlogModel->deleteOperationLog($day)) {
+            return self::returnErrorJson(AdminLogService::getRetentionDaysErrorMessage());
+        }
+
         return json(self::createReturn(true, '', '删除成功'));
     }
 
