@@ -7,9 +7,10 @@
 namespace app\admin\controller;
 
 
+use think\facade\Request;
 use app\admin\service\AdminConfigService;
 use app\common\controller\AdminController;
-use think\facade\Request;
+use app\common\libs\checkcode\Checkcode as CheckcodeGenerator;
 
 /**
  * 校验码
@@ -18,50 +19,42 @@ use think\facade\Request;
  */
 class Checkcode extends AdminController
 {
+    private const DEFAULT_FONT_SIZE = 12;
+
     public $noNeedLogin = ['index'];
 
-    function index()
+    public function index()
     {
         $checkcode_type = (int) AdminConfigService::getInstance()->getConfig('checkcode_type')['data'];
-        $checkcode = new \app\common\libs\checkcode\Checkcode($checkcode_type);
-        //验证码类型
-        $checkcode->type = strtolower(Request::param('type', 'verify'));
+        $checkcode = new CheckcodeGenerator($checkcode_type);
+        // 验证码类型
+        $type = Request::param('type', 'verify');
+        $checkcode->type = is_scalar($type) ? strtolower((string) $type) : 'verify';
 
-        //设置长度
-        $codelen = intval(Request::param('code_len', 0));
-        if ($codelen) {
-            if ($codelen > 8 || $codelen < 2) {
-                $codelen = 4;
-            }
-            $checkcode->codelen = $codelen;
-        }
-        //设置验证码字体大小
-        $fontsize = intval(Request::param('font_size', 12));
-        if ($fontsize) {
-            $checkcode->fontsize = $fontsize;
-        }
-        //设置验证码图片宽度
-        $width = intval(Request::param('width', 0));
-        if ($width) {
-            $checkcode->width = $width;
-        }
-        //设置验证码图片高度
-        $height = intval(Request::param('height', 0));
-        if ($height) {
-            $checkcode->height = $height;
-        }
-        //设置背景颜色
+        // 限制长度、字体大小与图片宽高范围，防止未登录恶意大图 DoS
+        $checkcode->codelen = CheckcodeGenerator::normalizeCodeLen(Request::param('code_len', null));
+        $checkcode->fontsize = CheckcodeGenerator::normalizeFontSize(
+            Request::param('font_size', self::DEFAULT_FONT_SIZE),
+            self::DEFAULT_FONT_SIZE
+        );
+        $checkcode->width = CheckcodeGenerator::normalizeWidth(Request::param('width', null));
+        $checkcode->height = CheckcodeGenerator::normalizeHeight(Request::param('height', null));
+
+        // 设置背景颜色
         $background = Request::param('background', '');
-        if ($background) {
-            $checkcode->background = $background;
+        if (is_string($background) && trim($background) !== '') {
+            $checkcode->background = CheckcodeGenerator::normalizeHexColor(
+                $background,
+                CheckcodeGenerator::DEFAULT_BACKGROUND
+            );
         }
-        //设置字体颜色
+        // 设置字体颜色
         $fontcolor = Request::param('font_color', '');
-        if ($fontcolor) {
-            $checkcode->fontcolor = $fontcolor;
+        if (is_string($fontcolor) && trim($fontcolor) !== '') {
+            $checkcode->fontcolor = CheckcodeGenerator::normalizeHexColor($fontcolor, '');
         }
 
-        //显示验证码
+        // 显示验证码
         $refresh = Request::param('refresh', false);
         $checkcode->output($refresh);
     }
