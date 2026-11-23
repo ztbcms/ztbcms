@@ -11,6 +11,7 @@ use think\middleware\SessionInit;
 use think\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -110,19 +111,7 @@ try {
         '运行期 Config::get("cookie.httponly") 必须为 true'
     );
 
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tmpCacheDir,
-                'prefix' => 'test_',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tmpCacheDir, ['prefix' => 'test_']);
 
     $request = new Request();
     $request->withServer([

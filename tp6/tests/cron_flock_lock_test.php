@@ -38,6 +38,7 @@ class CronServiceTestDummyTask
 }
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -108,17 +109,7 @@ try {
         ],
     ], 'database');
 
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tempCacheDir . DIRECTORY_SEPARATOR,
-                'prefix' => '',
-                'expire' => 0,
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tempCacheDir);
     Cache::clear();
 
     Db::execute('CREATE TABLE cron_config (

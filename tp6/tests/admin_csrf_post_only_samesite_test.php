@@ -23,6 +23,7 @@ use think\Response;
 use think\response\Json;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -215,19 +216,7 @@ try {
         '运行期 Config::get("cookie.samesite") 必须为 Lax'
     );
 
-    Config::set([
-        'default' => 'file',
-        'stores'  => [
-            'file' => [
-                'type'       => 'File',
-                'path'       => $tmpCacheDir,
-                'prefix'     => 'test_',
-                'expire'     => 0,
-                'tag_prefix' => 'tag:',
-                'serialize'  => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tmpCacheDir, ['prefix' => 'test_']);
 
     $sessionReq = bindCsrfTestRequest($app, 'GET', [], [], [], 'Dashboard', 'index');
     $sessionInit = new SessionInit($app, $app->session);
