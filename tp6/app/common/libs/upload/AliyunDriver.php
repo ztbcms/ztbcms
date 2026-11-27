@@ -97,7 +97,10 @@ class AliyunDriver extends UploadDriver
     public function getPrivateUrl(string $filePath, int $expireSeconds = 0): string
     {
         $expireTime = $expireSeconds > 0 ? $expireSeconds : ($this->expireTime > 0 ? $this->expireTime : 3600);
-        $cacheKey = 'aliyun_private_url_' . md5($filePath);
+        $ext = UploadService::normalizeFileExt('', $filePath);
+        $safeInlineExts = array_merge(UploadService::IMAGE_EXTENSIONS, UploadService::VIDEO_EXTENSIONS);
+        $forceAttachment = !in_array($ext, $safeInlineExts, true);
+        $cacheKey = ($forceAttachment ? 'aliyun_private_url_attach_' : 'aliyun_private_url_') . md5($filePath);
         $privateUrl = Cache::get($cacheKey);
 
         if ($privateUrl) {
@@ -106,11 +109,7 @@ class AliyunDriver extends UploadDriver
 
         try {
             $ossClient = $this->createOssClient();
-            $ext = UploadService::normalizeFileExt('', $filePath);
-            $safeInlineExts = array_merge(UploadService::IMAGE_EXTENSIONS, UploadService::VIDEO_EXTENSIONS);
-            $options = in_array($ext, $safeInlineExts, true)
-                ? null
-                : [OssClient::OSS_SUBRESOURCE => 'response-content-disposition=attachment'];
+            $options = $forceAttachment ? ['response-content-disposition' => 'attachment'] : null;
             $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireTime, OssClient::OSS_HTTP_GET, $options);
             $cacheTtl = $expireTime > 600 ? ($expireTime - 600) : max(1, intval($expireTime / 2));
             Cache::set($cacheKey, $privateUrl, $cacheTtl);
