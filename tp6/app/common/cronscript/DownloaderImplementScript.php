@@ -54,7 +54,7 @@ class DownloaderImplementScript extends CronScript
         return DownloaderModel::where([
             ['downloader_state', '=', DownloaderModel::STATE_WAIT],
             ['downloader_id', '>', $downloader_id],
-        ])->value('downloader_id');
+        ])->order('downloader_id', 'asc')->value('downloader_id');
     }
 
 }

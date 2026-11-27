@@ -91,7 +91,7 @@ class AdminMessage extends AdminController
             $where[] = ['type', '=', $type];
         }
 
-        $order = 'read_status ASC,create_time DESC';
+        $order = 'id DESC';
         $res = AdminMessageService::getAdminMessageList($where, $order, $page, $limit);
         return json($res);
     }

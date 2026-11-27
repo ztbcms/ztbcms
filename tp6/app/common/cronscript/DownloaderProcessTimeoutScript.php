@@ -53,6 +53,6 @@ class DownloaderProcessTimeoutScript extends CronScript
             ['downloader_state', '=', DownloaderModel::STATE_PROCESSING],
             ['downloader_id', '>', $downloader_id],
             ['process_start_time', '<', $limit_time],
-        ])->value('downloader_id');
+        ])->order('downloader_id', 'asc')->value('downloader_id');
     }
 }

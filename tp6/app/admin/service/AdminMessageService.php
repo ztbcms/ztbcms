@@ -49,8 +49,8 @@ class AdminMessageService extends BaseService
     {
         $page = PaginationHelper::normalizePage($page);
         $limit = PaginationHelper::normalizeLimit($limit);
-        if (!empty($order)) {
-            $order = 'id desc';
+        if (empty($order)) {
+            $order = 'id DESC';
         }
         $items = AdminMessageModel::where($where)->order($order)->page($page)->limit($limit)->select();
         $total_items = AdminMessageModel::where($where)->count();
