@@ -6,6 +6,7 @@
 namespace app\common\service\downloader;
 
 use app\common\libs\downloader\DownloaderTool;
+use app\common\libs\downloader\SsrfGuard;
 use app\common\model\downloader\DownloaderModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
@@ -28,8 +29,9 @@ class DownloaderService extends BaseService
     static function createDownloaderTask(string $url = '')
     {
         $url = trim($url);
-        if (empty($url) || strpos($url, 'http') !== 0) {
-            return self::createReturn(false, '', '参数异常：url格式错误');
+        $guardRes = SsrfGuard::validateUrl($url);
+        if (empty($guardRes['status'])) {
+            return self::createReturn(false, '', '参数异常：' . ($guardRes['msg'] ?? 'url格式错误'));
         }
         $url_hash = md5($url);
         $DownloaderModel = new DownloaderModel();
@@ -158,7 +160,7 @@ class DownloaderService extends BaseService
                 $attachment->filethumb = $downloaderData['file_thumb'] ?? '';
                 $attachment->filesize = $downloaderData['file_size'] ?? 0;
                 $attachment->fileext = $downloaderData['file_ext'] ?? '';
-                $attachment->upload_ip = $_SERVER['REMOTE_ADDR'];
+                $attachment->upload_ip = request()->ip() ?: ($_SERVER['REMOTE_ADDR'] ?? '');
                 $attachment->user_type = 'admin';
                 $attachment->user_id = 0;
                 $attachment->hash = $downloaderData['file_hash'] ?? '';
