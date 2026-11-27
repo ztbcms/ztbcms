@@ -10,6 +10,7 @@ use app\admin\service\AdminLogService;
 use app\admin\service\UserOperateLogService;
 use app\common\controller\AdminController;
 use app\common\libs\helper\PaginationHelper;
+use app\common\libs\helper\SqlHelper;
 use app\common\service\BaseService;
 
 /**
@@ -38,7 +39,7 @@ class Logs extends AdminController
             $where = [];
             $username = input('username', '', 'trim');
             if (!empty($username)) {
-                $where[] = ['username', 'like', '%'.$username.'%'];
+                $where[] = ['username', 'like', '%'.SqlHelper::escapeLike($username).'%'];
             }
             $start_time = input('start_time', '', 'trim');
             $end_time = input('end_time', '', 'trim');
@@ -48,7 +49,7 @@ class Logs extends AdminController
             }
             $loginip = input('loginip', '', 'trim');
             if (!empty($loginip)) {
-                $where[] = ['loginip', 'like', "%".$loginip."%"];
+                $where[] = ['loginip', 'like', "%".SqlHelper::escapeLike($loginip)."%"];
             }
             $status = input('status', '', 'trim');
             if ($status != '') {
@@ -120,7 +121,7 @@ class Logs extends AdminController
             }
             $ip = input('ip', '', 'trim');
             if (!empty($ip)) {
-                $where[] = ['ip', 'like', '%'.$ip.'%'];
+                $where[] = ['ip', 'like', '%'.SqlHelper::escapeLike($ip).'%'];
             }
             $status = input('status', '', 'trim');
             if ($status != '') {
@@ -138,6 +139,7 @@ class Logs extends AdminController
             foreach ($items as $key => $item) {
                 $items[$key]['url'] = OperationlogModel::sanitizeUrl((string) ($item['url'] ?? ''));
                 $items[$key]['params'] = OperationlogModel::sanitizeParamsString((string) ($item['params'] ?? ''));
+                $items[$key]['response'] = OperationlogModel::sanitizeResponseContent((string) ($item['response'] ?? ''));
             }
             $total_items = $OperationlogModel->where($where)->count();
             $total_page = ceil($total_items / $limit);
@@ -207,11 +209,11 @@ class Logs extends AdminController
             }
             $ip = input('ip', '', 'trim');
             if (!empty($ip)) {
-                $where[] = ['ip', 'like', '%'.$ip.'%'];
+                $where[] = ['ip', 'like', '%'.SqlHelper::escapeLike($ip).'%'];
             }
             $source_type = input('source_type', '', 'trim');
             if ($source_type != '') {
-                $where[] = ['source_type', 'like', '%'.$source_type.'%'];
+                $where[] = ['source_type', 'like', '%'.SqlHelper::escapeLike($source_type).'%'];
             }
             $source = input('source', '', 'trim');
             if ($source != '') {

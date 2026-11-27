@@ -205,7 +205,7 @@ class AdminManager extends AdminController
             if ($User_value['last_login_time']) {
                 $list[$k]['last_login_time'] = date("Y-m-d H:i:s", $User_value['last_login_time']);
             }
-            $list[$k]['role_name'] = $RoleModel->where('id=' . $User_value['role_id'])->value('name');
+            $list[$k]['role_name'] = $RoleModel->where('id', '=', (int) $User_value['role_id'])->value('name');
         }
         return json(self::createReturn(true, $list));
     }

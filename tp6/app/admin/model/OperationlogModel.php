@@ -5,6 +5,7 @@ namespace app\admin\model;
 use think\Model;
 use app\admin\service\AdminLogService;
 use app\admin\service\AdminUserService;
+use app\common\libs\helper\ClientIpHelper;
 
 /**
  * 操作日志
@@ -81,9 +82,9 @@ class OperationlogModel extends Model
             'method'   => $request->method(),
             'url'      => self::sanitizeUrl((string) $request->url(), $request),
             'params'   => $encodedParams !== false ? $encodedParams : '{}',
-            'response' => $response->getContent(),
+            'response' => self::sanitizeResponseContent((string) $response->getContent()),
             'time'     => time(),
-            'ip'       => $request->ip(),
+            'ip'       => ClientIpHelper::getClientIp($request),
         ];
         OperationlogModel::insert($logData);
         return true;
@@ -355,9 +356,71 @@ class OperationlogModel extends Model
             'aes_key',
             'access_token',
             'refresh_token',
+            'token',
+            'jwt',
+            'authorization',
+            'session_id',
+            'api_key',
+            'app_key',
+            'secret_key',
+            'credential',
+            'credentials',
+            'cookie',
         ];
 
         return in_array($normalized, $exactKeys, true);
+    }
+
+    /**
+     * 对响应体内容进行敏感字段脱敏与体积限制
+     *
+     * @param string $rawResponse 原始响应文本
+     * @param int    $maxLength   最大保留字节长度
+     * @return string
+     */
+    public static function sanitizeResponseContent(string $rawResponse, int $maxLength = 4096): string
+    {
+        if ($rawResponse === '') {
+            return '';
+        }
+
+        $decoded = json_decode($rawResponse, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            $sanitized = self::sanitizeParams($decoded);
+            $encoded = json_encode($sanitized, JSON_UNESCAPED_UNICODE);
+            if ($encoded === false) {
+                return '{"_redacted":true,"msg":"Response encoding failed"}';
+            }
+            if (strlen($encoded) <= $maxLength) {
+                return $encoded;
+            }
+
+            $summary = [
+                'status'           => $sanitized['status'] ?? null,
+                'code'             => $sanitized['code'] ?? null,
+                'msg'              => isset($sanitized['msg']) && is_string($sanitized['msg'])
+                    ? mb_strcut($sanitized['msg'], 0, 512, 'UTF-8')
+                    : '',
+                '_truncated'       => true,
+                '_original_length' => strlen($rawResponse),
+            ];
+            $summaryJson = json_encode($summary, JSON_UNESCAPED_UNICODE);
+            return $summaryJson !== false ? $summaryJson : '{"_truncated":true}';
+        }
+
+        if (preg_match('/^\s*</', $rawResponse) === 1) {
+            return '[HTML response omitted, length=' . strlen($rawResponse) . ']';
+        }
+
+        if (preg_match('/(password|passwd|pwd|secret|private_key|aes_key|access_token|refresh_token|authorization|bearer\s+[a-z0-9._-]+)/i', $rawResponse) === 1) {
+            return '[Sensitive non-JSON response redacted]';
+        }
+
+        if (strlen($rawResponse) > $maxLength) {
+            return mb_strcut($rawResponse, 0, $maxLength, 'UTF-8') . '...[truncated]';
+        }
+
+        return $rawResponse;
     }
 
     /**

@@ -6,6 +6,7 @@
 namespace app\common\controller\downloader;
 
 use app\common\controller\AdminController;
+use app\common\libs\helper\SqlHelper;
 use app\common\model\downloader\DownloaderModel;
 use app\common\service\downloader\DownloaderService;
 use think\Request;
@@ -21,7 +22,7 @@ class Log extends AdminController
             $where = [];
             $keywords = input('keywords', '', 'trim');
             if ($keywords) {
-                $where[] = ['downloader_url|downloader_result|file_name', 'like', '%' . $keywords . '%'];
+                $where[] = ['downloader_url|downloader_result|file_name', 'like', '%' . SqlHelper::escapeLike($keywords) . '%'];
             }
             $downloader_state = intval(input('downloader_state', 0));
             if ($downloader_state !== 0) {
