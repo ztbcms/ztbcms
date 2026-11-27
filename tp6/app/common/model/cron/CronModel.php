@@ -3,6 +3,7 @@
 namespace app\common\model\cron;
 
 
+use app\common\service\cron\CronService;
 use think\Model;
 
 class CronModel extends Model
@@ -24,12 +25,15 @@ class CronModel extends Model
     public function runAction()
     {
         //载入文件
-        $class = $this->cron_file;
+        $class = CronService::normalizeCronClass((string) $this->cron_file);
         $cronLog = new CronLogModel();
         $cronLog->start_time = time();
         $cronLog->cron_id = $this->cron_id;
         $start_time = intval(microtime(true) * 1000);
         try {
+            if (!CronService::isValidCronClass($class)) {
+                throw new \InvalidArgumentException('非法的计划任务脚本类：' . $class);
+            }
             $cron = new $class();
             $result_msg = $cron->run($this->cron_id);
             if (!$result_msg) {
