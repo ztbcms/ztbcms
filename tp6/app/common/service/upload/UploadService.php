@@ -50,8 +50,8 @@ class UploadService extends BaseService
 
     // 图片后缀（禁止 SVG 以防范存储型 XSS）
     const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'ico'];
-    // 禁止上传的危险脚本/矢量扩展名
-    const BLOCKED_EXTENSIONS = ['svg', 'svgz'];
+    // 禁止上传的危险脚本/主动内容扩展名
+    const BLOCKED_EXTENSIONS = ['svg', 'svgz', 'html', 'htm', 'xhtml', 'shtml', 'xml', 'xsl', 'xslt', 'js', 'mjs', 'php', 'phtml', 'phar', 'asp', 'aspx', 'jsp'];
     // 视频后缀
     const VIDEO_EXTENSIONS = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v', '3gp'];
 
@@ -162,12 +162,41 @@ class UploadService extends BaseService
     }
 
     /**
-     * 判断文件后缀是否属于禁止上传的危险类型
+     * 判断文件后缀是否属于禁止上传的危险类型或包含非法字符
      */
     public static function isBlockedExtension(string $fileext): bool
     {
         $normalized = self::normalizeFileExt($fileext);
-        return $normalized !== '' && in_array($normalized, self::BLOCKED_EXTENSIONS, true);
+        if ($normalized === '') {
+            return false;
+        }
+        if (preg_match('/^[a-z0-9]{1,16}$/', $normalized) !== 1) {
+            return true;
+        }
+        return in_array($normalized, self::BLOCKED_EXTENSIONS, true);
+    }
+
+    /**
+     * 校验指定用户类型是否允许上传该扩展名（同时拦截危险扩展名）
+     *
+     * @param string $fileext  文件扩展名
+     * @param string $userType 用户类型（admin / user）
+     * @return bool
+     */
+    public static function isAllowedExtensionForUserType(string $fileext, string $userType = 'user'): bool
+    {
+        $normalized = self::normalizeFileExt($fileext);
+        if ($normalized === '' || self::isBlockedExtension($normalized)) {
+            return false;
+        }
+
+        $config = ConfigModel::getConfigs();
+        $rawAllowExt = (string) ($userType === AttachmentModel::USER_TYPE_ADMIN
+            ? ($config['uploadallowext'] ?? '')
+            : ($config['qtuploadallowext'] ?? 'jpg|png|gif'));
+        $allowedExts = self::filterAllowedExtensions(explode('|', $rawAllowExt));
+
+        return in_array($normalized, $allowedExts, true);
     }
 
     /**

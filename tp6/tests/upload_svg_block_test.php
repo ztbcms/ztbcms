@@ -157,13 +157,32 @@ try {
 
     $buildKeyMethod = new ReflectionMethod(\app\common\libs\upload\UploadDriver::class, 'buildObjectKey');
     $buildKeyMethod->setAccessible(true);
-    $svgKeyRejected = false;
-    try {
-        $buildKeyMethod->invoke($aliyunDriver, 'image', 'xss.svg', 'svg');
-    } catch (\Throwable $e) {
-        $svgKeyRejected = true;
+    foreach (['xss.svg', 'xss.png*', 'page.html'] as $badName) {
+        $rejected = false;
+        try {
+            $buildKeyMethod->invoke($aliyunDriver, 'image', $badName, '');
+        } catch (\Throwable $e) {
+            $rejected = true;
+        }
+        assertSvgBlocked($rejected, "UploadDriver::buildObjectKey 必须拒绝 {$badName}");
     }
-    assertSvgBlocked($svgKeyRejected, 'UploadDriver::buildObjectKey 必须拒绝生成 svg 对象键');
+
+    $policyWildcardRejected = false;
+    try {
+        $policyMethod->invoke($aliyunDriver, 'image/2026/11/28/demo.png*');
+    } catch (\Throwable $e) {
+        $policyWildcardRejected = true;
+    }
+    assertSvgBlocked($policyWildcardRejected, 'Aliyun STS 会话策略必须拒绝包含通配符 * 的对象键');
+
+    // 非法/主动内容扩展名（如 .html / .png*）在直传凭证接口应被拦截
+    foreach (['evil.html', 'evil.png*'] as $badDirectName) {
+        $badDirectReq = new Request();
+        $badDirectReq->withGet(['filename' => $badDirectName]);
+        $app->instance('request', $badDirectReq);
+        $badDirectData = $api->getDirectUploadCredential()->getData();
+        assertSvgBlocked(($badDirectData['status'] ?? true) === false, "getDirectUploadCredential 必须拒绝 {$badDirectName}");
+    }
 
     echo "upload_svg_block_test passed\n";
 } finally {

@@ -122,7 +122,7 @@ abstract class UploadDriver
 
         $fileDir = preg_replace('#/+#', '/', $fileDir);
         $fileDir = trim($fileDir, '/');
-        if ($fileDir === '' || strpos($fileDir, '..') !== false) {
+        if ($fileDir === '' || strpos($fileDir, '..') !== false || preg_match('/^[a-z0-9_\/\-]+$/i', $fileDir) !== 1) {
             throw new \Exception('file_dir 模板非法');
         }
 
@@ -138,14 +138,18 @@ abstract class UploadDriver
         if ($normalizedExt === '') {
             throw new \Exception('无法识别文件后缀');
         }
-        if (UploadService::isBlockedExtension($normalizedExt)) {
+        if (preg_match('/^[a-z0-9]{1,16}$/', $normalizedExt) !== 1 || UploadService::isBlockedExtension($normalizedExt)) {
             throw new \Exception('不支持上传存在脚本风险的文件格式');
         }
 
         $fileDir = $this->renderFileDir($module);
         $suffix = date('His') . '_' . substr(md5(uniqid('', true)), 0, 10);
+        $objectKey = $fileDir . $suffix . '.' . $normalizedExt;
+        if (preg_match('/^[a-z0-9_\/.\-]+$/i', $objectKey) !== 1 || strpos($objectKey, '..') !== false) {
+            throw new \Exception('对象路径非法');
+        }
 
-        return $fileDir . $suffix . '.' . $normalizedExt;
+        return $objectKey;
     }
 
     /**

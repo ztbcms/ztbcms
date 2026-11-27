@@ -232,6 +232,18 @@ try {
         ($upperHostRes['data']['url'] ?? '') === 'https://public.example.test/file.png',
         'validateUrl 应返回规范化后的 URL 供 cURL 与 CURLOPT_RESOLVE 共用'
     );
+    $dotSegUrlRes = SsrfGuard::validateUrl('https://public.example.test/files/archive/..', function () {
+        return ['93.184.216.34'];
+    });
+    assertSsrf(
+        ($dotSegUrlRes['data']['url'] ?? '') === 'https://public.example.test/files/',
+        'validateUrl 应规范化请求路径中的 .. 段与 libcurl 保持一致'
+    );
+    assertSsrf(
+        SsrfGuard::resolveRedirectUrl($dotSegUrlRes['data']['url'], 'report.pdf')
+        === 'https://public.example.test/files/report.pdf',
+        '基于规范化后的基准路径解析相对重定向应命中 /files/report.pdf'
+    );
 
     // 8. 真实 cURL 传输层回归：验证禁用继承环境代理且 CURLOPT_RESOLVE 绑定生效
     $toolSource = file_get_contents(dirname(__DIR__) . '/app/common/libs/downloader/DownloaderTool.php');

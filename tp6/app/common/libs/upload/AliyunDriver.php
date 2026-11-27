@@ -106,7 +106,12 @@ class AliyunDriver extends UploadDriver
 
         try {
             $ossClient = $this->createOssClient();
-            $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireTime);
+            $ext = UploadService::normalizeFileExt('', $filePath);
+            $safeInlineExts = array_merge(UploadService::IMAGE_EXTENSIONS, UploadService::VIDEO_EXTENSIONS);
+            $options = in_array($ext, $safeInlineExts, true)
+                ? null
+                : [OssClient::OSS_SUBRESOURCE => 'response-content-disposition=attachment'];
+            $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireTime, OssClient::OSS_HTTP_GET, $options);
             $cacheTtl = $expireTime > 600 ? ($expireTime - 600) : max(1, intval($expireTime / 2));
             Cache::set($cacheKey, $privateUrl, $cacheTtl);
             return $privateUrl;
@@ -204,6 +209,10 @@ class AliyunDriver extends UploadDriver
      */
     protected function buildUploadSessionPolicy(string $objectKey): string
     {
+        if (preg_match('/^[a-z0-9_\/.\-]+$/i', $objectKey) !== 1 || strpos($objectKey, '..') !== false) {
+            throw new \InvalidArgumentException('非法的 OSS 对象键');
+        }
+
         return (string) json_encode([
             'Version'   => '1',
             'Statement' => [

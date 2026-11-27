@@ -131,7 +131,7 @@ class DownloaderTool
                         return createReturn(false, [], '重定向次数过多');
                     }
                     $location = (string) ($fetchRes['data']['location'] ?? '');
-                    $nextUrl = SsrfGuard::resolveRedirectUrl($currentUrl, $location);
+                    $nextUrl = SsrfGuard::resolveRedirectUrl($targetUrl, $location);
                     if ($nextUrl === null) {
                         return createReturn(false, [], '重定向目标地址无效');
                     }

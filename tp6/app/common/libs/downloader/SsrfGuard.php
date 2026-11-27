@@ -116,8 +116,10 @@ class SsrfGuard
 
         $formattedHost = strpos($host, ':') !== false ? '[' . $host . ']' : $host;
         $isDefaultPort = ($scheme === 'http' && $port === 80) || ($scheme === 'https' && $port === 443);
+        $rawPath = (string) ($parts['path'] ?? '');
+        $normalizedPath = $rawPath === '' ? '/' : self::removeDotSegments($rawPath);
         $canonicalUrl = $scheme . '://' . $formattedHost . ($isDefaultPort ? '' : ':' . $port)
-            . ((string) ($parts['path'] ?? '') !== '' ? $parts['path'] : '/')
+            . $normalizedPath
             . (isset($parts['query']) ? '?' . $parts['query'] : '')
             . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
 
