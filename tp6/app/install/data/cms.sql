@@ -36,13 +36,13 @@ CREATE TABLE `cms_admin_panel` (
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_config`;
 CREATE TABLE `cms_config` (
-  `id` smallint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `varname` varchar(128) NOT NULL DEFAULT '',
   `info` varchar(255) NOT NULL DEFAULT '',
   `groupid` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `value` text,
   PRIMARY KEY (`id`),
-  KEY `varname` (`varname`)
+  UNIQUE KEY `uniq_varname` (`varname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='网站配置表';
 
 -- ----------------------------
@@ -145,7 +145,8 @@ CREATE TABLE `cms_login_log` (
   `password` varchar(30) NOT NULL DEFAULT '' COMMENT '尝试错误密码',
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
   PRIMARY KEY (`id`),
-  KEY `logintime` (`logintime`)
+  KEY `logintime` (`logintime`),
+  KEY `idx_status_logintime` (`status`, `logintime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
 
 -- ----------------------------
@@ -279,8 +280,9 @@ CREATE TABLE `cms_admin_message` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
   PRIMARY KEY (`id`),
-  KEY `receiver` (`receiver`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台消息';
+  KEY `receiver` (`receiver`),
+  KEY `idx_receiver_read_status` (`receiver`, `read_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='后台消息';
 
 DROP TABLE IF EXISTS `cms_email_send_log`;
 CREATE TABLE `cms_email_send_log` (
@@ -293,7 +295,8 @@ CREATE TABLE `cms_email_send_log` (
   `error_msg` varchar(512) NOT NULL DEFAULT '' COMMENT '错误信息',
   `send_time` int(11) NOT NULL COMMENT '发送时间',
   PRIMARY KEY (`id`),
-  KEY `send_time` (`send_time`)
+  KEY `send_time` (`send_time`),
+  KEY `idx_status_send_time` (`status`, `send_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邮件发送记录';
 
 DROP TABLE IF EXISTS `cms_user_operate_log`;
@@ -308,7 +311,8 @@ CREATE TABLE `cms_user_operate_log`
   `content` varchar(255) NOT NULL DEFAULT '' COMMENT '操作内容',
   `create_time` int(11) NOT NULL COMMENT '操作时间',
     PRIMARY KEY (`id`),
-    KEY `user_id_create_time` (`user_id`, `create_time`)
+    KEY `user_id_create_time` (`user_id`, `create_time`),
+    KEY `idx_create_time` (`create_time`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT='用户操作日志';
 
 DROP TABLE IF EXISTS `cms_kv`;
@@ -319,4 +323,4 @@ CREATE TABLE `cms_kv`
     `create_time` int(11) NOT NULL,
     `update_time` int(11) NOT NULL,
     PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='键值对表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='键值对表';

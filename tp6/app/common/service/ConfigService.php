@@ -36,12 +36,12 @@ class ConfigService
     public function updateConfig(array $keyValue = []): bool
     {
         foreach ($keyValue as $key => $value) {
-            $config = (new ConfigModel())->where('varname', $key)
-                ->findOrEmpty();
-            $config->save([
-                'varname' => $key,
-                'value' => $value
-            ]);
+            (new ConfigModel())
+                ->duplicate(['value' => $value])
+                ->insert([
+                    'varname' => $key,
+                    'value' => $value,
+                ]);
         }
 
         return true;
