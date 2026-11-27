@@ -11,6 +11,7 @@ use think\facade\Session;
 use app\admin\model\AdminUserModel;
 use app\admin\model\LoginlogModel;
 use app\admin\model\RoleModel;
+use app\common\libs\helper\ClientIpHelper;
 use app\common\libs\helper\PasswordHelper;
 use app\common\libs\helper\StringHelper;
 use app\common\service\BaseService;
@@ -338,7 +339,7 @@ class AdminUserService extends BaseService
         $adminUserModel = new AdminUserModel();
         $adminUserModel->where('id', $userInfo['id'])->update([
             'last_login_time' => time(),
-            'last_login_ip'   => request()->ip(),
+            'last_login_ip'   => ClientIpHelper::getClientIp(),
         ]);
     }
 

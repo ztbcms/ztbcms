@@ -131,7 +131,13 @@
                     this.getList();
                 },
                 openDetail: function (detail) {
-                    var info = '<pre style="padding: 12px">'+ detail + '</pre>'
+                    if (detail === null || detail === undefined) {
+                        detail = '';
+                    } else if (typeof detail !== 'string') {
+                        detail = String(detail);
+                    }
+                    var escapedDetail = $('<div>').text(detail).html();
+                    var info = '<pre style="padding: 12px">' + escapedDetail + '</pre>';
                     layer.open({
                         type: 1,
                         skin:"",

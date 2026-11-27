@@ -129,6 +129,11 @@ class Api extends BaseController
         if (empty($fileext)) {
             return json(self::createReturn(false, null, '无法识别文件后缀'));
         }
+        $authorization = request()->authorization ?? [];
+        $userType = (string) ($authorization['user_type'] ?? 'user');
+        if (!UploadService::isAllowedExtensionForUserType($fileext, $userType)) {
+            return json(self::createReturn(false, null, '不支持上传该文件格式'));
+        }
 
         $module = UploadService::inferModuleByExt($fileext);
         $driver = request()->param('driver', '');  // 支持指定驱动，空则使用系统配置
@@ -163,6 +168,16 @@ class Api extends BaseController
         if (empty($fileext)) {
             return json(self::createReturn(false, null, '无法识别文件后缀'));
         }
+        $authorization = request()->authorization ?? [];
+        $userId = $authorization['uid'] ?? 0;
+        $userType = (string) ($authorization['user_type'] ?? 'user');
+
+        $nameExt = UploadService::normalizeFileExt('', $filename);
+        if (!UploadService::isAllowedExtensionForUserType($fileext, $userType)
+            || ($nameExt !== '' && !UploadService::isAllowedExtensionForUserType($nameExt, $userType))
+        ) {
+            return json(self::createReturn(false, null, '不支持上传该文件格式'));
+        }
         $module = request()->param('module', '');
         $module = trim((string)$module);
         if (empty($module)) {
@@ -179,11 +194,6 @@ class Api extends BaseController
         if (empty($filepath) || empty($filename)) {
             return json(self::createReturn(false, null, '参数不完整'));
         }
-
-        // 从 JWT 中获取用户信息
-        $authorization = request()->authorization ?? [];
-        $userId = $authorization['uid'] ?? 0;
-        $userType = $authorization['user_type'] ?? 'user';
 
         $config = ConfigModel::getConfigs();
         $resolvedDriver = $driver ?: ($config['attachment_driver'] ?? AttachmentModel::DRIVER_LOCAL);

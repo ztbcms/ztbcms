@@ -8,6 +8,7 @@ namespace app\admin\model;
 
 use think\Model;
 use app\admin\service\AdminLogService;
+use app\common\libs\helper\ClientIpHelper;
 
 /**
  * 登录日志
@@ -64,7 +65,7 @@ class LoginlogModel extends Model
     {
         unset($data['password']);
         $data['logintime'] = time();
-        $data['loginip'] = request()->ip();
+        $data['loginip'] = ClientIpHelper::getClientIp();
         return $this->insert($data) !== false ? true : false;
     }
 }

@@ -2,6 +2,7 @@
 
 use app\common\command\cron\Run;
 use app\common\controller\cron\Index;
+use app\common\cronscript\CronScript;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronModel;
 use app\common\model\cron\CronSchedulingLogModel;
@@ -14,10 +15,13 @@ use think\facade\Config;
 use think\facade\Db;
 use think\response\Json;
 
+require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
+
 /**
  * 计划任务调度测试脚本类
  */
-class CronServiceTestDummyTask
+class CronServiceTestDummyTask extends CronScript
 {
     /**
      * @var array 已执行的任务 ID 顺序
@@ -36,9 +40,6 @@ class CronServiceTestDummyTask
         return ['status' => true, 'cron_id' => $cronId];
     }
 }
-
-require dirname(__DIR__) . '/vendor/autoload.php';
-require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();

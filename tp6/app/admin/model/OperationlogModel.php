@@ -5,6 +5,7 @@ namespace app\admin\model;
 use think\Model;
 use app\admin\service\AdminLogService;
 use app\admin\service\AdminUserService;
+use app\common\libs\helper\ClientIpHelper;
 
 /**
  * 操作日志
@@ -81,9 +82,9 @@ class OperationlogModel extends Model
             'method'   => $request->method(),
             'url'      => self::sanitizeUrl((string) $request->url(), $request),
             'params'   => $encodedParams !== false ? $encodedParams : '{}',
-            'response' => $response->getContent(),
+            'response' => self::sanitizeResponseContent((string) $response->getContent()),
             'time'     => time(),
-            'ip'       => $request->ip(),
+            'ip'       => ClientIpHelper::getClientIp($request),
         ];
         OperationlogModel::insert($logData);
         return true;
@@ -355,9 +356,158 @@ class OperationlogModel extends Model
             'aes_key',
             'access_token',
             'refresh_token',
+            'token',
+            'jwt',
+            'authorization',
+            'session_id',
+            'api_key',
+            'app_key',
+            'secret_key',
+            'credential',
+            'credentials',
+            'cookie',
         ];
 
         return in_array($normalized, $exactKeys, true);
+    }
+
+    /**
+     * 对响应体内容进行敏感字段脱敏与体积限制
+     *
+     * @param string $rawResponse 原始响应文本
+     * @param int    $maxLength   最大保留字节长度
+     * @return string
+     */
+    public static function sanitizeResponseContent(string $rawResponse, int $maxLength = 4096): string
+    {
+        if ($rawResponse === '') {
+            return '';
+        }
+
+        $decoded = json_decode($rawResponse, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            $sanitized = self::sanitizeParams($decoded);
+            $encoded = json_encode($sanitized, JSON_UNESCAPED_UNICODE);
+            if ($encoded === false) {
+                return '{"_redacted":true,"msg":"Response encoding failed"}';
+            }
+            if (strlen($encoded) <= $maxLength) {
+                return $encoded;
+            }
+
+            $summary = [
+                'status'           => $sanitized['status'] ?? null,
+                'code'             => $sanitized['code'] ?? null,
+                'msg'              => isset($sanitized['msg']) && is_string($sanitized['msg'])
+                    ? mb_strcut($sanitized['msg'], 0, 512, 'UTF-8')
+                    : '',
+                '_truncated'       => true,
+                '_original_length' => strlen($rawResponse),
+            ];
+            $summaryJson = json_encode($summary, JSON_UNESCAPED_UNICODE);
+            return $summaryJson !== false ? $summaryJson : '{"_truncated":true}';
+        }
+
+        if (preg_match('/^\s*</', $rawResponse) === 1) {
+            return '[HTML response omitted, length=' . strlen($rawResponse) . ']';
+        }
+
+        if (preg_match('/(password|passwd|pwd|secret|private_key|aes_key|access_token|refresh_token|authorization|signature|ossaccesskeyid|x-amz-signature|bearer\s+[a-z0-9._-]+)/i', $rawResponse) === 1) {
+            return '[Sensitive non-JSON response redacted]';
+        }
+
+        $redactedText = self::redactSignedUrlsInText($rawResponse);
+        if (strlen($redactedText) > $maxLength) {
+            return mb_strcut($redactedText, 0, $maxLength, 'UTF-8') . '...[truncated]';
+        }
+
+        return $redactedText;
+    }
+
+    /**
+     * 对可能包含临时签名/Token 参数的 URL 字符串脱敏
+     *
+     * @param string $value    原始字符串
+     * @param bool   $modified 是否发生脱敏替换
+     * @return string
+     */
+    private static function redactSignedUrl(string $value, bool &$modified = false): string
+    {
+        $modified = false;
+        if (stripos($value, 'http://') !== 0 && stripos($value, 'https://') !== 0) {
+            return $value;
+        }
+        $qPos = strpos($value, '?');
+        if ($qPos === false) {
+            return $value;
+        }
+
+        $queryPart = substr($value, $qPos + 1);
+        $fragPos = strpos($queryPart, '#');
+        $fragment = '';
+        if ($fragPos !== false) {
+            $fragment = substr($queryPart, $fragPos);
+            $queryPart = substr($queryPart, 0, $fragPos);
+        }
+
+        parse_str($queryPart, $queryParams);
+        if (!is_array($queryParams) || empty($queryParams)) {
+            return $value;
+        }
+
+        $sensitiveQueryKeys = [
+            'signature',
+            'ossaccesskeyid',
+            'security-token',
+            'x-oss-signature',
+            'x-oss-security-token',
+            'x-oss-credential',
+            'x-amz-signature',
+            'x-amz-security-token',
+            'x-amz-credential',
+            'token',
+            'access_token',
+            'secret',
+            'sign',
+            'auth',
+            'expires',
+            'e',
+        ];
+
+        $hasSensitiveQuery = false;
+        foreach (array_keys($queryParams) as $paramKey) {
+            if (in_array(strtolower((string) $paramKey), $sensitiveQueryKeys, true)) {
+                $hasSensitiveQuery = true;
+                break;
+            }
+        }
+        if (!$hasSensitiveQuery) {
+            return $value;
+        }
+
+        $modified = true;
+        return substr($value, 0, $qPos) . '?***REDACTED***' . $fragment;
+    }
+
+    /**
+     * 对纯文本中的签名 URL 脱敏
+     *
+     * @param string $text 原始文本
+     * @return string
+     */
+    private static function redactSignedUrlsInText(string $text): string
+    {
+        if (stripos($text, 'http://') === false && stripos($text, 'https://') === false) {
+            return $text;
+        }
+
+        return (string) preg_replace_callback(
+            '/https?:\/\/[^\s"\'<>]+/i',
+            function (array $matches): string {
+                return self::redactSignedUrl($matches[0]);
+            },
+            $text
+        );
     }
 
     /**
@@ -403,6 +553,14 @@ class OperationlogModel extends Model
                             continue;
                         }
                     }
+                }
+
+                $urlModified = false;
+                $urlRedacted = self::redactSignedUrl($value, $urlModified);
+                if ($urlModified) {
+                    $modified = true;
+                    $sanitized[$key] = $urlRedacted;
+                    continue;
                 }
             }
 

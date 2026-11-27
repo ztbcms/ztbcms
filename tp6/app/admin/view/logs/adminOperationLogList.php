@@ -256,14 +256,20 @@
 
                 // 预览内容
                 previewContent: function (content){
+                    if (content === null || content === undefined) {
+                        content = '';
+                    } else if (typeof content !== 'string') {
+                        content = String(content);
+                    }
                     try{
                         content = JSON.stringify(JSON.parse(content), null, 2);
                     }catch (e) {}
+                    var escapedContent = $('<div>').text(content).html();
                     layer.open({
                         type: 1,
                         area: ['500px', '300px'],
                         title: '查看',
-                        content: '<pre style="padding: 4px 8px">' + content + '</pre>'
+                        content: '<pre style="padding: 4px 8px">' + escapedContent + '</pre>'
                     });
                 },
                 //设置操作记录开关

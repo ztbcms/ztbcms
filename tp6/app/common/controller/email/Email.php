@@ -9,6 +9,7 @@ namespace app\common\controller\email;
 use app\admin\service\AdminConfigService;
 use app\common\controller\AdminController;
 use app\common\libs\helper\PaginationHelper;
+use app\common\libs\helper\SqlHelper;
 use app\common\model\email\EmailSendLogModel;
 use app\common\service\email\EmailService;
 use think\Request;
@@ -73,11 +74,11 @@ class Email extends AdminController
             $where = [];
             $to_email = input('to_email', '', 'trim');
             if (!empty($to_email)) {
-                $where[] = ['to_email', 'like', '%'.$to_email.'%'];
+                $where[] = ['to_email', 'like', '%'.SqlHelper::escapeLike($to_email).'%'];
             }
             $from_email = input('from_email', '', 'trim');
             if (!empty($from_email)) {
-                $where[] = ['from_email', 'like', '%'.$from_email.'%'];
+                $where[] = ['from_email', 'like', '%'.SqlHelper::escapeLike($from_email).'%'];
             }
             $startTime = input('start_time/s', '', 'trim');
             $endTime = input('end_time/s', '', 'trim');

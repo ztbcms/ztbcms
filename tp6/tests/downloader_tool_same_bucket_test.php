@@ -87,18 +87,14 @@ try {
         'value' => 'http://127.0.0.1/',
     ]);
 
-    // 2. 构造两个 md5(url) 前 2 位相同的本地 file:// URL
-    $srcPath1 = $tempSourceDir . '/file_a.txt';
-    $url1 = 'file://' . $srcPath1;
+    // 2. 构造两个 md5(url) 前 2 位相同的公网 HTTPS URL（并注入可控 DNS/HTTP 传输器以模拟下载）
+    $url1 = 'https://cdn-a.example.test/file_a.txt';
     $bucket = substr(md5($url1), 0, 2);
 
-    $srcPath2 = '';
     $url2 = '';
     for ($i = 0; $i < 10000; $i++) {
-        $candidatePath = $tempSourceDir . '/file_b_' . $i . '.txt';
-        $candidateUrl = 'file://' . $candidatePath;
+        $candidateUrl = 'https://cdn-b.example.test/file_b_' . $i . '.txt';
         if (substr(md5($candidateUrl), 0, 2) === $bucket) {
-            $srcPath2 = $candidatePath;
             $url2 = $candidateUrl;
             break;
         }
@@ -107,8 +103,18 @@ try {
 
     $content1 = 'first-file-in-bucket-' . $uniqueId;
     $content2 = 'second-file-in-same-bucket-with-different-length-' . $uniqueId;
-    file_put_contents($srcPath1, $content1);
-    file_put_contents($srcPath2, $content2);
+    $publicDnsResolver = function (string $host): array {
+        return ['93.184.216.34'];
+    };
+    $mockFetcher = function (string $targetUrl) use ($url1, $url2, $content1, $content2): array {
+        if ($targetUrl === $url1) {
+            return createReturn(true, ['http_code' => 200, 'location' => '', 'body' => $content1]);
+        }
+        if ($targetUrl === $url2) {
+            return createReturn(true, ['http_code' => 200, 'location' => '', 'body' => $content2]);
+        }
+        return createReturn(false, [], 'CURL Error:mock not found');
+    };
 
     $bucketDir = $app->getRootPath() . 'public/downloader/' . $bucket;
     if (!is_dir($bucketDir)) {
@@ -123,7 +129,7 @@ try {
     $createdTargets[] = $targetFile2;
 
     // 3. 下载同桶第 1 个文件
-    $res1 = DownloaderTool::doDownloadFile($url1, $targetName1, 'txt', AttachmentModel::MODULE_FILE);
+    $res1 = DownloaderTool::doDownloadFile($url1, $targetName1, 'txt', AttachmentModel::MODULE_FILE, $publicDnsResolver, $mockFetcher);
     assertDownloaderToolSameBucket(($res1['status'] ?? false) === true, '同桶第 1 个文件应下载成功: ' . ($res1['msg'] ?? ''));
     assertDownloaderToolSameBucket(is_file($targetFile1), '第 1 个目标文件应写入磁盘');
     assertDownloaderToolSameBucket(file_get_contents($targetFile1) === $content1, '第 1 个文件写入内容不一致');
@@ -136,8 +142,8 @@ try {
         '第 1 个文件哈希不匹配'
     );
 
-    // 4. 下载同桶第 2 个文件（目录已存在时仍应正常执行 curl 下载并写入）
-    $res2 = DownloaderTool::doDownloadFile($url2, $targetName2, 'txt', AttachmentModel::MODULE_FILE);
+    // 4. 下载同桶第 2 个文件（目录已存在时仍应正常执行下载并写入）
+    $res2 = DownloaderTool::doDownloadFile($url2, $targetName2, 'txt', AttachmentModel::MODULE_FILE, $publicDnsResolver, $mockFetcher);
     assertDownloaderToolSameBucket(($res2['status'] ?? false) === true, '同桶第 2 个文件应下载成功: ' . ($res2['msg'] ?? ''));
     assertDownloaderToolSameBucket(is_file($targetFile2), '第 2 个目标文件应写入磁盘');
     assertDownloaderToolSameBucket(file_get_contents($targetFile2) === $content2, '第 2 个文件写入内容不一致');
@@ -158,12 +164,22 @@ try {
         '第 2 个文件访问 URL 不正确'
     );
 
-    // 5. 验证不存在源 URL 时能安全返回 CURL 错误且不报资源未关闭警告
-    $missingRes = DownloaderTool::doDownloadFile(
+    // 5. 验证 file:// 协议应被 SSRF 校验拒绝，且模拟传输错误能安全返回失败
+    $fileSchemeRes = DownloaderTool::doDownloadFile(
         'file://' . $tempSourceDir . '/not_found_' . $uniqueId . '.txt',
         'test_bucket_missing_' . $uniqueId . '.txt',
         'txt',
         AttachmentModel::MODULE_FILE
+    );
+    assertDownloaderToolSameBucket(($fileSchemeRes['status'] ?? true) === false, 'file:// 协议应被拦截');
+
+    $missingRes = DownloaderTool::doDownloadFile(
+        'https://cdn-missing.example.test/not_found.txt',
+        'test_bucket_missing_' . $uniqueId . '.txt',
+        'txt',
+        AttachmentModel::MODULE_FILE,
+        $publicDnsResolver,
+        $mockFetcher
     );
     assertDownloaderToolSameBucket(($missingRes['status'] ?? true) === false, '缺失源文件的下载应返回失败');
     assertDownloaderToolSameBucket(
