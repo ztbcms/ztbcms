@@ -114,10 +114,11 @@ class DownloaderTool
                 }
 
                 $targetMeta = $guardRes['data'];
+                $targetUrl = (string) ($targetMeta['url'] ?? $currentUrl);
                 if ($httpFetcher !== null) {
-                    $fetchRes = $httpFetcher($currentUrl, $targetMeta);
+                    $fetchRes = $httpFetcher($targetUrl, $targetMeta);
                 } else {
-                    $fetchRes = self::executeCurlRequest($currentUrl, $targetMeta);
+                    $fetchRes = self::executeCurlRequest($targetUrl, $targetMeta);
                 }
 
                 if (empty($fetchRes['status'])) {
@@ -209,10 +210,15 @@ class DownloaderTool
         }
 
         $location = '';
-        curl_setopt($ch, CURLOPT_URL, $url);
+        $targetUrl = (string) ($targetMeta['url'] ?? $url);
+        curl_setopt($ch, CURLOPT_URL, $targetUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 0);
+        curl_setopt($ch, CURLOPT_PROXY, '');
+        if (defined('CURLOPT_NOPROXY')) {
+            curl_setopt($ch, CURLOPT_NOPROXY, '*');
+        }
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -229,7 +235,10 @@ class DownloaderTool
         $primaryIp = (string) ($targetMeta['primary_ip'] ?? '');
         if ($host !== '' && $primaryIp !== '' && filter_var($host, FILTER_VALIDATE_IP) === false) {
             $formattedIp = strpos($primaryIp, ':') !== false ? '[' . $primaryIp . ']' : $primaryIp;
-            curl_setopt($ch, CURLOPT_RESOLVE, ["{$host}:{$port}:{$formattedIp}"]);
+            if (!curl_setopt($ch, CURLOPT_RESOLVE, ["{$host}:{$port}:{$formattedIp}"])) {
+                curl_close($ch);
+                return createReturn(false, [], 'CURL Error:failed to bind resolved IP');
+            }
         }
 
         curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($curl, string $headerLine) use (&$location): int {

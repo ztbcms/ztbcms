@@ -138,10 +138,10 @@ try {
         }
     };
 
-    // 1. 未配置受信代理时，伪造 X-Forwarded-For / X-Real-IP 不得生效
+    // 1. 未配置受信代理或未显式配置转发头时，伪造 X-Forwarded-For / X-Real-IP 均不得生效
     Config::set(array_merge(is_array($originalAdminConfig) ? $originalAdminConfig : [], [
         'proxy_server_ips'        => [],
-        'proxy_client_ip_headers' => ['HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'],
+        'proxy_client_ip_headers' => [],
     ]), 'admin');
 
     $spoofReq = new Request();
@@ -155,7 +155,23 @@ try {
         '未配置受信代理时，必须忽略 X-Forwarded-For / X-Real-IP'
     );
 
-    // 2. 配置受信代理 CIDR 后，应从右向左剔除受信代理，拒绝左侧伪造段
+    // 仅配置 proxy_server_ips 而未配置 proxy_client_ip_headers 时也必须忽略转发头
+    Config::set(array_merge(is_array($originalAdminConfig) ? $originalAdminConfig : [], [
+        'proxy_server_ips'        => ['172.16.0.1'],
+        'proxy_client_ip_headers' => [],
+    ]), 'admin');
+    $noHeaderCfgReq = new Request();
+    $noHeaderCfgReq->withServer([
+        'REMOTE_ADDR'          => '172.16.0.1',
+        'HTTP_X_REAL_IP'       => '198.51.100.2',
+        'HTTP_X_FORWARDED_FOR' => '198.51.100.3',
+    ]);
+    assertBruteforce(
+        ClientIpHelper::getClientIp($noHeaderCfgReq) === '172.16.0.1',
+        '未显式配置 proxy_client_ip_headers 时，即使命中受信代理也不得采信转发头'
+    );
+
+    // 2. 配置受信代理 CIDR 与指定转发头后，只信任显式配置的头且不回退到未配置/无效头
     Config::set(array_merge(is_array($originalAdminConfig) ? $originalAdminConfig : [], [
         'proxy_server_ips'        => ['10.0.0.0/8', '172.16.0.1'],
         'proxy_client_ip_headers' => ['HTTP_X_FORWARDED_FOR'],
@@ -164,11 +180,44 @@ try {
     $proxyReq = new Request();
     $proxyReq->withServer([
         'REMOTE_ADDR'          => '172.16.0.1',
+        'HTTP_X_REAL_IP'       => '9.9.9.9',
         'HTTP_X_FORWARDED_FOR' => '9.9.9.9, 198.51.100.88, 10.0.0.5',
     ]);
     assertBruteforce(
         ClientIpHelper::getClientIp($proxyReq) === '198.51.100.88',
-        '受信代理下应从右向左取第一个非代理 IP（防左侧伪造）'
+        '受信代理下应仅采信显式配置的头并从右向左取第一个非代理 IP'
+    );
+
+    Config::set(array_merge(is_array($originalAdminConfig) ? $originalAdminConfig : [], [
+        'proxy_server_ips'        => ['172.16.0.1'],
+        'proxy_client_ip_headers' => ['HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'],
+    ]), 'admin');
+    $invalidFirstHeaderReq = new Request();
+    $invalidFirstHeaderReq->withServer([
+        'REMOTE_ADDR'          => '172.16.0.1',
+        'HTTP_X_REAL_IP'       => 'invalid-ip',
+        'HTTP_X_FORWARDED_FOR' => '198.51.100.77',
+    ]);
+    assertBruteforce(
+        ClientIpHelper::getClientIp($invalidFirstHeaderReq) === '172.16.0.1',
+        '首个已配置且存在的转发头格式非法时，不得回退到后续头部'
+    );
+
+    // IPv6 规范化与数据库列宽检查
+    assertBruteforce(
+        ClientIpHelper::normalizeIp('2001:0db8:0000:0000:0000:0000:0000:0001') === '2001:db8::1',
+        'IPv6 地址应规范化为标准格式'
+    );
+    $cmsSql = file_get_contents(dirname(__DIR__) . '/app/install/data/cms.sql');
+    assertBruteforce(
+        is_string($cmsSql)
+        && strpos($cmsSql, '`loginip` varchar(45)') !== false
+        && strpos($cmsSql, '`ip` varchar(45)') !== false,
+        'cms.sql 中 login_log.loginip 与 operation_log.ip 必须支持 45 字符 IPv6'
+    );
+    assertBruteforce(
+        file_exists(dirname(__DIR__) . '/database/migrations/20261128000000_widen_log_ip_columns.php'),
+        '必须提供存量库 IP 列宽升级迁移文件'
     );
 
     $untrustedHopReq = new Request();

@@ -156,6 +156,67 @@ try {
     $opJson = (string) json_encode($opListData, JSON_UNESCAPED_UNICODE);
     assertHardening(strpos($opJson, 'HistRespSecret!') === false, 'adminOperationLogList 读取历史日志应兜底脱敏响应体');
 
+    // 私有附件签名 URL 在响应写入及历史列表读取时均必须脱敏
+    $signedReq = new Request();
+    $signedReq->withServer(['REQUEST_METHOD' => 'POST', 'REMOTE_ADDR' => '127.0.0.1', 'REQUEST_URI' => '/common/upload.Upload/attachments']);
+    $signedReq->setMethod('POST');
+    $signedReq->setController('upload.Upload');
+    $signedReq->setAction('attachments');
+    $app->instance('request', $signedReq);
+
+    $signedResp = Response::create(json_encode([
+        'status' => true,
+        'data'   => [
+            'items' => [
+                [
+                    'aid'       => 10,
+                    'fileurl'   => 'https://bucket.oss-cn-hangzhou.aliyuncs.com/image/a.png?OSSAccessKeyId=LTAI5tDemo&Expires=1799999999&Signature=SecretSig123',
+                    'filethumb' => 'https://cdn.example.com/a.png?e=1799999999&token=QiniuSignedToken456',
+                ],
+                [
+                    'aid'       => 11,
+                    'fileurl'   => 'https://cdn.example.com/public/b.png?v=1',
+                    'filethumb' => 'https://cdn.example.com/public/b.png',
+                ],
+            ],
+        ],
+    ], JSON_UNESCAPED_UNICODE), 'html', 200);
+    assertHardening(OperationlogModel::record($signedResp) === true, '带签名 URL 的响应应记录日志');
+    $signedLogRow = Db::name('operation_log')->order('id', 'desc')->find();
+    $signedRowResp = (string) ($signedLogRow['response'] ?? '');
+    assertHardening(strpos($signedRowResp, 'SecretSig123') === false, '响应日志不得保留 OSS Signature');
+    assertHardening(strpos($signedRowResp, 'QiniuSignedToken456') === false, '响应日志不得保留七牛签名 token');
+    $signedRowDecoded = json_decode($signedRowResp, true);
+    assertHardening(
+        ($signedRowDecoded['data']['items'][0]['fileurl'] ?? '') === 'https://bucket.oss-cn-hangzhou.aliyuncs.com/image/a.png?***REDACTED***',
+        '私有 OSS 签名 URL 查询串应脱敏'
+    );
+    assertHardening(
+        ($signedRowDecoded['data']['items'][0]['filethumb'] ?? '') === 'https://cdn.example.com/a.png?***REDACTED***',
+        '私有七牛签名缩略图 URL 查询串应脱敏'
+    );
+    assertHardening(
+        ($signedRowDecoded['data']['items'][1]['fileurl'] ?? '') === 'https://cdn.example.com/public/b.png?v=1',
+        '普通静态版本号查询串应保留'
+    );
+
+    Db::name('operation_log')->insert([
+        'uid'      => 1,
+        'time'     => time(),
+        'ip'       => '127.0.0.1',
+        'status'   => 1,
+        'method'   => 'POST',
+        'url'      => '/common/upload.Upload/attachments',
+        'params'   => '{}',
+        'response' => '{"status":true,"data":{"fileurl":"https://bucket.oss.com/x.png?Signature=OldLeakSig999&Expires=1700000000"}}',
+    ]);
+    $histListReq = new Request();
+    $histListReq->withServer(['REQUEST_METHOD' => 'GET', 'REMOTE_ADDR' => '127.0.0.1']);
+    $histListReq->withGet(['_action' => 'getList', 'page' => 1, 'limit' => 20]);
+    $app->instance('request', $histListReq);
+    $histRespJson = (string) json_encode($logsCtrl->adminOperationLogList($histListReq)->getData(), JSON_UNESCAPED_UNICODE);
+    assertHardening(strpos($histRespJson, 'OldLeakSig999') === false, '历史响应日志读取时同样应脱敏签名 URL');
+
     // 2. SqlHelper::escapeLike 转义 % _ \
     assertHardening(SqlHelper::escapeLike('100%_a\\b') === '100\\%\\_a\\\\b', 'SqlHelper::escapeLike 应转义 %, _, \\');
 

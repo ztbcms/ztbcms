@@ -133,6 +133,38 @@ try {
     $saveData = $api->saveDirectUploadRecord()->getData();
     assertSvgBlocked(($saveData['status'] ?? true) === false, 'saveDirectUploadRecord 必须拒绝 .svg');
 
+    // 5. 阿里云 OSS STS 会话策略限制到单一服务端核准对象键，且驱动层拒绝 svg 对象键生成
+    $aliyunDriver = new \app\common\libs\upload\AliyunDriver([
+        'attachment_aliyun_key_id' => 'test-ak',
+        'attachment_aliyun_key_secret' => 'test-sk',
+        'attachment_aliyun_endpoint' => 'oss-cn-hangzhou.aliyuncs.com',
+        'attachment_aliyun_bucket' => 'demo-bucket',
+        'attachment_aliyun_sts_role_arn' => 'acs:ram::123456:role/upload',
+    ]);
+    $policyMethod = new ReflectionMethod(\app\common\libs\upload\AliyunDriver::class, 'buildUploadSessionPolicy');
+    $policyMethod->setAccessible(true);
+    $policyJson = $policyMethod->invoke($aliyunDriver, 'image/2026/11/28/demo.png');
+    $policyArr = json_decode((string) $policyJson, true);
+    assertSvgBlocked(is_array($policyArr), 'Aliyun STS 会话策略应为合法 JSON');
+    assertSvgBlocked(
+        ($policyArr['Statement'][0]['Action'] ?? []) === ['oss:PutObject'],
+        'Aliyun STS 会话策略仅应允许 oss:PutObject'
+    );
+    assertSvgBlocked(
+        ($policyArr['Statement'][0]['Resource'] ?? []) === ['acs:oss:*:*:demo-bucket/image/2026/11/28/demo.png'],
+        'Aliyun STS 会话策略必须精确限制到单个服务端核准对象键'
+    );
+
+    $buildKeyMethod = new ReflectionMethod(\app\common\libs\upload\UploadDriver::class, 'buildObjectKey');
+    $buildKeyMethod->setAccessible(true);
+    $svgKeyRejected = false;
+    try {
+        $buildKeyMethod->invoke($aliyunDriver, 'image', 'xss.svg', 'svg');
+    } catch (\Throwable $e) {
+        $svgKeyRejected = true;
+    }
+    assertSvgBlocked($svgKeyRejected, 'UploadDriver::buildObjectKey 必须拒绝生成 svg 对象键');
+
     echo "upload_svg_block_test passed\n";
 } finally {
     restore_error_handler();

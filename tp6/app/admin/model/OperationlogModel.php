@@ -412,15 +412,102 @@ class OperationlogModel extends Model
             return '[HTML response omitted, length=' . strlen($rawResponse) . ']';
         }
 
-        if (preg_match('/(password|passwd|pwd|secret|private_key|aes_key|access_token|refresh_token|authorization|bearer\s+[a-z0-9._-]+)/i', $rawResponse) === 1) {
+        if (preg_match('/(password|passwd|pwd|secret|private_key|aes_key|access_token|refresh_token|authorization|signature|ossaccesskeyid|x-amz-signature|bearer\s+[a-z0-9._-]+)/i', $rawResponse) === 1) {
             return '[Sensitive non-JSON response redacted]';
         }
 
-        if (strlen($rawResponse) > $maxLength) {
-            return mb_strcut($rawResponse, 0, $maxLength, 'UTF-8') . '...[truncated]';
+        $redactedText = self::redactSignedUrlsInText($rawResponse);
+        if (strlen($redactedText) > $maxLength) {
+            return mb_strcut($redactedText, 0, $maxLength, 'UTF-8') . '...[truncated]';
         }
 
-        return $rawResponse;
+        return $redactedText;
+    }
+
+    /**
+     * 对可能包含临时签名/Token 参数的 URL 字符串脱敏
+     *
+     * @param string $value    原始字符串
+     * @param bool   $modified 是否发生脱敏替换
+     * @return string
+     */
+    private static function redactSignedUrl(string $value, bool &$modified = false): string
+    {
+        $modified = false;
+        if (stripos($value, 'http://') !== 0 && stripos($value, 'https://') !== 0) {
+            return $value;
+        }
+        $qPos = strpos($value, '?');
+        if ($qPos === false) {
+            return $value;
+        }
+
+        $queryPart = substr($value, $qPos + 1);
+        $fragPos = strpos($queryPart, '#');
+        $fragment = '';
+        if ($fragPos !== false) {
+            $fragment = substr($queryPart, $fragPos);
+            $queryPart = substr($queryPart, 0, $fragPos);
+        }
+
+        parse_str($queryPart, $queryParams);
+        if (!is_array($queryParams) || empty($queryParams)) {
+            return $value;
+        }
+
+        $sensitiveQueryKeys = [
+            'signature',
+            'ossaccesskeyid',
+            'security-token',
+            'x-oss-signature',
+            'x-oss-security-token',
+            'x-oss-credential',
+            'x-amz-signature',
+            'x-amz-security-token',
+            'x-amz-credential',
+            'token',
+            'access_token',
+            'secret',
+            'sign',
+            'auth',
+            'expires',
+            'e',
+        ];
+
+        $hasSensitiveQuery = false;
+        foreach (array_keys($queryParams) as $paramKey) {
+            if (in_array(strtolower((string) $paramKey), $sensitiveQueryKeys, true)) {
+                $hasSensitiveQuery = true;
+                break;
+            }
+        }
+        if (!$hasSensitiveQuery) {
+            return $value;
+        }
+
+        $modified = true;
+        return substr($value, 0, $qPos) . '?***REDACTED***' . $fragment;
+    }
+
+    /**
+     * 对纯文本中的签名 URL 脱敏
+     *
+     * @param string $text 原始文本
+     * @return string
+     */
+    private static function redactSignedUrlsInText(string $text): string
+    {
+        if (stripos($text, 'http://') === false && stripos($text, 'https://') === false) {
+            return $text;
+        }
+
+        return (string) preg_replace_callback(
+            '/https?:\/\/[^\s"\'<>]+/i',
+            function (array $matches): string {
+                return self::redactSignedUrl($matches[0]);
+            },
+            $text
+        );
     }
 
     /**
@@ -466,6 +553,14 @@ class OperationlogModel extends Model
                             continue;
                         }
                     }
+                }
+
+                $urlModified = false;
+                $urlRedacted = self::redactSignedUrl($value, $urlModified);
+                if ($urlModified) {
+                    $modified = true;
+                    $sanitized[$key] = $urlRedacted;
+                    continue;
                 }
             }
 

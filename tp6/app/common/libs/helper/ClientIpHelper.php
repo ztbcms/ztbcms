@@ -24,21 +24,25 @@ class ClientIpHelper
         $remoteAddr = trim((string) $request->server('REMOTE_ADDR', ''));
         if ($remoteAddr === '') {
             $fallbackIp = trim((string) $request->ip());
-            return filter_var($fallbackIp, FILTER_VALIDATE_IP) !== false ? $fallbackIp : '0.0.0.0';
+            return self::normalizeIp($fallbackIp) ?: '0.0.0.0';
         }
 
-        if (filter_var($remoteAddr, FILTER_VALIDATE_IP) === false) {
+        $normalizedRemoteAddr = self::normalizeIp($remoteAddr);
+        if ($normalizedRemoteAddr === '') {
             return '0.0.0.0';
         }
 
         $trustedProxies = Config::get('admin.proxy_server_ips', []);
         $proxyHeaders = Config::get('admin.proxy_client_ip_headers', []);
+        if (is_string($proxyHeaders) && trim($proxyHeaders) !== '') {
+            $proxyHeaders = [$proxyHeaders];
+        }
         if (!is_array($trustedProxies) || empty($trustedProxies) || !is_array($proxyHeaders) || empty($proxyHeaders)) {
-            return $remoteAddr;
+            return $normalizedRemoteAddr;
         }
 
-        if (!self::ipMatchesList($remoteAddr, $trustedProxies)) {
-            return $remoteAddr;
+        if (!self::ipMatchesList($normalizedRemoteAddr, $trustedProxies)) {
+            return $normalizedRemoteAddr;
         }
 
         foreach ($proxyHeaders as $header) {
@@ -46,31 +50,51 @@ class ClientIpHelper
                 continue;
             }
             $serverKey = self::normalizeServerHeaderKey($header);
-            $rawValue = (string) $request->server($serverKey, '');
+            $rawValue = trim((string) $request->server($serverKey, ''));
             if ($rawValue === '') {
                 continue;
             }
 
+            // 命中第一个已配置且存在的转发头后不再回退到其他头部，避免代理未覆盖的冗余头被伪造利用
             $candidates = array_reverse(array_map('trim', explode(',', $rawValue)));
             $firstValidIp = null;
             foreach ($candidates as $candidate) {
-                if (filter_var($candidate, FILTER_VALIDATE_IP) === false) {
+                $normalizedCandidate = self::normalizeIp($candidate);
+                if ($normalizedCandidate === '') {
                     continue;
                 }
                 if ($firstValidIp === null) {
-                    $firstValidIp = $candidate;
+                    $firstValidIp = $normalizedCandidate;
                 }
                 // 从右向左跳过受信代理 IP，取第一个非受信代理的真实客户端 IP
-                if (!self::ipMatchesList($candidate, $trustedProxies)) {
-                    return $candidate;
+                if (!self::ipMatchesList($normalizedCandidate, $trustedProxies)) {
+                    return $normalizedCandidate;
                 }
             }
-            if ($firstValidIp !== null) {
-                return $firstValidIp;
-            }
+            return $firstValidIp ?? $normalizedRemoteAddr;
         }
 
-        return $remoteAddr;
+        return $normalizedRemoteAddr;
+    }
+
+    /**
+     * 规范化 IPv4/IPv6 地址为标准形式（确保数据库写入与查询一致）
+     *
+     * @param string $ip 原始 IP 字符串
+     * @return string 非法 IP 返回空字符串
+     */
+    public static function normalizeIp(string $ip): string
+    {
+        $trimmed = trim($ip, '[] ');
+        if (filter_var($trimmed, FILTER_VALIDATE_IP) === false) {
+            return '';
+        }
+        $packed = @inet_pton($trimmed);
+        if ($packed === false) {
+            return '';
+        }
+        $canonical = @inet_ntop($packed);
+        return is_string($canonical) ? $canonical : '';
     }
 
     /**

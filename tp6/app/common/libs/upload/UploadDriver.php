@@ -138,6 +138,9 @@ abstract class UploadDriver
         if ($normalizedExt === '') {
             throw new \Exception('无法识别文件后缀');
         }
+        if (UploadService::isBlockedExtension($normalizedExt)) {
+            throw new \Exception('不支持上传存在脚本风险的文件格式');
+        }
 
         $fileDir = $this->renderFileDir($module);
         $suffix = date('His') . '_' . substr(md5(uniqid('', true)), 0, 10);

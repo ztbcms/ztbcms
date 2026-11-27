@@ -14,5 +14,5 @@ return [
     "login_account_max_faild"           => 5, // 同账号连续失败锁定阈值
     "login_account_ban_time"            => 15, // 同账号禁止登录时间（分钟）
     "proxy_server_ips"                  => [], // 受信反向代理服务器 IP/CIDR 列表，留空表示不信任转发头
-    "proxy_client_ip_headers"           => ['HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR'], // 受信代理转发客户端 IP 请求头
+    "proxy_client_ip_headers"           => [], // 受信代理下允许解析的客户端 IP 请求头（需与 proxy_server_ips 显式配套配置，如 ['HTTP_X_FORWARDED_FOR']）
 ];

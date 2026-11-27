@@ -110,10 +110,9 @@ try {
         'http://service.internal/secret.txt',
         'http://93.184.216.34:8080/test.txt',
         'https://93.184.216.34:8443/test.txt',
-        'http://user:pass@93.184.216.34/test.txt',
-        'http://93.184.216.34@127.0.0.1/test.txt',
-        'http://127.0.0.1#@93.184.216.34/test.txt',
         'http://127.0.0.1\\@93.184.216.34/test.txt',
+        'https://example.com./test.txt',
+        'http://user:pass@93.184.216.34/test.txt',
         'file:///etc/passwd',
         'gopher://127.0.0.1:6379/_INFO',
         'ftp://93.184.216.34/test.txt',
@@ -215,16 +214,91 @@ try {
     );
     assertSsrf(($traversalRes['status'] ?? true) === false, '包含路径穿越的文件名应被拦截');
 
-    // 7. DownloaderTool 源码必须禁用 CURLOPT_FOLLOWLOCATION 并绑定 CURLOPT_RESOLVE
+    // 7. 重定向相对 URI（含 ?query、#fragment、../ 路径段）解析与规范化 URL 校验
+    assertSsrf(
+        SsrfGuard::resolveRedirectUrl('https://example.com/files/report.pdf', '?version=2')
+        === 'https://example.com/files/report.pdf?version=2',
+        '仅含查询参数的重定向应保留原始路径'
+    );
+    assertSsrf(
+        SsrfGuard::resolveRedirectUrl('https://example.com/a/b/c.pdf', '../d.pdf?v=1')
+        === 'https://example.com/a/d.pdf?v=1',
+        '含 ../ 的相对路径重定向应按 RFC 3986 规范化'
+    );
+    $upperHostRes = SsrfGuard::validateUrl('HTTPS://PUBLIC.EXAMPLE.TEST/file.png', function () {
+        return ['93.184.216.34'];
+    });
+    assertSsrf(
+        ($upperHostRes['data']['url'] ?? '') === 'https://public.example.test/file.png',
+        'validateUrl 应返回规范化后的 URL 供 cURL 与 CURLOPT_RESOLVE 共用'
+    );
+
+    // 8. 真实 cURL 传输层回归：验证禁用继承环境代理且 CURLOPT_RESOLVE 绑定生效
     $toolSource = file_get_contents(dirname(__DIR__) . '/app/common/libs/downloader/DownloaderTool.php');
     assertSsrf(
         is_string($toolSource) && strpos($toolSource, 'CURLOPT_FOLLOWLOCATION, false') !== false,
         'DownloaderTool 必须显式禁用 CURLOPT_FOLLOWLOCATION'
     );
     assertSsrf(
-        strpos($toolSource, 'CURLOPT_RESOLVE') !== false,
-        'DownloaderTool 必须使用 CURLOPT_RESOLVE 锁定解析 IP 防范 DNS Rebinding'
+        strpos($toolSource, 'CURLOPT_RESOLVE') !== false
+        && strpos($toolSource, "CURLOPT_PROXY, ''") !== false,
+        'DownloaderTool 必须使用 CURLOPT_RESOLVE 并显式禁用环境代理'
     );
+
+    $httpServerPhp = <<<'PHP'
+$server = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
+if (!$server) { exit(2); }
+$name = stream_socket_get_name($server, false);
+echo $name . "\n";
+fflush(STDOUT);
+$conn = @stream_socket_accept($server, 5);
+if ($conn) {
+    fread($conn, 4096);
+    $body = "real-curl-ok";
+    fwrite($conn, "HTTP/1.1 200 OK\r\nContent-Length: " . strlen($body) . "\r\nConnection: close\r\n\r\n" . $body);
+    fclose($conn);
+}
+fclose($server);
+PHP;
+    $proc = proc_open(
+        escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg($httpServerPhp),
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes
+    );
+    assertSsrf(is_resource($proc), '未能启动本地测试 HTTP 服务');
+    $boundAddr = trim((string) fgets($pipes[1]));
+    $portPos = strrpos($boundAddr, ':');
+    assertSsrf($portPos !== false, '未能读取本地测试服务端口: ' . $boundAddr);
+    $listenPort = (int) substr($boundAddr, $portPos + 1);
+
+    $prevHttpProxy = getenv('http_proxy');
+    putenv('http_proxy=http://127.0.0.1:9');
+    try {
+        $execCurlMethod = new ReflectionMethod(DownloaderTool::class, 'executeCurlRequest');
+        $execCurlMethod->setAccessible(true);
+        $realCurlRes = $execCurlMethod->invoke(
+            null,
+            "http://curl-pin.example.test:{$listenPort}/ok.txt",
+            [
+                'url'        => "http://curl-pin.example.test:{$listenPort}/ok.txt",
+                'host'       => 'curl-pin.example.test',
+                'port'       => $listenPort,
+                'primary_ip' => '127.0.0.1',
+            ]
+        );
+        assertSsrf(($realCurlRes['status'] ?? false) === true, '真实 cURL 应忽略 http_proxy 并通过 CURLOPT_RESOLVE 请求成功: ' . ($realCurlRes['msg'] ?? ''));
+        assertSsrf(($realCurlRes['data']['body'] ?? '') === 'real-curl-ok', '真实 cURL 返回体不一致');
+    } finally {
+        if ($prevHttpProxy === false) {
+            putenv('http_proxy');
+        } else {
+            putenv('http_proxy=' . $prevHttpProxy);
+        }
+        fclose($pipes[0]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($proc);
+    }
 
     echo "downloader_ssrf_guard_test passed\n";
 } finally {

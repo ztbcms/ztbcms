@@ -142,8 +142,13 @@ class AliyunDriver extends UploadDriver
     public function getUploadCredential(string $module = 'file', string $filename = '', string $fileext = ''): array
     {
         try {
+            if (empty($this->bucket)) {
+                return [];
+            }
+
             $objectKey = $this->buildObjectKey($module, $filename, $fileext);
             $fileDir = dirname($objectKey) . '/';
+            $policy = $this->buildUploadSessionPolicy($objectKey);
 
             AlibabaCloud::accessKeyClient($this->accessKeyId, $this->accessKeySecret)
                 ->regionId($this->regionId)
@@ -158,9 +163,10 @@ class AliyunDriver extends UploadDriver
                 ->host('sts.aliyuncs.com')
                 ->options([
                     'query' => [
-                        'RegionId' => $this->regionId,
-                        'RoleArn' => $this->roleArn,
-                        'RoleSessionName' => "upload-session",
+                        'RegionId'        => $this->regionId,
+                        'RoleArn'         => $this->roleArn,
+                        'RoleSessionName' => 'upload-session',
+                        'Policy'          => $policy,
                     ],
                 ])
                 ->request();
@@ -188,6 +194,26 @@ class AliyunDriver extends UploadDriver
         } catch (\Throwable $e) {
             return [];
         }
+    }
+
+    /**
+     * 构造限制到单个服务端核准对象键的 STS 会话策略
+     *
+     * @param string $objectKey 服务端核准的对象键
+     * @return string
+     */
+    protected function buildUploadSessionPolicy(string $objectKey): string
+    {
+        return (string) json_encode([
+            'Version'   => '1',
+            'Statement' => [
+                [
+                    'Effect'   => 'Allow',
+                    'Action'   => ['oss:PutObject'],
+                    'Resource' => ["acs:oss:*:*:{$this->bucket}/{$objectKey}"],
+                ],
+            ],
+        ], JSON_UNESCAPED_SLASHES);
     }
 
     /**

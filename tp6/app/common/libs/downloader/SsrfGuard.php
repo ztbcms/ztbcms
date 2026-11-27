@@ -78,7 +78,11 @@ class SsrfGuard
         }
 
         $rawHost = (string) ($parts['host'] ?? '');
-        $host = strtolower(rtrim(trim($rawHost, '[]'), '.'));
+        $trimmedRawHost = trim($rawHost, '[]');
+        if ($trimmedRawHost === '' || substr($trimmedRawHost, -1) === '.') {
+            return createReturn(false, null, 'URL 主机名无效');
+        }
+        $host = strtolower($trimmedRawHost);
         if ($host === '' || preg_match('/[\s\/\\\\]/', $host) === 1) {
             return createReturn(false, null, 'URL 主机名无效');
         }
@@ -110,8 +114,15 @@ class SsrfGuard
             }
         }
 
+        $formattedHost = strpos($host, ':') !== false ? '[' . $host . ']' : $host;
+        $isDefaultPort = ($scheme === 'http' && $port === 80) || ($scheme === 'https' && $port === 443);
+        $canonicalUrl = $scheme . '://' . $formattedHost . ($isDefaultPort ? '' : ':' . $port)
+            . ((string) ($parts['path'] ?? '') !== '' ? $parts['path'] : '/')
+            . (isset($parts['query']) ? '?' . $parts['query'] : '')
+            . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+
         return createReturn(true, [
-            'url'        => $url,
+            'url'        => $canonicalUrl,
             'scheme'     => $scheme,
             'host'       => $host,
             'port'       => $port,
@@ -200,6 +211,11 @@ class SsrfGuard
             return $location;
         }
 
+        // 若包含非 http/https 的显式 scheme（如 file://、gopher://），保留供 validateUrl 拦截
+        if (preg_match('/^[a-z][a-z0-9+\-.]*:/i', $location) === 1) {
+            return $location;
+        }
+
         $baseParts = parse_url($baseUrl);
         if (!is_array($baseParts) || empty($baseParts['scheme']) || empty($baseParts['host'])) {
             return null;
@@ -208,23 +224,98 @@ class SsrfGuard
         $scheme = strtolower($baseParts['scheme']);
         $host = $baseParts['host'];
         $port = isset($baseParts['port']) ? ':' . $baseParts['port'] : '';
+        $origin = $scheme . '://' . $host . $port;
+        $basePath = (string) ($baseParts['path'] ?? '');
+        if ($basePath === '') {
+            $basePath = '/';
+        }
 
         if (strpos($location, '//') === 0) {
             return $scheme . ':' . $location;
         }
 
-        $origin = $scheme . '://' . $host . $port;
-        if ($location[0] === '/') {
-            return $origin . $location;
+        if ($location[0] === '#') {
+            $baseQuery = isset($baseParts['query']) ? '?' . $baseParts['query'] : '';
+            return $origin . $basePath . $baseQuery . $location;
         }
 
-        $basePath = (string) ($baseParts['path'] ?? '/');
-        $dir = substr($basePath, 0, (int) strrpos($basePath, '/') + 1);
-        if ($dir === '') {
-            $dir = '/';
+        if ($location[0] === '?') {
+            return $origin . $basePath . $location;
         }
 
-        return $origin . $dir . $location;
+        // 分离相对引用的 path 与 query/fragment
+        $suffix = '';
+        $refPath = $location;
+        if (preg_match('/^([^?#]*)(.*)$/', $location, $matches) === 1) {
+            $refPath = $matches[1];
+            $suffix = $matches[2];
+        }
+
+        if ($refPath !== '' && $refPath[0] === '/') {
+            $resolvedPath = self::removeDotSegments($refPath);
+        } else {
+            $lastSlash = strrpos($basePath, '/');
+            $baseDir = $lastSlash !== false ? substr($basePath, 0, $lastSlash + 1) : '/';
+            $resolvedPath = self::removeDotSegments($baseDir . $refPath);
+        }
+
+        return $origin . $resolvedPath . $suffix;
+    }
+
+    /**
+     * 按 RFC 3986 §5.2.4 规范化路径中的 . 与 .. 段
+     *
+     * @param string $path 原始路径
+     * @return string
+     */
+    private static function removeDotSegments(string $path): string
+    {
+        $input = $path;
+        $output = '';
+
+        while ($input !== '') {
+            if (strpos($input, '../') === 0) {
+                $input = substr($input, 3);
+            } elseif (strpos($input, './') === 0) {
+                $input = substr($input, 2);
+            } elseif (strpos($input, '/./') === 0) {
+                $input = '/' . substr($input, 3);
+            } elseif ($input === '/.') {
+                $input = '/';
+            } elseif (strpos($input, '/../') === 0) {
+                $input = '/' . substr($input, 4);
+                $lastSlash = strrpos($output, '/');
+                $output = $lastSlash !== false ? substr($output, 0, $lastSlash) : '';
+            } elseif ($input === '/..') {
+                $input = '/';
+                $lastSlash = strrpos($output, '/');
+                $output = $lastSlash !== false ? substr($output, 0, $lastSlash) : '';
+            } elseif ($input === '.' || $input === '..') {
+                $input = '';
+            } else {
+                if ($input[0] === '/') {
+                    $nextSlash = strpos($input, '/', 1);
+                    if ($nextSlash === false) {
+                        $output .= $input;
+                        $input = '';
+                    } else {
+                        $output .= substr($input, 0, $nextSlash);
+                        $input = substr($input, $nextSlash);
+                    }
+                } else {
+                    $nextSlash = strpos($input, '/');
+                    if ($nextSlash === false) {
+                        $output .= $input;
+                        $input = '';
+                    } else {
+                        $output .= substr($input, 0, $nextSlash);
+                        $input = substr($input, $nextSlash);
+                    }
+                }
+            }
+        }
+
+        return $output === '' ? '/' : $output;
     }
 
     /**
