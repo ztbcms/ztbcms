@@ -129,6 +129,9 @@ class Api extends BaseController
         if (empty($fileext)) {
             return json(self::createReturn(false, null, '无法识别文件后缀'));
         }
+        if (UploadService::isBlockedExtension($fileext)) {
+            return json(self::createReturn(false, null, '不支持上传存在脚本风险的文件格式'));
+        }
 
         $module = UploadService::inferModuleByExt($fileext);
         $driver = request()->param('driver', '');  // 支持指定驱动，空则使用系统配置
@@ -162,6 +165,10 @@ class Api extends BaseController
         }
         if (empty($fileext)) {
             return json(self::createReturn(false, null, '无法识别文件后缀'));
+        }
+        $nameExt = UploadService::normalizeFileExt('', $filename);
+        if (UploadService::isBlockedExtension($fileext) || ($nameExt !== '' && UploadService::isBlockedExtension($nameExt))) {
+            return json(self::createReturn(false, null, '不支持上传存在脚本风险的文件格式'));
         }
         $module = request()->param('module', '');
         $module = trim((string)$module);
