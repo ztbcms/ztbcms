@@ -14,6 +14,7 @@
     <!-- jQuery 2.x -->
     <script src="/statics/admin/jquery/jquery-2.2.3.min.js"></script>
     <script>
+        // 为同源 jQuery 写请求附加当前后台会话的 CSRF Token，跨域请求（如对象存储直传）跳过。
         jQuery.ajaxPrefilter(function (options, originalOptions, xhr) {
             var token = document.querySelector('meta[name="csrf-token"]');
             if (!token || /^(GET|HEAD|OPTIONS)$/i.test(options.type)) {
