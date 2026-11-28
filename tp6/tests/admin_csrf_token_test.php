@@ -68,7 +68,13 @@ foreach (['HEAD', 'OPTIONS'] as $method) {
 }
 
 Session::clear();
-assertCsrfTokenSame(403, $dispatch('POST', ['X-CSRF-TOKEN' => $token])->getCode(), '清空会话后旧 Token 应失效');
+$expiredResponse = $dispatch('POST', ['X-CSRF-TOKEN' => $token]);
+assertCsrfTokenSame(403, $expiredResponse->getCode(), '清空会话后旧 Token 应失效');
+assertCsrfTokenSame(
+    'csrf_validation_failed',
+    $expiredResponse->getData()['data']['reason'] ?? null,
+    '后台页面应能区分 CSRF 校验失败与普通权限拒绝'
+);
 assertCsrfTokenSame(false, strpos($dispatch('GET')->getContent(), $token) !== false, '新会话应生成新的 Token');
 
 $cron = (new ReflectionClass(Dashboard::class))->newInstanceWithoutConstructor();

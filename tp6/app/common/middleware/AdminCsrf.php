@@ -36,7 +36,12 @@ class AdminCsrf
             $submittedToken = $request->header('X-CSRF-TOKEN');
             if (!is_string($token) || $token === '' || !is_string($submittedToken)
                 || !hash_equals($token, $submittedToken)) {
-                return json(createReturn(false, null, '页面校验失败，请刷新页面后重试', 403), 403);
+                return json(createReturn(
+                    false,
+                    ['reason' => 'csrf_validation_failed'],
+                    '页面校验失败，请刷新页面后重试',
+                    403
+                ), 403);
             }
         }
 

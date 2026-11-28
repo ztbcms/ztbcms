@@ -85,12 +85,17 @@
 
                     }
                 });
-                $(document).ajaxError(function () {
+                $(document).ajaxError(function (event, xhr) {
                     if (window.__GLOBAL_ELEMENT_LOADING_INSTANCE) {
                         setTimeout(function () {
                             window.__GLOBAL_ELEMENT_LOADING_INSTANCE.close()
                         }, 0)
 
+                    }
+                    var response = xhr.responseJSON;
+                    if (xhr.status === 403 && response && response.data
+                        && response.data.reason === 'csrf_validation_failed') {
+                        layer.msg('页面校验失败，请刷新页面后重试');
                     }
                 });
                 if (!!window.ActiveXObject || "ActiveXObject" in window) {
