@@ -3,8 +3,8 @@
 // 管理后台相关信息
 return [
     "cms_name"                          => "ZTBCMS开发框架", //CMS名称
-    "cms_build"                         => '202611232232', //CMS流水号
-    "cms_version"                       => "4.12.3", //CMS版本号
+    "cms_build"                         => '202611282138', //CMS流水号
+    "cms_version"                       => "4.13.0", //CMS版本号
     "application_version"               => "0.0.0", //产品版本号
     "csrf_enabled"                      => env('security.admin_csrf_enabled', false),
     // 登录防爆破与受信代理配置
