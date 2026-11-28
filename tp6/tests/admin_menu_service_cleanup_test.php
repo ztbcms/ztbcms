@@ -6,6 +6,7 @@ use think\facade\Config;
 use think\facade\Db;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -61,19 +62,7 @@ try {
         );
     }
 
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $cacheDir,
-                'prefix' => '',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($cacheDir);
 
     Config::set([
         'default' => 'admin_menu_service_cleanup_test',

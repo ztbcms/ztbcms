@@ -97,7 +97,10 @@ class AliyunDriver extends UploadDriver
     public function getPrivateUrl(string $filePath, int $expireSeconds = 0): string
     {
         $expireTime = $expireSeconds > 0 ? $expireSeconds : ($this->expireTime > 0 ? $this->expireTime : 3600);
-        $cacheKey = 'aliyun_private_url_' . md5($filePath);
+        $ext = UploadService::normalizeFileExt('', $filePath);
+        $safeInlineExts = array_merge(UploadService::IMAGE_EXTENSIONS, UploadService::VIDEO_EXTENSIONS);
+        $forceAttachment = !in_array($ext, $safeInlineExts, true);
+        $cacheKey = ($forceAttachment ? 'aliyun_private_url_attach_' : 'aliyun_private_url_') . md5($filePath);
         $privateUrl = Cache::get($cacheKey);
 
         if ($privateUrl) {
@@ -106,7 +109,8 @@ class AliyunDriver extends UploadDriver
 
         try {
             $ossClient = $this->createOssClient();
-            $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireTime);
+            $options = $forceAttachment ? ['response-content-disposition' => 'attachment'] : null;
+            $privateUrl = $ossClient->signUrl($this->bucket, $filePath, $expireTime, OssClient::OSS_HTTP_GET, $options);
             $cacheTtl = $expireTime > 600 ? ($expireTime - 600) : max(1, intval($expireTime / 2));
             Cache::set($cacheKey, $privateUrl, $cacheTtl);
             return $privateUrl;
@@ -142,8 +146,13 @@ class AliyunDriver extends UploadDriver
     public function getUploadCredential(string $module = 'file', string $filename = '', string $fileext = ''): array
     {
         try {
+            if (empty($this->bucket)) {
+                return [];
+            }
+
             $objectKey = $this->buildObjectKey($module, $filename, $fileext);
             $fileDir = dirname($objectKey) . '/';
+            $policy = $this->buildUploadSessionPolicy($objectKey);
 
             AlibabaCloud::accessKeyClient($this->accessKeyId, $this->accessKeySecret)
                 ->regionId($this->regionId)
@@ -158,9 +167,10 @@ class AliyunDriver extends UploadDriver
                 ->host('sts.aliyuncs.com')
                 ->options([
                     'query' => [
-                        'RegionId' => $this->regionId,
-                        'RoleArn' => $this->roleArn,
-                        'RoleSessionName' => "upload-session",
+                        'RegionId'        => $this->regionId,
+                        'RoleArn'         => $this->roleArn,
+                        'RoleSessionName' => 'upload-session',
+                        'Policy'          => $policy,
                     ],
                 ])
                 ->request();
@@ -188,6 +198,30 @@ class AliyunDriver extends UploadDriver
         } catch (\Throwable $e) {
             return [];
         }
+    }
+
+    /**
+     * 构造限制到单个服务端核准对象键的 STS 会话策略
+     *
+     * @param string $objectKey 服务端核准的对象键
+     * @return string
+     */
+    protected function buildUploadSessionPolicy(string $objectKey): string
+    {
+        if (preg_match('/^[a-z0-9_\/.\-]+$/i', $objectKey) !== 1 || strpos($objectKey, '..') !== false) {
+            throw new \InvalidArgumentException('非法的 OSS 对象键');
+        }
+
+        return (string) json_encode([
+            'Version'   => '1',
+            'Statement' => [
+                [
+                    'Effect'   => 'Allow',
+                    'Action'   => ['oss:PutObject'],
+                    'Resource' => ["acs:oss:*:*:{$this->bucket}/{$objectKey}"],
+                ],
+            ],
+        ], JSON_UNESCAPED_SLASHES);
     }
 
     /**

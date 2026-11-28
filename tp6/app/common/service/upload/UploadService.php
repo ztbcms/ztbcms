@@ -48,8 +48,10 @@ class UploadService extends BaseService
         $this->driver = new $driverClass($config);
     }
 
-    // 图片后缀
-    const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'ico'];
+    // 图片后缀（禁止 SVG 以防范存储型 XSS）
+    const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'ico'];
+    // 禁止上传的危险脚本/主动内容扩展名
+    const BLOCKED_EXTENSIONS = ['svg', 'svgz', 'html', 'htm', 'xhtml', 'shtml', 'xml', 'xsl', 'xslt', 'js', 'mjs', 'php', 'phtml', 'phar', 'asp', 'aspx', 'jsp'];
     // 视频后缀
     const VIDEO_EXTENSIONS = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm', 'm4v', '3gp'];
 
@@ -149,7 +151,7 @@ class UploadService extends BaseService
         $config = ConfigModel::getConfigs();
         $maxSize = intval($config['qtuploadmaxsize'] ?? 10240); // KB
         $allowExtStr = $config['qtuploadallowext'] ?? 'jpg|png|gif';
-        $allowExt = array_map('strtolower', array_filter(explode('|', $allowExtStr)));
+        $allowExt = self::filterAllowedExtensions(explode('|', $allowExtStr));
 
         return [
             'max_size' => $maxSize,
@@ -157,6 +159,71 @@ class UploadService extends BaseService
             'allow_ext' => $allowExt,
             'allow_ext_str' => join('|', $allowExt),
         ];
+    }
+
+    /**
+     * 判断文件后缀是否属于禁止上传的危险类型或包含非法字符
+     */
+    public static function isBlockedExtension(string $fileext): bool
+    {
+        $normalized = self::normalizeFileExt($fileext);
+        if ($normalized === '') {
+            return false;
+        }
+        if (preg_match('/^[a-z0-9]{1,16}$/', $normalized) !== 1) {
+            return true;
+        }
+        return in_array($normalized, self::BLOCKED_EXTENSIONS, true);
+    }
+
+    /**
+     * 校验指定用户类型是否允许上传该扩展名（同时拦截危险扩展名）
+     *
+     * @param string $fileext  文件扩展名
+     * @param string $userType 用户类型（admin / user）
+     * @return bool
+     */
+    public static function isAllowedExtensionForUserType(string $fileext, string $userType = 'user'): bool
+    {
+        $normalized = self::normalizeFileExt($fileext);
+        if ($normalized === '' || self::isBlockedExtension($normalized)) {
+            return false;
+        }
+
+        $config = ConfigModel::getConfigs();
+        $rawAllowExt = (string) ($userType === AttachmentModel::USER_TYPE_ADMIN
+            ? ($config['uploadallowext'] ?? '')
+            : ($config['qtuploadallowext'] ?? 'jpg|png|gif'));
+        $allowedExts = self::filterAllowedExtensions(explode('|', $rawAllowExt));
+
+        return in_array($normalized, $allowedExts, true);
+    }
+
+    /**
+     * 过滤扩展名列表中的危险类型并规范化
+     *
+     * @param array $extensions 扩展名列表
+     * @return array
+     */
+    public static function filterAllowedExtensions(array $extensions): array
+    {
+        $result = [];
+        foreach ($extensions as $ext) {
+            $normalized = self::normalizeFileExt((string) $ext);
+            if ($normalized === '' || self::isBlockedExtension($normalized)) {
+                continue;
+            }
+            $result[$normalized] = true;
+        }
+        return array_keys($result);
+    }
+
+    /**
+     * 清洗以 | 分隔的允许上传扩展名配置字符串
+     */
+    public static function sanitizeAllowExtString(string $allowExtStr): string
+    {
+        return implode('|', self::filterAllowedExtensions(explode('|', $allowExtStr)));
     }
 
     /**
@@ -201,7 +268,11 @@ class UploadService extends BaseService
 
         $attachmentModel->filename = $file->getOriginalName();
         $attachmentModel->filesize = $file->getSize();
-        $attachmentModel->fileext = self::normalizeFileExt($file->getOriginalExtension());
+        $attachmentModel->fileext = self::normalizeFileExt($file->getOriginalExtension(), $file->getOriginalName());
+        if (self::isBlockedExtension($attachmentModel->fileext)) {
+            $this->setError('不支持上传存在脚本风险的文件格式');
+            return false;
+        }
         $attachmentModel->create_time = time();
         $attachmentModel->update_time = time();
         $attachmentModel->upload_ip = request()->ip();
@@ -212,11 +283,13 @@ class UploadService extends BaseService
         $attachmentModel->driver = $this->driverName;  // 使用实例中的驱动名称
 
         $maxFileSize = ($attachmentModel->user_type == 'admin' ? $config['uploadmaxsize'] : $config['qtuploadmaxsize']) * 1024;
-        $uploadAllowExt = str_replace(
-            '|',
-            ',',
-            ($attachmentModel->user_type == 'admin' ? $config['uploadallowext'] : $config['qtuploadallowext'])
-        );
+        $rawAllowExt = (string) ($attachmentModel->user_type == 'admin' ? ($config['uploadallowext'] ?? '') : ($config['qtuploadallowext'] ?? ''));
+        $filteredAllowExts = self::filterAllowedExtensions(explode('|', $rawAllowExt));
+        if (empty($filteredAllowExts)) {
+            $this->setError('未配置有效的允许上传文件格式');
+            return false;
+        }
+        $uploadAllowExt = implode(',', $filteredAllowExts);
 
         try {
             validate(['file' => "filesize:{$maxFileSize}|fileExt:{$uploadAllowExt}"])

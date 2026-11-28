@@ -63,6 +63,6 @@ class DownloaderRetryScript extends CronScript
             ['downloader_id', '>', $downloader_id],
             ['downloader_implement_num', '<', $downloader_retry_num],
             ['downloader_next_implement_time', '<', time()]
-        ])->value('downloader_id');
+        ])->order('downloader_id', 'asc')->value('downloader_id');
     }
 }

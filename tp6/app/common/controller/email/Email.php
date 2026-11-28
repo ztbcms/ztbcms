@@ -9,6 +9,7 @@ namespace app\common\controller\email;
 use app\admin\service\AdminConfigService;
 use app\common\controller\AdminController;
 use app\common\libs\helper\PaginationHelper;
+use app\common\libs\helper\SqlHelper;
 use app\common\model\email\EmailSendLogModel;
 use app\common\service\email\EmailService;
 use think\Request;
@@ -73,17 +74,21 @@ class Email extends AdminController
             $where = [];
             $to_email = input('to_email', '', 'trim');
             if (!empty($to_email)) {
-                $where[] = ['to_email', 'like', '%'.$to_email.'%'];
+                $where[] = ['to_email', 'like', '%'.SqlHelper::escapeLike($to_email).'%'];
             }
             $from_email = input('from_email', '', 'trim');
             if (!empty($from_email)) {
-                $where[] = ['from_email', 'like', '%'.$from_email.'%'];
+                $where[] = ['from_email', 'like', '%'.SqlHelper::escapeLike($from_email).'%'];
             }
-            $start_time = input('start_time', '', 'trim');
-            $end_time = input('end_time', '', 'trim');
-            if (!empty($start_time) && !empty($end_time)) {
-                $send_time = [$start_time, $end_time];
-                $where [] = ['send_time', 'between', $send_time];
+            $startTime = input('start_time/s', '', 'trim');
+            $endTime = input('end_time/s', '', 'trim');
+            if ($startTime !== '' && $endTime !== '') {
+                $startTimestamp = $this->parseSendLogTime($startTime);
+                $endTimestamp = $this->parseSendLogTime($endTime);
+                if ($startTimestamp === null || $endTimestamp === null || $startTimestamp > $endTimestamp) {
+                    return self::returnErrorJson('发送时间范围无效');
+                }
+                $where[] = ['send_time', 'between', [$startTimestamp, $endTimestamp]];
             }
 
             $status = input('status', '', 'trim');
@@ -95,12 +100,7 @@ class Email extends AdminController
             $limit = PaginationHelper::normalizeLimit(input('limit', 10), 10);
 
             $logModel = new EmailSendLogModel();
-            $db = $logModel->where($where)->order(['id' => 'desc'])->page($page)->limit($limit);
-            if (!empty($logintime)) {
-                $db->whereTime('logintime', 'between', $logintime);
-            }
-
-            $items = $db->select();
+            $items = $logModel->where($where)->order(['id' => 'desc'])->page($page)->limit($limit)->select();
 
             $total_items = $logModel->where($where)->count();
             $total_pages = ceil($total_items / $limit);
@@ -115,6 +115,26 @@ class Email extends AdminController
             return self::makeJsonReturn(true, $data);
         }
         return view('sendLog');
+    }
+
+    /**
+     * 解析日期选择器的本地时间或调用方传入的 Unix 秒。
+     *
+     * @param string $value
+     * @return int|null
+     */
+    private function parseSendLogTime(string $value): ?int
+    {
+        if (ctype_digit($value)) {
+            return (int) $value;
+        }
+
+        $timestamp = strtotime($value);
+        if ($timestamp === false || date('Y-m-d H:i:s', $timestamp) !== $value) {
+            return null;
+        }
+
+        return $timestamp;
     }
 
     /**

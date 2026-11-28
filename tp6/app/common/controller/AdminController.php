@@ -35,6 +35,8 @@ class AdminController extends BaseController
         \think\middleware\SessionInit::class,
         // 用户登录、权限验证
         \app\common\middleware\AdminAuth::class,
+        // 后台会话 CSRF 校验
+        \app\common\middleware\AdminCsrf::class,
         // 操作日志记录
         \app\admin\middleware\OperationLog::class,
     ];

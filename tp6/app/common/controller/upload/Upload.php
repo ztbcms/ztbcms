@@ -7,6 +7,7 @@ use think\facade\View;
 use think\Request;
 use app\admin\service\AdminUserService;
 use app\common\controller\AdminController;
+use app\common\libs\helper\SqlHelper;
 use app\common\model\ConfigModel;
 use app\common\model\upload\AttachmentModel;
 use app\common\service\BaseService;
@@ -78,8 +79,15 @@ class Upload extends AdminController
     {
         if ($request->isPost()) {
             $configService = ConfigService::getInstance();
+            $postData = $request->post();
+            if (isset($postData['uploadallowext']) && is_string($postData['uploadallowext'])) {
+                $postData['uploadallowext'] = UploadService::sanitizeAllowExtString($postData['uploadallowext']);
+            }
+            if (isset($postData['qtuploadallowext']) && is_string($postData['qtuploadallowext'])) {
+                $postData['qtuploadallowext'] = UploadService::sanitizeAllowExtString($postData['qtuploadallowext']);
+            }
 
-            return $configService->updateConfig($request->post()) ? self::returnSuccessJson() : self::returnErrorJson('操作失败');
+            return $configService->updateConfig($postData) ? self::returnSuccessJson() : self::returnErrorJson('操作失败');
         }
         if ($request->isAjax()) {
 
@@ -150,7 +158,7 @@ class Upload extends AdminController
             }
             $filename = input('filename', '');
             if (!empty($filename)) {
-                $where[] = ['filename', 'like', '%' . $filename . '%'];
+                $where[] = ['filename', 'like', '%' . SqlHelper::escapeLike((string) $filename) . '%'];
             }
             $createTime = input('create_time/a', []);
             if (is_array($createTime) && count($createTime) === 2 && !empty($createTime[0]) && !empty($createTime[1])) {
@@ -173,6 +181,9 @@ class Upload extends AdminController
             return json($res);
         }
         if ($action == 'doDelete') {
+            if (!request()->isPost()) {
+                return self::returnMethodNotAllowedJson();
+            }
             $aid = input('aid');
             if (empty($aid)) {
                 return self::makeJsonReturn(false, null, '参数异常');
@@ -191,6 +202,9 @@ class Upload extends AdminController
             return self::makeJsonReturn(true, null, '操作完成');
         }
         if ($action == 'doBatchDelete') {
+            if (!request()->isPost()) {
+                return self::returnMethodNotAllowedJson();
+            }
             $aids = input('aids/a', []);
             if (empty($aids)) {
                 return self::makeJsonReturn(false, null, '请选择附件');

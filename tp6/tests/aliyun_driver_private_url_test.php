@@ -7,6 +7,7 @@ use think\facade\Cache;
 use think\facade\Config;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -116,7 +117,7 @@ class TestableAliyunDriver extends AliyunDriver
  */
 function readFileCacheTtl(string $cacheKey): int
 {
-    $store = Cache::store('file');
+    $store = Cache::store();
     $method = new ReflectionMethod($store, 'getCacheKey');
     $method->setAccessible(true);
     $filename = $method->invoke($store, $cacheKey);
@@ -135,18 +136,7 @@ if (!is_dir($tempCacheDir)) {
 }
 
 try {
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tempCacheDir . DIRECTORY_SEPARATOR,
-                'prefix' => '',
-                'expire' => 0,
-                'data_compress' => false,
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tempCacheDir, ['data_compress' => false]);
     Cache::clear();
 
     $baseConfig = [
@@ -204,6 +194,24 @@ try {
         assertAliyunPrivateUrl($fakeClient->signCalls[0]['timeout'] === 3600, "无效配置 {$path} 应回退到 3600 秒");
         assertAliyunPrivateUrl(readFileCacheTtl('aliyun_private_url_' . md5($path)) === 3000, "回退 3600 秒时缓存 TTL 应为 3000");
     }
+
+    // 4. 真实 OssClient 离线签名校验：非媒体文件（如 PDF）应生成带 response-content-disposition=attachment 的 URL 且独立缓存
+    $realDriver = new AliyunDriver($baseConfig);
+    $pdfUrl = $realDriver->getPrivateUrl('docs/report.pdf');
+    assertAliyunPrivateUrl($pdfUrl !== '', '真实 SDK 签发 PDF 私有链接不应为空');
+    assertAliyunPrivateUrl(
+        strpos($pdfUrl, 'response-content-disposition=attachment') !== false,
+        '非媒体私有文件签名链接必须包含 response-content-disposition=attachment: ' . $pdfUrl
+    );
+    assertAliyunPrivateUrl(
+        readFileCacheTtl('aliyun_private_url_attach_' . md5('docs/report.pdf')) === 1200,
+        '非媒体附件应使用独立缓存键前缀 aliyun_private_url_attach_'
+    );
+    $imgRealUrl = $realDriver->getPrivateUrl('images/photo.jpg');
+    assertAliyunPrivateUrl(
+        $imgRealUrl !== '' && strpos($imgRealUrl, 'response-content-disposition=attachment') === false,
+        '普通图片私有链接不应强制附加 attachment 下载头'
+    );
 
     echo "aliyun_driver_private_url_test passed\n";
 } finally {

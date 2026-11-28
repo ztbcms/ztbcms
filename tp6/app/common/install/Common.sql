@@ -15,7 +15,8 @@ CREATE TABLE `cms_cron` (
   `next_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下一次执行时间',
   `data` text COMMENT '数据',
   PRIMARY KEY (`cron_id`),
-  KEY `idx_next_time` (`next_time`)
+  KEY `idx_next_time` (`next_time`),
+  KEY `idx_isopen_next_time` (`isopen`, `next_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务表';
 
 DROP TABLE IF EXISTS `cms_cron_log`;
@@ -28,7 +29,9 @@ CREATE TABLE `cms_cron_log` (
   `use_time` int(11) NOT NULL DEFAULT '0' COMMENT '耗时',
   `result_msg` text COMMENT '执行日志信息',
   PRIMARY KEY (`id`),
-  KEY `result` (`result`)
+  KEY `result` (`result`),
+  KEY `idx_cron_id` (`cron_id`),
+  KEY `idx_start_time` (`start_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务执行日志';
 
 DROP TABLE IF EXISTS `cms_cron_scheduling_log`;
@@ -39,7 +42,8 @@ CREATE TABLE `cms_cron_scheduling_log` (
   `use_time` int(11) NOT NULL COMMENT '耗时',
   `error_count` int(11) NOT NULL COMMENT '错误数量',
   `cron_count` int(11) NOT NULL COMMENT '周期内执行计划任务次数',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_start_time` (`start_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='调度运行日志';
 
 -- 配置表
@@ -76,8 +80,9 @@ CREATE TABLE `cms_attachment_group` (
   `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
-  PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件分类';
+  PRIMARY KEY (`group_id`),
+  KEY `idx_type_del_sort` (`group_type`, `delete_time`, `sort`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='附件分类';
 
 DROP TABLE IF EXISTS `cms_attachment`;
 CREATE TABLE `cms_attachment` (
@@ -104,7 +109,8 @@ CREATE TABLE `cms_attachment` (
   KEY `idx_panel_module_user_aid` (`delete_time`, `user_type`, `module`, `aid`),
   KEY `idx_panel_module_user_group_aid` (`delete_time`, `user_type`, `module`, `group_id`, `aid`),
   KEY `idx_direct_record_lookup` (`delete_time`, `user_id`, `user_type`, `driver`, `filepath`(128)),
-  KEY `idx_attach_module_aid` (`delete_time`, `module`, `aid`)
+  KEY `idx_attach_module_aid` (`delete_time`, `module`, `aid`),
+  KEY `idx_del_create_time` (`delete_time`, `create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表';
 
 
@@ -122,7 +128,7 @@ CREATE TABLE `cms_queue_jobs` (
   `create_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `queue` (`queue`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='队列-任务表';
 
 DROP TABLE IF EXISTS `cms_queue_failed_jobs`;
 CREATE TABLE `cms_queue_failed_jobs` (
@@ -132,7 +138,8 @@ CREATE TABLE `cms_queue_failed_jobs` (
  `payload` longtext NOT NULL,
  `exception` longtext NOT NULL,
  `fail_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
- PRIMARY KEY (`id`)
+ PRIMARY KEY (`id`),
+ KEY `idx_fail_time` (`fail_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-失败任务表';
 
 DROP TABLE IF EXISTS `cms_queue_monitor`;
@@ -163,8 +170,9 @@ CREATE TABLE `cms_queue_monitor` (
   KEY `idx_job_started` (`job_name`, `started_at`),
   KEY `idx_status_started` (`status`, `started_at`),
   KEY `idx_uuid` (`monitor_uuid`),
-  KEY `idx_host_pid` (`hostname`, `pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='队列-执行监控记录表';
+  KEY `idx_host_pid` (`hostname`, `pid`),
+  KEY `idx_queue_job_id` (`queue_job_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='队列-执行监控记录表';
 
 -- ----------------------------
 -- 队列 END
@@ -198,8 +206,10 @@ CREATE TABLE `cms_downloader`  (
     PRIMARY KEY (`downloader_id`) USING BTREE,
     KEY `downloader_url_hash` (`downloader_url_hash`),
     KEY `file_hash` (`file_hash`),
-    KEY `idx_state_process_start_id` (`downloader_state`, `process_start_time`, `downloader_id`)
-) ENGINE = InnoDB CHARACTER SET = utf8mb4  COMMENT='下载中心';
+    KEY `idx_state_process_start_id` (`downloader_state`, `process_start_time`, `downloader_id`),
+    KEY `idx_state_id` (`downloader_state`, `downloader_id`),
+    KEY `idx_create_time` (`create_time`)
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='下载中心';
 -- ----------------------------
 -- 下载中心 END
 -- ----------------------------

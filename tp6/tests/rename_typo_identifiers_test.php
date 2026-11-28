@@ -142,6 +142,7 @@ try {
     /** @var Panel $panelController */
     $panelController = $panelRef->newInstanceWithoutConstructor();
     $request = new Request();
+    $request->withServer(['REQUEST_METHOD' => 'POST']);
     $request->withPost([
         'files' => [
             ['aid' => $aid1],

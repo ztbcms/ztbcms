@@ -92,6 +92,9 @@ class Panel extends AdminController
      */
     function deleteFiles(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $files = $request->post('files');
         $uploadData = [];
         foreach ($files as $file) {
@@ -116,6 +119,9 @@ class Panel extends AdminController
      */
     function moveGalleryGroup(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $files = $request->post('files');
         $groupId = $request->post('group_id');
         $uploadData = [];
@@ -169,6 +175,9 @@ class Panel extends AdminController
      */
     function delGalleryGroup(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $groupId = $request->post('group_id', '');
         $attachmentGroupModel = AttachmentGroupModel::where('group_id', $groupId)
             ->findOrEmpty();
@@ -190,6 +199,9 @@ class Panel extends AdminController
      */
     function editGalleryGroup(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $groupId = $request->post('group_id', '');
         $attachmentGroupModel = AttachmentGroupModel::where('group_id', $groupId)
             ->findOrEmpty();
@@ -212,6 +224,9 @@ class Panel extends AdminController
      */
     function addGalleryGroup(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $attachmentGroupModel = new AttachmentGroupModel();
         $attachmentGroupModel->group_name = $request->post('group_name', '');
         $attachmentGroupModel->group_type = $request->post('group_type', AttachmentGroupModel::TYPE_IMAGE);

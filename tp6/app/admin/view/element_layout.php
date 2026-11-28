@@ -6,10 +6,29 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>{$_Config['sitename'] ?? ''}</title>
+    {if !empty($adminCsrfToken)}
+    <meta name="csrf-token" content="{$adminCsrfToken|htmlentities}">
+    {/if}
     <!-- ztbcms 默认 iconfont -->
     <link rel="stylesheet" href="/statics/admin/ztbcms/iconfont/iconfont.css">
     <!-- jQuery 2.x -->
     <script src="/statics/admin/jquery/jquery-2.2.3.min.js"></script>
+    <script>
+        // 为同源 jQuery 写请求附加当前后台会话的 CSRF Token，跨域请求（如对象存储直传）跳过。
+        jQuery.ajaxPrefilter(function (options, originalOptions, xhr) {
+            var token = document.querySelector('meta[name="csrf-token"]');
+            if (!token || /^(GET|HEAD|OPTIONS)$/i.test(options.type)) {
+                return;
+            }
+
+            var target = document.createElement('a');
+            target.href = options.url;
+            target.href = target.href;
+            if (target.protocol === window.location.protocol && target.host === window.location.host) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', token.content);
+            }
+        });
+    </script>
     <!-- layer.js -->
     <script src="/statics/admin/layer/layer.js"></script>
     <!--  ztbcms工具类(必须在vue-common 前加载)  -->
@@ -66,12 +85,17 @@
 
                     }
                 });
-                $(document).ajaxError(function () {
+                $(document).ajaxError(function (event, xhr) {
                     if (window.__GLOBAL_ELEMENT_LOADING_INSTANCE) {
                         setTimeout(function () {
                             window.__GLOBAL_ELEMENT_LOADING_INSTANCE.close()
                         }, 0)
 
+                    }
+                    var response = xhr.responseJSON;
+                    if (xhr.status === 403 && response && response.data
+                        && response.data.reason === 'csrf_validation_failed') {
+                        layer.msg('页面校验失败，请刷新页面后重试');
                     }
                 });
                 if (!!window.ActiveXObject || "ActiveXObject" in window) {

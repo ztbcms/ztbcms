@@ -65,4 +65,15 @@ class SqlHelper
             1
         );
     }
+
+    /**
+     * 转义 LIKE 查询中的通配符（\、%、_），防止通配符注入枚举
+     *
+     * @param string $value 原始检索字符串
+     * @return string
+     */
+    public static function escapeLike(string $value): string
+    {
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
+    }
 }

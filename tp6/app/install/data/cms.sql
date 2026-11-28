@@ -36,13 +36,13 @@ CREATE TABLE `cms_admin_panel` (
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_config`;
 CREATE TABLE `cms_config` (
-  `id` smallint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `varname` varchar(128) NOT NULL DEFAULT '',
   `info` varchar(255) NOT NULL DEFAULT '',
   `groupid` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `value` text,
   PRIMARY KEY (`id`),
-  KEY `varname` (`varname`)
+  UNIQUE KEY `uniq_varname` (`varname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='网站配置表';
 
 -- ----------------------------
@@ -140,12 +140,13 @@ CREATE TABLE `cms_login_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
   `username` char(30) NOT NULL DEFAULT '' COMMENT '登录帐号',
   `logintime` int(10) NOT NULL DEFAULT '0' COMMENT '登录时间戳',
-  `loginip` char(20) NOT NULL DEFAULT '' COMMENT '登录IP',
+  `loginip` varchar(45) NOT NULL DEFAULT '' COMMENT '登录IP',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,1为登录成功，0为登录失败',
   `password` varchar(30) NOT NULL DEFAULT '' COMMENT '尝试错误密码',
   `info` varchar(255) NOT NULL DEFAULT '' COMMENT '其他说明',
   PRIMARY KEY (`id`),
-  KEY `logintime` (`logintime`)
+  KEY `logintime` (`logintime`),
+  KEY `idx_status_logintime` (`status`, `logintime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台登录日志';
 
 -- ----------------------------
@@ -198,7 +199,7 @@ CREATE TABLE `cms_operation_log` (
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
     `uid` smallint(6) NOT NULL DEFAULT '0' COMMENT '操作帐号ID',
     `time` int(11) NOT NULL DEFAULT '0' COMMENT '操作时间',
-    `ip` char(20) NOT NULL DEFAULT '' COMMENT 'IP',
+    `ip` varchar(45) NOT NULL DEFAULT '' COMMENT 'IP',
     `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态,0错误提示，1为正确提示',
     `method` varchar(32) NOT NULL DEFAULT '' COMMENT '请求方法',
     `url` varchar(512) NOT NULL DEFAULT '' COMMENT '请求路由',
@@ -245,7 +246,7 @@ CREATE TABLE `cms_user` (
   `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
   `bind_account` varchar(50) NOT NULL DEFAULT '' COMMENT '绑定帐户',
   `last_login_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上次登录时间',
-  `last_login_ip` varchar(40) NOT NULL DEFAULT '' COMMENT '上次登录IP',
+  `last_login_ip` varchar(45) NOT NULL DEFAULT '' COMMENT '上次登录IP',
   `verify` varchar(32) NOT NULL DEFAULT '' COMMENT '证验码',
   `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
@@ -279,8 +280,9 @@ CREATE TABLE `cms_admin_message` (
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `read_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '阅读状态: 0未阅读 1已阅读',
   PRIMARY KEY (`id`),
-  KEY `receiver` (`receiver`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台消息';
+  KEY `receiver` (`receiver`),
+  KEY `idx_receiver_read_status` (`receiver`, `read_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='后台消息';
 
 DROP TABLE IF EXISTS `cms_email_send_log`;
 CREATE TABLE `cms_email_send_log` (
@@ -293,7 +295,8 @@ CREATE TABLE `cms_email_send_log` (
   `error_msg` varchar(512) NOT NULL DEFAULT '' COMMENT '错误信息',
   `send_time` int(11) NOT NULL COMMENT '发送时间',
   PRIMARY KEY (`id`),
-  KEY `send_time` (`send_time`)
+  KEY `send_time` (`send_time`),
+  KEY `idx_status_send_time` (`status`, `send_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邮件发送记录';
 
 DROP TABLE IF EXISTS `cms_user_operate_log`;
@@ -308,7 +311,8 @@ CREATE TABLE `cms_user_operate_log`
   `content` varchar(255) NOT NULL DEFAULT '' COMMENT '操作内容',
   `create_time` int(11) NOT NULL COMMENT '操作时间',
     PRIMARY KEY (`id`),
-    KEY `user_id_create_time` (`user_id`, `create_time`)
+    KEY `user_id_create_time` (`user_id`, `create_time`),
+    KEY `idx_create_time` (`create_time`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT='用户操作日志';
 
 DROP TABLE IF EXISTS `cms_kv`;
@@ -319,4 +323,4 @@ CREATE TABLE `cms_kv`
     `create_time` int(11) NOT NULL,
     `update_time` int(11) NOT NULL,
     PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='键值对表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='键值对表';

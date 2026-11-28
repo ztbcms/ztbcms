@@ -6,6 +6,7 @@
 namespace app\common\command\cron;
 
 use app\common\model\cron\CronModel;
+use app\common\service\cron\CronService;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Option;
@@ -26,8 +27,8 @@ class Exec extends Command
 
     protected function execute(Input $input, Output $output)
     {
-        $cron_id = trim($input->getOption('id'));
-        $class = trim($input->getOption('class'));
+        $cron_id = trim((string) $input->getOption('id'));
+        $class = trim((string) $input->getOption('class'));
         if(empty($cron_id) && empty($class)){
             $output->error("参数异常: 请指定 id 或 class");
             return;
@@ -40,8 +41,13 @@ class Exec extends Command
             }
             $class = trim($_cron->cron_file);
         }
-        if(!class_exists($class)){
+        $class = CronService::normalizeCronClass($class);
+        if (!class_exists($class)) {
             $output->error('找不到计划任务:' . $class);
+            return;
+        }
+        if (!CronService::isValidCronClass($class)) {
+            $output->error('非法的计划任务脚本类:' . $class);
             return;
         }
         $cron = new $class;

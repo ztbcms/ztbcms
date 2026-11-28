@@ -6,6 +6,7 @@
 namespace app\common\service\cron;
 
 use think\facade\Log;
+use app\common\cronscript\CronScript;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronModel;
 use app\common\model\cron\CronSchedulingLogModel;
@@ -175,5 +176,88 @@ class CronService extends BaseService
         }
         $cron = $query->order(['next_time' => 'ASC', 'cron_id' => 'ASC'])->find();
         return $cron instanceof CronModel ? $cron : null;
+    }
+
+    /**
+     * 规范化计划任务脚本类名
+     *
+     * @param string $class 原始类名
+     * @return string
+     */
+    public static function normalizeCronClass(string $class): string
+    {
+        return ltrim(trim($class), '\\');
+    }
+
+    /**
+     * 扫描所有模块 cronscript 目录下的合法计划任务脚本类白名单
+     *
+     * @return array
+     */
+    public static function getAllowedCronFiles(): array
+    {
+        $moduleDirs = glob(base_path() . '*', GLOB_ONLYDIR);
+        if (!is_array($moduleDirs)) {
+            return [];
+        }
+
+        $cronFileList = [];
+        foreach ($moduleDirs as $moduleDir) {
+            $module = strtolower(basename($moduleDir));
+            $cronscriptDir = $moduleDir . DIRECTORY_SEPARATOR . 'cronscript';
+            if (!is_dir($cronscriptDir)) {
+                continue;
+            }
+            $files = glob($cronscriptDir . DIRECTORY_SEPARATOR . '*.php');
+            if (!is_array($files)) {
+                continue;
+            }
+            foreach ($files as $filePath) {
+                $className = pathinfo($filePath, PATHINFO_FILENAME);
+                if ($className === '' || $className === 'CronScript') {
+                    continue;
+                }
+                $fqcn = 'app\\' . $module . '\\cronscript\\' . $className;
+                if (self::isValidCronClass($fqcn, false)) {
+                    $cronFileList[$fqcn] = true;
+                }
+            }
+        }
+
+        $result = array_keys($cronFileList);
+        sort($result);
+        return $result;
+    }
+
+    /**
+     * 校验计划任务脚本类是否继承自 CronScript 基类且可实例化
+     *
+     * @param string $class            计划任务类名
+     * @param bool   $requireWhitelist 是否同时要求命中模块 cronscript 目录白名单
+     * @return bool
+     */
+    public static function isValidCronClass(string $class, bool $requireWhitelist = false): bool
+    {
+        $normalized = self::normalizeCronClass($class);
+        if ($normalized === '' || !class_exists($normalized)) {
+            return false;
+        }
+        if (!is_subclass_of($normalized, CronScript::class)) {
+            return false;
+        }
+        try {
+            $ref = new \ReflectionClass($normalized);
+            if ($ref->isAbstract()) {
+                return false;
+            }
+        } catch (\ReflectionException $e) {
+            return false;
+        }
+
+        if ($requireWhitelist && !in_array($normalized, self::getAllowedCronFiles(), true)) {
+            return false;
+        }
+
+        return true;
     }
 }

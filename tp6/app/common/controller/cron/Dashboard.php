@@ -2,14 +2,13 @@
 
 namespace app\common\controller\cron;
 
-use app\admin\service\ModuleService;
 use app\common\controller\AdminController;
 use app\common\model\cron\CronConfigModel;
 use app\common\model\cron\CronLogModel;
 use app\common\model\cron\CronModel;
 use app\common\model\cron\CronSchedulingLogModel;
 use app\common\libs\helper\PaginationHelper;
-use app\common\util\Dir;
+use app\common\service\cron\CronService;
 use think\facade\View;
 use think\Request;
 
@@ -89,6 +88,9 @@ class Dashboard extends AdminController
 
     function runAction(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         set_time_limit(0);
         ignore_user_abort(true);
         $cronId = $request->post('cron_id');
@@ -116,6 +118,9 @@ class Dashboard extends AdminController
      */
     function deleteCron(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $cronId = $request->post('cron_id');
         $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
         if (!$cron->isEmpty() && $cron->delete()) {
@@ -165,18 +170,26 @@ class Dashboard extends AdminController
         if ($request->isGet() && $_action == 'getCronDetail') {
             return $this->getCronDetail($request);
         } else {
-            if ($_action == 'submitCron') {
+            if ($request->isPost() && $_action == 'submitCron') {
                 $cronId = $request->post('cron_id', '');
                 $loopType = $request->post('form.loop_type');
                 $loopData = $request->post('loop_data');
+                $cronFile = CronService::normalizeCronClass((string) $request->post('form.cron_file', ''));
+                if (!CronService::isValidCronClass($cronFile, true)) {
+                    return self::createReturn(false, [], '非法的计划任务脚本类');
+                }
                 //通过循环的类型和参数，获取下次执行时间和统一循环格式。
-                list($nextTime, $loopDaytime) = CronModel::getLoopData($loopType, $loopData);
+                $loopRes = CronModel::getLoopData($loopType, $loopData);
+                if (!is_array($loopRes)) {
+                    return self::createReturn(false, [], '循环执行时间参数非法');
+                }
+                list($nextTime, $loopDaytime) = $loopRes;
                 $cronModel = CronModel::where('cron_id', $cronId)->findOrEmpty();
                 $isNew = $cronModel->isEmpty();
                 $cronModel->type = $request->post('form.type');
                 $cronModel->subject = $request->post('form.subject');
                 $cronModel->loop_type = $request->post('form.loop_type');
-                $cronModel->cron_file = $request->post('form.cron_file');
+                $cronModel->cron_file = $cronFile;
                 $cronModel->isopen = $request->post('form.isopen');
                 $cronModel->loop_daytime = $loopDaytime;
                 $cronModel->next_time = $nextTime;
@@ -203,34 +216,7 @@ class Dashboard extends AdminController
 
     private function _getCronFileList()
     {
-        $moduleService = new ModuleService();
-        $localModuleList = $moduleService->getLocalModuleList()['data'];
-        $moduleList = array_map(function ($item)
-        {
-            return $item['module'];
-        }, $localModuleList);
-        $extraModuleList = ['admin', 'common'];
-        foreach ($extraModuleList as $item) {
-            $moduleList [] = $item;
-        }
-        $cronFileList = [];
-        //遍历模块
-        foreach ($moduleList as $k => $module) {
-            $module = strtolower($module);
-            $cronscript_dir = base_path().$module.DIRECTORY_SEPARATOR.'cronscript';
-            if (is_dir($cronscript_dir)) {
-                $CronDirs = new Dir($cronscript_dir);
-                $cronFiles = $CronDirs->toArray();
-                //遍历 Module/CronScript 模块下的脚本
-                foreach ($cronFiles as $index => $cronFile) {
-                    $cron_classname = str_replace('.php', '', $cronFile['filename']);
-                    if ($cron_classname != 'CronScript') {
-                        $cronFileList[] = 'app\\'.$module.'\\'.'cronscript'.'\\'.$cron_classname;
-                    }
-                }
-            }
-        }
-        return $cronFileList;
+        return CronService::getAllowedCronFiles();
     }
 
     private function getCronList()
@@ -286,6 +272,9 @@ class Dashboard extends AdminController
 
     private function setCronEnable(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $enable = $request->param('enable');
         $res = CronConfigModel::where('key', CronConfigModel::KEY_ENABLE_CRON)->update([
             'value' => $enable
@@ -295,6 +284,9 @@ class Dashboard extends AdminController
 
     private function setCronSecretKey(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $secretKey = $request->param('secret_key');
         $res = CronConfigModel::where('key', CronConfigModel::KEY_ENABLE_SECRET_KEY)->update([
             'value' => $secretKey

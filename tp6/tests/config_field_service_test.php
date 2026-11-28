@@ -6,6 +6,7 @@ use think\facade\Config;
 use think\facade\Db;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -48,19 +49,7 @@ function assertConfigFieldService(bool $condition, string $message): void
 $cacheDir = sys_get_temp_dir() . '/ztbcms_config_field_test_cache_' . getmypid() . '_' . uniqid('', true) . '/';
 
 try {
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $cacheDir,
-                'prefix' => '',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($cacheDir);
 
     Config::set([
         'default' => 'config_field_service_test',

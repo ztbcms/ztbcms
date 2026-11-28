@@ -17,6 +17,7 @@ use think\Request;
 use think\Response;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers/TestCacheHelper.php';
 
 $app = new App(dirname(__DIR__));
 $app->initialize();
@@ -340,19 +341,7 @@ try {
         'authcode' => 'admin-disabled-account-auth-test-key',
     ], 'system');
 
-    Config::set([
-        'default' => 'file',
-        'stores' => [
-            'file' => [
-                'type' => 'File',
-                'path' => $tmpCacheDir,
-                'prefix' => 'test_',
-                'expire' => 0,
-                'tag_prefix' => 'tag:',
-                'serialize' => [],
-            ],
-        ],
-    ], 'cache');
+    configureIsolatedTestFileCache($tmpCacheDir, ['prefix' => 'test_']);
 
     Config::set([
         'default' => 'admin_disabled_auth_test',
