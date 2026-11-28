@@ -25,6 +25,14 @@ class Region extends AdminController
 }
 ```
 
+#### 后台 CSRF 校验
+
+安装向导为新安装启用校验。已有项目升级后可先验证自定义后台页面，再在 `tp6/.env` 的 `[SECURITY]` 区块设置 `ADMIN_CSRF_ENABLED = true`。缺省为 `false`，便于旧项目逐步接入。
+
+启用后，继承 `AdminController` 的非只读请求需要携带 `X-CSRF-TOKEN` 请求头，包括登录和退出提交。公共后台模板会输出 `<meta name="csrf-token">`，并为同源 jQuery 写请求自动设置请求头。自定义模板可渲染转义后的 `$adminCsrfToken`，使用 `fetch`、`axios` 或原生表单的页面可通过 JavaScript 提交并设置同一请求头。仅向本 CMS 的同源接口发送该值。
+
+`GET`、`HEAD` 和 `OPTIONS` 应保持只读。缺失或过期的 Token 会返回 HTTP `403`，可刷新后台页后重试。使用 Bearer 鉴权的 API 沿用原有认证方式。
+
 ### API 接口
 
 - 对外 API 推荐继承 `BaseApi`

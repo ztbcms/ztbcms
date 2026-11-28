@@ -88,6 +88,9 @@ class Dashboard extends AdminController
 
     function runAction(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         set_time_limit(0);
         ignore_user_abort(true);
         $cronId = $request->post('cron_id');
@@ -115,6 +118,9 @@ class Dashboard extends AdminController
      */
     function deleteCron(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $cronId = $request->post('cron_id');
         $cron = CronModel::where('cron_id', $cronId)->findOrEmpty();
         if (!$cron->isEmpty() && $cron->delete()) {
@@ -266,6 +272,9 @@ class Dashboard extends AdminController
 
     private function setCronEnable(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $enable = $request->param('enable');
         $res = CronConfigModel::where('key', CronConfigModel::KEY_ENABLE_CRON)->update([
             'value' => $enable
@@ -275,6 +284,9 @@ class Dashboard extends AdminController
 
     private function setCronSecretKey(Request $request)
     {
+        if (!$request->isPost()) {
+            return self::returnMethodNotAllowedJson();
+        }
         $secretKey = $request->param('secret_key');
         $res = CronConfigModel::where('key', CronConfigModel::KEY_ENABLE_SECRET_KEY)->update([
             'value' => $secretKey
