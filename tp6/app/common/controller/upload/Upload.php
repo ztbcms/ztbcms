@@ -181,6 +181,9 @@ class Upload extends AdminController
             return json($res);
         }
         if ($action == 'doDelete') {
+            if (!request()->isPost()) {
+                return self::returnMethodNotAllowedJson();
+            }
             $aid = input('aid');
             if (empty($aid)) {
                 return self::makeJsonReturn(false, null, '参数异常');
@@ -199,6 +202,9 @@ class Upload extends AdminController
             return self::makeJsonReturn(true, null, '操作完成');
         }
         if ($action == 'doBatchDelete') {
+            if (!request()->isPost()) {
+                return self::returnMethodNotAllowedJson();
+            }
             $aids = input('aids/a', []);
             if (empty($aids)) {
                 return self::makeJsonReturn(false, null, '请选择附件');

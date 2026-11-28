@@ -6,6 +6,7 @@ return [
     "cms_build"                         => '202611232232', //CMS流水号
     "cms_version"                       => "4.12.3", //CMS版本号
     "application_version"               => "0.0.0", //产品版本号
+    "csrf_enabled"                      => env('security.admin_csrf_enabled', false),
     // 登录防爆破与受信代理配置
     "login_faild_time_interval"         => 5, // 同 IP 登录失败判定时间间隔（分钟）
     "login_max_faild"                   => 5, // 同 IP 登录失败判定次数
